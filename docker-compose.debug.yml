@@ -9,10 +9,10 @@ services:
     env_file:
       - .env
     ports:
-      - 0.0.0.0:8000:8000
+      - 8000:8000
     volumes:
       - ./backend:/app
-    command: ["python", "-m", "manage", "runserver"]
+    command: ["python", "-m", "manage", "runserver", "0.0.0.0:8000"]
 
   frontend:
     image: frontend
@@ -22,7 +22,7 @@ services:
     env_file:
       - .env
     ports:
-      - 0.0.0.0:3000:3000
+      - 3000:3000
     volumes:
       - ./frontend:/app
     command: ["npm", "run", "dev"]
