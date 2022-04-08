@@ -2,29 +2,18 @@
   <v-card class="my-2">
     <v-card-title>
       {{ $t('display.diagnosis') }}
-      <v-spacer></v-spacer
-      ><v-btn
-        icon
-        @click="
-          $router.push({
-            path: `/supports/21/diagnosis/${diagnosis.id}`,
-            query: { modifyDiag: false },
-          })
-        "
-      >
-        <v-icon v-if="diagnosis.last" color="green"
-          >mdi-eye-plus-outline</v-icon
-        >
-      </v-btn>
-      <v-btn
-        icon
-        @click="
-          $router.push({
-            path: `/supports/21/diagnosis/${diagnosis.id}`,
-            query: { modifyDiag: true },
-          })
-        "
-      >
+      <v-spacer></v-spacer>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon @click="newDiag">
+            <v-icon v-if="diagnosis.last" color="green"
+              >mdi-eye-plus-outline</v-icon
+            >
+          </v-btn>
+        </template>
+        <span>Ajouter un dignostic</span>
+      </v-tooltip>
+      <v-btn icon @click="updateDiag">
         <v-icon color="orange">mdi-pencil</v-icon>
       </v-btn>
     </v-card-title>
@@ -62,16 +51,19 @@
           pt.label
         }}</v-chip>
       </p>
-
       <p>
         <span class="font-weight-bold">{{ $t('support.attractiveness') }}</span>
-        {{ diagnosis.pole_attractivity.label }}
+        <v-chip :color="riskColors[diagnosis.pole_attractivity.code]">{{
+          diagnosis.pole_attractivity.label
+        }}</v-chip>
       </p>
       <p>
         <span class="font-weight-bold">{{ $t('support.dangerousness') }}</span>
-        {{ diagnosis.pole_dangerousness.label }}
+        <v-chip :color="riskColors[diagnosis.pole_dangerousness.code]">{{
+          diagnosis.pole_dangerousness.label
+        }}</v-chip>
       </p>
-      <p>
+      <p v-if="diagnosis.remark">
         <span class="font-weight-bold">{{ $t('app.remark') }}</span>
         {{ diagnosis.remark }}
       </p>
@@ -104,5 +96,35 @@ import Vue from 'vue'
 export default Vue.extend({
   name: 'DiagnosisCardComponent',
   props: { diagnosis: { type: Object, default: null } },
+  data() {
+    return {
+      newSupport: this.$route.query.newSupport,
+      riskColors: {
+        RISK_L: 'light-blue',
+        RISK_M: 'yellow',
+        RISK_H: 'red lighten-1 white--text',
+      },
+    }
+  },
+  mounted() {
+    console.log('diagnosis', this.diagnosis)
+  },
+  methods: {
+    newDiag() {
+      this.$router.push({
+        path: `/supports/${this.diagnosis.infrastructure}/diagnosis/${this.diagnosis.id}`,
+        query: { modifyDiag: 'false' },
+      })
+    },
+    updateDiag() {
+      this.$router.push({
+        path: `/supports/${this.diagnosis.infrastructure}/diagnosis/${this.diagnosis.id}`,
+        query: { modifyDiag: 'true' },
+      })
+    },
+    notImplementedYet() {
+      return null
+    },
+  },
 })
 </script>

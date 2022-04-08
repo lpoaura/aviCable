@@ -2,7 +2,7 @@
   <div>
     <v-row v-if="$vuetify.breakpoint.lgAndUp"
       ><v-col width="50%"> <map-component /> </v-col
-      ><v-col> <data-line-detail :data="data"></data-line-detail> </v-col
+      ><v-col> <data-line-detail :data="data" /> </v-col
     ></v-row>
     <v-tabs
       v-if="$vuetify.breakpoint.mdAndDown"
@@ -16,7 +16,7 @@
       </v-tab-item>
       <v-tab> {{ $t('app.data') }} </v-tab>
       <v-tab-item>
-        <data-line-detail :data="data"></data-line-detail>
+        <data-line-detail :data="data" />
       </v-tab-item>
     </v-tabs>
   </div>

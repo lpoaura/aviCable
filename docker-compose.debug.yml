@@ -1,6 +1,15 @@
 version: '3.4'
 
 services:
+  db:
+    image: postgis/postgis:14-master
+    env_file:
+      - .env
+    ports:
+      - 5442:5432
+    volumes:
+      - ocb_db_data:/var/lib/postgresql/data
+
   backend:
     image: backend
     build:
@@ -21,6 +30,8 @@ services:
       dockerfile: ./Dockerfile.dev
     env_file:
       - .env
+    environment:
+      - HOST=0.0.0.0
     ports:
       - 3000:3000
     volumes:

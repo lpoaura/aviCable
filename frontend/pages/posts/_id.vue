@@ -7,8 +7,7 @@
           {{ new Date(post.timestamp_create).toString() }}
         </div>
         <div class="text-h6 mb-4">{{ post.intro }}</div>
-        <div>{{ post.body }}</div>
-        <!-- <divre><code>{{post}}</code></divre> -->
+        <div v-html="post.body"></div>
 
         <v-fab-transition>
           <v-btn

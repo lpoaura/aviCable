@@ -11,8 +11,8 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update -y \
     && apt-get install --no-install-recommends -y \
-    postgresql-client libpq-dev gcc \
-    libproj-dev gdal-bin \
+    curl postgresql-client libpq-dev gcc \
+    libproj-dev gdal-bin libgraphviz-dev graphviz \
     &&  apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
     && pip install --upgrade pip
 
@@ -20,6 +20,8 @@ RUN apt-get update -y \
 # Install pip requirements
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
+# COPY requirements-dev.txt .
+# RUN python -m pip install -r requirements-dev.txt
 
 WORKDIR /app
 
