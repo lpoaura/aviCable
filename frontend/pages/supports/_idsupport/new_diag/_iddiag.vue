@@ -5,7 +5,7 @@
         <map-component :edit-mode="true" mode="point" />
       </v-col>
       <v-col cols="6" class="pa-0" style="background-color: red">
-        <form-point-component :diagnosis="data" />
+        <form-point-component :diagnosis="data" :new-diag="newDiag" />
       </v-col>
     </v-row>
     <v-tabs
@@ -20,7 +20,7 @@
       </v-tab-item>
       <v-tab> {{ $t('app.data') }} </v-tab>
       <v-tab-item>
-        <form-point-component :diagnosis="data" />
+        <form-point-component :diagnosis="data" :new-diag="newDiag" />
       </v-tab-item>
     </v-tabs>
   </v-container>
@@ -46,6 +46,7 @@ export default {
     return {
       drawer_opened: true, // drawer closed by default
       miniVariant: true, // small drawer when opening by default
+      newDiag: true, // boolean set to true to configure Diagnosis form to Diagnosis creation
     }
   },
 }

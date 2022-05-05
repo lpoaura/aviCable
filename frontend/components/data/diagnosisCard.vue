@@ -5,13 +5,13 @@
       <v-spacer></v-spacer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon @click="newDiag">
+          <v-btn icon v-bind="attrs" v-on="on" @click="newDiag">
             <v-icon v-if="diagnosis.last" color="green"
               >mdi-eye-plus-outline</v-icon
             >
           </v-btn>
         </template>
-        <span>Ajouter un dignostic</span>
+        <span>Ajouter un diagnostic</span>
       </v-tooltip>
       <v-btn icon @click="updateDiag">
         <v-icon color="orange">mdi-pencil</v-icon>
@@ -106,21 +106,19 @@ export default Vue.extend({
       },
     }
   },
-  mounted() {
-    console.log('diagnosis', this.diagnosis)
-  },
+  // mounted() {
+  //   // console.log('diagnosis', this.diagnosis)
+  // },
   methods: {
     newDiag() {
-      this.$router.push({
-        path: `/supports/${this.diagnosis.infrastructure}/diagnosis/${this.diagnosis.id}`,
-        query: { modifyDiag: 'false' },
-      })
+      this.$router.push(
+        `/supports/${this.diagnosis.infrastructure}/new_diag/${this.diagnosis.id}`
+      )
     },
     updateDiag() {
-      this.$router.push({
-        path: `/supports/${this.diagnosis.infrastructure}/diagnosis/${this.diagnosis.id}`,
-        query: { modifyDiag: 'true' },
-      })
+      this.$router.push(
+        `/supports/${this.diagnosis.infrastructure}/update_diag/${this.diagnosis.id}`
+      )
     },
     notImplementedYet() {
       return null

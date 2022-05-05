@@ -3,8 +3,8 @@
     <v-form ref="form" v-model="formValid" class="text-center">
       <v-toolbar color="pink" dark elevation="0">
         <!-- TODO Review title handling and add terms in locales -->
-        <v-toolbar-title
-          >{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
+        <v-toolbar-title>
+          {{ newDiag ? 'Nouveau' : 'Modifier le' }}
           {{ diagnosis ? 'Diagnostic' : $t('support.support') }}
         </v-toolbar-title>
         <v-spacer></v-spacer>
@@ -202,7 +202,7 @@
               <utils-picture-component ref="upc" />
             </v-col>
             <v-container>
-              <v-list v-if="diagnosis && modifyDiag">
+              <v-list v-if="diagnosis && !newDiag">
                 <v-list-item v-for="img in diagnosis.media" :key="img.id">
                   <v-row>
                     <v-col>
@@ -246,6 +246,7 @@ export default {
     support: { type: Object, default: null },
     diagnosis: { type: Object, default: null },
     operation: { type: Object, default: null },
+    newDiag: { type: Boolean, default: null },
   },
 
   data() {
@@ -268,7 +269,7 @@ export default {
       // define data related to Diagnosis
       diagData: {
         date:
-          this.diagnosis && !this.modifyDiag
+          this.diagnosis && this.newDiag
             ? this.diagnosis.date
             : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
                 .toISOString()
@@ -311,14 +312,6 @@ export default {
     }
   },
   computed: {
-    /**
-     * String value (changed to boolean) get from url query param "modifyDiag" indicating a new
-     * Diag is to be created from an existing support. This make diagData initialized as empty.
-     * By default, "modifyDiag" is true (means a new Diagnosis would be added)
-     */
-    modifyDiag() {
-      return this.$route.query.modifyDiag === 'true' ? true : false
-    },
     /**
      * Getter and Setter for "lat" value.
      * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
@@ -396,11 +389,11 @@ export default {
             await this.createNewDiagnosis(pointCreated.properties.id)
           }
           this.$router.push('/view')
-        } else if (this.diagnosis && this.modifyDiag) {
+        } else if (this.diagnosis && !this.newDiag) {
           // Case of update of Diagnosis
           await this.updateDiagnosis()
           this.$router.push(`/supports/${this.diagnosis.infrastructure}`)
-        } else if (this.diagnosis && !this.modifyDiag) {
+        } else if (this.diagnosis && this.newDiag) {
           // Case of creation of new Diagnosis on existing Support
           await this.addNewDiagnosis()
           this.$router.push(`/supports/${this.diagnosis.infrastructure}`)
@@ -487,7 +480,6 @@ export default {
      */
     async addNewDiagnosis() {
       // Create Media as selected in component form and get list of Ids of created Media
-      console.log(this.modifyDiag ? 'vrai' : 'faux')
       const mediaIdList = await this.createNewMedia()
       try {
         this.diagData.infrastructure = this.diagnosis.infrastructure // set Infrastructure (Point) id
@@ -556,7 +548,7 @@ export default {
      * anyway.
      */
     async createNewMedia() {
-      const mediaIdList = this.modifyDiag ? this.diagData.media_id : []
+      const mediaIdList = !this.newDiag ? this.diagData.media_id : []
 
       // await all Promises be resolved before returning result
       await Promise.all(
