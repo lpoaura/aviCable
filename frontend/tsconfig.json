@@ -35,7 +35,10 @@
       "nuxt-leaflet",
       "vuetify",
       "@types/geojson"
-    ]
+    ],
+  },
+  "vueCompilerOptions": {
+    "experimentalDisableTemplateSupport": true,
   },
   "exclude": [
     "node_modules",

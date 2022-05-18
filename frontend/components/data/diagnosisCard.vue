@@ -90,7 +90,7 @@
   </v-card>
 </template>
 
-<script lang="ts">
+<script >
 import Vue from 'vue'
 
 export default Vue.extend({
@@ -112,13 +112,15 @@ export default Vue.extend({
   methods: {
     newDiag() {
       this.$router.push(
-        `/supports/${this.diagnosis.infrastructure}/new_diag/${this.diagnosis.id}`
+        // `/supports/${this.diagnosis.infrastructure}/new_diag/${this.diagnosis.id}`
+        {
+          path: `/diagnosis/new`,
+          query: { OriginDiagId: this.diagnosis.id },
+        }
       )
     },
     updateDiag() {
-      this.$router.push(
-        `/supports/${this.diagnosis.infrastructure}/update_diag/${this.diagnosis.id}`
-      )
+      this.$router.push(`/diagnosis/${this.diagnosis.id}/update`)
     },
     notImplementedYet() {
       return null

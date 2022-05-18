@@ -51,7 +51,9 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
   name: 'DefaultLayout',
   data() {
     return {
@@ -80,5 +82,5 @@ export default {
       this.$auth.logout()
     },
   },
-}
+})
 </script>

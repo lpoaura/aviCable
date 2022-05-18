@@ -29,7 +29,9 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
   name: 'SupportDetailPage',
   /**
    * asyncData(): Method that gather data before page be created
@@ -49,5 +51,5 @@ export default {
       miniVariant: true, // small drawer when opening by default
     }
   },
-}
+})
 </script>

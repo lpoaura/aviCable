@@ -238,8 +238,7 @@
 import { mapGetters } from 'vuex'
 import * as errorCodes from '~/static/errorConfig.json'
 
-// export default Vue.extend({
-export default {
+export default Vue.extend({
   name: 'PointComponent',
 
   props: {
@@ -584,5 +583,5 @@ export default {
       return mediaIdList
     },
   },
-}
+})
 </script>

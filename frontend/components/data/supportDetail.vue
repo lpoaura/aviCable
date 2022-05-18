@@ -23,7 +23,11 @@
       <v-card class="my-2">
         <v-card-title
           >Info Support <v-spacer></v-spacer>
-          <v-btn icon @click="$router.push('/view')">
+          <!-- <v-btn icon @click="$router.push('/view')"> -->
+          <v-btn
+            icon
+            @click="$router.push(`/supports/${data.properties.id}/update`)"
+          >
             <v-icon color="orange">mdi-pencil</v-icon>
           </v-btn></v-card-title
         >
