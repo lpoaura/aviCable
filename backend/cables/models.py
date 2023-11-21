@@ -4,16 +4,15 @@
 import datetime
 from uuid import uuid4
 
+from commons.models import BaseModel
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from polymorphic.models import PolymorphicModel
-from sinp_nomenclatures.models import Nomenclature
-
-from commons.models import BaseModel
 from geo_area.models import GeoArea
 from media.models import Media
+from polymorphic.models import PolymorphicModel
 from sensitive_area.models import SensitiveArea
+from sinp_nomenclatures.models import Nomenclature
 
 """These application models are using nomenclature Items 'cf. sinp_nomenclatures' module
 
@@ -117,6 +116,7 @@ class Action(BaseModel, PolymorphicModel):
         related_name="diagnosis_media",
         verbose_name=_("Media attached with this diagnosis"),
         help_text=_("Media attached with this diagnosis"),
+        related_query_name="actions"
     )
     # Field usefull for child (Diagnosis or Operation) creation
     # If Diagnosis or Operation already exists for the infrastructure, the new item received True # as last record, and old ones receive False.

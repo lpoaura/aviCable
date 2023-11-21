@@ -34,4 +34,5 @@ urlpatterns = [
     path("api/v1/map-layers/", include("map_layers.urls")),
     path("api/admin/doc/", include("django.contrib.admindocs.urls")),
     path("api/admin/", admin.site.urls),
+    path("__debug__/", include("debug_toolbar.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

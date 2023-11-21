@@ -21,13 +21,22 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     """ViewSet for Infrastructure item"""
 
     serializer_class = InfrastructurePolymorphicSerializer
-    permission_classes = [DjangoModelPermissions]
+    # permission_classes = [DjangoModelPermissions]
     # Define queryset by optimizing DB requests
     queryset = (
         Infrastructure.objects.all()
         .select_related("owner")
         .prefetch_related("geo_area")
         .prefetch_related("sensitive_area")
+        .prefetch_related("actions_infrastructure")
+        .prefetch_related('actions_infrastructure')
+        .prefetch_related('actions_infrastructure__condition')
+        .prefetch_related('actions_infrastructure__pole_attractivity')
+        .prefetch_related('actions_infrastructure__pole_dangerousness')
+        .prefetch_related('actions_infrastructure__sgmt_build_integr_risk')
+        .prefetch_related('actions_infrastructure__sgmt_moving_risk')
+        .prefetch_related('actions_infrastructure__sgmt_topo_integr_risk')
+        .prefetch_related('actions_infrastructure__sgmt_veget_integr_risk')
     )
 
 

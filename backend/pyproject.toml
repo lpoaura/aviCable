@@ -19,6 +19,7 @@ django-cors-headers = "^4.1.0"
 django = "^4.2.3"
 pillow = "^10.0.0"
 docutils = "^0.20.1"
+django-debug-toolbar = "^4.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -32,6 +33,7 @@ django-fixture-magic = "^0.1.5"
 pygraphviz = "^1.11"
 pydotplus = "^2.0.2"
 coverage = "^7.2.7"
+django-debug-toolbar = "^4.2.0"
 
 
 [tool.isort]

@@ -71,8 +71,14 @@ if DEV:
         "fixture_magic",
     ]
 
+if DEBUG:
+    INSTALLED_APPS = INSTALLED_APPS + [
+        "debug_toolbar",
+    ]
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -80,6 +86,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -229,6 +236,11 @@ LOGGING = {
 DEFAULT_LAT = config("DEFAULT_LAT", default=45, cast=float)
 DEFAULT_LON = config("DEFAULT_LON", default=5, cast=float)
 
-if not DEBUG:
+
+if DEBUG:
+    import socket  # only if you haven't already imported this
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]
+else:
     SECURE_SSL_REDIRECT = True
     CSRF_COOKIE_SECURE = True
