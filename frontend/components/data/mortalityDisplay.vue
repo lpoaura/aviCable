@@ -1,11 +1,15 @@
 <template>
-  <v-data-table v-model:items-per-page="itemsPerPage" :headers="headers" :items="mortalityStore.getMortalityFeatures"
-    item-value="name" class="elevation-1" density="compact" @click:row="showDetail"></v-data-table>
-</template>
+  <div>
+    <v-data-table fixed-header height="100%" :headers="headers" :search="search"
+      :items="mortalityStore.getMortalityFeatures" :loading="!mortalityStore.getMortalityFeatures" loading-text="Loading... Please wait" item-value="name"
+      class="elevation-1" density="compact" @click:row="showDetail"></v-data-table>
+  </div>
+</template> 
 
 <script setup lang="ts">
 // import { FeatureCollection } from 'geojson'
 const router =useRouter()
+const search = ref('')
 const itemsPerPage=ref(5)
 const mortalityData = ref([])
 const headers = reactive([
@@ -28,3 +32,9 @@ onMounted(() => {
   mortalityStore.getMortalityData()
 })
 </script>
+
+<style>
+.v-data-table /deep/ .v-data-table__wrapper {
+  overflow: unset;
+}
+</style>

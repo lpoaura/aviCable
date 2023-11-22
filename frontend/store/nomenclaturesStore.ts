@@ -184,7 +184,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
 
         // commit('errorStore/setError', error, { root: true })
         // log out user as application may not be reliable as is
-        $nuxt.$auth.logout();
+        // $nuxt.$auth.logout();
       }
     },
   },

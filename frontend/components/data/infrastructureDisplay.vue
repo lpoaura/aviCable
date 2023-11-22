@@ -8,8 +8,9 @@
       </v-row>
     </v-radio-group>
 
-    <v-data-table :headers="tableHeaders" :items="dataSource[display]" :items-per-page="10" class="elevation-1"
-      density="compact" @click:row="showDetail" fixed-header>
+    <v-data-table :headers="tableHeaders" :items="dataSource[display]" :loading="!dataSource[display]"
+      loading-text="Loading... Please wait" :items-per-page="10" class="elevation-1" density="compact"
+      @click:row="showDetail" fixed-header>
       <template #item.value.properties.actions_infrastructure.0.neutralized="{ item }">
         {{ item.value }}
         <v-icon :color="[item.value?.properties.actions_infrastructure[0].neutralized] == 'true'
@@ -30,7 +31,6 @@
 
 <script setup>
 // import { mapState } from 'pinia'
-import { VDataTable } from 'vuetify/labs/VDataTable'
 // import { useCablesStore } from '~/store/cablesStore'
 const router = useRouter()
 const { t } = useI18n()
@@ -166,3 +166,9 @@ const showDetail = (_, {item}) => {
 //   },
 // }
 </script>
+
+<style>
+.v-data-table /deep/ .v-data-table__wrapper {
+  overflow: unset;
+}
+</style>

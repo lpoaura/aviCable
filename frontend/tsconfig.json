@@ -1,8 +1,14 @@
 {
   "compilerOptions": {
-    "types": ["@types/node", "@nuxt/vue-app", "@types/leaflet"]
+    "types": [
+      "@types/node",
+      "@nuxt/vue-app",
+      "@types/leaflet"
+    ]
   },
   // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
-  "include": ["types/*.d.ts"]
+  "include": [
+    "types/*.d.ts"
+  ]
 }

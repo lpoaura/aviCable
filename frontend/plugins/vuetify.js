@@ -1,16 +1,14 @@
-import { createVuetify } from 'vuetify'
 import '@mdi/font/css/materialdesignicons.css'
-import { VDataTable } from 'vuetify/labs/VDataTable'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
 
-export default defineNuxtPlugin((nuxtApp) => {
+
+export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
-    components: {
-      VDataTable
-    },
     ssr: true,
     theme: {
       defaultTheme: 'light'
     }
   })
-  nuxtApp.vueApp.use(vuetify)
+  app.vueApp.use(vuetify)
 })

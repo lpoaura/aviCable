@@ -71,7 +71,7 @@ class Point(Infrastructure):
     geom = gis_models.PointField(srid=4326)
 
     def __str__(self):
-        return f"Point {self.id} - [{self.owner.label}]"
+        return f"Point {self.id}"
 
 
 class Line(Infrastructure):
@@ -83,7 +83,7 @@ class Line(Infrastructure):
     geom = gis_models.LineStringField(null=True, blank=True, srid=4326)
 
     def __str__(self):
-        return f"Line-({self.id})"
+        return f"Line {self.id}"
 
 
 class Action(BaseModel, PolymorphicModel):

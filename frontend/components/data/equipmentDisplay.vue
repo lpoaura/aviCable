@@ -12,7 +12,6 @@
 
 <script>
 import { mapState } from 'pinia'
-import { VDataTable } from 'vuetify/labs/VDataTable'
 import { useCablesStore } from '~/store/cablesStore'
 
 export default {

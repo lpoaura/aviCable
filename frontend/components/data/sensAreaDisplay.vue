@@ -4,7 +4,6 @@
 
 <script>
 import { mapState } from 'pinia'
-import { VDataTable } from 'vuetify/labs/VDataTable'
 import { useSensitiveAreasStore } from '~/store/sensitiveAreasStore'
 
 export default {

@@ -49,4 +49,7 @@ onMounted(() => {
   width: 100px;
   background-color: 'indigo';
 } */
+
+
+
 </style>

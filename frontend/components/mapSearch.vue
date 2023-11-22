@@ -5,10 +5,10 @@
       <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
       <l-control-layers />
+      <l-geo-json v-if="lineStringData" :geojson="lineStringData" :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="pointData" :geojson="pointData" :options="infrastructureGeoJsonOptions" />
-      <l-geo-json :geojson="lineStringData" :options="infrastructureGeoJsonOptions" />
       <l-geo-json :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
-      <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" />
+      <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
     <utils-map-actions-menu v-if="!editMode" />
   </l-map>
@@ -21,7 +21,7 @@ import { LMap, LTileLayer, LGeoJson, LControlLayers } from "@vue-leaflet/vue-lea
 // import { useMapLayersStore } from "store/mapLayersStore";
 import { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
-import { StoreGeneric } from "pinia"
+import type { StoreGeneric } from "pinia"
 import type {Map, PointTuple, GeoJSONOptions, Layer} from "leaflet";
 // import { useCoordinatesStore } from "../store/coordinatesStore";
 
@@ -61,9 +61,10 @@ const selectedFeature = computed(() => coordinatesStore.selectedFeature)
 const infrastructureOnEachFeature = (feature : Feature, layer : any) => {
   // TODO To be adapted
   layer.bindPopup(
-    `<h2>${feature.geometry.type ? 'Support':'Ligne'}</h2>
-    ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties?.id}`
-  )
+    `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
+      </span><a to="/search#mortality">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'} 
+        ${feature.properties?.owner.label} ${feature.properties?.id}</a></h2>`
+    )
   // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
   // console.log('layer', layer)
   // delete layer.pm
@@ -75,10 +76,8 @@ const mortalityOnEachFeature = (feature : Feature, layer : any) => {
   layer.bindPopup(
     `<h2><span class="mdi mdi-coffin"></span><a to="/search#mortality">${feature.properties.species.vernacular_name}</a></h2>
     <i>${feature.properties.species.scientific_name}</i>
-   <p>
-    <dl>
-      <dt><strong>Date</strong></dt><dd>${feature.properties.date}</dd>
-      <dt><strong>Cause</strong></dt><dd>${feature.properties.death_cause.label}</dd>
+   <p><strong>Date</strong>&nbsp;:&nbsp;${feature.properties.date}<br>
+      <strong>Cause</strong>&nbsp;:&nbsp;${feature.properties.death_cause.label}
     </dl>
     </p>`
   )
@@ -190,14 +189,28 @@ const hookUpDraw = async () => {
   }
 };
 
-const deathCaseIcon =
+const levelColor = (feature) => {
+  const levelNotes = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
+  console.log(feature.properties?.actions_infrastructure[0].pole_attractivity.code)
+  console.log('level', levelNotes[feature.properties?.actions_infrastructure[0].pole_attractivity.code])
+  const note = levelNotes[feature.properties?.actions_infrastructure[0].pole_attractivity.code] + levelNotes[feature.properties?.actions_infrastructure[0].pole_dangerousness.code]
+  console.log('note',note)
+  if (note == 2) {
+    return 'blue'
+  }
+  if (note > 3 && note < 5)
+  {
+    return 'orange'
+  }
+  else {return 'red'}
+}
 
 onBeforeMount(async () => {
   // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-  infrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : any ) => {
+  infrastructureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
     return circleMarker(latlng, {
       radius: 5,
-      fillColor: '#ff7800',
+      fillColor: levelColor(feature),
       color: '#000',
       weight: 1,
       opacity: 1,
@@ -211,7 +224,6 @@ onBeforeMount(async () => {
       COD_EL: 'lightning-bolt',
       COD_IM : 'star'
     }
-    console.log('pointToLayer', feature.properties?.death_cause?.code, iconDict[feature.properties?.death_cause?.code])
     const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
     let deathCaseIcon = divIcon({
       html: `<span class="mdi mdi-${icon}"></span>`,
