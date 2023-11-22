@@ -36,7 +36,7 @@ useRouter()
 const links = ref([
   ['mdi-home', t('nav.home_page'), '/', null],
   ['mdi-map-search', t('nav.application'), '/search', true],
-  ['mdi-cogs', t('nav.admin'), '/admin', true],
+  ['mdi-cogs', t('nav.admin'), '/api/admin', true],
   ['mdi-information', t('nav.about'), '/about', true]
 ]);
 </script>
