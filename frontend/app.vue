@@ -15,6 +15,7 @@
     </v-app-bar>
     <v-main>
       <NuxtLayout>
+        <VitePwaManifest />
         <NuxtLoadingIndicator />
         <NuxtPage />
       </NuxtLayout>
