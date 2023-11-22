@@ -1,6 +1,6 @@
 <template>
     <v-container class="fill-height pa-0" fluid>
-        <v-row v-if="mdAndUp" class="fill-height">
+        <v-row v-if="!mobile" class="fill-height">
             <v-col cols="6" class="pr-0 pt-0 pb-0">
                 <slot name="map">
                     <map-search :edit-mode="false" />
@@ -11,11 +11,13 @@
             </v-col>
         </v-row>
 
-        <template v-if="!mdAndUp">
+        <template v-if="mobile">
             <v-card class="fill-height" width="100%">
-                <v-tabs v-model="tab" align-tabs="title" fixed-tabs>
-                    <v-tab value="map"> {{ $t('app.map') }} </v-tab>
-                    <v-tab value="data"> {{ $t('app.data') }} </v-tab>
+                <v-tabs v-model="tab" grow>
+                    <!-- <v-tab value="map"> {{ $t('app.map') }} </v-tab>
+                    <v-tab value="data"> {{ $t('app.data') }} </v-tab> -->
+                    <v-tab value="map"><v-icon>mdi-map</v-icon></v-tab>
+                    <v-tab value="data"><v-icon>mdi-format-list-bulleted</v-icon></v-tab>
                 </v-tabs>
 
                 <v-card-text class="fill-height pa-0">
@@ -38,10 +40,10 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify'
 const tab=ref('map')
-const {mdAndUp} = useDisplay()
+const {mobile} = useDisplay()
 
 onMounted (() => {
     // TODO fix reactive value
-    mdAndUp.value=true
+    // mdAndUp.value=true
 })
 </script>

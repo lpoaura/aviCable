@@ -13,10 +13,10 @@ definePageMeta({
   auth: true
 })
 
-const {mdAndUp} = useDisplay()
+const {mobile} = useDisplay()
 
 onMounted (() => {
-  console.debug(`the component is now mounted. mdAndUp`, mdAndUp.value)
+  console.debug(`the component is now mounted. mobile`, mobile)
 })
 
 </script>
