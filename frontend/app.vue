@@ -4,7 +4,7 @@
 
     <utils-drawer-menu />
 
-    <v-app-bar color="light-blue-darken-4">
+    <v-app-bar color="light-blue-darken-3">
       <v-toolbar-title>{{ $t('app.app-name') }}</v-toolbar-title>
       <v-spacer />
       <div v-if="!mdAndDown">
