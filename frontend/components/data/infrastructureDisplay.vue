@@ -8,9 +8,9 @@
       </v-row>
     </v-radio-group>
 
-    <v-data-table :headers="tableHeaders" :items="dataSource[display]" :loading="!dataSource[display]"
-      loading-text="Loading... Please wait" :items-per-page="10" class="elevation-1" density="compact"
-      @click:row="showDetail" fixed-header>
+    <v-data-table :headers="tableHeaders" :items="dataSource[display]" :loading="!dataSource[display]" :search="search"
+      loading-text="Loading... Please wait" :items-per-page="-1" :fixed-header="true" class="elevation-1" density="compact"
+      @click:row="showDetail">
       <template #item.value.properties.actions_infrastructure.0.neutralized="{ item }">
         {{ item.value }}
         <v-icon :color="[item.value?.properties.actions_infrastructure[0].neutralized] == 'true'
@@ -38,6 +38,7 @@ const { t } = useI18n()
 // const singleExpand = ref(false)
 // const expanded = reactive([])
 const display = ref('both')
+const search = ref('')
 const selectedData = reactive([])
 const tableHeaders = reactive([
   {

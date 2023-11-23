@@ -17,10 +17,14 @@
       </v-list>
     </template>
   </v-navigation-drawer>
-  <v-bottom-navigation v-if="mobile" :elevation="5" grow density="compact">
+  <v-bottom-navigation v-if="mobile" :elevation="5" grow density="default" class="text-light-blue-darken-3" theme="dark">
     <v-btn v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :to="url">
       <v-icon>{{icon}}</v-icon>
       <span>{{text}}</span>
+    </v-btn>
+    <v-btn v-if="$auth.loggedIn" class="bg-orange-darken-2" to="/account">
+      <v-icon>mdi-account-circle</v-icon>
+      <span>{{$auth.user?.username}}</span>
     </v-btn>
   </v-bottom-navigation>
 </template>

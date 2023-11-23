@@ -4,7 +4,7 @@
 
     <utils-drawer-menu />
 
-    <v-app-bar color="light-blue-darken-3" density="compact">
+    <v-app-bar color="light-blue-darken-3" :density="mobile ? 'compact': 'default'">
       <v-toolbar-title>{{ $t('app.app-name') }}</v-toolbar-title>
       <v-spacer />
       <div v-if="!mdAndDown">
@@ -31,7 +31,7 @@ import { useDisplay } from 'vuetify'
 // import { useMapLayersStore } from './store/mapLayersStore'
 // import { useNomenclaturesStore } from './store/nomenclaturesStore'
 
-const { mdAndDown } = useDisplay()
+const { mdAndDown , mobile } = useDisplay()
 const router = useRouter()
 const { user } = useAuth()
 
