@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer expand-on-hover rail  class="bg-light-blue-darken-3" theme="dark">
+  <v-navigation-drawer v-if="!mobile" expand-on-hover rail class="bg-light-blue-darken-3" theme="dark">
     <v-list class="bg-orange-darken-2">
       <v-list-item
         :prepend-avatar="$auth.loggedIn ? 'https://randomuser.me/api/portraits/lego/7.jpg' : 'https://randomuser.me/api/portraits/lego/1.jpg'"
@@ -17,11 +17,18 @@
       </v-list>
     </template>
   </v-navigation-drawer>
+  <v-bottom-navigation v-if="mobile" :elevation="5" grow density="compact">
+    <v-btn v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :to="url">
+      <v-icon>{{icon}}</v-icon>
+      <span>{{text}}</span>
+    </v-btn>
+  </v-bottom-navigation>
 </template>
 <script setup>
-
+import { useDisplay } from 'vuetify'
 const $auth = useAuth()
 const { t } = useI18n()
+const { mobile} = useDisplay()
 // const drawer=ref(true)
 // const rail=ref(true)
 
