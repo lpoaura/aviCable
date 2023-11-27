@@ -7,25 +7,37 @@
         <v-col><v-radio :label="$t('display.lines')" value="segments" /></v-col>
       </v-row>
     </v-radio-group>
+    <v-data-table v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"
+      item-value="properties.id" :loading="!dataSource[display]" :search="search" loading-text="Loading... Please wait"
+      :items-per-page="100" :fixed-header="true" class="elevation-1" density="compact" @click:row="showDetail"
+      show-expand>
+      <template v-slot:expanded-row="{ columns, item }">
+        <tr>
+          <td :colspan="columns.length" height="500px">
+            <v-card height="500px" width="100%">
+              <pre><code>{{ item }}</code></pre>
+            </v-card>
+            <!-- <data-diagnosis-detail :data="item"></data-diagnosis-detail> -->
+          </td>
+        </tr>
 
-    <v-data-table :headers="tableHeaders" :items="dataSource[display]" :loading="!dataSource[display]" :search="search"
-      loading-text="Loading... Please wait" :items-per-page="-1" :fixed-header="true" class="elevation-1" density="compact"
-      @click:row="showDetail">
-      <template #item.value.properties.actions_infrastructure.0.neutralized="{ item }">
-        {{ item.value }}
-        <v-icon :color="[item.value?.properties.actions_infrastructure[0].neutralized] == 'true'
-            ? 'green'
-            : 'red'
-          " dark>
-          {{
-          item.value?.properties.actions_infrastructure[0].neutralized
-          ? 'mdi-check-circle'
-          : 'mdi-checkbox-blank-circle'
-          }}
+      </template>
+      <template v-slot:item.properties.id="{ value }">
+        <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(value)" color="primary" link>
+          {{ value }}
+        </v-chip>
+      </template>
+      <template v-slot:item.resourcetype="{ value }">
+        <v-icon :color="value =='Point' ? 'green' : 'blue'">
+          {{ value =='Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}}
+        </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
+      </template>
+      <template v-slot:item.properties.actions_infrastructure.0.neutralized="{ value }">
+        <v-icon :color="value || value == 'true' ? 'green':'red'">
+          {{ value || value == 'true' ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'}}
         </v-icon>
       </template>
     </v-data-table>
-    {{ selectedData }}
   </div>
 </template>
 
@@ -39,6 +51,7 @@ const { t } = useI18n()
 // const expanded = reactive([])
 const display = ref('both')
 const search = ref('')
+const expanded = ref([])
 const selectedData = reactive([])
 const tableHeaders = reactive([
   {
@@ -57,7 +70,8 @@ const tableHeaders = reactive([
   {
     title: 'Dernier diagnostic',
     key: 'properties.actions_infrastructure.0.date'
-  }
+  },
+  { title: '+', key: 'data-table-expand' },
 ])
 
 const cableStore = useCablesStore()
@@ -91,14 +105,14 @@ onMounted(() => {
 //     // TODO raise an exception and handle it or display message to user
 //   }
 // }
-const showDetail = (_, {item}) => {
-  const rowData = item.columns
-  console.log('_, item', _, item)
-  console.log('showDetail rowItem id', rowData['properties.id'])
-  if (rowData.resourcetype === 'Point') {
-    router.push(`/supports/${rowData['properties.id']}`)
-  } else if (rowData.resourcetype === 'Line') {
-    router.push(`/lines/${rowData['properties.id']}`)
+const showDetail = (_, rowItem) => {
+  const data = rowItem?.item
+  const id = data?.properties.id
+  console.log('data', id, data)
+  if (data?.resourcetype === 'Point' && id) {
+    router.push(`/supports/${id}`)
+  } else if (data?.resourcetype === 'Line' && id) {
+    router.push(`/lines/${id}`)
   }
 }
 
