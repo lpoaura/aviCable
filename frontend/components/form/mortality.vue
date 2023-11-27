@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { mapState } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
-import { ErrorInfo } from 'store/errorStore';
+import type { ErrorInfo } from '~/store/errorStore';
 
 const {mortality} = defineProps(['mortality'])
 const {t} = useI18n()

@@ -164,7 +164,7 @@
 </template>
 <script setup lang="ts">
 import * as errorCodes from '~/static/errorConfig.json'
-import { ErrorInfo } from 'store/errorStore';
+import type { ErrorInfo } from '~/store/errorStore';
 
 // init modules
 const {t} = useI18n()

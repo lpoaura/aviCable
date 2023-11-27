@@ -14,7 +14,7 @@
  */
 import { defineStore } from "pinia";
 import * as errorCodes from "~/static/errorConfig.json";
-import { ErrorInfo } from "./errorStore";
+import type { ErrorInfo } from '~/store/errorStore';
 
 export const useNomenclaturesStore = defineStore("nomenclatures", {
   state: () => ({
@@ -85,7 +85,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
      */
     async loadNomenclatures() {
       try {
-        const types = await $http.$get("/api/v1/nomenclature/types/"); // get Types list
+        const types = await $http.$get("/api/v1/nomenclatures/types"); // get Types list
         // gather Infrastructure Condition Items from all Items
         const conditions = types.find(
           (elem: NomenclatureItem) => elem.mnemonic === "infrastr_condition"
