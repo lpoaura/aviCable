@@ -15,9 +15,10 @@
 </template>
 
 <script setup lang="ts">
-import "leaflet";
-import { circleMarker, geoJSON, divIcon, marker} from "leaflet";
-import { LMap, LTileLayer, LGeoJson, LControlLayers } from "@vue-leaflet/vue-leaflet";
+import leaflet from 'leaflet'
+import "leaflet.locatecontrol";
+import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
+import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LCircle } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
 import { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
@@ -38,6 +39,8 @@ const map = ref()
 const mapObject : Ref<null | Map> = ref(null)
 const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<Boolean> = ref(false)
+
+// Stores
 const cableStore : StoreGeneric  = useCablesStore()
 const mortalityStore: StoreGeneric = useMortalityStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
@@ -87,6 +90,7 @@ const mortalityOnEachFeature = (feature : Feature, layer : any) => {
   // layer.setStyle({ pmIgnore: false })
 }
 
+
 const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature : infrastructureOnEachFeature,
 })
@@ -107,9 +111,9 @@ watch(selectedFeature, (newVal, oldVal) => {
         fillOpacity: 0.8
     };
 
-    geoJSON(newVal, {
+    leaflet.geoJSON(newVal, {
         pointToLayer: function (feature, latlng) {
-            return circleMarker(latlng, geojsonMarkerOptions);
+            return leaflet.circleMarker(latlng, geojsonMarkerOptions);
         }
     }).addTo(mapObject.value);
   }
@@ -118,9 +122,12 @@ watch(selectedFeature, (newVal, oldVal) => {
 const hookUpDraw = async () => {
   mapObject.value = map.value?.leafletObject;
   mapReady.value = true;
-  console.log("mapObject", mapObject.value);
-
+  leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
   if (mapObject.value && editMode) {
+// mapObject.value.addControl(
+//   L.control.locate()
+// )
+
     // mapObject.value.pm.setLang("en_gb");
     mapObject.value.pm.addControls({
       position: 'topleft',
@@ -191,10 +198,9 @@ const hookUpDraw = async () => {
 
 const levelColor = (feature) => {
   const levelNotes = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
-  console.log(feature.properties?.actions_infrastructure[0].pole_attractivity.code)
-  console.log('level', levelNotes[feature.properties?.actions_infrastructure[0].pole_attractivity.code])
-  const note = levelNotes[feature.properties?.actions_infrastructure[0].pole_attractivity.code] + levelNotes[feature.properties?.actions_infrastructure[0].pole_dangerousness.code]
-  console.log('note',note)
+  const attractivity = feature.properties?.actions_infrastructure[0].pole_attractivity.code
+  const dangerousness = feature.properties?.actions_infrastructure[0].pole_dangerousness.code
+  const note = levelNotes[attractivity] + levelNotes[dangerousness]
   if (note == 2) {
     return 'blue'
   }
@@ -205,10 +211,12 @@ const levelColor = (feature) => {
   else {return 'red'}
 }
 
+
+
 onBeforeMount(async () => {
   // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
   infrastructureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
-    return circleMarker(latlng, {
+    return leaflet.circleMarker(latlng, {
       radius: 5,
       fillColor: levelColor(feature),
       color: '#000',
@@ -225,12 +233,12 @@ onBeforeMount(async () => {
       COD_IM : 'star'
     }
     const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
-    let deathCaseIcon = divIcon({
+    let deathCaseIcon = leaflet.divIcon({
       html: `<span class="mdi mdi-${icon}"></span>`,
-      iconSize: [20, 20],
+      iconSize: [15, 15],
       className: 'mapMarkerIcon'}
       );
-    return marker(latlng, {icon: deathCaseIcon});
+    return leaflet.marker(latlng, {icon: deathCaseIcon});
 
 
       // draggable: true,
@@ -249,10 +257,10 @@ onBeforeMount(async () => {
 .mapMarkerIcon {
   text-align: center;
   /* Horizontally center the text (icon) */
-  line-height: 20px;
+  line-height: 15px;
   /* Vertically center the text (icon) */
   color: white;
-  font-size: 20px;
+  font-size: 15px;
   background-color: red;
   border-radius: 50%;
 }
