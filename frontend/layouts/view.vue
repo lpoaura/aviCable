@@ -13,9 +13,9 @@
 
         <template v-if="mobile">
             <v-card class="fill-height" width="100%">
-                <v-tabs v-model="tab" grow density='compact'>
-                    <!-- <v-tab value="map"> {{ $t('app.map') }} </v-tab>
-                    <v-tab value="data"> {{ $t('app.data') }} </v-tab> -->
+              <!--   <v-tabs v-model="tab" grow density='compact'>
+                    <v-tab value="map"> {{ $t('app.map') }} </v-tab>
+                    <v-tab value="data"> {{ $t('app.data') }} </v-tab> 
                     <v-tab value="map"><v-icon>mdi-map</v-icon></v-tab>
                     <v-tab value="data"><v-icon>mdi-format-list-bulleted</v-icon></v-tab>
                 </v-tabs>
@@ -31,6 +31,9 @@
                             <slot />
                         </v-window-item>
                     </v-window>
+                </v-card-text>-->
+                <v-card-text class="fill-height pa-0">
+                    <map-search :edit-mode="false" />
                 </v-card-text>
             </v-card>
         </template>

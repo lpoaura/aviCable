@@ -8,6 +8,7 @@
       <l-geo-json v-if="lineStringData" :geojson="lineStringData" :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="pointData" :geojson="pointData" :options="infrastructureGeoJsonOptions" />
       <l-geo-json :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
+      <l-geo-json :geojson="selectedFeature" />
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
     <utils-map-actions-menu v-if="!editMode" />
@@ -95,27 +96,23 @@ const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature : infrastructureOnEachFeature,
 })
 
+
+// const selectedFeatureGeoJsonOptions : GeoJSONOptions = reactive({})
+
+
 const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
-  onEachFeature:mortalityOnEachFeature ,
+  onEachFeature: mortalityOnEachFeature ,
 })
 
 
 watch(selectedFeature, (newVal, oldVal) => {
-  if (JSON.stringify(newVal) === JSON.stringify(oldVal)) {
-    const geojsonMarkerOptions = {
-        radius: 8,
-        fillColor: "#ff7800",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-    };
 
-    leaflet.geoJSON(newVal, {
-        pointToLayer: function (feature, latlng) {
-            return leaflet.circleMarker(latlng, geojsonMarkerOptions);
-        }
-    }).addTo(mapObject.value);
+  if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+    
+    const newObj = leaflet.geoJSON(newVal)
+    coordinatesStore.setCenter(newObj.getBounds().getCenter())
+    coordinatesStore.setZoom(15)
+
   }
 })
 
@@ -239,7 +236,6 @@ onBeforeMount(async () => {
       className: 'mapMarkerIcon'}
       );
     return leaflet.marker(latlng, {icon: deathCaseIcon});
-
 
       // draggable: true,
     }

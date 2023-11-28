@@ -1,4 +1,13 @@
 {
+  "common": {
+    "yes": "Oui",
+    "no": "Non",
+    "low": "Faible",
+    "moderate": "Modéré",
+    "high": "Elevé",
+    "risks": "Risques",
+    "loading": "Chargement en cours..."
+  },
   "app": {
     "app-name": "Avifaune & câbles aériens",
     "cancel": "Annuler",
@@ -10,14 +19,14 @@
     "type": "Type",
     "valid": "Valider"
   },
-  "nav":{
+  "nav": {
     "application": "Application",
     "admin": "Administration",
     "home_page": "Accueil",
     "about": "A propos"
   },
-  "about":{
-    "title":"A propos"
+  "about": {
+    "title": "A propos"
   },
   "display": {
     "all": "Tout",
@@ -68,7 +77,7 @@
     "support-type": "Type de support"
   },
   "line": {
-    "line":"Ligne",
+    "line": "Ligne",
     "buildIntegRisk": "Risque Intégration Bâti",
     "create_line": "Vous devez créer un tronçon sur la carte",
     "movingRisk": "Risque Déplacement",

@@ -8,13 +8,13 @@
       </v-row>
     </v-radio-group>
     <v-data-table v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"
-      item-value="properties.id" :loading="!dataSource[display]" :search="search" loading-text="Loading... Please wait"
-      :items-per-page="100" :fixed-header="true" class="elevation-1" density="compact" @click:row="showDetail"
-      show-expand>
+      item-value="properties.id" :loading="!dataSource[display]" :search="search" :loading-text="$t('common.loading')"
+      :items-per-page="100" :fixed-header="true" class="elevation-1" density="compact" 
+      show-expand @click:row="handleRowClick">
       <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
-            <v-card height="500px" width="100%">
+            <v-card height="500px" width="100%" class="overflow-y-auto">
               <pre><code>{{ item }}</code></pre>
             </v-card>
             <!-- <data-diagnosis-detail :data="item"></data-diagnosis-detail> -->
@@ -27,6 +27,11 @@
           {{ value }}
         </v-chip>
       </template>
+      <template v-slot:item.properties.actions_infrastructure.0="{ _, item }">
+        <v-chip prepend-icon="mdi-circle" :color="notationValues(item).color">
+          {{ notationValues(item).label }}
+        </v-chip>
+      </template>
       <template v-slot:item.resourcetype="{ value }">
         <v-icon :color="value =='Point' ? 'green' : 'blue'">
           {{ value =='Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}}
@@ -36,6 +41,7 @@
         <v-icon :color="value || value == 'true' ? 'green':'red'">
           {{ value || value == 'true' ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'}}
         </v-icon>
+        {{ value || value == 'true' ? $t('common.yes') : $t('common.no')}}
       </template>
     </v-data-table>
   </div>
@@ -62,7 +68,7 @@ const tableHeaders = reactive([
   },
   { title: t('app.type'), key: 'resourcetype' },
   { title: t('support.owner'), key: 'properties.owner.label' },
-  { title: 'Notation', key: 'score' },
+  { title: t('common.risks'), key: 'properties.actions_infrastructure.0' },
   {
     title: 'Neutralisé',
     key: 'properties.actions_infrastructure.0.neutralized'
@@ -74,6 +80,7 @@ const tableHeaders = reactive([
   { title: '+', key: 'data-table-expand' },
 ])
 
+const coordinatesStore = useCoordinatesStore()
 const cableStore = useCablesStore()
 const mortalityStore = useMortalityStore()
 const dataSource = computed(() => {
@@ -114,6 +121,29 @@ const showDetail = (_, rowItem) => {
   } else if (data?.resourcetype === 'Line' && id) {
     router.push(`/lines/${id}`)
   }
+}
+
+const notationValues =(item) => {
+  const risks = {
+    'RISK_L': {note: 1, color:'light-green', label: 'faible'},
+    'RISK_M': {note: 2, color:'yellow', label: 'modéré'},
+    'RISK_H': {note: 3, color:'red lighten-1 white--text', label:'fort'}
+  }
+  const actions_infrastructure = item.properties.actions_infrastructure[0]
+  let result
+  if (item.resourcetype == 'Point' && actions_infrastructure) {
+    const note = risks[actions_infrastructure.pole_attractivity?.code]?.note + risks[actions_infrastructure.pole_dangerousness?.code]?.note
+    result = note < 3 ? 'RISK_L' : note > 5 ? 'RISK_H' : 'RISK_M' 
+  } else {
+    // Manage lines risks
+    result = 'RISK_L'
+  }
+  return  risks[result]
+}
+
+const handleRowClick = (_, object) => {
+  console.log(object.item.geometry)
+  coordinatesStore.setSelectedFeature(object.item)
 }
 
 // export default {
