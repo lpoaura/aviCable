@@ -4,7 +4,7 @@
 
 import { defineStore } from "pinia";
 import { Point, LineString, Feature } from "geojson";
-import type { PointTuple } from "leaflet";
+import type { PointTuple, Bounds } from "leaflet";
 
 interface NewPointCoord {
   lat: number | null;
@@ -21,6 +21,7 @@ export const useCoordinatesStore = defineStore("coordinates", {
     newLineCoord: [],
     newGeoJSONPoint: { coordinates: [], type: "Point" } as Point,
     newGeoJSONLine: { coordinates: [], type: "LineString" } as LineString,
+    mapBounds: null as string|null,
   }),
   getters: {
     /**
@@ -43,6 +44,10 @@ export const useCoordinatesStore = defineStore("coordinates", {
     },
   },
   actions: {
+    setMapBounds(data: string) {
+      this.mapBounds = data;
+      console.log('setMapBounds',this.mapBounds)
+    },
     setSelectedFeature(data: Feature) {
       this.selectedFeature = data;
     },

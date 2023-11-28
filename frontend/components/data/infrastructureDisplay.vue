@@ -9,8 +9,8 @@
     </v-radio-group>
     <v-data-table v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"
       item-value="properties.id" :loading="!dataSource[display]" :search="search" :loading-text="$t('common.loading')"
-      :items-per-page="100" :fixed-header="true" class="elevation-1" density="compact" 
-      show-expand @click:row="handleRowClick">
+      :items-per-page="100" :fixed-header="true" class="elevation-1" density="compact" show-expand
+      @click:row="handleRowClick">
       <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
@@ -33,21 +33,23 @@
         </v-chip>
       </template>
       <template v-slot:item.resourcetype="{ value }">
-        <v-icon :color="value =='Point' ? 'green' : 'blue'">
-          {{ value =='Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}}
-        </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
+        <v-chip>
+          <v-icon :color="value =='Point' ? 'green' : 'blue'">
+            {{ value =='Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}}
+          </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
+        </v-chip>
       </template>
       <template v-slot:item.properties.actions_infrastructure.0.neutralized="{ value }">
-        <v-icon :color="value || value == 'true' ? 'green':'red'">
-          {{ value || value == 'true' ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'}}
-        </v-icon>
-        {{ value || value == 'true' ? $t('common.yes') : $t('common.no')}}
+        <v-chip :prepend-icon="value || value == 'true' ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'"
+          :color="value || value == 'true' ? 'green':'red'">
+          {{ value || value == 'true' ? $t('common.yes') : $t('common.no')}}
+        </v-chip>
       </template>
     </v-data-table>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // import { mapState } from 'pinia'
 // import { useCablesStore } from '~/store/cablesStore'
 const router = useRouter()
@@ -80,6 +82,7 @@ const tableHeaders = reactive([
   { title: '+', key: 'data-table-expand' },
 ])
 
+
 const coordinatesStore = useCoordinatesStore()
 const cableStore = useCablesStore()
 const mortalityStore = useMortalityStore()
@@ -91,9 +94,27 @@ const dataSource = computed(() => {
   }
 })
 
+const bbox : ComputedRef<string> = computed<string>(() => coordinatesStore.mapBounds)
+const zoom : ComputedRef<number> = computed<number>(() => coordinatesStore.zoom)
+// const bbox: ComputedRef<str> = computed<str>(() => coordinatesStore.getMapBounds);
+let controller;
+
+watch(bbox, (newVal, _oldVal) => {
+  console.log('zoom', zoom.value)
+  console.log(controller)
+  if (controller) {
+    controller.abort();
+    console.log("Download aborted");
+  }
+  controller= new AbortController()
+  if (zoom.value > 9) {
+    cableStore.getInfrstrData({in_bbox: newVal}, controller)
+  }
+})
+
 onMounted(() => {
   // setInfrstrData({})
-  cableStore.getInfrstrData({})
+  // cableStore.getInfrstrData({})
   mortalityStore.getMortalityData()
 })
 

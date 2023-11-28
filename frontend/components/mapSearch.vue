@@ -1,14 +1,18 @@
 <template>
-  <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw">
+  <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getMapBounds"
+    @moveend="getMapBounds">
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
       <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
       <l-control-layers />
-      <l-geo-json v-if="lineStringData" :geojson="lineStringData" :options="infrastructureGeoJsonOptions" />
-      <l-geo-json v-if="pointData" :geojson="pointData" :options="infrastructureGeoJsonOptions" />
-      <l-geo-json :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
-      <l-geo-json :geojson="selectedFeature" />
+      <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
+        :options="infrastructureGeoJsonOptions" />
+      <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
+        :options="infrastructureGeoJsonOptions" />
+      <l-geo-json v-if="mortalityData" name="Mortalité" :visible="false" layer-type="overlay" :geojson="mortalityData"
+        :options="deathCasesGeoJsonOptions" />
+      <!-- <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" /> -->
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
     <utils-map-actions-menu v-if="!editMode" />
@@ -35,9 +39,9 @@ const {editMode, mode, mortalityItem} = defineProps({
   mortalityItem: {} as Feature
 })
 
-const map = ref()
+const map = ref({})
 
-const mapObject : Ref<null | Map> = ref(null)
+const mapObject : Ref<null | Map> = ref({})
 const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<Boolean> = ref(false)
 
@@ -104,7 +108,9 @@ const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature: mortalityOnEachFeature ,
 })
 
-
+watch(mapObject, (newVal, oldVal) => {
+  console.log('mapObject watcher', mapObject.value.getBounds())
+})
 watch(selectedFeature, (newVal, oldVal) => {
 
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
@@ -116,8 +122,15 @@ watch(selectedFeature, (newVal, oldVal) => {
   }
 })
 
+const getMapBounds = () => {
+  console.log(mapObject.value.getBounds().toBBoxString())
+  coordinatesStore.setMapBounds(mapObject.value.getBounds().toBBoxString())
+  coordinatesStore.setZoom(mapObject.value.getZoom())
+}
+
 const hookUpDraw = async () => {
   mapObject.value = map.value?.leafletObject;
+  console.log('mapObject.value', mapObject.value.getBounds(), map)
   mapReady.value = true;
   leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
   if (mapObject.value && editMode) {
@@ -259,5 +272,4 @@ onBeforeMount(async () => {
   font-size: 15px;
   background-color: red;
   border-radius: 50%;
-}
-</style>
+}</style>
