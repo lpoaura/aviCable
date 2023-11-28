@@ -22,8 +22,8 @@
         </tr>
 
       </template>
-      <template v-slot:item.properties.id="{ value }">
-        <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(value)" color="primary" link>
+      <template v-slot:item.properties.id="{ value, item }">
+        <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(item)" color="primary" link>
           {{ value }}
         </v-chip>
       </template>
@@ -133,13 +133,13 @@ onMounted(() => {
 //     // TODO raise an exception and handle it or display message to user
 //   }
 // }
-const showDetail = (_, rowItem) => {
-  const data = rowItem?.item
-  const id = data?.properties.id
-  console.log('data', id, data)
-  if (data?.resourcetype === 'Point' && id) {
+const showDetail = (rowItem) => {
+  const id = rowItem?.properties.id
+  console.log('showDetail', rowItem?.resourcetype, id)
+  if (rowItem?.resourcetype === 'Point' && id) {
+    console.log('PUSH SHUPPRT')
     router.push(`/supports/${id}`)
-  } else if (data?.resourcetype === 'Line' && id) {
+  } else if (rowItem?.resourcetype === 'Line' && id) {
     router.push(`/lines/${id}`)
   }
 }
