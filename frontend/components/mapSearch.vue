@@ -12,6 +12,8 @@
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" :visible="false" layer-type="overlay" :geojson="mortalityData"
         :options="deathCasesGeoJsonOptions" />
+      <l-control v-if="zoom < 9" class="leaflet-control leaflet-demo-control" position="bottomright">Zoomez pour afficher
+        les données</l-control>
       <!-- <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" /> -->
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
@@ -23,7 +25,7 @@
 import leaflet from 'leaflet'
 import "leaflet.locatecontrol";
 import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
-import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LCircle } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
 import { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
@@ -272,4 +274,15 @@ onBeforeMount(async () => {
   font-size: 15px;
   background-color: red;
   border-radius: 50%;
-}</style>
+}
+
+.leaflet-demo-control {
+  background: lightgoldenrodyellow;
+  border: 2px solid orange;
+  border-radius:2px;
+  padding: 10px;
+  font-size: large;
+  line-height: 30px;
+
+}
+</style>

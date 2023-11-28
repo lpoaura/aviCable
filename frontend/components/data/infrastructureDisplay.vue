@@ -146,15 +146,16 @@ const showDetail = (_, rowItem) => {
 
 const notationValues =(item) => {
   const risks = {
-    'RISK_L': {note: 1, color:'light-green', label: 'faible'},
-    'RISK_M': {note: 2, color:'yellow', label: 'modéré'},
-    'RISK_H': {note: 3, color:'red lighten-1 white--text', label:'fort'}
+    'RISK_L': {note: 1, color:'blue', label: 'faible'},
+    'RISK_M': {note: 2, color:'orange', label: 'fort'},
+    'RISK_H': {note: 3, color:'red lighten-1 white--text', label:'très fort'}
   }
   const actions_infrastructure = item.properties.actions_infrastructure[0]
   let result
   if (item.resourcetype == 'Point' && actions_infrastructure) {
     const note = risks[actions_infrastructure.pole_attractivity?.code]?.note + risks[actions_infrastructure.pole_dangerousness?.code]?.note
-    result = note < 3 ? 'RISK_L' : note > 5 ? 'RISK_H' : 'RISK_M' 
+    console.log('note',actions_infrastructure.pole_attractivity?.code, actions_infrastructure.pole_dangerousness?.code, note)
+    result = note < 3 ? 'RISK_L' : note >= 5 ? 'RISK_H' : 'RISK_M' 
   } else {
     // Manage lines risks
     result = 'RISK_L'
