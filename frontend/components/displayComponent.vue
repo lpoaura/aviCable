@@ -1,7 +1,7 @@
 <template>
   <v-layout full-height>
     <v-main scrollable>
-      <v-tabs v-model="tab" bg-color="deep-purple-accent-4" grow>
+      <v-tabs v-model="tab" bg-color="light-blue-darken-4" grow>
         <v-tab value="#infra"> {{ $t('display.infrastructures') }} </v-tab>
         <v-tab value="#support"> {{ $t('support.supports-eqmt') }} </v-tab>
         <v-tab value="#sensitivearea">
