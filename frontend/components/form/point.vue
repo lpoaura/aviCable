@@ -44,7 +44,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12" class="text-left">
-                  <strong>{{ $t('display.diagnosis') }}</strong>
+                  <h2>{{ $t('display.diagnosis') }}</h2>
                 </v-col>
               </v-row>
               <v-row>
@@ -77,7 +77,7 @@
                     :rules="[rules.required]" :label="$t('support.condition')" variant="solo"
                     density="compact"></v-select>
                 </v-col>
-
+                <!-- TODO: virer champ  Neutralisé pour remplacer par la présence d'équipement (oui/non) -->
                 <v-col cols="12" md="4">
                   <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')"
                     density="compact"></v-checkbox>
@@ -98,22 +98,55 @@
                     item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
                     density="compact"></v-select>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-divider></v-divider>
+                <v-col cols="12" class="text-left">
+                  <strong>{{$t('diagnosis.actions')}}</strong>
+                </v-col>
+
+
+                <v-col cols="12" md="3">
                   <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')"
                     density="compact"></v-checkbox>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="3">
                   <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.advice_disrupt')"
                     density="compact"></v-checkbox>
                 </v-col>
-                <v-col cols="12" md="4">
+
+                <v-col cols="12" md="3">
                   <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')"
                     density="compact"></v-checkbox>
+                </v-col>
+
+                <!--TODO AJOUTER LE CHAMP change_arming EN BDD-->
+                <v-col cols="12" md="3">
+                  <v-checkbox v-model="diagData.change_arming" :label="$t('support.change_arming')"
+                    density="compact"></v-checkbox>
+                </v-col>
+                <!--TODO AJOUTER LE CHAMP PROPOSITIONS EN BDD-->
+                <v-divider></v-divider>
+                <v-col cols="12" class="text-left">
+                  <strong>{{$t('diagnosis.proposals')}}</strong>
+                </v-col>
+                <v-divider></v-divider>
+                <v-col cols="12">
+                  <v-autocomplete chips v-model="diagData.pole_type_id" :items="poleTypes" item-title="label"
+                    item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
+                    deletable-chips variant="solo" density="compact"></v-autocomplete>
                 </v-col>
                 <v-col cols="12">
                   <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
                     :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact"></v-textarea>
                 </v-col>
+              </v-row>
+            </v-container>
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-left">
+                  <h2>{{ $t('display.equipments') }}</h2>
+                </v-col>
+              </v-row>
+              <v-row>
               </v-row>
             </v-container>
             <v-divider></v-divider>
@@ -134,7 +167,6 @@
                         <v-col>
                           <v-img :src="img.storage" max-height="100" max-width="166" class="ma-2" />
                         </v-col>
-
                         <v-col></v-col>
                         <v-col cols="1">
                           <v-icon small color="red">mdi-trash-can</v-icon>

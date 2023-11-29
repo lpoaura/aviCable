@@ -41,10 +41,9 @@
     "sensitive-areas": "Zones Sensibles"
   },
   "diagnosis": {
-    "isolate": "isoler",
     "last-one": "Dernier diagnostic le ",
-    "make-attractive": "rendre attractif",
-    "make-dissuasive": "rendre dissuasif"
+    "proposals": "Propositions",
+    "actions":"Actions"
   },
   "forms": {
     "coordinates": "Coordonnées",
@@ -58,9 +57,11 @@
   "support": {
     "advice": "Recommandations",
     "advice_isol": "A isoler",
-    "advice_disrupt": "Rendre dissuasif",
-    "advice_attract": "Rendre attractif",
+    "advice_disrupt": "Dissuader",
+    "advice_attract": "Rendre incitatif",
     "attractiveness": "Attractivité",
+    "change_arming": "Changer l'armement",
+    "nest_platform": "Installer plateforme nid",
     "condition": "Etat",
     "dangerousness": "Dangerosité",
     "history": "Historique",

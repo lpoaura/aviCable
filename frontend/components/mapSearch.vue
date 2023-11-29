@@ -216,7 +216,7 @@ const levelColor = (feature) => {
   if (note == 2) {
     return 'blue'
   }
-  if (note > 3 && note < 5)
+  if (note > 2 && note < 5)
   {
     return 'orange'
   }

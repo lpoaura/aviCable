@@ -1,3 +1,9 @@
+<!-- Creér un option de calcul auto sur une sélection de
+- poteaux: nb total vs nb équipé
+- tronçons: nb total vs nb equipé
+A faire sur l'interface
+Dans un modal
+-->
 <template>
   <div>
     <v-radio-group v-model="display" row density="compact">
@@ -94,23 +100,9 @@ const dataSource = computed(() => {
   }
 })
 
-const bbox : ComputedRef<string> = computed<string>(() => coordinatesStore.mapBounds)
-const zoom : ComputedRef<number> = computed<number>(() => coordinatesStore.zoom)
-// const bbox: ComputedRef<str> = computed<str>(() => coordinatesStore.getMapBounds);
-let controller;
 
-watch(bbox, (newVal, _oldVal) => {
-  console.log('zoom', zoom.value)
-  console.log(controller)
-  if (controller) {
-    controller.abort();
-    console.log("Download aborted");
-  }
-  controller= new AbortController()
-  if (zoom.value > 9) {
-    cableStore.getInfrstrData({in_bbox: newVal}, controller)
-  }
-})
+
+
 
 onMounted(() => {
   // setInfrstrData({})
