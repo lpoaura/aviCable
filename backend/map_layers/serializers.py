@@ -17,4 +17,5 @@ class BaseLayersSerializer(ModelSerializer):
             "url",
             "attribution",
             "default",
+            "layer_type",
         ]

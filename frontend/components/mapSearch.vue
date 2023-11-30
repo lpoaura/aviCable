@@ -4,7 +4,7 @@
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
       <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
-        :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
+        :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution" :layer-type="baseLayer.layer_type" />
       <l-control-layers />
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
         :options="infrastructureGeoJsonOptions" />
@@ -12,7 +12,7 @@
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" :visible="false" layer-type="overlay" :geojson="mortalityData"
         :options="deathCasesGeoJsonOptions" />
-      <l-control v-if="zoom < 9" class="leaflet-control leaflet-demo-control" position="bottomright">Zoomez pour afficher
+      <l-control v-if="zoom < 9" class="leaflet-control leaflet-control-zoom-alert" position="bottomright">Zoomez pour afficher
         les données</l-control>
       <!-- <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" /> -->
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
@@ -75,6 +75,9 @@ const infrastructureOnEachFeature = (feature : Feature, layer : any) => {
       </span><a to="/search#mortality">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'} 
         ${feature.properties?.owner.label} ${feature.properties?.id}</a></h2>`
     )
+
+    layer.on('click', (e)=> {console.log('click', feature, e)})
+    // cableStore.setSelectedFeature(feature)
   // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
   // console.log('layer', layer)
   // delete layer.pm
@@ -91,6 +94,7 @@ const mortalityOnEachFeature = (feature : Feature, layer : any) => {
     </dl>
     </p>`
   )
+  layer.on('click', (e)=> {console.log('click', feature, e)})
   // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
   // console.log('layer', layer)
   // delete layer.pm
@@ -276,7 +280,7 @@ onBeforeMount(async () => {
   border-radius: 50%;
 }
 
-.leaflet-demo-control {
+.leaflet-control-zoom-alert {
   background: lightgoldenrodyellow;
   border: 2px solid orange;
   border-radius:2px;

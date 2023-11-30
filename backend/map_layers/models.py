@@ -53,6 +53,16 @@ class VectorLayerData(models.Model):
 
 
 class BaseLayers(models.Model):
+    BASE = (
+        "base",
+        "Base",
+    )
+    OVERLAY = (
+        "overlay",
+        "Overlay",
+    )
+
+    LAYER_TYPES_CHOICES = [BASE, OVERLAY]
     name = models.TextField(max_length=100, verbose_name=_("Name"))
     url = models.TextField(max_length=256, verbose_name=_("Url"))
     attribution = models.TextField(
@@ -60,6 +70,12 @@ class BaseLayers(models.Model):
     )
     default = models.BooleanField(
         default=False, verbose_name=_("Default base layer")
+    )
+    layer_type = models.CharField(
+        max_length=50,
+        choices=LAYER_TYPES_CHOICES,
+        verbose_name=_("Type de couche (leaflet layer_type)"),
+        default=OVERLAY[0]
     )
 
     class Meta:

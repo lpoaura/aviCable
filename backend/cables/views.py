@@ -44,7 +44,10 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
         .prefetch_related('actions_infrastructure__sgmt_veget_integr_risk')
     )
 
-
+    # def get_bbox_filter_field(self):
+    #     print(f'get_bbox_filter_field {dir(self)}')
+    #     return 'point__geom'
+        
 class PointViewSet(viewsets.ModelViewSet):
     """ViewSet for Point item"""
 
