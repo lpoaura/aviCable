@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework_gis.filters import InBBoxFilter
 
-from .filters import OperationFilter
+from .filters import InfrstrInBboxFilter, OperationFilter
 from .models import Action, Diagnosis, Infrastructure, Line, Operation, Point
 from .serializers import (
     ActionPolymorphicSerializer,
@@ -24,8 +24,8 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     serializer_class = InfrastructurePolymorphicSerializer
     # permission_classes = [DjangoModelPermissions]
     # Define queryset by optimizing DB requests
-    filter_backends = (InBBoxFilter,)
-    bbox_filter_field = 'point__geom'
+    filter_backends = (InfrstrInBboxFilter,)
+    # bbox_filter_field = 'point__geom'
     queryset = (
         Infrastructure.objects.all()
         .select_related("owner")

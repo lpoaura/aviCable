@@ -1,4 +1,6 @@
+from django.db.models import Q
 from django_filters import rest_framework as filters
+from rest_framework_gis.filters import InBBoxFilter
 
 from .models import Diagnosis, Operation
 
@@ -41,3 +43,23 @@ class OperationFilter(filters.FilterSet):
     class Meta:
         model = Operation
         fields = ["type", "type_model"]
+
+class InfrstrInBboxFilter(InBBoxFilter):
+
+    def filter_queryset(self, request, queryset, view):
+        include_overlapping = getattr(view, 'bbox_filter_include_overlapping', False)
+        if include_overlapping:
+            geoDjango_filter = 'bboverlaps'
+        else:
+            geoDjango_filter = 'contained'
+
+        # if not filter_field:
+        #     return queryset
+
+        bbox = self.get_filter_bbox(request)
+        if not bbox:
+            return queryset
+        return queryset.filter(
+            Q(**{'%s__%s' % ('point__geom', geoDjango_filter): bbox}) | Q(**{'%s__%s' % ('line__geom', geoDjango_filter): bbox})
+            )
+
