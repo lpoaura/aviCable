@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 export const useCablesStore = defineStore('cables', {
   state: () => ({
     infstrData: {}, // Infrastructure data
+    infrstrDataLoadingStatus: false,
     // pointData: {}, // Pole and Pylon data
     // lineData: {}, // Cable lines data
     opData: [],
@@ -49,13 +50,20 @@ export const useCablesStore = defineStore('cables', {
     async getInfrstrData (params, controller) {
       try {
         console.log('params', params)
-        const data = await $http.$get(
+        this.infrstrDataLoadingStatus = true
+        await $http.$get(
           '/api/v1/cables/infrastructures', {signal: controller.signal, params}
-        )
-        this.infstrData = data
+        ).then(data => {
+          this.infstrData = data
+          this.infrstrDataLoadingStatus = false
+        })
       } catch (error) {
         console.log(error)
       }
+      this.infrstrDataLoadingStatus = false
+    },
+    setInfrstrDataLoadingStatus(status) {
+      this.infrstrDataLoadingStatus = status
     },
     setInfrstrData (data) {
       console.log('STORE setInfrstrData', data)

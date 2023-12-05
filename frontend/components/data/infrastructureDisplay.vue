@@ -6,17 +6,23 @@ Dans un modal
 -->
 <template>
   <div>
-    <v-radio-group v-model="display" row density="compact">
-      <v-row justify="space-around">
-        <v-col><v-radio :label="$t('display.all')" value="both" /></v-col>
-        <v-col><v-radio :label="$t('support.supports')" value="poles" /></v-col>
-        <v-col><v-radio :label="$t('display.lines')" value="segments" /></v-col>
-      </v-row>
-    </v-radio-group>
-    <v-data-table v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"
-      item-value="properties.id" :loading="!dataSource[display]" :search="search" :loading-text="$t('common.loading')"
-      :items-per-page="100" :fixed-header="true" class="elevation-1" density="compact" show-expand
-      @click:row="handleRowClick">
+    <v-card>
+      <v-card-text>
+        <v-radio-group v-model="display" row density="compact">
+          <v-row justify="space-around">
+            <v-col><v-radio :label="$t('display.all')" value="both" /></v-col>
+            <v-col><v-radio :label="$t('support.supports')" value="poles" /></v-col>
+            <v-col><v-radio :label="$t('display.lines')" value="segments" /></v-col>
+          </v-row>
+        </v-radio-group>
+        <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line variant="outlined"
+          hide-details></v-text-field>
+      </v-card-text>
+    </v-card>
+    <v-data-table v-model="selected" v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"
+      item-value="properties.id" :loading="cableStore.infrstrDataLoadingStatus" :search="search"
+      :loading-text="$t('common.loading')" :items-per-page="100" :fixed-header="true" class="elevation-1"
+      density="compact" show-expand @click:row="handleRowClick" show-select>
       <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
@@ -66,6 +72,7 @@ const { t } = useI18n()
 const display = ref('both')
 const search = ref('')
 const expanded = ref([])
+const selected= ref([])
 const selectedData = reactive([])
 const tableHeaders = reactive([
   {
@@ -127,7 +134,7 @@ onMounted(() => {
 // }
 const showDetail = (rowItem) => {
   const id = rowItem?.properties.id
-  console.log('showDetail', rowItem?.resourcetype, id)
+  // console.log('showDetail', rowItem?.resourcetype, id)
   if (rowItem?.resourcetype === 'Point' && id) {
     console.log('PUSH SHUPPRT')
     router.push(`/supports/${id}`)
@@ -146,13 +153,12 @@ const notationValues =(item) => {
   let result
   if (item.resourcetype == 'Point' && actions_infrastructure) {
     const note = risks[actions_infrastructure.pole_attractivity?.code]?.note + risks[actions_infrastructure.pole_dangerousness?.code]?.note
-    console.log('note',actions_infrastructure.pole_attractivity?.code, actions_infrastructure.pole_dangerousness?.code, note)
     result = note < 3 ? 'RISK_L' : note >= 5 ? 'RISK_H' : 'RISK_M' 
   } else {
     // Manage lines risks
     result = 'RISK_L'
   }
-  return  risks[result]
+  return risks[result]
 }
 
 const handleRowClick = (_, object) => {

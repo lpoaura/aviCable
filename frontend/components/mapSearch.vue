@@ -3,6 +3,7 @@
     @moveend="getMapBounds">
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
+
       <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution"
         :layer-type="baseLayer.layer_type" />
@@ -15,8 +16,8 @@
         :options="deathCasesGeoJsonOptions" />
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
-        attribution="HeiGIT <a href='osm-wms.de'>OSM WMS</a>" layer-type="overlay" name="CRA AuRA" 
-        version="1.3.0" format="image/png" :transparent="true" layers="cra_aura_latest" :visible="false" />
+        attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
+        layers="osm,cra_aura_latest" :visible="false" />
       <l-control v-if="zoom < 9" class="leaflet-control leaflet-control-zoom-alert" position="bottomright">Zoomez pour
         afficher
         les données</l-control>
@@ -31,6 +32,9 @@
 import leaflet from 'leaflet'
 import "leaflet.locatecontrol";
 import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
+// import 'leaflet-search'
+import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch"
+import "leaflet-geosearch/assets/css/leaflet.css"
 import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
 import { GeoJSON, Feature } from "geojson"
@@ -120,9 +124,9 @@ const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature: mortalityOnEachFeature ,
 })
 
-watch(mapObject, (newVal, oldVal) => {
-  console.log('mapObject watcher', mapObject.value.getBounds())
-})
+// watch(mapObject, (newVal, oldVal) => {
+//   console.log('mapObject watcher', mapObject.value.getBounds())
+// })
 watch(selectedFeature, (newVal, oldVal) => {
 
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
@@ -135,16 +139,25 @@ watch(selectedFeature, (newVal, oldVal) => {
 })
 
 const getMapBounds = () => {
-  console.log(mapObject.value.getBounds().toBBoxString())
+  // console.log(mapObject.value.getBounds().toBBoxString())
   coordinatesStore.setMapBounds(mapObject.value.getBounds().toBBoxString())
   coordinatesStore.setZoom(mapObject.value.getZoom())
 }
 
 const hookUpDraw = async () => {
   mapObject.value = map.value?.leafletObject;
-  console.log('mapObject.value', mapObject.value.getBounds(), map)
+  // console.log('mapObject.value', mapObject.value.getBounds(), map)
   mapReady.value = true;
+
+  // GeoLocate plugin
   leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
+  
+  // GeoSearch plugin
+  const provider = new OpenStreetMapProvider()
+  GeoSearchControl({
+    provider,
+  }).addTo(mapObject.value)
+
   if (mapObject.value && editMode) {
 // mapObject.value.addControl(
 //   L.control.locate()
@@ -175,7 +188,7 @@ const hookUpDraw = async () => {
           createLayer.value = e.layer
           switch (mode) {
             case 'point':
-              console.log('createLayer', createLayer.value.toGeoJSON())
+              // console.log('createLayer', createLayer.value.toGeoJSON())
               if (createLayer.value.toGeoJSON()) {
               coordinatesStore.setNewGeoJSONPoint(
                 createLayer.value.toGeoJSON().geometry

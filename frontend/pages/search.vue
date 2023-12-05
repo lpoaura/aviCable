@@ -30,8 +30,11 @@ watch(bbox, (newVal, _oldVal) => {
     console.log("Download aborted");
   }
   controller= new AbortController()
-  if (zoom.value > 9) {
+  if (zoom.value >= 9) {
     cableStore.getInfrstrData({in_bbox: newVal}, controller)
+  } else {
+    cableStore.setInfrstrData({})
+    cableStore.setInfrstrDataLoadingStatus(false)
   }
 })
 
