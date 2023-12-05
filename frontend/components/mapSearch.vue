@@ -6,7 +6,7 @@
 
       <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution"
-        :layer-type="baseLayer.layer_type" />
+        :layer-type="baseLayer.layer_type " />
       <l-control-layers />
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
         :options="infrastructureGeoJsonOptions" />
@@ -21,6 +21,7 @@
       <l-control v-if="zoom < 9" class="leaflet-control leaflet-control-zoom-alert" position="bottomright">Zoomez pour
         afficher
         les données</l-control>
+        <l-control-scale position="bottomright" />
       <!-- <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" /> -->
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
@@ -35,7 +36,7 @@ import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
 // import 'leaflet-search'
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch"
 import "leaflet-geosearch/assets/css/leaflet.css"
-import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
 import { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
