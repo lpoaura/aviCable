@@ -116,7 +116,7 @@ class Action(BaseModel, PolymorphicModel):
         related_name="diagnosis_media",
         verbose_name=_("Media attached with this diagnosis"),
         help_text=_("Media attached with this diagnosis"),
-        related_query_name="actions"
+        related_query_name="actions",
     )
     # Field usefull for child (Diagnosis or Operation) creation
     # If Diagnosis or Operation already exists for the infrastructure, the new item received True # as last record, and old ones receive False.
@@ -230,7 +230,23 @@ class Diagnosis(Action):
         verbose_name_plural = _("Diagnosis")
 
 
-class Operation(Action):
+class Equipment(BaseModel):
+    type = models.ForeignKey(
+        Nomenclature,
+        limit_choices_to={"type__mnemonic": "equipment_type"},
+        related_name="operation_pole_eqmt_type",
+        verbose_name=_("Type of equipment"),
+        help_text=_("Type of equipment"),
+        on_delete=models.CASCADE,
+    )
+    count = models.PositiveIntegerField(_("Number of equipments"), default=1)
+    reference = models.TextField(
+        _("Equipment model reference"), blank=True, null=True
+    )
+    comment = models.TextField(_("Comments"), blank=True, null=True)
+
+
+class Operation(Action, PolymorphicModel):
     """Operation model inheriting ActionModel
 
     Define an operation on an infrastructure.
@@ -246,13 +262,37 @@ class Operation(Action):
         # TODO to be removed
         null=True,
     )
-    eqmt_type = models.ManyToManyField(
-        Nomenclature,
-        limit_choices_to={"type__mnemonic": "equipment_type"},
-        related_name="operation_pole_eqmt_type",
-        verbose_name=_("Type of equipment"),
-        help_text=_("Type of equipment"),
+    equipments = models.ManyToManyField(
+        Equipment,
+        related_name="equipment",
+        verbose_name=_("Equipments"),
+        help_text=_("Equipements"),
+        related_query_name="operations",
+        blank=True,
     )
-    # pole_nb_equipments = models.PositiveIntegerField(
-    #     _("Number of equipments"), default=1
-    # )
+
+
+class PointOperation(Operation):
+    """Point model Operation model
+
+    Used for a support operations.
+    """
+
+    geom = gis_models.PointField(srid=4326)
+
+    def __str__(self):
+        return f"PointOperation object ({self.id}) {dir(self)}"
+
+
+class LineOperation(Operation):
+    """Line model inheriting Operation model
+
+    Used for a line operation a power line segment.
+    """
+
+    geom = gis_models.LineStringField(null=True, blank=True, srid=4326)
+
+    def __str__(self):
+        return f"LineOperation ({self.id})"
+    
+    

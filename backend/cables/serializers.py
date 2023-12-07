@@ -1,22 +1,28 @@
 import logging
 
+from geo_area.models import GeoArea
+from geo_area.serializers import GeoAreaSerializer
+from media.serializers import MediaSerializer
 from rest_framework.exceptions import APIException
-from rest_framework_gis.serializers import (
-    GeoFeatureModelSerializer,
-    ModelSerializer,
-)
+from rest_framework_gis.serializers import GeoFeatureModelSerializer, ModelSerializer
 from rest_polymorphic.serializers import PolymorphicSerializer
+from sensitive_area.models import SensitiveArea
+from sensitive_area.serializers import SensitiveAreaSerializer
 from sinp_nomenclatures.serializers import (
     NomenclatureSerializer as NomenclatureSerializer,
 )
 
-from geo_area.models import GeoArea
-from geo_area.serializers import GeoAreaSerializer
-from media.serializers import MediaSerializer
-from sensitive_area.models import SensitiveArea
-from sensitive_area.serializers import SensitiveAreaSerializer
-
-from .models import Action, Diagnosis, Infrastructure, Line, Operation, Point
+from .models import (
+    Action,
+    Diagnosis,
+    Equipment,
+    Infrastructure,
+    Line,
+    LineOperation,
+    Operation,
+    Point,
+    PointOperation,
+)
 
 
 class ActionSerializer(ModelSerializer):
@@ -180,6 +186,14 @@ class DiagnosisSerializer(ModelSerializer):
         return newDiag  # returns new Diag if success
 
 
+class EquipmentSerializer(ModelSerializer):
+    type = NomenclatureSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Equipment
+        fields = ["type", "count", "reference", "comment"]
+
+
 class OperationSerializer(ModelSerializer):
     """Serializer for Operation
 
@@ -188,11 +202,12 @@ class OperationSerializer(ModelSerializer):
 
     # Allow to display nested data
     operation_type = NomenclatureSerializer(read_only=True)
-    eqmt_type = NomenclatureSerializer(many=True, read_only=True)
+    equipments = EquipmentSerializer(many=True)
     media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = Operation
+        # geo_field = "geom"
         fields = [
             "id",
             "infrastructure",
@@ -200,11 +215,11 @@ class OperationSerializer(ModelSerializer):
             "remark",
             "operation_type",
             "operation_type_id",
-            "eqmt_type",
-            "eqmt_type_id",
+            "equipments",
             "media",
             "media_id",
             "last",
+            # "geom",
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
@@ -212,7 +227,6 @@ class OperationSerializer(ModelSerializer):
                 "source": "operation_type",
                 "write_only": True,
             },
-            "eqmt_type_id": {"source": "eqmt_type", "write_only": True},
             "media_id": {"source": "media", "write_only": True},
         }
 
@@ -285,6 +299,79 @@ class OperationSerializer(ModelSerializer):
             raise APIException(msg)
 
         return newOp  # returns new Diag if success
+
+
+
+class PointOperationSerializer(GeoFeatureModelSerializer):
+    
+    # Allow to display nested data
+    operation_type = NomenclatureSerializer(read_only=True)
+    equipments = EquipmentSerializer(many=True)
+    media = MediaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PointOperation
+        geo_field = "geom"
+        fields = [
+            "id",
+            "infrastructure",
+            "date",
+            "remark",
+            "operation_type",
+            # "operation_type_id",
+            "equipments",
+            "media",
+            # "media_id",
+            "last",
+            "geom",
+        ]
+
+
+class LineOperationSerializer(GeoFeatureModelSerializer):
+    
+    # Allow to display nested data
+    operation_type = NomenclatureSerializer(read_only=True)
+    equipments = EquipmentSerializer(many=True)
+    media = MediaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = LineOperation
+        geo_field = "geom"
+        fields = [
+            "id",
+            "infrastructure",
+            "date",
+            "remark",
+            "operation_type",
+            # "operation_type_id",
+            "equipments",
+            "media",
+            # "media_id",
+            "last",
+            "geom",
+        ]
+        
+class OperationPolymorphicSerializer(
+    PolymorphicSerializer, GeoFeatureModelSerializer
+):
+    """Serializer for Infrastructure taking into account polymorphism
+
+    Used to serialize all data from infrastructures.
+    This allow handle specific data for classe inheriting from InfrastructureModel (e.g. Point, Line), as each object from inheriting classes are instances of InfrastructureModel.
+    Inherit from PolymorphicSerializer.
+    """
+
+    model_serializer_mapping = {
+        Operation: OperationSerializer,
+        PointOperation: PointOperationSerializer,
+        LineOperation: LineOperationSerializer,
+    }
+
+    class Meta:
+        model = Operation
+        geo_field = "geom"
+        fields = "__all__"
+
 
 
 class InfrastructureSerializer(GeoFeatureModelSerializer):
@@ -412,7 +499,7 @@ class LineSerializer(GeoFeatureModelSerializer):
     owner = NomenclatureSerializer(read_only=True)
     geo_area = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
-    actions_infrastructure = ActionSerializer(many=True, read_only=True)
+    actions_infrastructure = ActionPolymorphicSerializer(many=True, read_only=True)
 
     class Meta:
         model = Line
@@ -494,3 +581,4 @@ class InfrastructurePolymorphicSerializer(
     class Meta:
         model = Infrastructure
         geo_field = "geom"
+

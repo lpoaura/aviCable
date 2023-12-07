@@ -233,9 +233,10 @@ const hookUpDraw = async () => {
 };
 
 const levelColor = (feature) => {
+  const lastDiag=feature.properties?.actions_infrastructure?.filter(i => i.resourcetype === 'Diagnosis')[0]
   const levelNotes = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
-  const attractivity = feature.properties?.actions_infrastructure[0].pole_attractivity.code
-  const dangerousness = feature.properties?.actions_infrastructure[0].pole_dangerousness.code
+  const attractivity = lastDiag.pole_attractivity.code
+  const dangerousness = lastDiag.pole_dangerousness.code
   const note = levelNotes[attractivity] + levelNotes[dangerousness]
   if (note == 2) {
     return 'blue'
