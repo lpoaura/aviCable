@@ -8,15 +8,19 @@ Dans un modal
   <div>
     <v-card>
       <v-card-text>
-        <v-radio-group v-model="display" row density="compact">
-          <v-row justify="space-around">
-            <v-col><v-radio :label="$t('display.all')" value="both" /></v-col>
-            <v-col><v-radio :label="$t('support.supports')" value="poles" /></v-col>
-            <v-col><v-radio :label="$t('display.lines')" value="segments" /></v-col>
-          </v-row>
-        </v-radio-group>
-        <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line variant="outlined"
-          hide-details></v-text-field>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-select v-model="display" label="Type d'infrastructure"
+              :items="[{state:$t('display.all') ,value:'both'}, {state:$t('support.supports'),value:'poles'},{state:$t('display.lines'),value:'segments'}]"
+               item-title="state" item-value="value" variant="outlined"></v-select>
+
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line variant="outlined"
+              hide-details></v-text-field>
+          </v-col>
+        </v-row>
+
       </v-card-text>
     </v-card>
     <v-data-table v-model="selected" v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"

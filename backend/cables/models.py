@@ -146,17 +146,22 @@ class Diagnosis(Action):
         help_text=_("Pole condition"),
     )
     isolation_advice = models.BooleanField(
-        _("Isolation"),
+        _("To be insulated"),
         default=False,
     )
     dissuasion_advice = models.BooleanField(
-        _("Disruption"),
+        _("Discourage"),
         default=False,
     )
     attraction_advice = models.BooleanField(
-        _("Attraction"),
+        _("Providing incentives"),
         default=False,
     )
+    change_advice = models.BooleanField(
+        _("Change arming"),
+        default=False,
+    )
+    technical_proposal = models.TextField(_("Technical proposal"), blank=True, null=True)
     pole_type = models.ManyToManyField(
         Nomenclature,
         blank=True,

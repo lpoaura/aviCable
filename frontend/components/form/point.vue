@@ -79,7 +79,7 @@
                 </v-col>
                 <!-- TODO: virer champ  Neutralisé pour remplacer par la présence d'équipement (oui/non) -->
                 <v-col cols="12" md="4">
-                  <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')"
+                  <v-checkbox v-model="diagData.neutralized" :label="$t('diagnosis.equipment')"
                     density="compact"></v-checkbox>
                 </v-col>
 
@@ -117,23 +117,16 @@
                   <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')"
                     density="compact"></v-checkbox>
                 </v-col>
-
-                <!--TODO AJOUTER LE CHAMP change_arming EN BDD-->
                 <v-col cols="12" md="3">
-                  <v-checkbox v-model="diagData.change_arming" :label="$t('support.change_arming')"
+                  <v-checkbox v-model="diagData.change_advice" :label="$t('support.change_advice')"
                     density="compact"></v-checkbox>
                 </v-col>
-                <!--TODO AJOUTER LE CHAMP PROPOSITIONS EN BDD-->
-                <v-divider></v-divider>
                 <v-col cols="12" class="text-left">
-                  <strong>{{$t('diagnosis.proposals')}}</strong>
+                  <v-textarea v-model="diagData.technical_proposal" clearable clear-icon="mdi-close-circle"
+                    :label="$t('diagnosis.technical_proposal')" :rules="[rules.textLength]" rows="2" counter="300"
+                    variant="solo" density="compact"></v-textarea>
                 </v-col>
                 <v-divider></v-divider>
-                <v-col cols="12">
-                  <v-autocomplete chips v-model="diagData.pole_type_id" :items="poleTypes" item-title="label"
-                    item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
-                    deletable-chips variant="solo" density="compact"></v-autocomplete>
-                </v-col>
                 <v-col cols="12">
                   <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
                     :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact"></v-textarea>

@@ -43,7 +43,9 @@
   "diagnosis": {
     "last-one": "Dernier diagnostic le ",
     "proposals": "Propositions",
-    "actions":"Actions"
+    "actions":"Actions",
+    "technical_proposal":"Proposition technique",
+    "equipment": "Structure équipée"
   },
   "forms": {
     "coordinates": "Coordonnées",
@@ -60,7 +62,7 @@
     "advice_disrupt": "Dissuader",
     "advice_attract": "Rendre incitatif",
     "attractiveness": "Attractivité",
-    "change_arming": "Changer l'armement",
+    "change_advice": "Changer l'armement",
     "nest_platform": "Installer plateforme nid",
     "condition": "Etat",
     "dangerousness": "Dangerosité",

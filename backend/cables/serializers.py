@@ -68,6 +68,8 @@ class DiagnosisSerializer(ModelSerializer):
             "isolation_advice",
             "dissuasion_advice",
             "attraction_advice",
+            "change_advice",
+            "technical_proposal",
             "pole_type",
             "pole_type_id",
             "pole_attractivity",
