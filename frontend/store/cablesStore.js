@@ -49,7 +49,6 @@ export const useCablesStore = defineStore('cables', {
   actions: {
     async getInfrstrData (params, controller) {
       try {
-        console.log('params', params)
         this.infrstrDataLoadingStatus = true
         await $http.$get(
           '/api/v1/cables/infrastructures', {signal: controller.signal, params}

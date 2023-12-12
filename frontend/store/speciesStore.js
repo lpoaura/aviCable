@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import {mapBounds} from "./coordinatesStore"
 
 export const useSpeciesStore = defineStore("species", {
   state: () => ({ species: [] }),

@@ -1,9 +1,11 @@
 /* global defineEventHandler, useRuntimeConfig */
 /* eslint no-console: ["error", { allow: ["warn","debug","error"] }] */
 
-import { createError, readBody, appendHeader } from 'h3'
+import { createError, readBody, appendHeader, defineEventHandler } from 'h3'
 
-export default defineEventHandler(async (event) => {
+
+export default defineEventHandler (async (event) => {
+  console.log('API [...].ts')
   const config = useRuntimeConfig()
   if (!config.public.apiBase) {
     throw new Error('Missing `runtimeConfig.apiBase` configuration.')

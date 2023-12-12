@@ -12,12 +12,12 @@ Dans un modal
           <v-col cols="12" md="6">
             <v-select v-model="display" label="Type d'infrastructure"
               :items="[{state:$t('display.all') ,value:'both'}, {state:$t('support.supports'),value:'poles'},{state:$t('display.lines'),value:'segments'}]"
-               item-title="state" item-value="value" variant="outlined"></v-select>
+               item-title="state" item-value="value" variant="outlined" density="compact"></v-select>
 
           </v-col>
           <v-col cols="12" md="6">
             <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line variant="outlined"
-              hide-details></v-text-field>
+              hide-details density="compact"></v-text-field>
           </v-col>
         </v-row>
 
@@ -118,7 +118,7 @@ const dataSource = computed(() => {
 onMounted(() => {
   // setInfrstrData({})
   // cableStore.getInfrstrData({})
-  mortalityStore.getMortalityData()
+
 })
 
 // const source = (choice) => {

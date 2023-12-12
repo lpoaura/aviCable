@@ -18,10 +18,12 @@
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
         layers="osm,cra_aura_latest" :visible="false" />
-      <l-control v-if="zoom < 9" class="leaflet-control leaflet-control-zoom-alert" position="bottomright">Zoomez pour
+      <l-control v-if="zoom < 9" class="leaflet-control" position="bottomright">
+        <v-alert density="compact" type="warning" title="Information" text="Zoomez pour
         afficher
-        les données</l-control>
-        <l-control-scale position="bottomright" />
+        les données"></v-alert>
+      </l-control>
+      <l-control-scale position="bottomright" />
       <!-- <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" /> -->
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
@@ -38,10 +40,11 @@ import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch"
 import "leaflet-geosearch/assets/css/leaflet.css"
 import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
-import { GeoJSON, Feature } from "geojson"
+import type { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
 import type { StoreGeneric } from "pinia"
 import type {Map, PointTuple, GeoJSONOptions, Layer} from "leaflet";
+
 // import { useCoordinatesStore } from "../store/coordinatesStore";
 
 await import("@geoman-io/leaflet-geoman-free");
@@ -52,9 +55,8 @@ const {editMode, mode, mortalityItem} = defineProps({
   mortalityItem: {} as Feature
 })
 
-const map = ref({})
-
-const mapObject : Ref<null | Map> = ref({})
+const map : Ref<typeof LMap|null> = ref(null)
+const mapObject : Ref<typeof LMap|null> = ref(null)
 const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<Boolean> = ref(false)
 
@@ -65,13 +67,11 @@ const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
 
 const zoom : ComputedRef<number> = computed(() => coordinatesStore.zoom)
-// const zoom : Ref<number> = ref<number>(() => coordinatesStore.zoom)
 const center : ComputedRef<PointTuple> = computed<PointTuple>(() => coordinatesStore.center)
-// const center : Ref<PointTuple>= ref([46.6423682169416,2.1940236627886227] as PointTuple);
 
-const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures);
-const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures);
-const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures);
+const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures)
+const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
+const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures)
 // const mortalityItem:
 const baseLayers = computed(() => mapLayersStore.baseLayers)
 
@@ -79,7 +79,7 @@ const newPointCoord = computed(() => coordinatesStore.newPointCoord)
 const newLineCoord = computed(() => coordinatesStore.newLineCoord)
 const selectedFeature = computed(() => coordinatesStore.selectedFeature)
 
-const infrastructureOnEachFeature = (feature : Feature, layer : any) => {
+const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
   // TODO To be adapted
   layer.bindPopup(
     `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
@@ -95,17 +95,19 @@ const infrastructureOnEachFeature = (feature : Feature, layer : any) => {
   // layer.setStyle({ pmIgnore: false })
 }
 
-const mortalityOnEachFeature = (feature : Feature, layer : any) => {
+const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
   // TODO To be adapted
-  layer.bindPopup(
-    `<h2><span class="mdi mdi-coffin"></span><a to="/search#mortality">${feature.properties.species.vernacular_name}</a></h2>
-    <i>${feature.properties.species.scientific_name}</i>
-   <p><strong>Date</strong>&nbsp;:&nbsp;${feature.properties.date}<br>
-      <strong>Cause</strong>&nbsp;:&nbsp;${feature.properties.death_cause.label}
-    </dl>
-    </p>`
-  )
-  layer.on('click', (e)=> {console.log('click', feature, e)})
+  if (feature.properties) {
+    layer.bindPopup(
+      `<h2><span class="mdi mdi-coffin"></span><a to="/search#mortality">${feature.properties.species.vernacular_name}</a></h2>
+      <i>${feature.properties.species.scientific_name}</i>
+    <p><strong>Date</strong>&nbsp;:&nbsp;${feature.properties.date}<br>
+        <strong>Cause</strong>&nbsp;:&nbsp;${feature.properties.death_cause.label}
+      </dl>
+      </p>`
+    )
+    layer.on('click', (e)=> {console.log('click', feature, e)})
+  }
   // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
   // console.log('layer', layer)
   // delete layer.pm
@@ -129,20 +131,19 @@ const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
 //   console.log('mapObject watcher', mapObject.value.getBounds())
 // })
 watch(selectedFeature, (newVal, oldVal) => {
-
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-    
     const newObj = leaflet.geoJSON(newVal)
     coordinatesStore.setCenter(newObj.getBounds().getCenter())
     coordinatesStore.setZoom(15)
-
   }
 })
 
 const getMapBounds = () => {
   // console.log(mapObject.value.getBounds().toBBoxString())
-  coordinatesStore.setMapBounds(mapObject.value.getBounds().toBBoxString())
-  coordinatesStore.setZoom(mapObject.value.getZoom())
+  if (mapObject.value) {
+    coordinatesStore.setMapBounds(mapObject.value.getBounds().toBBoxString())
+    coordinatesStore.setZoom(mapObject.value.getZoom())
+  }
 }
 
 const hookUpDraw = async () => {
@@ -187,6 +188,7 @@ const hookUpDraw = async () => {
         })
     mapObject.value.on('pm:create', (e) => {
           createLayer.value = e.layer
+          if (createLayer.value){
           switch (mode) {
             case 'point':
               // console.log('createLayer', createLayer.value.toGeoJSON())
@@ -209,6 +211,7 @@ const hookUpDraw = async () => {
                 removalMode: true,
               })
               break
+            }
           }
           // // set listener on drag event on this layer
           // this.handleDrag(createLayer)
@@ -234,7 +237,7 @@ const hookUpDraw = async () => {
 
 const levelColor = (feature) => {
   const lastDiag=feature.properties?.actions_infrastructure?.filter(i => i.resourcetype === 'Diagnosis')[0]
-  const levelNotes = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
+  const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
   const attractivity = lastDiag.pole_attractivity.code
   const dangerousness = lastDiag.pole_dangerousness.code
   const note = levelNotes[attractivity] + levelNotes[dangerousness]
@@ -265,7 +268,7 @@ onBeforeMount(async () => {
   }
 
   deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
-    const iconDict = {
+    const iconDict : {[key: string]: string} = {
       COD_EL: 'lightning-bolt',
       COD_IM : 'star'
     }
@@ -299,15 +302,5 @@ onBeforeMount(async () => {
   font-size: 15px;
   background-color: red;
   border-radius: 50%;
-}
-
-.leaflet-control-zoom-alert {
-  background: lightgoldenrodyellow;
-  border: 2px solid orange;
-  border-radius: 2px;
-  padding: 10px;
-  font-size: large;
-  line-height: 30px;
-
 }
 </style>
