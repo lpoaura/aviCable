@@ -6,14 +6,15 @@
 
       <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution"
-        :layer-type="baseLayer.layer_type " />
+        :layer-type="baseLayer.layer_type" />
       <l-control-layers />
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
-      <l-geo-json v-if="mortalityData" name="Mortalité" :visible="false" layer-type="overlay" :geojson="mortalityData"
+      <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
         :options="deathCasesGeoJsonOptions" />
+      <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options="selectedFeatureGeoJsonOptions" />
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
@@ -24,7 +25,8 @@
         les données"></v-alert>
       </l-control>
       <l-control-scale position="bottomright" />
-      <!-- <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" /> -->
+
+      <!-- <l-marker :lat-lng="center" ></l-marker> -->
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
     <utils-map-actions-menu v-if="!editMode" />
@@ -38,8 +40,9 @@ import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
 // import 'leaflet-search'
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch"
 import "leaflet-geosearch/assets/css/leaflet.css"
-import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker, LGeoJson, LControlLayers, LControl, LControlScale, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
+import buffer from '@turf/buffer'
 import type { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
 import type { StoreGeneric } from "pinia"
@@ -77,7 +80,11 @@ const baseLayers = computed(() => mapLayersStore.baseLayers)
 
 const newPointCoord = computed(() => coordinatesStore.newPointCoord)
 const newLineCoord = computed(() => coordinatesStore.newLineCoord)
-const selectedFeature = computed(() => coordinatesStore.selectedFeature)
+const selectedFeature : ComputedRef<GeoJSON|null> = computed<GeoJSON|null>(() => 
+  !(Object.keys(coordinatesStore.selectedFeature).length === 0) 
+  ? buffer(coordinatesStore.selectedFeature, 150, {units: 'meters'})
+  : null
+)
 
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
   // TODO To be adapted
@@ -119,6 +126,10 @@ const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature : infrastructureOnEachFeature,
 })
 
+const selectedFeatureGeoJsonOptions: GeoJSONOptions = reactive({
+  
+})
+
 
 // const selectedFeatureGeoJsonOptions : GeoJSONOptions = reactive({})
 
@@ -132,9 +143,13 @@ const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
 // })
 watch(selectedFeature, (newVal, oldVal) => {
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+    
+    console.log('selectedFeature update')
     const newObj = leaflet.geoJSON(newVal)
-    coordinatesStore.setCenter(newObj.getBounds().getCenter())
-    coordinatesStore.setZoom(15)
+    // const centroid = newVal.geometry.type == ''
+    // coordinatesStore.setCenter(newObj.getBounds().getCenter())
+    // coordinatesStore.setZoom(15)
+    mapObject.value.setView(newObj.getBounds().getCenter(), 15)
   }
 })
 
@@ -267,10 +282,32 @@ onBeforeMount(async () => {
     })
   }
 
+  selectedFeatureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
+    console.log('selectedFeatureGeoJsonOptions',feature, latlng)
+    return leaflet.circleMarker(latlng, {
+      radius: 20,
+      fillColor: 'red',
+      color: 'red',
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.2,
+      // draggable: true,
+    })
+  }
+
+  selectedFeatureGeoJsonOptions.style = (_feature: Feature) => {
+    return {
+    color: "red",
+    weight: 5,
+    opacity: 0.65
+    }
+  }
+
   deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
     const iconDict : {[key: string]: string} = {
       COD_EL: 'lightning-bolt',
-      COD_IM : 'star'
+      COD_IM : 'star',
+      COD_UNKNOWN: 'help',
     }
     const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
     let deathCaseIcon = leaflet.divIcon({

@@ -23,6 +23,7 @@
     "@nuxtjs/eslint-config": "^12.0.0",
     "@nuxtjs/i18n": "^8.0.0-beta.12",
     "@pinia/nuxt": "^0.4.11",
+    "@turf/buffer": "^6.5.0",
     "@types/leaflet": "^1.9.3",
     "@types/node": "^18.18.12",
     "@vite-pwa/nuxt": "^0.2.3",
