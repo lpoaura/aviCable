@@ -2,17 +2,9 @@
 <template>
   <v-app id="inspire">
 
-    <utils-drawer-menu />
+    <layout-drawer-menu />
+    <layout-app-bar />
 
-    <v-app-bar color="light-blue-darken-3" :density="mobile ? 'compact': 'default'">
-      <v-toolbar-title>{{ $t('app.app-name') }}</v-toolbar-title>
-      <v-spacer />
-      <div v-if="!mdAndDown">
-        {{ user ? user.username : $t('app.signin') }}
-      </div>
-      <v-btn v-if="$auth.loggedIn" icon="mdi-logout" class="mr-2" @click="$auth.logout()" />
-      <v-btn v-if="!$auth.loggedIn" icon="mdi-login" @click="router.push('/account/login')" class="mr-2" />
-    </v-app-bar>
     <v-main>
       <NuxtLayout>
         <VitePwaManifest />
@@ -57,14 +49,9 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted } from 'vue'
-import { useDisplay } from 'vuetify'
-// import { useMapLayersStore } from './store/mapLayersStore'
-// import { useNomenclaturesStore } from './store/nomenclaturesStore'
+import {  onMounted } from 'vue'
 
-const { mdAndDown , mobile } = useDisplay()
-const router = useRouter()
-const { user } = useAuth()
+
 
 const loadBaseMapLayers = () => {
   const mapLayersStore = useMapLayersStore()
