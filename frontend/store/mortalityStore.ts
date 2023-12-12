@@ -21,14 +21,34 @@ export const useMortalityStore = defineStore("mortality", {
     getMortalityFeatures(state) {
       return state.mortalityData.features;
     },
+    getMortalitySpecies(state) {
+      const rowList = state.mortalityData.features.map(
+        (i) => i.properties?.species
+      );
+      let unique = rowList.filter(
+        (value, index, self) =>
+          index ===
+          self.findIndex(
+            (t) => t.id === value.id
+          )
+      );
+      return unique;
+    },
+
     getMortalityItem(state) {
       return state.mortalityItem;
     },
   },
   actions: {
-    async getMortalityData (params : { [key: string]: string }, controller: AbortController) {
+    async getMortalityData(
+      params: { [key: string]: string },
+      controller: AbortController
+    ) {
       try {
-        const data = await $http.$get("/api/v1/mortality/", {signal: controller.signal, params});
+        const data = await $http.$get("/api/v1/mortality/", {
+          signal: controller.signal,
+          params,
+        });
         this.mortalityData = data;
       } catch (error) {
         console.error(error);
