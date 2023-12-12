@@ -3,8 +3,8 @@
  */
 
 import { defineStore } from "pinia";
-import { Point, LineString, Feature } from "geojson";
-import type { PointTuple, Bounds } from "leaflet";
+import type { Point, LineString, Feature } from "geojson";
+import type { PointTuple } from "leaflet";
 
 interface NewPointCoord {
   lat: number | null;

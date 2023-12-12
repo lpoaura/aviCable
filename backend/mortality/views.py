@@ -1,18 +1,18 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated  # DjangoModelPermissions,
+from rest_framework_gis.filters import InBBOXFilter
 
 from .models import Mortality
 from .serializers import MortalitySerializer
-
-# from rest_framework.permissions import (
-#     IsAuthenticated,  # DjangoModelPermissions,
-# )
 
 
 class MortalityViewSet(viewsets.ModelViewSet):
     """ViewSet for Mortality item"""
 
     serializer_class = MortalitySerializer
-    # permission_classes = [IsAuthenticated]
+    filter_backends = [InBBOXFilter,]
+    bbox_filter_field = 'geom'
+    permission_classes = [IsAuthenticated,]
     queryset = (
         Mortality.objects.all()
         .select_related("species")

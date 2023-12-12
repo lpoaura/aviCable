@@ -3,7 +3,9 @@
  */
 
 import { defineStore } from "pinia";
-import { GeoJSON, FeatureCollection, Feature } from "geojson";
+import type { FeatureCollection, Feature } from "geojson";
+
+import { useCoordinatesStore } from "./coordinatesStore";
 
 export const useMortalityStore = defineStore("mortality", {
   state: () => ({
@@ -24,9 +26,9 @@ export const useMortalityStore = defineStore("mortality", {
     },
   },
   actions: {
-    async getMortalityData(filter) {
+    async getMortalityData (params : { [key: string]: string }, controller: AbortController) {
       try {
-        const data = await $http.$get("/api/v1/mortality/");
+        const data = await $http.$get("/api/v1/mortality/", {signal: controller.signal, params});
         this.mortalityData = data;
       } catch (error) {
         console.error(error);

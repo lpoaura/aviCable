@@ -13,25 +13,27 @@ definePageMeta({
 })
 
 const {mobile} = useDisplay()
+const abortController : Ref<AbortController | undefined> = ref<AbortController|undefined>(undefined)
 
 const coordinatesStore = useCoordinatesStore()
 const cableStore = useCablesStore()
+const mortalityStore = useMortalityStore()
 
-const bbox : ComputedRef<string> = computed<string>(() => coordinatesStore.mapBounds)
+const bbox : ComputedRef<string|null> = computed<string|null>(() => coordinatesStore.mapBounds)
 const zoom : ComputedRef<number> = computed<number>(() => coordinatesStore.zoom)
-
-let controller;
 
 watch(bbox, (newVal, _oldVal) => {
   console.log('zoom', zoom.value)
-  console.log(controller)
-  if (controller) {
-    controller.abort();
+  console.log(abortController)
+  if (abortController.value) {
+    abortController.value.abort();
     console.log("Download aborted");
   }
-  controller= new AbortController()
+  abortController.value = new AbortController()
   if (zoom.value >= 9) {
-    cableStore.getInfrstrData({in_bbox: newVal}, controller)
+    cableStore.getInfrstrData({in_bbox: newVal}, abortController.value)
+    mortalityStore.getMortalityData({in_bbox: newVal}, abortController.value)
+
   } else {
     cableStore.setInfrstrData({})
     cableStore.setInfrstrDataLoadingStatus(false)
