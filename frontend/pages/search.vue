@@ -1,11 +1,13 @@
 <template>
   <NuxtLayout name="view">
+    {{ zoom }}
     <template #map><map-search :edit-mode="false" /></template>
     <display-component />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+import type { Feature, FeatureCollection } from 'geojson';
 import {useDisplay} from 'vuetify'
 
 definePageMeta({
@@ -37,6 +39,7 @@ watch(bbox, (newVal, _oldVal) => {
   } else {
     cableStore.setInfrstrData({})
     cableStore.setInfrstrDataLoadingStatus(false)
+    mortalityStore.setMortalityData({} as FeatureCollection)
   }
 })
 

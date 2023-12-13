@@ -54,8 +54,11 @@ export const useMortalityStore = defineStore("mortality", {
         console.error(error);
       }
     },
-    setMortalityItem(data) {
+    setMortalityItem(data: Feature) {
       this.mortalityItem = data;
+    },
+    setMortalityData (data: FeatureCollection) {
+      this.mortalityData = data
     },
   },
 });
