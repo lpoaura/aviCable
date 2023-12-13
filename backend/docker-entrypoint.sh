@@ -10,10 +10,10 @@ done
 echo "PostgreSQL started"
 
 python manage.py migrate
-python manage.py loaddata ./commons/fixtures/*.xml
-python manage.py loaddata ./map_layers/fixtures/*.xml
-python manage.py loaddata ./species/fixtures/*.xml
-python manage.py loaddata ./geo_area/fixtures/*.xml.gz
+# python manage.py loaddata ./commons/fixtures/*.xml
+# python manage.py loaddata ./map_layers/fixtures/*.xml
+# python manage.py loaddata ./species/fixtures/*.xml
+# python manage.py loaddata ./geo_area/fixtures/*.xml.gz
 echo "************** Create backend superuser ******************"
 
 script="
