@@ -47,6 +47,10 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
         .prefetch_related("diagnosis__sgmt_topo_integr_risk")
         .prefetch_related("diagnosis__sgmt_veget_integr_risk")
         .prefetch_related("operations")
+        .prefetch_related("operations__equipments")
+        .prefetch_related("operations__equipments__type")
+        .prefetch_related("operations__operation_type")
+        .prefetch_related("operations__media")
     )
 
     # def get_bbox_filter_field(self):
