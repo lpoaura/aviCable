@@ -1,19 +1,16 @@
 import logging
 
-from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework_gis.filters import InBBoxFilter
 
-from .filters import InfrstrInBboxFilter, OperationFilter
-from .models import Action, Diagnosis, Infrastructure, Line, Operation, Point
+from .filters import InfrstrInBboxFilter
+from .models import Diagnosis, Infrastructure, Line, Operation, Point
 from .serializers import (
-    ActionPolymorphicSerializer,
     DiagnosisSerializer,
     InfrastructurePolymorphicSerializer,
     LineSerializer,
     OperationPolymorphicSerializer,
-    OperationSerializer,
     PointSerializer,
 )
 
