@@ -86,7 +86,7 @@ class Line(Infrastructure):
         return f"Line {self.id}"
 
 
-class Action(BaseModel, PolymorphicModel):
+class Action(BaseModel):
     """Common shared Action model inheriting from BaseModel
 
     This model define generic information relative to an action on an infrastructure such as diagnosis or operation.
@@ -101,23 +101,10 @@ class Action(BaseModel, PolymorphicModel):
         editable=False,
         verbose_name=_("unique Id"),
     )
-    infrastructure = models.ForeignKey(
-        Infrastructure,
-        on_delete=models.CASCADE,
-        related_name="actions_infrastructure",
-        verbose_name=_("Infrastructure attached with this Action"),
-        help_text=_("Infrastructure attached with this Action"),
-    )
+    
     date = models.DateField(_("Date"), default=datetime.date.today)
     remark = models.TextField(_("Remarks"), blank=True, null=True)
-    media = models.ManyToManyField(
-        Media,
-        blank=True,
-        related_name="diagnosis_media",
-        verbose_name=_("Media attached with this diagnosis"),
-        help_text=_("Media attached with this diagnosis"),
-        related_query_name="actions",
-    )
+
     # Field usefull for child (Diagnosis or Operation) creation
     # If Diagnosis or Operation already exists for the infrastructure, the new item received True # as last record, and old ones receive False.
     last = models.BooleanField(
@@ -127,6 +114,7 @@ class Action(BaseModel, PolymorphicModel):
 
     class Meta:
         ordering = ["-date"]
+        abstract = True
 
 
 class Diagnosis(Action):
@@ -134,7 +122,21 @@ class Diagnosis(Action):
 
     Stand for a description of an infrastructure. Severa description may exist for the same infrastructure, with informations updated (at the occasion of new diagnosis). This allow to maintain an history of infrastructure diagnosis.
     """
-
+    infrastructure = models.ForeignKey(
+        Infrastructure,
+        on_delete=models.CASCADE,
+        related_name="diagnosis",
+        verbose_name=_("Infrastructure attached with this Action"),
+        help_text=_("Infrastructure attached with this Action"),
+    )
+    media = models.ManyToManyField(
+        Media,
+        blank=True,
+        related_name="diagnosis_media",
+        verbose_name=_("Media attached with this diagnosis"),
+        help_text=_("Media attached with this diagnosis"),
+        related_query_name="diagnosis",
+    )
     neutralized = models.BooleanField(_("Neutralized"), default=False)
     condition = models.ForeignKey(
         Nomenclature,
@@ -256,7 +258,21 @@ class Operation(Action, PolymorphicModel):
 
     Define an operation on an infrastructure.
     """
-
+    infrastructure = models.ForeignKey(
+        Infrastructure,
+        on_delete=models.CASCADE,
+        related_name="operations",
+        verbose_name=_("Infrastructure attached with this Action"),
+        help_text=_("Infrastructure attached with this Action"),
+    )
+    media = models.ManyToManyField(
+        Media,
+        blank=True,
+        related_name="operations_media",
+        verbose_name=_("Media attached with this diagnosis"),
+        help_text=_("Media attached with this diagnosis"),
+        related_query_name="operations",
+    )
     operation_type = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,

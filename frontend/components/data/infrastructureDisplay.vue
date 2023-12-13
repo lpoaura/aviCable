@@ -12,7 +12,7 @@ Dans un modal
           <v-col cols="12" md="6">
             <v-select v-model="display" label="Type d'infrastructure"
               :items="[{state:$t('display.all') ,value:'both'}, {state:$t('support.supports'),value:'poles'},{state:$t('display.lines'),value:'segments'}]"
-               item-title="state" item-value="value" variant="outlined" density="compact"></v-select>
+              item-title="state" item-value="value" variant="outlined" density="compact"></v-select>
 
           </v-col>
           <v-col cols="12" md="6">
@@ -25,25 +25,26 @@ Dans un modal
     </v-card>
     <v-data-table v-model="selected" v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"
       item-value="properties.id" :loading="cableStore.infrstrDataLoadingStatus" :search="search"
-      :loading-text="$t('common.loading')" :items-per-page="100" :fixed-header="true" class="elevation-1"
+      :loading-text="$t('common.loading')" :items-per-page="-1" :fixed-header="true" class="elevation-1"
       density="compact" show-expand @click:row="handleRowClick" show-select>
       <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
-            <v-card height="500px" width="100%" class="overflow-y-auto">
+            <!-- <v-card height="500px" width="100%" class="overflow-y-auto">
               <pre><code>{{ item }}</code></pre>
-            </v-card>
-            <!-- <data-diagnosis-detail :data="item"></data-diagnosis-detail> -->
+            </v-card> -->
+            <data-diagnosis-card :diagnosis="item.properties.diagnosis[0]"></data-diagnosis-card>
           </td>
         </tr>
 
       </template>
+
       <template v-slot:item.properties.id="{ value, item }">
         <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(item)" color="primary" link>
           {{ value }}
         </v-chip>
       </template>
-      <template v-slot:item.properties.actions_infrastructure.0="{ _, item }">
+      <template v-slot:item.properties.diagnosis.0="{ _, item }">
         <v-chip prepend-icon="mdi-circle" :color="notationValues(item).color">
           {{ notationValues(item).label }}
         </v-chip>
@@ -55,7 +56,7 @@ Dans un modal
           </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
         </v-chip>
       </template>
-      <template v-slot:item.properties.actions_infrastructure.0.neutralized="{ value }">
+      <template v-slot:item.properties.diagnosis.0.neutralized="{ value }">
         <v-chip :prepend-icon="value || value == 'true' ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'"
           :color="value || value == 'true' ? 'green':'red'">
           {{ value || value == 'true' ? $t('common.yes') : $t('common.no')}}
@@ -87,14 +88,14 @@ const tableHeaders = reactive([
   },
   { title: t('app.type'), key: 'resourcetype' },
   { title: t('support.owner'), key: 'properties.owner.label' },
-  { title: t('common.risks'), key: 'properties.actions_infrastructure.0' },
+  { title: t('common.risks'), key: 'properties.diagnosis.0' },
   {
     title: 'Neutralisé',
-    key: 'properties.actions_infrastructure.0.neutralized'
+    key: 'properties.diagnosis.0.neutralized'
   },
   {
     title: 'Dernier diagnostic',
-    key: 'properties.actions_infrastructure.0.date'
+    key: 'properties.diagnosis.0.date'
   },
   { title: '+', key: 'data-table-expand' },
 ])
@@ -153,10 +154,10 @@ const notationValues =(item) => {
     'RISK_M': {note: 2, color:'orange', label: 'fort'},
     'RISK_H': {note: 3, color:'red lighten-1 white--text', label:'très fort'}
   }
-  const actions_infrastructure = item.properties.actions_infrastructure[0]
+  const diagnosis = item.properties.diagnosis[0]
   let result
-  if (item.resourcetype == 'Point' && actions_infrastructure) {
-    const note = risks[actions_infrastructure.pole_attractivity?.code]?.note + risks[actions_infrastructure.pole_dangerousness?.code]?.note
+  if (item.resourcetype == 'Point' && diagnosis) {
+    const note = risks[diagnosis.pole_attractivity?.code]?.note + risks[diagnosis.pole_dangerousness?.code]?.note
     result = note < 3 ? 'RISK_L' : note >= 5 ? 'RISK_H' : 'RISK_M' 
   } else {
     // Manage lines risks
@@ -191,11 +192,11 @@ const handleRowClick = (_, object) => {
 //         { text: 'Notation', value: 'score' },
 //         {
 //           text: 'Neutralisé',
-//           value: 'properties.actions_infrastructure.0.neutralized',
+//           value: 'properties.diagnosis.0.neutralized',
 //         },
 //         {
 //           text: 'Dernier diagnostic',
-//           value: 'properties.actions_infrastructure.0.date',
+//           value: 'properties.diagnosis.0.date',
 //         },toRaw
 //       ],
 //     }

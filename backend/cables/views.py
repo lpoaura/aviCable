@@ -29,22 +29,24 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     filter_backends = (InfrstrInBboxFilter,)
     # bbox_filter_field = 'point__geom'
     bbox_filter_fields = ["point__geom", "line__geom"]
+    bbox_filter_include_overlapping = True 
     queryset = (
         Infrastructure.objects.all()
         .select_related("owner")
         .prefetch_related("geo_area")
         .prefetch_related("geo_area__type")
         .prefetch_related("sensitive_area")
-        .prefetch_related("actions_infrastructure")
-        .prefetch_related("actions_infrastructure__media")
-        # .prefetch_related("actions_infrastructure__condition")
-        # .prefetch_related("actions_infrastructure__pole_type")
-        # .prefetch_related("actions_infrastructure__pole_attractivity")
-        # .prefetch_related("actions_infrastructure__pole_dangerousness")
-        # .prefetch_related("actions_infrastructure__sgmt_build_integr_risk")
-        # .prefetch_related("actions_infrastructure__sgmt_moving_risk")
-        # .prefetch_related("actions_infrastructure__sgmt_topo_integr_risk")
-        # .prefetch_related("actions_infrastructure__sgmt_veget_integr_risk")
+        .prefetch_related("diagnosis")
+        .prefetch_related("diagnosis__media")
+        .prefetch_related("diagnosis__condition")
+        .prefetch_related("diagnosis__pole_type")
+        .prefetch_related("diagnosis__pole_attractivity")
+        .prefetch_related("diagnosis__pole_dangerousness")
+        .prefetch_related("diagnosis__sgmt_build_integr_risk")
+        .prefetch_related("diagnosis__sgmt_moving_risk")
+        .prefetch_related("diagnosis__sgmt_topo_integr_risk")
+        .prefetch_related("diagnosis__sgmt_veget_integr_risk")
+        .prefetch_related("operations")
     )
 
     # def get_bbox_filter_field(self):
@@ -59,6 +61,7 @@ class PointViewSet(viewsets.ModelViewSet):
     # permission_classes = [DjangoModelPermissions]
     filter_backends = (InBBoxFilter,)
     bbox_filter_field = "geom"
+    bbox_filter_include_overlapping = True 
     # Define queryset by optimizing DB requests
     queryset = (
         Point.objects.all()
@@ -75,6 +78,7 @@ class LineViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions]
     filter_backends = (InBBoxFilter,)
     bbox_filter_field = "geom"
+    bbox_filter_include_overlapping = True 
     # Define queryset by optimizing DB requests
     queryset = (
         Line.objects.all()
@@ -84,12 +88,12 @@ class LineViewSet(viewsets.ModelViewSet):
     )
 
 
-class ActionViewSet(viewsets.ModelViewSet):
-    """ViewSet for Action item"""
+# class ActionViewSet(viewsets.ModelViewSet):
+#     """ViewSet for Action item"""
 
-    serializer_class = ActionPolymorphicSerializer
-    permission_classes = [DjangoModelPermissions]
-    queryset = Action.objects.all()
+#     serializer_class = ActionPolymorphicSerializer
+#     permission_classes = [DjangoModelPermissions]
+#     queryset = Action.objects.all()
 
 
 class DiagnosisViewSet(viewsets.ModelViewSet):
@@ -109,3 +113,4 @@ class OperationViewSet(viewsets.ModelViewSet):
     # filterset_class = OperationFilter
     bbox_filter_fields = ["pointoperation__geom", "lineoperation__geom"]
     filter_backends = (InfrstrInBboxFilter,)
+    bbox_filter_include_overlapping = True 

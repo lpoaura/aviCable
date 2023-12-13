@@ -1,7 +1,6 @@
 from django.urls import path
 
-from .views import (
-    ActionViewSet,
+from .views import (  # ActionViewSet,
     DiagnosisViewSet,
     InfrastructureViewSet,
     LineViewSet,
@@ -57,16 +56,16 @@ urlpatterns = [
         name="line_detail",
     ),
     # No create, update or delete on Infrastructure parent class: to be done on inherited classes
-    path(
-        "actions/",
-        ActionViewSet.as_view({"get": "list"}),
-        name="action_list",
-    ),
-    path(
-        "actions/<int:pk>/",
-        ActionViewSet.as_view({"get": "retrieve"}),
-        name="action_detail",
-    ),
+    # path(
+    #     "actions/",
+    #     ActionViewSet.as_view({"get": "list"}),
+    #     name="action_list",
+    # ),
+    # path(
+    #     "actions/<int:pk>/",
+    #     ActionViewSet.as_view({"get": "retrieve"}),
+    #     name="action_detail",
+    # ),
     path(
         "diagnosis/",
         DiagnosisViewSet.as_view({"get": "list", "post": "create"}),

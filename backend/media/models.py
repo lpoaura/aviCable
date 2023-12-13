@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 
+from commons.models import BaseModel
+from config.settings import MEDIA_UPLOAD
+
 # from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-from commons.models import BaseModel
-from config.settings import MEDIA_UPLOAD
 
 
 class Media(BaseModel):
