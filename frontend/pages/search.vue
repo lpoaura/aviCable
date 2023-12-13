@@ -30,7 +30,7 @@ watch(bbox, (newVal, _oldVal) => {
     console.log("Download aborted");
   }
   abortController.value = new AbortController()
-  if (zoom.value >= 9) {
+  if (zoom.value >= 10) {
     cableStore.getInfrstrData({in_bbox: newVal}, abortController.value)
     mortalityStore.getMortalityData({in_bbox: newVal}, abortController.value)
 
