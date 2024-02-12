@@ -23,16 +23,13 @@ watch(support, (_val)=> {
 })
 
 const getData = async () =>{
-  if (route.query.id_diagnosis) {
-    console.debug(`load Diag data ${route.query.id_diagnosis}`)
-   await useHttp(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
-   console.debug('DIAG VALUES', diagnosis.value)
-  }
+  // if (route.query.id_diagnosis) {
+  //   console.debug(`load Diag data ${route.query.id_diagnosis}`)
+  //   await useHttp(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
+  // }
   if (route.params.idsupport) {
-    console.log('route.params.idsupport',route.params.idsupport)
-    await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`).then(res=> {
-      support.value=res.data
-    })
+    console.debug('route.params.idsupport',route.params.idsupport)
+    await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`).then(res=> support.value=res.data)
   }
 }
 

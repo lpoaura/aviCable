@@ -3,16 +3,16 @@
     <v-list class="bg-orange-darken-2">
       <v-list-item
         :prepend-avatar="$auth.loggedIn ? 'https://randomuser.me/api/portraits/lego/7.jpg' : 'https://randomuser.me/api/portraits/lego/1.jpg'"
-        :title="$auth.user?.username || 'Not connected'" :subtitle="$auth.user?.email || 'mail@dot.com'"></v-list-item>
+        :title="$auth.user?.username || 'Not connected'" :subtitle="$auth.user?.email || 'mail@dot.com'" rounded="xl"></v-list-item>
     </v-list>
     <v-divider></v-divider>
     <v-list density="compact" nav>
-      <v-list-item v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :prepend-icon="icon" :title="text"
+      <v-list-item v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :prepend-icon="icon" :title="text" rounded="xl"
         :to="url"></v-list-item>
     </v-list>
     <template v-if="$auth.loggedIn" v-slot:append>
-      <v-list density="compact" nav>
-        <v-list-item v-if="$auth.loggedIn" link href="/api/admin/" prepend-icon="mdi-cogs" :title="t('nav.admin')"
+      <v-list density="compact" rounded="xl" nav>
+        <v-list-item v-if="$auth.loggedIn" link href="/api/admin/" prepend-icon="mdi-cogs" :title="t('nav.admin')" rounded="xl"
           value="starred"></v-list-item>
       </v-list>
     </template>

@@ -19,7 +19,7 @@
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
         layers="osm,cra_aura_latest" :visible="false" />
-      <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
+      <l-control v-if="zoom < 10" class="leaflet-control" position="topright">
         <v-alert density="compact" type="warning" title="Information" text="Zoomez pour
         afficher
         les données"></v-alert>

@@ -15,32 +15,34 @@
         </v-app-bar>
         <v-main scrollable>
           <v-card-text>
-            <v-container v-if="!(diagnosis || support)">
-              <v-row>
-                <v-col cols="12" class="text-left">
-                  <strong> {{ $t('forms.general-infrastructure') }}</strong>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" md="4">
-                  <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
-                    :label="$t('support.latitude')" type="number" placeholder="Latitude"
-                    :rules="[rules.requiredOrNotValid, rules.latRange]" required variant="solo" density="compact" />
-                </v-col>
+            <template v-if="!(diagnosis || support)">
+              <v-container>
+                <v-row>
+                  <v-col cols="12" class="text-left">
+                    <strong> {{ $t('forms.general-infrastructure') }}</strong>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" md="4">
+                    <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
+                      :label="$t('support.latitude')" type="number" placeholder="Latitude"
+                      :rules="[rules.requiredOrNotValid, rules.latRange]" required variant="solo" density="compact" />
+                  </v-col>
 
-                <v-col cols="12" md="4">
-                  <v-text-field ref="lng" v-model="coordinatesStore.newGeoJSONPoint.coordinates[0]"
-                    :label="$t('support.longitude')" type="number" placeholder="Longitude"
-                    :rules="[rules.requiredOrNotValid, rules.lngRange]" required variant="solo" density="compact" />
-                </v-col>
-                <v-col cols="12" md="4" v-if="!diagnosis">
-                  <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
-                    :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required>
-                  </v-select>
-                </v-col>
-              </v-row>
-            </v-container>
-            <v-divider v-if="!(diagnosis || support)"></v-divider>
+                  <v-col cols="12" md="4">
+                    <v-text-field ref="lng" v-model="coordinatesStore.newGeoJSONPoint.coordinates[0]"
+                      :label="$t('support.longitude')" type="number" placeholder="Longitude"
+                      :rules="[rules.requiredOrNotValid, rules.lngRange]" required variant="solo" density="compact" />
+                  </v-col>
+                  <v-col cols="12" md="4" v-if="!diagnosis">
+                    <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
+                      :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required>
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-divider />
+            </template>
             <v-container>
               <v-row>
                 <v-col cols="12" class="text-left">
@@ -64,7 +66,6 @@
                 </p>-->
                 <v-col cols="12" md="4">
                   <v-menu>
-
                     <template v-slot:activator="{ props }">
                       <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
                         inner-prepend-icon="mdi-calendar" variant="solo" density="compact" v-bind="props" />
@@ -72,6 +73,7 @@
                     <v-date-picker v-model="diagData.date" no-title></v-date-picker>
                   </v-menu>
                 </v-col>
+
                 <v-col cols="12" md="4">
                   <v-select v-model="diagData.condition_id" :items="conditions" item-title="label" item-value="id"
                     :rules="[rules.required]" :label="$t('support.condition')" variant="solo"
@@ -180,7 +182,6 @@
                 }}</v-btn>
             </v-row>
           </v-card-actions>
-          <pre>{{ support }}</pre>
         </v-main>
       </v-form>
 
@@ -203,9 +204,9 @@ const errorStore = useErrorsStore()
 
 // props
 //const {support, diagnosis, operation} = defineProps(['support', 'diagnosis', 'operation'])
-const {support, diagnosis, operation}  = defineProps<{
+const {support, operation}  = defineProps<{
   support?: Object,
-  diagnosis?: Diagnosis,
+  // diagnosis?: Diagnosis,
 }>()
 
 const upc = ref(null)
@@ -228,21 +229,22 @@ const pointData = reactive({
 const modifyDiag = computed(() => route.query.modifyDiag === 'true' ? true : false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 
-const diagData : DiagData = reactive({
-  date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-              .toISOString().substr(0, 10),
-  remark: null,
-  infrastructure:null,
-  pole_type_id: [],
-  neutralized: false,
-  condition_id: null,
-  attraction_advice:false,
-  dissuasion_advice: false,
-  isolation_advice: false,
-  pole_attractivity_id: null,
-  pole_dangerousness_id: null,
-  media_id: [],
-})
+// const diagData : DiagData = reactive({
+//   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+//               .toISOString().substr(0, 10),
+//   remark: null,
+//   infrastructure:null,
+//   pole_type_id: [],
+//   neutralized: false,
+//   condition_id: null,
+//   attraction_advice:false,
+//   dissuasion_advice: false,
+//   isolation_advice: false,
+//   pole_attractivity_id: null,
+//   pole_dangerousness_id: null,
+//   media_id: [],
+// })
+const diagData : Ref<DiagData> = ref({} as DiagData)
 
 //       // rules for form validation
 const rules = reactive({
@@ -278,18 +280,36 @@ const back = () => {
 const initData = async() => {
   if (support && diagnosisId) {}
   // const diagData = null
+  if (diagnosisId) {
+    await $http.$get(`/api/v1/cables/diagnosis/${diagnosisId.value}`).then(data => {
+      if (data) {
+        diagData.value = data
+        const fkFields = ['pole_attractivity','pole_dangerousness','pole_type','condition','media']
+        fkFields.forEach(i => {
+          if (diagData.value[i]) {
+            const constructor = diagData.value[i].constructor.name
+            if (constructor === 'Array') {
+              diagData.value[i+'_id'] = diagData.value[i].map(item => item.id)
+            } else {
+              diagData.value[i+'_id'] = diagData.value[i].id
+            }
+          }
+        })
+      }
+    })    
+  }
 }
 
 const submit = async () => {
   console.debug('formValid', formValid.value)
   console.debug('hasSupport', support ? 'Oui': 'Non')
-  console.debug('hasDiag', diagnosis ? 'Oui': 'Non')
+  console.debug('hasDiag', diagData.value ? 'Oui': 'Non')
   console.debug('hasModifyDiag', modifyDiag ? 'Oui': 'Non')
   console.debug('hasModifyDiag.value', modifyDiag.value ? 'Oui': 'Non')
   if (formValid.value) {
-    console.log('SUPPORT & DIAGNOSIS', support, diagnosis)
+    console.log('SUPPORT & DIAGNOSIS', support, diagData.value)
     // Case of creation of new Point and associated Diagnosis
-    if (!support && !diagnosis) {
+    if (!support && !diagData.value) {
       console.debug('createNewPoint !support && !diagnosis')
       const pointCreated = await createNewPoint()
       console.debug(pointCreated)
@@ -299,12 +319,12 @@ const submit = async () => {
         await createNewDiagnosis(pointCreated.properties.id)
       }
       router.push('/search')
-    } else if (diagnosis && modifyDiag) {
+    } else if (diagnosisId.value && modifyDiag.value) {
       console.debug('updateDiagnosis diagnosis && modifyDiag')
       // Case of update of Diagnosis
       await updateDiagnosis()
-      router.push(`/supports/${diagnosis.infrastructure}`)
-    } else if (support && !diagnosis && !modifyDiag.value) {
+      router.push(`/supports/${diagData.value.infrastructure}`)
+    } else if (support && !diagnosisId.value && !modifyDiag.value) {
       // Case of creation of new Diagnosis on existing Support
       console.debug('addNewDiagnosis diagnosis && !modifyDiag')
       const data = await addNewDiagnosis()
@@ -313,10 +333,11 @@ const submit = async () => {
     } else {
       console.debug('else ERROR')
       // update of existing Point
-      const error = {
+      const error: ErrorInfo = {
         code: 0,
         msg: 'Update of Support not implemented yet',
       }
+      errorStore.setError(error)
       // set error message to errorStore and triggers message display through "err"
       // watcher in error-snackbar component
       // this.$store.commit('errorStore/setError', error)
@@ -434,29 +455,29 @@ const addNewDiagnosis = async () => {
  */
 const updateDiagnosis = async () => {
   // Create new Media as selected in component form and get list of Ids of created Media
-  const mediaIdList = await this.createNewMedia()
+  const mediaIdList = await createNewMedia()
   try {
-    this.diagData.infrastructure = diagnosis.infrastructure // set Infrastructure (Point) id
-    this.diagData.media_id = mediaIdList // set Media id list
+    // diagData.infrastructure = diagnosis.infrastructure // set Infrastructure (Point) id
+    diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    return await this.$axios.$put(
-        `cables/diagnosis/${diagnosis.id}/`,
-        this.diagData
+    return await $http.$put(
+        `cables/diagnosis/${diagnosisId.value}/`,
+        diagData
     )
   } catch (_err) {
     // If Diagnosis creation fails, related Media created are deleted
-    if (this.newCreatedMediaIdList) {
-      this.newCreatedMediaIdList.forEach(
-          async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
+    if (newCreatedMediaIdList) {
+      newCreatedMediaIdList.forEach(
+          async (media_id) => await $http.$delete(`/media/${media_id}/`)
       )
     }
-    // Error display
-    const error = {}
-    error.code = errorCodes.update_pole_diagnosis.code
-    error.msg = $nuxt.$t(`error.${errorCodes.update_pole_diagnosis.msg}`)
-    // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
-    this.$store.commit('errorStore/setError', error)
-    this.back()
+    const error : ErrorInfo = {
+      code : errorCodes.update_pole_diagnosis.code,
+      msg :t(`error.${errorCodes.update_pole_diagnosis.msg}`)
+    }
+    console.error(_err)
+    errorStore.setError(error)
+    back()
   }
 }
 
@@ -534,6 +555,7 @@ const createNewMedia = async () => {
 //   console.log('WATCH DIAG diagData after' , diagData)
 // })
 
+onMounted(() => initData())
 
 </script>
 <style>
