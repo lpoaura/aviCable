@@ -23,22 +23,21 @@ Dans un modal
 
       </v-card-text>
     </v-card>
-    <v-data-table v-model="selected"  :headers="tableHeaders" :items="dataSource[display]"
+    <v-data-table v-model="selected" v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"
       item-value="properties.id" :loading="cableStore.infrstrDataLoadingStatus" :search="search"
       :loading-text="$t('common.loading')" :items-per-page="-1" :fixed-header="true" class="elevation-1"
-      density="compact" @click:row="handleRowClick" show-select>
-    <!--  <template v-slot:expanded-row="{ columns, item }">
-<tr>
+      density="compact" show-expand @click:row="handleRowClick" show-select>
+      <template v-slot:expanded-row="{ columns, item }">
+        <tr>
           <td :colspan="columns.length" height="500px">
-            <v-card height="500px" width="100%" class="overflow-y-auto">
+            <!-- <v-card height="500px" width="100%" class="overflow-y-auto">
               <pre><code>{{ item }}</code></pre>
-            </v-card>
+            </v-card> -->
             <data-diagnosis-card :diagnosis="item.properties.diagnosis[0]"></data-diagnosis-card>
           </td>
         </tr>
-       
 
-      </template>-->
+      </template>
 
       <template v-slot:item.properties.id="{ value, item }">
         <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(item)" color="primary" link>
@@ -98,7 +97,7 @@ const tableHeaders = reactive([
     title: 'Dernier diagnostic',
     key: 'properties.diagnosis.0.date'
   },
-  // { title: '+', key: 'data-table-expand' },
+  { title: '+', key: 'data-table-expand' },
 ])
 
 

@@ -28,6 +28,28 @@
     </v-main>
   </v-layout>
 </template>
+<script setup>
+import { ref } from 'vue'
+const tab = ref('#infra')
+
+const route = useRoute()
+const router = useRouter()
+
+watch(tab, (value) =>{
+  router.push(`${route.path}${value}`)
+})
+
+onMounted(() => {
+  router.push(`${route.path}${tab.value}`)
+})
+</script>
 
 <style>
+/* .v-tab {
+  width: 100px;
+  background-color: 'indigo';
+} */
+
+
+
 </style>

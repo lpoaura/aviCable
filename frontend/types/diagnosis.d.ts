@@ -3,20 +3,14 @@ declare interface DiagData {
   remark: string | null;
   infrastructure: number | null;
   pole_type_id: Array<number>;
-  pole_type: Array<Object>,
   neutralized: boolean;
   condition_id: number | null;
-  condition: Object;
   attraction_advice: boolean;
   dissuasion_advice: boolean;
   isolation_advice: boolean;
   pole_attractivity_id: number | null;
-  condition: Object | null;
   pole_dangerousness_id: number | null;
-  ole_dangerousness: Object | null;
-  media_id?: Array<number>;
-  change_advice: boolean;
-  technical_proposal: string  | null;
+  media_id: Array<number>;
 }
 
 declare interface Diagnosis {

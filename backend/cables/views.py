@@ -1,11 +1,8 @@
 import logging
 
-from django.db.models import Prefetch
-from geo_area.models import GeoArea
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework_gis.filters import InBBoxFilter
-from sinp_nomenclatures.models import Nomenclature
 
 from .filters import InfrstrInBboxFilter
 from .models import Diagnosis, Infrastructure, Line, Operation, Point
@@ -33,7 +30,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     queryset = (
         Infrastructure.objects.all()
         .select_related("owner")
-        .prefetch_related(Prefetch("geo_area", queryset=GeoArea.objects.only("id","code","name","type")))
+        .prefetch_related("geo_area")
         .prefetch_related("geo_area__type")
         .prefetch_related("sensitive_area")
         .prefetch_related("diagnosis")

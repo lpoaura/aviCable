@@ -1,5 +1,6 @@
 <template>
   <NuxtLayout name="view">
+    {{ zoom }}
     <template #map><map-search :edit-mode="false" /></template>
     <display-component />
   </NuxtLayout>
