@@ -8,6 +8,12 @@
 
 
 <script setup>
+import { defineAsyncComponent } from 'vue'
+
+const FormPoint = defineAsyncComponent(() =>
+  import('~/components/form/point.vue')
+)
+
 definePageMeta({
   auth: true,
 });
@@ -24,7 +30,7 @@ watch(support, (_val)=> {
 
 const getData = async () =>{
   if (route.query.id_diagnosis) {
-    console.debug(`load Diag data ${route.query.id_diagnosis}`)
+    console.debug(`load Diag AdminPageComponentdata ${route.query.id_diagnosis}`)
    await useHttp(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
    console.debug('DIAG VALUES', diagnosis.value)
   }

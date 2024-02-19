@@ -17,7 +17,8 @@
     "map": "Cartographie",
     "remark": "Commentaire",
     "type": "Type",
-    "valid": "Valider"
+    "valid": "Valider",
+    "technical_proposal": "Proposition technique"
   },
   "nav": {
     "application": "Application",
@@ -45,7 +46,10 @@
     "proposals": "Propositions",
     "actions":"Actions",
     "technical_proposal":"Proposition technique",
-    "equipment": "Structure équipée"
+    "equipment": "Structure équipée",
+    "make-dissuasive": "rendre dissuasif",
+    "isolate" : "isoler",
+    "make-attractive": "rendre attractif"
   },
   "forms": {
     "coordinates": "Coordonnées",

@@ -41,7 +41,7 @@ export const useMortalityStore = defineStore("mortality", {
   },
   actions: {
     async getMortalityData(
-      params: { [key: string]: string },
+      params: { [key: string]: string | null },
       controller: AbortController
     ) {
       try {

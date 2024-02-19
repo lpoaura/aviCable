@@ -180,7 +180,24 @@
                 }}</v-btn>
             </v-row>
           </v-card-actions>
-          <pre>{{ support }}</pre>
+          <v-card>
+            <v-card-title>Support</v-card-title>
+            <v-card-text>
+              <pre> {{ support }}</pre>
+            </v-card-text>
+          </v-card>
+          <v-card>
+            <v-card-title>diagData</v-card-title>
+            <v-card-text>
+              <pre> {{ diagData }}</pre>
+            </v-card-text>
+          </v-card>
+          <v-card>
+            <v-card-title>diagnosis</v-card-title>
+            <v-card-text>
+              <pre> {{ diagnosis }}</pre>
+            </v-card-text>
+          </v-card>
         </v-main>
       </v-form>
 
@@ -190,6 +207,7 @@
 <script setup lang="ts">
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
+import type {DiagData, Diagnosis} from '~/types/diagnosis';
 
 // init modules
 const {t} = useI18n()
@@ -275,8 +293,27 @@ const back = () => {
  * process.
  */
 
-const initData = async() => {
-  if (support && diagnosisId) {}
+const initData = () => {
+  console.log('diagnosis', diagnosis)
+  if (diagnosis) {
+    console.log('HAS DIAG', diagnosis)
+    let diagdata = {
+      id : diagnosis.value.id,
+      date: diagnosis.value.date,
+      remark: diagnosis.value.remark,
+      infrastructure: diagnosis.value.infrastructure,
+      pole_type_id: diagnosis.value.pole_type?.map(i=> i.id),
+      neutralized: diagnosis.value.neutralized,
+      condition_id: diagnosis.value.condition?.id,
+      attraction_advice:diagnosis.value.attraction_advice,
+      dissuasion_advice: diagnosis.value.dissuasion_advice,
+      isolation_advice: diagnosis.value.isolation_advice,
+      pole_attractivity_id: diagnosis.value.pole_attractivity?.id,
+      pole_dangerousness_id: diagnosis.value.pole_dangerousness?.id,
+      media_id: [],
+    }
+    Object.assign(diagData, diagdata)
+  }
   // const diagData = null
 }
 
@@ -434,29 +471,24 @@ const addNewDiagnosis = async () => {
  */
 const updateDiagnosis = async () => {
   // Create new Media as selected in component form and get list of Ids of created Media
-  const mediaIdList = await this.createNewMedia()
+  const mediaIdList = await createNewMedia()
   try {
-    this.diagData.infrastructure = diagnosis.infrastructure // set Infrastructure (Point) id
-    this.diagData.media_id = mediaIdList // set Media id list
+    diagData.infrastructure = diagnosis.infrastructure // set Infrastructure (Point) id
+    diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    return await this.$axios.$put(
-        `cables/diagnosis/${diagnosis.id}/`,
-        this.diagData
-    )
+    const {data }= await useHttp(`cables/diagnosis/${diagnosis.id}/`, {method:'put', body: diagData})
+    return data
   } catch (_err) {
     // If Diagnosis creation fails, related Media created are deleted
-    if (this.newCreatedMediaIdList) {
-      this.newCreatedMediaIdList.forEach(
+    if (mediaIdList) {
+      mediaIdList.forEach(
           async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
       )
     }
     // Error display
-    const error = {}
-    error.code = errorCodes.update_pole_diagnosis.code
-    error.msg = $nuxt.$t(`error.${errorCodes.update_pole_diagnosis.msg}`)
-    // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
-    this.$store.commit('errorStore/setError', error)
-    this.back()
+    const error : ErrorInfo = {code : errorCodes.update_pole_diagnosis.code,msg :t(`error.${errorCodes.update_pole_diagnosis.msg}`)}
+    errorStore.setError(error)
+    back()
   }
 }
 
@@ -534,7 +566,9 @@ const createNewMedia = async () => {
 //   console.log('WATCH DIAG diagData after' , diagData)
 // })
 
-
+onMounted(() => {
+  initData()
+})
 </script>
 <style>
 .required label::after {

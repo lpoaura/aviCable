@@ -1,5 +1,7 @@
 import logging
 
+from django.db.models import Prefetch
+from geo_area.models import GeoArea
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework_gis.filters import InBBoxFilter
@@ -26,11 +28,11 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     filter_backends = (InfrstrInBboxFilter,)
     # bbox_filter_field = 'point__geom'
     bbox_filter_fields = ["point__geom", "line__geom"]
-    bbox_filter_include_overlapping = True 
+    bbox_filter_include_overlapping = True
     queryset = (
         Infrastructure.objects.all()
         .select_related("owner")
-        .prefetch_related("geo_area")
+        .prefetch_related(Prefetch("geo_area", queryset=GeoArea.objects.only("id","code","name","type")))
         .prefetch_related("geo_area__type")
         .prefetch_related("sensitive_area")
         .prefetch_related("diagnosis")

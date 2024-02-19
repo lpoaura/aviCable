@@ -587,4 +587,4 @@ class InfrastructurePolymorphicSerializer(
     class Meta:
         model = Infrastructure
         geo_field = "geom"
-
+        fields= '__all__'

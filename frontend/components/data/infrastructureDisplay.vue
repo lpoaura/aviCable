@@ -23,21 +23,18 @@ Dans un modal
 
       </v-card-text>
     </v-card>
-    <v-data-table v-model="selected" v-model:expanded="expanded" :headers="tableHeaders" :items="dataSource[display]"
+    <v-data-table v-model="selected" :headers="tableHeaders" :items="dataSource[display]"
       item-value="properties.id" :loading="cableStore.infrstrDataLoadingStatus" :search="search"
       :loading-text="$t('common.loading')" :items-per-page="-1" :fixed-header="true" class="elevation-1"
-      density="compact" show-expand @click:row="handleRowClick" show-select>
-      <template v-slot:expanded-row="{ columns, item }">
+      density="compact" @click:row="handleRowClick">
+      <!-- <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
-            <!-- <v-card height="500px" width="100%" class="overflow-y-auto">
-              <pre><code>{{ item }}</code></pre>
-            </v-card> -->
             <data-diagnosis-card :diagnosis="item.properties.diagnosis[0]"></data-diagnosis-card>
           </td>
         </tr>
 
-      </template>
+      </template> -->
 
       <template v-slot:item.properties.id="{ value, item }">
         <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(item)" color="primary" link>
@@ -56,10 +53,10 @@ Dans un modal
           </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
         </v-chip>
       </template>
-      <template v-slot:item.properties.diagnosis.0.neutralized="{ value }">
-        <v-chip :prepend-icon="value || value == 'true' ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'"
-          :color="value || value == 'true' ? 'green':'red'">
-          {{ value || value == 'true' ? $t('common.yes') : $t('common.no')}}
+      <template v-slot:item.properties.operations="{ value }">
+        <v-chip :prepend-icon="value.length> 0 ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'"
+          :color="value.length>0 ? 'green':'red'">
+          {{ value.length>0 ? $t('common.yes') : $t('common.no')}}
         </v-chip>
       </template>
     </v-data-table>
@@ -91,7 +88,7 @@ const tableHeaders = reactive([
   { title: t('common.risks'), key: 'properties.diagnosis.0' },
   {
     title: 'Neutralisé',
-    key: 'properties.diagnosis.0.neutralized'
+    key: 'properties.operations'
   },
   {
     title: 'Dernier diagnostic',

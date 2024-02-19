@@ -12,7 +12,8 @@
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
           Password
 
-          <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer" target="_blank">
+          <a class="text-caption text-decoration-none text-blue" :href="'/account/reset'" rel="noopener noreferrer"
+          >
             Forgot login password?</a>
         </div>
 
@@ -20,7 +21,7 @@
           density="compact" placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
           @click:append-inner="visible = !visible" v-model="login.password" :rules="pwdRules"></v-text-field>
 
-        <v-btn block class="mb-8" color="blue" size="large" variant="tonal" :loading="loading" :disabled="!valid"
+        <v-btn block class="mb-8" color="blue" size="large" variant="flat" :loading="loading" :disabled="!valid"
           @click="userLogin()">
           {{ $t('login.sign-in') }}
         </v-btn>

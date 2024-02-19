@@ -151,6 +151,10 @@ export default defineNuxtConfig({
             method: "get",
             property: true,
           },
+          reset: {
+            url: "/api/v1/auth/reset_password/",
+            method: "post",
+          }
         },
       },
     },

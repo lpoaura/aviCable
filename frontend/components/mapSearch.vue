@@ -9,12 +9,16 @@
         :layer-type="baseLayer.layer_type" />
       <l-control-layers />
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
-        :options="infrastructureGeoJsonOptions" />
+        :options="infrastructureGeoJsonOptions" options-style="infrastructureGeoJsonOptionsStyle"/>
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
         :options="deathCasesGeoJsonOptions" />
-      <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options="selectedFeatureGeoJsonOptions" />
+      <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options-style="selectedFeatureGeoJsonStyle" />
+      <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
+        :geojson="operatedLineStringData" :options="infrastructureGeoJsonOptions" />
+      <l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
+        :options="operatedInfrastructureGeoJsonOptions" />
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
@@ -73,7 +77,9 @@ const zoom : ComputedRef<number> = computed(() => coordinatesStore.zoom)
 const center : ComputedRef<PointTuple> = computed<PointTuple>(() => coordinatesStore.center)
 
 const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures)
+const operatedPointData : ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getOperatedPointDataFeatures)
 const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
+const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
 const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures)
 // const mortalityItem:
 const baseLayers = computed(() => mapLayersStore.baseLayers)
@@ -126,9 +132,12 @@ const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature : infrastructureOnEachFeature,
 })
 
-const selectedFeatureGeoJsonOptions: GeoJSONOptions = reactive({
-  
+const operatedInfrastructureGeoJsonOptions : GeoJSONOptions = reactive({
+  onEachFeature : infrastructureOnEachFeature,
 })
+
+
+const selectedFeatureGeoJsonOptions: GeoJSONOptions = reactive({})
 
 
 // const selectedFeatureGeoJsonOptions : GeoJSONOptions = reactive({})
@@ -149,7 +158,7 @@ watch(selectedFeature, (newVal, oldVal) => {
     // const centroid = newVal.geometry.type == ''
     // coordinatesStore.setCenter(newObj.getBounds().getCenter())
     // coordinatesStore.setZoom(15)
-    mapObject.value.setView(newObj.getBounds().getCenter(), 15)
+    mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
   }
 })
 
@@ -158,9 +167,33 @@ const getMapBounds = () => {
   if (mapObject.value) {
     coordinatesStore.setMapBounds(mapObject.value.getBounds().toBBoxString())
     coordinatesStore.setZoom(mapObject.value.getZoom())
+    coordinatesStore.setCenter(mapObject.value.getCenter())
   }
 }
 
+
+
+const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
+  const color='red'
+    return {
+      color: color,
+      fillColor: color,
+      weight: 2,
+      opacity: 0.5
+    }
+  }
+
+  const infrastructureGeoJsonOptionsStyle = (feature: Feature, latlng : any ) => {
+    return  {
+      radius: 6,
+      fillColor: levelColor(feature),
+      color:  levelColor(feature),
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8,
+      // draggable: true,
+    }
+  }
 const hookUpDraw = async () => {
   mapObject.value = map.value?.leafletObject;
   // console.log('mapObject.value', mapObject.value.getBounds(), map)
@@ -250,7 +283,7 @@ const hookUpDraw = async () => {
   }
 };
 
-const levelColor = (feature) => {
+const levelColor = (feature: Feature) => {
   const lastDiag=feature.properties?.diagnosis[0]
   const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
   const attractivity = lastDiag.pole_attractivity.code
@@ -267,15 +300,25 @@ const levelColor = (feature) => {
 }
 
 
-
 onBeforeMount(async () => {
   // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
   infrastructureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
     return leaflet.circleMarker(latlng, {
-      radius: 5,
+      radius: 6,
       fillColor: levelColor(feature),
       color: '#000',
       weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8,
+      // draggable: true,
+    })
+  }
+  operatedInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : any ) => {
+    return leaflet.circleMarker(latlng, {
+      radius: 3,
+      fillColor: '#00ff00',
+      color: '#000',
+      weight: 0,
       opacity: 1,
       fillOpacity: 0.8,
       // draggable: true,
@@ -295,13 +338,7 @@ onBeforeMount(async () => {
     })
   }
 
-  selectedFeatureGeoJsonOptions.style = (_feature: Feature) => {
-    return {
-    color: "red",
-    weight: 5,
-    opacity: 0.65
-    }
-  }
+
 
   deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
     const iconDict : {[key: string]: string} = {

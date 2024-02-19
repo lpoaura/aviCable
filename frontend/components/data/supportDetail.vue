@@ -7,9 +7,9 @@
       </v-app-bar-title>
 
       <v-spacer />
-      <v-chip v-if="lastDiag" :prepend-icon="lastDiag.neutralized ? 'mdi-check-circle-outline': 'mdi-alert-outline'" small
-        class="mr-2" :color="lastDiag.neutralized ? 'success' : 'error'" variant="elevated">
-        {{ lastDiag.neutralized ? 'neutralisé' : 'à neutraliser' }}
+      <v-chip :prepend-icon="neutralized ? 'mdi-check-circle-outline': 'mdi-alert-outline'" small
+        class="mr-2" :color="neutralized ? 'success' : 'error'" variant="elevated">
+        {{ neutralized ? 'neutralisé' : 'à neutraliser' }}
       </v-chip>
       <v-app-bar-nav-icon>
         <v-btn density="compact" icon="mdi-close" @click="$router.back()" />
@@ -91,6 +91,10 @@ const lastDiag = computed(() => {
         (action: { last: boolean }) =>
            action.last
       )
+})
+
+const neutralized : boolean = computed(() => {
+  return data?.properties.operations.length>0
 })
 
 const lastOp = computed(() => {

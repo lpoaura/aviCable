@@ -69,6 +69,8 @@ if DEV:
     INSTALLED_APPS = INSTALLED_APPS + [
         "django_extensions",
         "fixture_magic",
+        "drf_yasg",
+        "drf_typescript_generator",
     ]
 
 if DEBUG:
@@ -235,6 +237,17 @@ LOGGING = {
 # Backoffice maps
 DEFAULT_LAT = config("DEFAULT_LAT", default=45, cast=float)
 DEFAULT_LON = config("DEFAULT_LON", default=5, cast=float)
+
+# EMAIL
+
+EMAIL_HOST = config("EMAIL_HOST", default="localhost")
+EMAIL_USE_SSL = config("EMAIL_USE_SSL", default=False, cast=bool)
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="dbchiro")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_SUBJECT_PREFIX = config("EMAIL_SUBJECT_PREFIX", default="dbChiroWeb")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
+SERVER_EMAIL = config("SERVER_EMAIL", default=EMAIL_HOST_USER)
 
 
 if DEBUG:

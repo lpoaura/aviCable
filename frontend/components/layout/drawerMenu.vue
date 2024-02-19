@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-if="!mobile" expand-on-hover rail class="bg-light-blue-darken-3" theme="dark">
+  <v-navigation-drawer v-if="!mobile" expand-on-hover rail class="bg-light-blue-darken-3" >
     <v-list class="bg-orange-darken-2">
       <v-list-item
         :prepend-avatar="$auth.loggedIn ? 'https://randomuser.me/api/portraits/lego/7.jpg' : 'https://randomuser.me/api/portraits/lego/1.jpg'"
@@ -7,6 +7,8 @@
     </v-list>
     <v-divider></v-divider>
     <v-list density="compact" nav>
+      <v-list-item prepend-icon="mdi-home" :title="t('nav.home_page')"
+        to="/"></v-list-item>
       <v-list-item v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :prepend-icon="icon" :title="text"
         :to="url"></v-list-item>
     </v-list>
@@ -38,7 +40,6 @@ const { mobile} = useDisplay()
 
 useRouter()
 const links = ref([
-  ['mdi-home', t('nav.home_page'), '/', null],
   ['mdi-map-search', t('nav.application'), '/search', true],
   ['mdi-information', t('nav.about'), '/about', true]
 ]);
