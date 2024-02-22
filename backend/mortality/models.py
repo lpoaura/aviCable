@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import uuid
 
+from cables.models import Infrastructure
+from commons.models import BaseModel
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from sinp_nomenclatures.models import Nomenclature
-
-from cables.models import Infrastructure
-from commons.models import BaseModel
 from media.models import Media
+from sinp_nomenclatures.models import Nomenclature
 from species.models import Species
 
 
@@ -19,6 +19,9 @@ class Mortality(BaseModel):
     Describe a mortality case.
     """
 
+    uuid = models.UUIDField(
+        default=uuid.uuid4, unique=True, editable=True, null=True, blank=True
+    )
     author = models.CharField(_("Author"), max_length=100)
     geom = gis_models.PointField(srid=4326)
     date = models.DateField(

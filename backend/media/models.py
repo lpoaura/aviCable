@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import uuid
 
 from commons.models import BaseModel
 from config.settings import MEDIA_UPLOAD
@@ -18,6 +18,7 @@ class Media(BaseModel):
     """
 
     # "upload_to" defined through config param
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     storage = models.ImageField(upload_to=MEDIA_UPLOAD)
     date = models.DateField(_("Date"))
     author = models.CharField(

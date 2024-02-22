@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""These application models are using nomenclature Items 'cf. sinp_nomenclatures' module
 
+    Item works like dictionnary term used to configure related application. Each Item is related to a Type, itself related to a Source. An application can authorize for a specific field to complete it with list of all Item terms with a defined Type (selected by Type mnemonic field). This allows to set up authorized entries for these field through database entries, not through hardcoded way,making application more flexible and more maintanable.
+"""
 import datetime
 from uuid import uuid4
 
@@ -13,11 +16,6 @@ from media.models import Media
 from polymorphic.models import PolymorphicModel
 from sensitive_area.models import SensitiveArea
 from sinp_nomenclatures.models import Nomenclature
-
-"""These application models are using nomenclature Items 'cf. sinp_nomenclatures' module
-
-    Item works like dictionnary term used to configure related application. Each Item is related to a Type, itself related to a Source. An application can authorize for a specific field to complete it with list of all Item terms with a defined Type (selected by Type mnemonic field). This allows to set up authorized entries for these field through database entries, not through hardcoded way,making application more flexible and more maintanable.
-    """
 
 
 class Infrastructure(BaseModel, PolymorphicModel):
@@ -71,7 +69,7 @@ class Point(Infrastructure):
     geom = gis_models.PointField(srid=4326)
 
     def __str__(self):
-        return f"Point {self.id}"
+        return f"Point {self.pk}"
 
 
 class Line(Infrastructure):
@@ -83,7 +81,7 @@ class Line(Infrastructure):
     geom = gis_models.LineStringField(null=True, blank=True, srid=4326)
 
     def __str__(self):
-        return f"Line {self.id}"
+        return f"Line {self.pk}"
 
 
 class Action(BaseModel):
@@ -101,7 +99,7 @@ class Action(BaseModel):
         editable=False,
         verbose_name=_("unique Id"),
     )
-    
+
     date = models.DateField(_("Date"), default=datetime.date.today)
     remark = models.TextField(_("Remarks"), blank=True, null=True)
 
@@ -122,6 +120,7 @@ class Diagnosis(Action):
 
     Stand for a description of an infrastructure. Severa description may exist for the same infrastructure, with informations updated (at the occasion of new diagnosis). This allow to maintain an history of infrastructure diagnosis.
     """
+
     infrastructure = models.ForeignKey(
         Infrastructure,
         on_delete=models.CASCADE,
@@ -163,7 +162,9 @@ class Diagnosis(Action):
         _("Change arming"),
         default=False,
     )
-    technical_proposal = models.TextField(_("Technical proposal"), blank=True, null=True)
+    technical_proposal = models.TextField(
+        _("Technical proposal"), blank=True, null=True
+    )
     pole_type = models.ManyToManyField(
         Nomenclature,
         blank=True,
@@ -238,6 +239,12 @@ class Diagnosis(Action):
 
 
 class Equipment(BaseModel):
+    uuid = models.UUIDField(
+        default=uuid4,
+        unique=True,
+        editable=False,
+        verbose_name=_("unique Id"),
+    )
     type = models.ForeignKey(
         Nomenclature,
         limit_choices_to={"type__mnemonic": "equipment_type"},
@@ -258,6 +265,7 @@ class Operation(Action, PolymorphicModel):
 
     Define an operation on an infrastructure.
     """
+
     infrastructure = models.ForeignKey(
         Infrastructure,
         on_delete=models.CASCADE,
@@ -302,7 +310,7 @@ class PointOperation(Operation):
     geom = gis_models.PointField(srid=4326)
 
     def __str__(self):
-        return f"PointOperation object ({self.id}) {dir(self)}"
+        return f"PointOperation object ({self.pk}) {dir(self)}"
 
 
 class LineOperation(Operation):
@@ -314,6 +322,4 @@ class LineOperation(Operation):
     geom = gis_models.LineStringField(null=True, blank=True, srid=4326)
 
     def __str__(self):
-        return f"LineOperation ({self.id})"
-    
-    
+        return f"LineOperation ({self.pk})"
