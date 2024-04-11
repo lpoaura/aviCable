@@ -15,12 +15,17 @@
 
       </v-card-text>
     </v-card>
-    <v-data-table v-model="selected" fixed-header height="100%" :headers="headers" :search="search"
+    <!-- <v-list>
+      <v-list-item v-for="item in observationList" :key="item">
+        {{ item }}
+      </v-list-item>
+    </v-list> -->
+   <v-data-table v-model="selected" fixed-header height="100%" :headers="headers" :search="search"
       :items="observationList" :loading="!mortalityStore.getMortalityFeatures"
       loading-text="Loading... Please wait" item-value="name" class="elevation-1" density="compact"
       @click:row="handleRowClick" show-select>
       <template v-slot:item.id="{ value, item }">
-        <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(item)" color="primary" link>
+        <v-chip prepend-icon="mdi-eye-circle-outline" color="primary">
           {{ value }}
         </v-chip>
       </template>
@@ -31,7 +36,7 @@
           </v-icon> {{ value }}
         </v-chip>
       </template>
-    </v-data-table>
+    </v-data-table> 
   </div>
 </template> 
 
@@ -39,7 +44,7 @@
 
 import type {GeoJSON} from 'geojson'
 // import { FeatureCollection } from 'geojson'
-const router =useRouter()
+const router = useRouter()
 const search = ref('')
 const selected= ref([])
 const specie = ref(null)
@@ -65,10 +70,10 @@ const speciesList = computed(() => mortalityStore.getMortalitySpecies.map(i => {
 const observationList = computed(() => {
   return specie.value !== null ? mortalityStore.getMortalityFeatures.filter(i => i.properties?.species.id == specie.value) : mortalityStore.getMortalityFeatures
 })
-const showDetail = (_, {item}) => {
-  const rowData = item.columns
-  router.push(`/mortality/${rowData['id']}`)
-}
+// const showDetail = async (item) => {
+//   console.log('event', `/mortality/${item.id}`)
+//   await navigateTo(`/mortality/${item.id}`)
+// }
 
 onMounted(() => {
   // setInfrstrData({})

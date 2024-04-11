@@ -22,8 +22,8 @@
 <script setup>
 const route = useRoute()
 definePageMeta({
-  auth: true,
-});
+  middleware: 'auth',
+})
 const { data: post } = await useHttp(`/api/v1/custom-content/news/${route.params.id}`)
 </script>
 

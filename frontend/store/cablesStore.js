@@ -12,6 +12,9 @@ export const useCablesStore = defineStore('cables', {
     lineOpData: []
   }),
   getters: {
+    getInfrstrDataLoadingStatus(state) {
+      return state.infrstrDataLoadingStatus 
+    },
     // // get FeatureCollection data
     // infstrData(state) {
     //   return state.infstrData
@@ -41,6 +44,11 @@ export const useCablesStore = defineStore('cables', {
         elem => elem.resourcetype === 'Line'
       )
     },
+    getOperatedLineDataFeatures (state) {
+      return state.infstrData.features?.filter(
+        elem => elem.resourcetype === 'Line' && elem.properties.operations.length > 0
+      )
+    },
     getOpData (state) {
       return state.opData
     },
@@ -54,19 +62,20 @@ export const useCablesStore = defineStore('cables', {
   actions: {
     async getInfrstrData (params, controller) {
       try {
-        this.infrstrDataLoadingStatus = true
+        this.setInfrstrDataLoadingStatus(true)
         await $http.$get(
           '/api/v1/cables/infrastructures', {signal: controller.signal, params}
         ).then(data => {
           this.infstrData = data
-          this.infrstrDataLoadingStatus = false
+          console.log('this.infstrData', this.infstrData)
+          this.setInfrstrDataLoadingStatus(false)
         })
       } catch (error) {
         console.log(error)
       }
-      this.infrstrDataLoadingStatus = false
+      this.setInfrstrDataLoadingStatus(false)
     },
-    setInfrstrDataLoadingStatus(status) {
+    setInfrstrDataLoadingStatus(status) {
       this.infrstrDataLoadingStatus = status
     },
     setInfrstrData (data) {

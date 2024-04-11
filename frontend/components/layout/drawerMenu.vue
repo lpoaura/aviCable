@@ -9,7 +9,7 @@
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-home" :title="t('nav.home_page')"
         to="/"></v-list-item>
-      <v-list-item v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :prepend-icon="icon" :title="text"
+      <v-list-item v-show="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :prepend-icon="icon" :title="text"
         :to="url"></v-list-item>
     </v-list>
     <template v-if="$auth.loggedIn" v-slot:append>
@@ -20,7 +20,7 @@
     </template>
   </v-navigation-drawer>
   <v-bottom-navigation v-if="mobile" :elevation="5" grow density="default" class="text-light-blue-darken-3" theme="dark">
-    <v-btn v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :to="url">
+    <v-btn v-show="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :to="url">
       <v-icon>{{icon}}</v-icon>
       <span>{{text}}</span>
     </v-btn>

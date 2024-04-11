@@ -46,9 +46,9 @@ export const useCoordinatesStore = defineStore("coordinates", {
   actions: {
     setMapBounds(data: string) {
       this.mapBounds = data;
-      console.log('setMapBounds',this.mapBounds)
     },
     setSelectedFeature(data: Feature) {
+      console.log('selectedFeature', data)
       this.selectedFeature = data;
     },
     setCenter(data: PointTuple) {

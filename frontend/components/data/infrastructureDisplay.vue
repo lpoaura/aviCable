@@ -20,13 +20,12 @@ Dans un modal
               hide-details density="compact"></v-text-field>
           </v-col>
         </v-row>
-
+        {{ dataSource[display]?.length }}
       </v-card-text>
     </v-card>
-    <v-data-table v-model="selected" :headers="tableHeaders" :items="dataSource[display]"
-      item-value="properties.id" :loading="cableStore.infrstrDataLoadingStatus" :search="search"
-      :loading-text="$t('common.loading')" :items-per-page="-1" :fixed-header="true" class="elevation-1"
-      density="compact" @click:row="handleRowClick">
+    <v-data-table v-model="selected" :headers="tableHeaders" :items="dataSource[display]" item-value="properties.id"
+      :search="search" :items-per-page="10" :fixed-header="true" class="elevation-1" density="compact"
+      @click:row="handleRowClick">
       <!-- <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
@@ -37,7 +36,8 @@ Dans un modal
       </template> -->
 
       <template v-slot:item.properties.id="{ value, item }">
-        <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(item)" color="primary" link>
+        <v-chip prepend-icon="mdi-eye-circle-outline" color="primary"
+          :to='`/${item.resourcetype ==="Point" ? "supports":"lines"}/${value}`' link>
           {{ value }}
         </v-chip>
       </template>
@@ -73,7 +73,6 @@ const { t } = useI18n()
 // const expanded = reactive([])
 const display = ref('both')
 const search = ref('')
-const expanded = ref([])
 const selected= ref([])
 const selectedData = reactive([])
 const tableHeaders = reactive([
@@ -93,56 +92,33 @@ const tableHeaders = reactive([
   {
     title: 'Dernier diagnostic',
     key: 'properties.diagnosis.0.date'
-  },
-  { title: '+', key: 'data-table-expand' },
+  }
 ])
 
 
 const coordinatesStore = useCoordinatesStore()
 const cableStore = useCablesStore()
-const mortalityStore = useMortalityStore()
-const dataSource = computed(() => {
+const dataSource : object = computed(() => {
   return {
     both: cableStore.getInfstrDatafeatures,
     poles: cableStore.getPointDataFeatures,
     segments: cableStore.getLineDataFeatures
   }
 })
-
-
-
-
-
-onMounted(() => {
-  // setInfrstrData({})
-  // cableStore.getInfrstrData({})
-
+const loading : boolean = computed(() => {
+  return cableStore.getInfrstrDataLoadingStatus
 })
 
-// const source = (choice) => {
-//   switch (choice) {
-//     case 'both':
-//       selectedData = infstrDataFeatures
-//       break
-//     case 'poles':
-//       selectedData = pointDataFeatures
-//       break
-//     case 'segments':
-//       selectedData = lineDataFeatures
-//       break
-//     default:
-//     // TODO raise an exception and handle it or display message to user
-//   }
-// }
+
+
 const showDetail = (rowItem) => {
+  console.log()
   const id = rowItem?.properties.id
   // console.log('showDetail', rowItem?.resourcetype, id)
-  if (rowItem?.resourcetype === 'Point' && id) {
+  if (id && rowItem?.resourcetype in ['Point','Line']) {
     console.log('PUSH SHUPPRT')
-    router.push(`/supports/${id}`)
-  } else if (rowItem?.resourcetype === 'Line' && id) {
-    router.push(`/lines/${id}`)
-  }
+    router.push(`/${rowItem?.resourcetype == 'Point' ? 'support':'lines'}/${id}`)
+}
 }
 
 const notationValues =(item) => {

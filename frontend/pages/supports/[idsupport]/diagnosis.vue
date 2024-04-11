@@ -1,8 +1,10 @@
 <template>
-  <NuxtLayout name="view">
-    <template #map><map-search :edit-mode="support ? false : true" mode="point" /></template>
-    <form-point :diagnosis="diagnosis" :support="support" />
-  </NuxtLayout>
+  <v-container class="fill-height pa-0" fluid>
+    <NuxtLayout name="view">
+      <template #map><map-search :edit-mode="support ? false : true" mode="point" /></template>
+      <form-point :diagnosis="diagnosis" :support="support" />
+    </NuxtLayout>
+  </v-container>
 </template>
 
 
@@ -15,8 +17,9 @@ const FormPoint = defineAsyncComponent(() =>
 )
 
 definePageMeta({
-  auth: true,
-});
+  middleware: 'auth',
+  layout: false
+})
 const route = useRoute()
 const diagnosis = ref(null)
 const support = ref(null)

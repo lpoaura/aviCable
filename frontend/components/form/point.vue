@@ -34,8 +34,9 @@
                     :rules="[rules.requiredOrNotValid, rules.lngRange]" required variant="solo" density="compact" />
                 </v-col>
                 <v-col cols="12" md="4" v-if="!diagnosis">
-                  <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
-                    :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required>
+                  <v-select v-model="pointData.owner_id" :items="getNomenclatureByType('owner')" item-title="label"
+                    item-value="id" :rules="[rules.required]" :label="$t('support.network')" variant="solo"
+                    density="compact" required>
                   </v-select>
                 </v-col>
               </v-row>
@@ -62,48 +63,47 @@
                 <p>diagData
                 <pre><code>{{ diagData }}</code></pre>
                 </p>-->
-                <v-col cols="12" md="4">
-                  <v-menu>
-
+                <v-col cols="12" md="6">
+                <v-menu>
                     <template v-slot:activator="{ props }">
-                      <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
-                        inner-prepend-icon="mdi-calendar" variant="solo" density="compact" v-bind="props" />
+                        <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
+                            :rules="[rules.required]" inner-prepend-icon="mdi-calendar" variant="solo" density="compact"
+                            v-bind="props" required />
                     </template>
-                    <v-date-picker v-model="diagData.date" no-title></v-date-picker>
-                  </v-menu>
+                    <v-date-picker v-model="diagData.date" no-title show-adjacent-months color="primary"></v-date-picker>
+                </v-menu>
+            </v-col>
+                <v-col cols="12" md="6">
+                  <v-select v-model="diagData.condition_id" :items="getNomenclatureByType('infrastr_condition')"
+                    item-title="label" item-value="id" :rules="[rules.required]" :label="$t('support.condition')"
+                    variant="solo" density="compact"></v-select>
                 </v-col>
-                <v-col cols="12" md="4">
-                  <v-select v-model="diagData.condition_id" :items="conditions" item-title="label" item-value="id"
-                    :rules="[rules.required]" :label="$t('support.condition')" variant="solo"
-                    density="compact"></v-select>
-                </v-col>
-                <!-- TODO: virer champ  Neutralisé pour remplacer par la présence d'équipement (oui/non) -->
+                <!-- TODO: virer champ  Neutralisé pour remplacer par la présence d'équipement (oui/non) 
                 <v-col cols="12" md="4">
                   <v-checkbox v-model="diagData.neutralized" :label="$t('diagnosis.equipment')"
                     density="compact"></v-checkbox>
-                </v-col>
+                </v-col> -->
 
                 <v-col cols="12">
-                  <v-autocomplete chips v-model="diagData.pole_type_id" :items="poleTypes" item-title="label"
-                    item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
-                    deletable-chips variant="solo" density="compact"></v-autocomplete>
+                  <v-autocomplete chips v-model="diagData.pole_type_id" :items="getNomenclatureByType('pole_type')"
+                    item-title="label" item-value="id" :rules="[rules.required]" hide-selected
+                    :label="$t('support.support-type')" multiple deletable-chips variant="solo"
+                    density="compact"></v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
-                    :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
-                    density="compact"></v-select>
+                  <v-select v-model="diagData.pole_attractivity_id" :items="getNomenclatureByType('risk_level')"
+                    item-title="label" item-value="id" :rules="[rules.required]" :label="$t('support.attractiveness')"
+                    variant="solo" density="compact"></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
-                    item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
-                    density="compact"></v-select>
+                  <v-select v-model="diagData.pole_dangerousness_id" :items="getNomenclatureByType('risk_level')"
+                    item-title="label" item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')"
+                    variant="solo" density="compact"></v-select>
                 </v-col>
                 <v-divider></v-divider>
                 <v-col cols="12" class="text-left">
                   <strong>{{$t('diagnosis.actions')}}</strong>
                 </v-col>
-
-
                 <v-col cols="12" md="3">
                   <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')"
                     density="compact"></v-checkbox>
@@ -133,15 +133,8 @@
                 </v-col>
               </v-row>
             </v-container>
-            <v-container>
-              <v-row>
-                <v-col cols="12" class="text-left">
-                  <h2>{{ $t('display.equipments') }}</h2>
-                </v-col>
-              </v-row>
-              <v-row>
-              </v-row>
-            </v-container>
+            <!-- <v-btn block color="info" @click="addOperation=!addOperation">Add Operation</v-btn>
+            <form-operation v-if="addOperation" @operation="operationCallback"></form-operation> -->
             <v-divider></v-divider>
             <v-container>
               <v-row>
@@ -197,10 +190,12 @@
             <v-card-text>
               <pre> {{ diagnosis }}</pre>
             </v-card-text>
+            <v-card-text>
+              operationData <pre> {{ operationData }}</pre>
+            </v-card-text>
           </v-card>
         </v-main>
       </v-form>
-
     </v-layout>
   </v-card>
 </template>
@@ -208,6 +203,7 @@
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 import type {DiagData, Diagnosis} from '~/types/diagnosis';
+import { storeToRefs } from 'pinia';
 
 // init modules
 const {t} = useI18n()
@@ -219,9 +215,11 @@ const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 
+const { getNomenclatureByType } = storeToRefs(nomenclaturesStore)
+
 // props
 //const {support, diagnosis, operation} = defineProps(['support', 'diagnosis', 'operation'])
-const {support, diagnosis, operation}  = defineProps<{
+const {support, diagnosis}  = defineProps<{
   support?: Object,
   diagnosis?: Diagnosis,
 }>()
@@ -230,6 +228,7 @@ const upc = ref(null)
 // data
 const form = ref(null) // used to get form ref from "<v-form ref="form">"
 const formValid = ref(true)
+// const addOperation = ref(false)
 // manualChange: false, // boolean to activate manual coordinate change
 // form values
 const lat: Ref<null | number> = ref<null | number>(0)
@@ -261,6 +260,9 @@ const diagData : DiagData = reactive({
   pole_dangerousness_id: null,
   media_id: [],
 })
+const operationData = reactive({})
+
+// const operationCallback = data => operationData.value = data 
 
 //       // rules for form validation
 const rules = reactive({

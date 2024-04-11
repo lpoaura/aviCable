@@ -1,16 +1,19 @@
 <template>
-  <NuxtLayout name="view">
-    <template #map><map-search :edit-mode="false" /></template>
-    <display-component />
-  </NuxtLayout>
+  <v-container class="fill-height pa-0" fluid>
+    <NuxtLayout name="view">
+      <template #map><map-search :edit-mode="false" /></template>
+      <display-component />
+    </NuxtLayout>
+  </v-container>
 </template>
 
 <script setup lang="ts">
-import type { Feature, FeatureCollection } from 'geojson';
+import type { FeatureCollection } from 'geojson';
 import {useDisplay} from 'vuetify'
 
 definePageMeta({
-  auth: true
+  middleware: 'auth',
+  layout: false
 })
 
 const {mobile} = useDisplay()

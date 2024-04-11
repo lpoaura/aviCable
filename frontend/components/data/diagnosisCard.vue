@@ -38,10 +38,9 @@
           </p>
           <p>
             <span class="font-weight-bold">{{ $t('support.support-type') }}</span>
-            <v-chip v-if="diagnosis.pole_type.length>0" v-for="pt in diagnosis.pole_type" :key="pt.id" class="ma-2">
+            <v-chip v-show="diagnosis.pole_type.length>0" v-for="pt in diagnosis.pole_type" :key="pt.id" class="ma-2">
               {{ pt.label }}
             </v-chip>
-            <span v-else>&nbsp;- </span>
           </p>
           <p>
             <span class="font-weight-bold">{{ $t('support.attractiveness') }}</span>

@@ -64,7 +64,7 @@
               <v-btn density="compact" :icon="expandHistory ? 'mdi-chevron-up':'mdi-chevron-down'" />
             </v-app-bar>
             <v-main :class="expandHistory? 'ma-2':''">
-              <div v-if="expandHistory" v-for="action in previousActions" :key="action.id">
+              <div v-show="expandHistory" v-for="action in previousActions" :key="action.id">
                 <data-diagnosis-card v-if="action.resourcetype === 'Diagnosis'" :diagnosis="action" />
                 <data-operation-card v-if="action.resourcetype === 'Operation'" :operation="action" />
               </div>

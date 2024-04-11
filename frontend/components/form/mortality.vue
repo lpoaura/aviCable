@@ -69,7 +69,7 @@
                   :placeholder="$t('mortality.observer')" hide-spin-buttons required variant="solo" density="compact" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="mortalityData.death_cause_id" :items="nomenclaturesStore.deathCauseItems"
+                <v-select v-model="mortalityData.death_cause_id" :items="getNomenclatureByType('cause_of_death')"
                   item-title="label" item-value="id" :rules="[rules.required]" label="Cause de la mortalité"
                   variant="solo" density="compact"></v-select>
               </v-col>
@@ -116,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { mapState } from 'pinia'
+import { storeToRefs } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
@@ -124,6 +124,9 @@ const {mortality} = defineProps(['mortality'])
 const {t} = useI18n()
 const router =useRouter()
 const errorStore = useErrorsStore()
+const nomenclatureStore = useNomenclaturesStore()
+const { getNomenclatureByType } = storeToRefs(nomenclatureStore)
+
 
 const formValid = ref(true)
       // manualChange: false, // boolean to activate manual coordinate change
@@ -173,7 +176,6 @@ const rules = reactive({
 
       // const speciesStore = useSpeciesStore()
       const coordinatesStore = useCoordinatesStore()
-      const nomenclaturesStore = useNomenclaturesStore()
 // const speciesStore = useSpeciesStore()
 
 // const speciesFields = computed(() => {
@@ -296,7 +298,7 @@ const back = () => {
      * through error handling process. Id of Media for which creation did not fail will be return
      * anyway.
      */
-   const createNewMedia=   async () => {
+   const createNewMedia=  async () => {
       const mediaIdList = []
       // await all Promises be resolved before returning result
       await Promise.all(

@@ -13,36 +13,37 @@ export default defineNuxtConfig({
     ],
     "@invictus.codes/nuxt-vuetify",
     "@nuxtjs/i18n",
+    "nuxt3-leaflet",
   ],
   ssr: false,
   pwa: {
-    registerType: 'autoUpdate',
+    registerType: "autoUpdate",
     manifest: {
-      name: 'Cables & avifaune',
-      short_name: 'ocb',
-      theme_color: '#0277bd',
+      name: "Cables & avifaune",
+      short_name: "ocb",
+      theme_color: "#0277bd",
       icons: [
         {
-          src: 'pwa-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
+          src: "pwa-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
         },
         {
-          src: 'pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
+          src: "pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
         },
         {
-          src: 'pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'any maskable',
+          src: "pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any maskable",
         },
       ],
     },
     workbox: {
       navigateFallback: "/",
-      globPatterns: ["**/*.{js,css,html,json,ico,png,svg}"], 
+      globPatterns: ["**/*.{js,css,html,json,ico,png,svg}"],
     },
     client: {
       installPrompt: true,
@@ -54,7 +55,7 @@ export default defineNuxtConfig({
       enabled: true,
       suppressWarnings: true,
       navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
+      type: "module",
     },
   },
   vuetify: {
@@ -154,7 +155,7 @@ export default defineNuxtConfig({
           reset: {
             url: "/api/v1/auth/reset_password/",
             method: "post",
-          }
+          },
         },
       },
     },

@@ -7,6 +7,7 @@ import type { FeatureCollection, Feature } from "geojson";
 
 import { useCoordinatesStore } from "./coordinatesStore";
 
+
 export const useMortalityStore = defineStore("mortality", {
   state: () => ({
     mortalityData: {} as FeatureCollection,
@@ -50,6 +51,7 @@ export const useMortalityStore = defineStore("mortality", {
           params,
         });
         this.mortalityData = data;
+        console.log('this.mortalityData', this.mortalityData)
       } catch (error) {
         console.error(error);
       }
@@ -63,12 +65,3 @@ export const useMortalityStore = defineStore("mortality", {
   },
 });
 
-interface MortalityData {
-  properties: {
-    id: number;
-    vernacular_name: string;
-    scientific_name: string;
-    death_cause?: string;
-    default: boolean | undefined;
-  };
-}

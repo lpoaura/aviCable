@@ -30,7 +30,7 @@ urlpatterns = [
     path("api/v1/species/", include("species.urls")),
     path("api/v1/media/", include("media.urls")),
     path("api/v1/custom-content/", include("custom_content.urls")),
-    path("api/v1/", include("sinp_nomenclatures.urls")),
+    path("api/v1/nomenclatures/", include("sinp_nomenclatures.urls")),
     path("api/v1/map-layers/", include("map_layers.urls")),
     path("api/admin/doc/", include("django.contrib.admindocs.urls")),
     path("api/admin/", admin.site.urls),

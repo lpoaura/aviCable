@@ -1,32 +1,73 @@
 <template>
   <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getMapBounds"
     @moveend="getMapBounds">
+
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
 
-      <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
+      <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution"
         :layer-type="baseLayer.layer_type" />
       <l-control-layers />
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
-        :options="infrastructureGeoJsonOptions" options-style="infrastructureGeoJsonOptionsStyle"/>
+        :options="infrastructureGeoJsonOptions" options-style="infrastructureGeoJsonOptionsStyle" />
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
         :options="deathCasesGeoJsonOptions" />
-      <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options-style="selectedFeatureGeoJsonStyle" />
-      <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
-        :geojson="operatedLineStringData" :options="infrastructureGeoJsonOptions" />
-      <l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
+      <!-- <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options-style="selectedFeatureGeoJsonStyle" /> -->
+      <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés neutralisés" layer-type="overlay"
+        :geojson="operatedLineStringData" :options="operatedInfrastructureGeoJsonOptions" />
+      <l-geo-json v-if="operatedPointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
         :options="operatedInfrastructureGeoJsonOptions" />
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
         layers="osm,cra_aura_latest" :visible="false" />
-      <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
-        <v-alert density="compact" type="warning" title="Information" text="Zoomez pour
+      <l-control v-if="zoom < 10" class="leaflet-control" position="topright">
+        <v-alert type="warning" title="Information" text="Zoomez pour
         afficher
         les données"></v-alert>
+      </l-control>
+      <l-control position="topleft">
+        <v-dialog persistent width="1024" v-model="coordsDiaglog">
+          <template v-slot:activator="{ props }">
+            <div class="leaflet-bar" v-bind="props">
+              <a class="leaflet-bar-part leaflet-bar-part-single" title="Show me where I am" href="#"
+                role="button">X/Y</a>
+            </div>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">Chercher par coordonnées</span>
+            </v-card-title>
+            <v-card-text>
+              <v-form v-model="coordsFormValid">
+                <v-container class="pa-2">
+                  <v-row>
+                    <v-col cols="6">
+                      <v-text-field type="number" :rules="rules.lngRange" min="-20" max="20" v-model.number="manualCenter.lng"
+                        label="X" clearable density="compact" hide-details variant="solo"
+                        hint="WGS84 (min: -20 / max: 20)"></v-text-field>
+                    </v-col>
+
+                    <v-col cols="6">
+                      <v-text-field type="number" :rules="rules.latRange" min="40" max="52" v-model.number="manualCenter.lat"
+                        label="Y" clearable density="compact" hide-details variant="solo"
+                        hint="WGS84 (min: 40 / max: 52)"></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue-darken-1" variant="text" @click="coordsDiaglog = false">
+                Close
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </l-control>
       <l-control-scale position="bottomright" />
 
@@ -61,11 +102,17 @@ const {editMode, mode, mortalityItem} = defineProps({
   mode: { type: String, default: null },
   mortalityItem: {} as Feature
 })
-
+const coordsDiaglog: Ref<boolean> = ref(false)
+const coordsFormValid: Ref<boolean> = ref(false)
 const map : Ref<typeof LMap|null> = ref(null)
 const mapObject : Ref<typeof LMap|null> = ref(null)
 const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<Boolean> = ref(false)
+const manualCenter = reactive({})
+const rules = reactive({
+  latRange: (v: number) => (v >= 40 && v <= 52) || `${t('valid.range')}40 : 52`,
+  lngRange: (v: number) => (v >= -20 && v <= 20) || `${t('valid.range')}-20 : 20`,
+})
 
 // Stores
 const cableStore : StoreGeneric  = useCablesStore()
@@ -79,7 +126,7 @@ const center : ComputedRef<PointTuple> = computed<PointTuple>(() => coordinatesS
 const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures)
 const operatedPointData : ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getOperatedPointDataFeatures)
 const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
-const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
+const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getOperatedLineDataFeatures)
 const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures)
 // const mortalityItem:
 const baseLayers = computed(() => mapLayersStore.baseLayers)
@@ -162,10 +209,22 @@ watch(selectedFeature, (newVal, oldVal) => {
   }
 })
 
+watch(manualCenter, (newVal, oldVal) => {
+  console.log('manualCenter', manualCenter,newVal, coordsFormValid.value)
+  if (newVal.lat && newVal.lng && coordsFormValid.value) {
+    const point=leaflet.latLng(manualCenter)
+    console.log('point',point)
+    coordinatesStore.setCenter(point)
+    coordinatesStore.setZoom(15)
+  }}
+)
+
 const getMapBounds = () => {
+  
   // console.log(mapObject.value.getBounds().toBBoxString())
-  if (mapObject.value) {
-    coordinatesStore.setMapBounds(mapObject.value.getBounds().toBBoxString())
+  if (mapObject.value && mapObject.value.getBounds()) {
+    console.log('updateMapBounds', mapObject.value.getBounds().toBBoxString())
+    coordinatesStore.setMapBounds(mapObject.value.getBounds().toBBoxString()) 
     coordinatesStore.setZoom(mapObject.value.getZoom())
     coordinatesStore.setCenter(mapObject.value.getCenter())
   }
