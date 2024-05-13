@@ -1,42 +1,69 @@
-# Nuxt 3 Minimal Starter
+# essentials
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Project setup
 
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
+```
 # yarn
-yarn install
+yarn
 
 # npm
 npm install
 
 # pnpm
 pnpm install
+
+# bun 
+bun install
 ```
 
-## Development Server
+### Compiles and hot-reloads for development
 
-Start the development server on `http://localhost:3000`
+```
+# yarn
+yarn dev
 
-```bash
+# npm
 npm run dev
+
+# pnpm
+pnpm dev
+
+# bun 
+bun run dev
 ```
 
-## Production
+### Compiles and minifies for production
 
-Build the application for production:
+```
+# yarn
+yarn build
 
-```bash
+# npm
 npm run build
+
+# pnpm
+pnpm build
+
+# bun 
+bun run build
 ```
 
-Locally preview production build:
+### Lints and fixes files
 
-```bash
-npm run preview
+```
+# yarn
+yarn lint
+
+# npm
+npm run lint
+
+# pnpm
+pnpm lint
+
+# bun 
+bun run lint
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Customize configuration
+
+See [Configuration Reference](https://vitejs.dev/config/).
