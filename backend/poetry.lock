@@ -444,13 +444,13 @@ files = [
 
 [[package]]
 name = "dj-sinp-nomenclatures"
-version = "1.0.1"
+version = "1.1.0"
 description = "Django app to manage french SINP nomenclatures standards"
 optional = false
 python-versions = "<4.0,>=3.8.1"
 files = [
-    {file = "dj_sinp_nomenclatures-1.0.1-py3-none-any.whl", hash = "sha256:19fefa94971c85f0b9aff00a8745c6a8adaa3407dd7239bc0d3d67a4f7a3df53"},
-    {file = "dj_sinp_nomenclatures-1.0.1.tar.gz", hash = "sha256:c828e630d25e9aee00216d5c7166d1231899edab353af1f3455d3ab79cb02163"},
+    {file = "dj_sinp_nomenclatures-1.1.0-py3-none-any.whl", hash = "sha256:f928cd0e8b5228cc7269abc1758fa4c7b037cdbf67ca78a957cfcf871d423916"},
+    {file = "dj_sinp_nomenclatures-1.1.0.tar.gz", hash = "sha256:f366b606d4fb9f9ff72f7998a339ec7ee43cdd9d22b4d5db838429b1400ea83a"},
 ]
 
 [package.dependencies]
@@ -460,17 +460,17 @@ djangorestframework = ">=3.0,<4.0"
 
 [[package]]
 name = "dj-sinp-organisms"
-version = "1.2.0"
+version = "1.3.0"
 description = "Django app to manage french SINP organisms standard"
 optional = false
 python-versions = "<4.0,>=3.8.1"
 files = [
-    {file = "dj_sinp_organisms-1.2.0-py3-none-any.whl", hash = "sha256:709ad58663a3c592db49f3363cc630dbd29b1352aa9c550ef769f48e70a62d35"},
-    {file = "dj_sinp_organisms-1.2.0.tar.gz", hash = "sha256:957a88c0717ca537f3c7eb86d4af72e0685b7211fa63193a3e977bdb6f232d3c"},
+    {file = "dj_sinp_organisms-1.3.0-py3-none-any.whl", hash = "sha256:8750317cf11e013b5874d83130d993bb08eca2eeb2a38f32ea1c96dbb62b768e"},
+    {file = "dj_sinp_organisms-1.3.0.tar.gz", hash = "sha256:3a144a2870f2d2673afd945b4dfb939664d02a5c7d8f1e67cb563c66e19dc1a1"},
 ]
 
 [package.dependencies]
-dj-sinp-nomenclatures = ">=1.0.0,<2.0.0"
+dj-sinp-nomenclatures = ">=0.0.0"
 Django = ">=3.2"
 djangorestframework = ">=3,<4"
 
@@ -1646,4 +1646,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.0,<4.0.0"
-content-hash = "0c6179a15ddd446f6630bce45349922ac5bc01a0762004dadf63724b1ea484b7"
+content-hash = "55879f1437a585ef9487faa1622f5b46f0b7507fb4818a8210a2baaaa2783708"

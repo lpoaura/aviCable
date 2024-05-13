@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("sinp_nomenclatures", "0003_rename_item_nomenclature"),
+        ("sinp_nomenclatures", "0001_initial"),
     ]
 
     operations = [

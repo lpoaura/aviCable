@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("species", "0001_initial"),
-        ("sinp_nomenclatures", "0003_rename_item_nomenclature"),
+        ("sinp_nomenclatures", "0001_initial"),
         ("media", "0001_initial"),
         ("cables", "0002_initial"),
     ]

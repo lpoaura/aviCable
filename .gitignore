@@ -241,3 +241,4 @@ docker-compose.override.y*ml
 
 # Old Frontend dir
 frontend.old
+*.archive

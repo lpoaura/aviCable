@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         ("cables", "0001_initial"),
         ("sensitive_area", "0001_initial"),
         ("contenttypes", "0002_remove_content_type_name"),
-        ("sinp_nomenclatures", "0003_rename_item_nomenclature"),
+        ("sinp_nomenclatures", "0001_initial"),
         ("geo_area", "0001_initial"),
         ("media", "0001_initial"),
     ]
