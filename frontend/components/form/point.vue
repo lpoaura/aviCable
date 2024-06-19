@@ -89,8 +89,8 @@
                     deletable-chips variant="solo" density="compact"></v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
-                    :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
+                  <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label"
+                    item-value="id" :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
                     density="compact"></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
@@ -128,8 +128,9 @@
                 </v-col>
                 <v-divider></v-divider>
                 <v-col cols="12">
-                  <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
-                    :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact"></v-textarea>
+                  <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle"
+                    :label="$t('app.remark')" :rules="[rules.textLength]" rows="2" counter="300" variant="solo"
+                    density="compact"></v-textarea>
                 </v-col>
               </v-row>
             </v-container>
@@ -221,10 +222,13 @@ const errorStore = useErrorsStore()
 
 // props
 //const {support, diagnosis, operation} = defineProps(['support', 'diagnosis', 'operation'])
-const {support, diagnosis, operation}  = defineProps<{
+const props = defineProps<{
   support?: Object,
   diagnosis?: Diagnosis,
 }>()
+
+// Adding operations
+const {support, diagnosis}  = props;
 
 const upc = ref(null)
 // data
@@ -567,7 +571,7 @@ const createNewMedia = async () => {
 //   console.log('WATCH DIAG diagData after' , diagData)
 // })
 
-onMounted(() => {
+onMounted(()=> {
   initData()
 })
 </script>
