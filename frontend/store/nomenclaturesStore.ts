@@ -14,7 +14,7 @@
  */
 import { defineStore } from "pinia";
 import * as errorCodes from "~/static/errorConfig.json";
-import type { ErrorInfo } from '~/store/errorStore';
+import type { ErrorInfo } from "~/store/errorStore";
 
 export const useNomenclaturesStore = defineStore("nomenclatures", {
   state: () => ({
@@ -85,7 +85,8 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
      */
     async loadNomenclatures() {
       try {
-        const types = await $http.$get("/api/v1/nomenclatures/types"); // get Types list
+        const params = { with_nomenclatures: true };
+        const types = await $http.$get("/api/v1/nomenclatures/types", {params}); // get Types list
         // gather Infrastructure Condition Items from all Items
         const conditions = types.find(
           (elem: NomenclatureItem) => elem.mnemonic === "infrastr_condition"
@@ -95,7 +96,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
           throw new Error("conditions");
         }
         // set "conds" to state value "conditionItems"
-        this.conditionItems = conditions.item_nomenclature;
+        this.conditionItems = conditions.nomenclatures;
         // gather Owner Items from all Items
         const owners = types.find(
           (elem: NomenclatureItem) => elem.mnemonic === "owner"
@@ -105,7 +106,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
           throw new Error("owners");
         }
         // set "owners" to state value "ownerItems"
-        this.ownerItems = owners.item_nomenclature;
+        this.ownerItems = owners.nomenclatures;
         // gather Pole type Items from all Items
         const poleTypes = types.find(
           (elem: NomenclatureItem) => elem.mnemonic === "pole_type"
@@ -115,7 +116,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
           throw new Error("poleTypes");
         }
         // set "poletypes" to state value "poletypeItems"
-        this.poleTypeItems = poleTypes.item_nomenclature;
+        this.poleTypeItems = poleTypes.nomenclatures;
         // // gather Risk Level Items from all Items
         const riskLevels = types.find(
           (elem: NomenclatureItem) => elem.mnemonic === "risk_level"
@@ -125,7 +126,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
           throw new Error("riskLevels");
         }
         // set "riskLevels" to state value "riskLevelItems"
-        this.riskLevelItems = riskLevels.item_nomenclature;
+        this.riskLevelItems = riskLevels.nomenclatures;
         console.log("this.riskLevelItems", this.riskLevelItems);
 
         // // gather Death cause Items from all Items
@@ -137,7 +138,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
           throw new Error("deathCause");
         }
         // set "riskLevels" to state value "riskLevelItems"
-        this.deathCauseItems = deathCause.item_nomenclature;
+        this.deathCauseItems = deathCause.nomenclatures;
 
         // error handling
       } catch (err: unknown) {

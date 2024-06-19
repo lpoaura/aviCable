@@ -1,10 +1,9 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
-from sinp_nomenclatures.models import Nomenclature
-
 from cables.models import Operation
 from commons.tests.tests_commons import createTestUser, logTestUser
+from django.test import TestCase
 from media.models import Media
+from rest_framework.test import APIClient
+from sinp_nomenclatures.models import Nomenclature
 
 
 class OperationsAnonymousAuthenticationTestCase(TestCase):
@@ -32,55 +31,55 @@ class OperationsAnonymousAuthenticationTestCase(TestCase):
 
     def test_get_list_with_anonymous_user(self):
         resp = self.anonymous_client.get("/api/v1/cables/operations/")
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
         resp = self.unauthentified_client.get("/api/v1/cables/operations/")
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
 
     def test_get_detail_with_anonymous_user(self):
         resp = self.anonymous_client.get(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
         resp = self.unauthentified_client.get(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
 
     def test_create_with_anonymous_user(self):
         resp = self.anonymous_client.post("/api/v1/cables/operations/")
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
         resp = self.unauthentified_client.post("/api/v1/cables/operations/")
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
 
     def test_update_with_anonymous_user(self):
         resp = self.anonymous_client.put(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
         resp = self.unauthentified_client.put(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
 
     def test_partial_update_with_anonymous_user(self):
         resp = self.anonymous_client.patch(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
         resp = self.unauthentified_client.patch(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
 
     def test_partial_delete_with_anonymous_user(self):
         resp = self.anonymous_client.delete(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
         resp = self.unauthentified_client.delete(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 401)
 
 
 class OperationUnauthorizedAuthenticationTestCase(TestCase):
@@ -104,38 +103,38 @@ class OperationUnauthorizedAuthenticationTestCase(TestCase):
     # no restriction for read only by default with Django
     def test_get_list_with_unauthorized_user(self):
         resp = self.unauthorized_client.get("/api/v1/cables/operations/")
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     # no restriction for read only by default with Django
     def test_get_detail_with_unauthorized_user(self):
         resp = self.unauthorized_client.get(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_create_with_unauthorized_user(self):
         resp = self.unauthorized_client.post(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 403)
 
     def test_update_with_unauthorized_user(self):
         resp = self.unauthorized_client.put(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 403)
 
     def test_partial_update_with_unauthorized_user(self):
         resp = self.unauthorized_client.patch(
             f"/api/v1/cables/operations/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 403)
 
     def test_partial_delete_with_unauthorized_user(self):
         resp = self.unauthorized_client.delete(
             f"/api/v1/cables/points/{self.pk}/"
         )
-        self.assertEquals(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 403)
 
 
 class CreatePointOperationTestCase(TestCase):
@@ -193,7 +192,7 @@ class CreatePointOperationTestCase(TestCase):
         resp = self.authentified_client.post(
             "/api/v1/cables/points/", data, format="json"
         )
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
         self.point_id = resp.json()["properties"]["id"]  # get Point id
 
     def test_create_first_Operation_with_last_TRUE(self):
@@ -209,7 +208,7 @@ class CreatePointOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
 
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
         # check value
         op = resp.json()
         self.assertTrue(op["last"])
@@ -228,7 +227,7 @@ class CreatePointOperationTestCase(TestCase):
         resp = self.authentified_client.post(
             "/api/v1/cables/operations/", data, format="json"
         )
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
 
         # check value for created Operation
         first = resp.json()
@@ -240,7 +239,7 @@ class CreatePointOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
 
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
         # check value for new created Operation
         second = resp.json()
         self.assertTrue(second["last"])
@@ -264,7 +263,7 @@ class CreatePointOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
 
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
 
         # check value for created Operation
         first = resp.json()
@@ -284,7 +283,7 @@ class CreatePointOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
 
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
         # check value for new created Operation
         second = resp.json()
         self.assertTrue(second["last"])
@@ -305,7 +304,7 @@ class CreatePointOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
         # check creation fail with statut code 400
-        self.assertEquals(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 400)
 
     def test_create_third_Operation_and_2_first_with_last_TRUE___should_not_occure___(
         self,
@@ -317,28 +316,28 @@ class CreatePointOperationTestCase(TestCase):
             "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
         }
-
+        range_len = 2
         # create 2 Operations on same infrastructure
-        for i in range(0, 2):
+        for _i in range(0, range_len):
             resp = self.authentified_client.post(
                 "/api/v1/cables/operations/", data, format="json"
             )
-            self.assertEquals(resp.status_code, 201)
+            self.assertEqual(resp.status_code, 201)
             # check value
             op = resp.json()
-            self.assertEquals(op["last"], True)
+            self.assertEqual(op["last"], True)
 
         # set last=True for all Operations
         Operation.objects.update(infrastructure=self.point_id, last=True)
         # check both Operation with last=True
         ops = Operation.objects.filter(infrastructure=self.point_id, last=True)
-        self.assertEquals(len(ops), 2)
+        self.assertEqual(len(ops), range_len)
 
         # create third operation on same infrastructure
         resp = self.authentified_client.post(
             "/api/v1/cables/operations/", data, format="json"
         )
-        self.assertEquals(resp.status_code, 201)  # check success
+        self.assertEqual(resp.status_code, 201)  # check success
         # check last one created with lat=True
         new = resp.json()
         self.assertTrue(new["last"])
@@ -346,9 +345,9 @@ class CreatePointOperationTestCase(TestCase):
         ops = Operation.objects.filter(
             infrastructure=self.point_id, last=False
         )
-        self.assertEquals(len(ops), 2)
+        self.assertEqual(len(ops), 2)
         ops = Operation.objects.filter(infrastructure=self.point_id, last=True)
-        self.assertEquals(len(ops), 1)
+        self.assertEqual(len(ops), 1)
 
 
 class CreateLineOperationTestCase(TestCase):
@@ -407,7 +406,7 @@ class CreateLineOperationTestCase(TestCase):
         resp = self.authentified_client.post(
             "/api/v1/cables/lines/", data, format="json"
         )
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
         self.line_id = resp.json()["properties"]["id"]  # get Line id
 
     def test_create_first_Operation_with_last_TRUE(self):
@@ -424,7 +423,7 @@ class CreateLineOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
 
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
         # check value
         op = resp.json()
         self.assertTrue(op["last"])
@@ -443,7 +442,7 @@ class CreateLineOperationTestCase(TestCase):
         resp = self.authentified_client.post(
             "/api/v1/cables/operations/", data, format="json"
         )
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
 
         # check value for created Operation
         first = resp.json()
@@ -455,7 +454,7 @@ class CreateLineOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
 
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
         # check value for new created Operation
         second = resp.json()
         self.assertTrue(second["last"])
@@ -479,7 +478,7 @@ class CreateLineOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
 
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
 
         # check value for created Operation
         first = resp.json()
@@ -499,7 +498,7 @@ class CreateLineOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
 
-        self.assertEquals(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201)
         # check value for new created Operation
         second = resp.json()
         self.assertTrue(second["last"])
@@ -519,7 +518,7 @@ class CreateLineOperationTestCase(TestCase):
             "/api/v1/cables/operations/", data, format="json"
         )
         # check creation fail with statut code 400
-        self.assertEquals(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 400)
 
     def test_create_third_Operation_and_2_first_with_last_TRUE___should_not_occure___(
         self,
@@ -537,27 +536,27 @@ class CreateLineOperationTestCase(TestCase):
             resp = self.authentified_client.post(
                 "/api/v1/cables/operations/", data, format="json"
             )
-            self.assertEquals(resp.status_code, 201)
+            self.assertEqual(resp.status_code, 201)
             # check value
             op = resp.json()
-            self.assertEquals(op["last"], True)
+            self.assertEqual(op["last"], True)
 
         # set last=True for all Operations
         Operation.objects.update(infrastructure=self.line_id, last=True)
         # check both Operation with last=True
         ops = Operation.objects.filter(infrastructure=self.line_id, last=True)
-        self.assertEquals(len(ops), 2)
+        self.assertEqual(len(ops), 2)
 
         # create third operation on same infrastructure
         resp = self.authentified_client.post(
             "/api/v1/cables/operations/", data, format="json"
         )
-        self.assertEquals(resp.status_code, 201)  # check success
+        self.assertEqual(resp.status_code, 201)  # check success
         # check last one created with lat=True
         new = resp.json()
         self.assertTrue(new["last"])
         # check only one is last=True, 2 have last=False
         ops = Operation.objects.filter(infrastructure=self.line_id, last=False)
-        self.assertEquals(len(ops), 2)
+        self.assertEqual(len(ops), 2)
         ops = Operation.objects.filter(infrastructure=self.line_id, last=True)
-        self.assertEquals(len(ops), 1)
+        self.assertEqual(len(ops), 1)

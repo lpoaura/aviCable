@@ -44,6 +44,7 @@ const router = useRouter()
 
 
 const errorStore = useErrorsStore()
+
 const auth = useAuth()
 // interface Login {
 //   username: string,
@@ -61,7 +62,7 @@ const pwdRules = reactive([v => !!v || t('login.required_pwd_msg')])
 const visible = ref(false)
 
 const error = ref(null)
-
+const nomenclaturesStore = useNomenclaturesStore()
 
 const userLogin = async () => {
   // loading=true
@@ -72,6 +73,7 @@ const userLogin = async () => {
       await auth.loginWith('local', {
         body: login
       })
+      nomenclaturesStore.loadNomenclatures()
       router.push('/search')
     }
   } catch (err) {

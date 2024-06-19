@@ -155,7 +155,7 @@ const notationValues =(item) => {
   let result
   if (item.resourcetype == 'Point' && diagnosis) {
     const note = risks[diagnosis.pole_attractivity?.code]?.note + risks[diagnosis.pole_dangerousness?.code]?.note
-    result = note < 3 ? 'RISK_L' : note >= 5 ? 'RISK_H' : 'RISK_M' 
+    result = note < 3 ? 'RISK_L' : note >= 5 ? 'RISK_H' : 'RISK_M'
   } else {
     // Manage lines risks
     result = 'RISK_L'

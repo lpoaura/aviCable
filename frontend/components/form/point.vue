@@ -180,19 +180,19 @@
                 }}</v-btn>
             </v-row>
           </v-card-actions>
-          <v-card>
+          <v-card class="text-left">
             <v-card-title>Support</v-card-title>
             <v-card-text>
               <pre> {{ support }}</pre>
             </v-card-text>
           </v-card>
-          <v-card>
+          <v-card class="text-left">
             <v-card-title>diagData</v-card-title>
             <v-card-text>
               <pre> {{ diagData }}</pre>
             </v-card-text>
           </v-card>
-          <v-card>
+          <v-card class="text-left">
             <v-card-title>diagnosis</v-card-title>
             <v-card-text>
               <pre> {{ diagnosis }}</pre>
@@ -249,7 +249,8 @@ const diagnosisId = computed(() => route.query.id_diagnosis)
 const diagData : DiagData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
               .toISOString().substr(0, 10),
-  remark: null,
+  remark: '',
+  technical_proposal: '',
   infrastructure:null,
   pole_type_id: [],
   neutralized: false,
@@ -294,8 +295,8 @@ const back = () => {
  */
 
 const initData = () => {
-  console.log('diagnosis', diagnosis)
-  if (diagnosis) {
+  console.log('diagnosis', diagnosisId)
+  if (diagnosisId) {
     console.log('HAS DIAG', diagnosis)
     let diagdata = {
       id : diagnosis.value.id,

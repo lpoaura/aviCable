@@ -7,7 +7,7 @@
                 </slot>
             </v-col>
             <v-col cols="6" class="pa-0 fill-height">
-                <slot />
+                <slot></slot>
             </v-col>
         </v-row>
 
@@ -15,7 +15,7 @@
             <v-card class="fill-height" width="100%">
               <!--   <v-tabs v-model="tab" grow density='compact'>
                     <v-tab value="map"> {{ $t('app.map') }} </v-tab>
-                    <v-tab value="data"> {{ $t('app.data') }} </v-tab> 
+                    <v-tab value="data"> {{ $t('app.data') }} </v-tab>
                     <v-tab value="map"><v-icon>mdi-map</v-icon></v-tab>
                     <v-tab value="data"><v-icon>mdi-format-list-bulleted</v-icon></v-tab>
                 </v-tabs>

@@ -241,3 +241,5 @@ docker-compose.override.y*ml
 
 # Old Frontend dir
 frontend.old*
+
+backend/geo_area/fixtures/municipalities_fr.xml.gz
