@@ -7,14 +7,6 @@ export type MediaSerializer = {
   storage: any
 }
 
-export type NomenclatureSerializer = {
-  code: string
-  id: number
-  label: string
-  mnemonic: string
-  type: any
-}
-
 export type DiagnosisSerializer = {
   attractionAdvice?: boolean
   changeAdvice?: boolean

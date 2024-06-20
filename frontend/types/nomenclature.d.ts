@@ -1,4 +1,4 @@
-declare interface NomenclatureItem {
+export interface NomenclatureItem {
   id: number;
   code: string;
   mnemonic: string;

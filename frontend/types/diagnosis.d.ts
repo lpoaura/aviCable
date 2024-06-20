@@ -1,4 +1,4 @@
-declare interface DiagData {
+export interface DiagData {
   date: string;
   remark: string | null;
   infrastructure: number | null;
@@ -13,7 +13,7 @@ declare interface DiagData {
   media_id: Array<number>;
 }
 
-declare interface Diagnosis {
+export interface Diagnosis {
   id: number;
   infrastructure: number;
   date: string;
