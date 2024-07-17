@@ -40,5 +40,5 @@ printf "$script" | python manage.py shell
 if [ "$DEBUG" = "True" ]; then
     python -m manage runserver 0.0.0.0:8000
 else
-    gunicorn -b 0.0.0.0:8000 config.wsgi
+    gunicorn -b 0.0.0.0:8000 config.asgi -k uvicorn.workers.UvicornWorker
 fi
