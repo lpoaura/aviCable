@@ -35,7 +35,9 @@
     </v-card-text>
     <v-card-actions>
       <v-btn density="compact" color="orange" @click="$router.push(`/supports/${data.properties.id}/support`)"><v-icon>mdi-pencil</v-icon>
-        Modifier</v-btn>
+        Modifier</v-btn><v-spacer></v-spacer>
+        <v-btn color="green" @click="router.push(`/supports/${data?.properties.id}/diagnosis`)"><v-icon>mdi-list-status</v-icon> Nouveau diagnostic</v-btn>
+        <v-btn color="green" @click="router.push(`/supports/${data?.properties.id}/operation`)"><v-icon>mdi-cog</v-icon> Nouvel équipement</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -43,13 +45,13 @@
 <script lang="ts" setup>
 const {data} = defineProps(['data'])
 
+const router = useRouter()
+
 const lastDiag = computed(() => {
   return data?.properties.diagnosis.find(
         (action: { last: boolean }) =>
            action.last
       )
 })
-
-
 
 </script>

@@ -68,7 +68,6 @@
       </v-list>
     </template>
     <template v-slot:actions>
-      <v-btn v-if="diagnosis.last" color="green" @click="newDiag"><v-icon>mdi-eye-plus</v-icon> Nouveau</v-btn>
       <v-btn color="orange" @click="updateDiag"><v-icon>mdi-pencil</v-icon> Modifier</v-btn>
     </template>
     <!-- <pre><code>{{ diagnosis }}</code></pre> -->
@@ -91,13 +90,7 @@ const stateColors = reactive({
   POOR: 'yellow',
 })
 
-const newDiag = () => {
-  console.debug(`/supports/${diagnosis.infrastructure}/diagnosis`)
-  router.push({
-    path: `/supports/${diagnosis.infrastructure}/diagnosis`,
-    query: { modifyDiag: 'false' }
-  })
-}
+
 const updateDiag = () => {
   router.push({
     path: `/supports/${diagnosis.infrastructure}/diagnosis`,
