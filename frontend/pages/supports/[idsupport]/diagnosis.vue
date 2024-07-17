@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="view">
     <template #map><map-search :edit-mode="support ? false : true" mode="point" /></template>
-    <form-point :diagnosis="diagnosis" :support="support" />
+    <form-diagnosis :diagnosis="diagnosis" :support="support" />
   </NuxtLayout>
 </template>
 
@@ -14,12 +14,15 @@ const FormPoint = defineAsyncComponent(() =>
   import('~/components/form/point.vue')
 )
 
+const cablesStore = useCablesStore()
+
 definePageMeta({
   auth: true,
 });
 const route = useRoute()
 const diagnosis = ref(null)
 const support = ref(null)
+const supportId = computed(() => route.params.idsupport)
 
 const modifyDiag = computed(() => route.query.modifyDiag === 'true' ? true : false)
 
@@ -30,7 +33,7 @@ watch(support, (_val)=> {
 
 const getData = async () =>{
   if (route.query.id_diagnosis) {
-    console.debug(`load Diag AdminPageComponentdata ${route.query.id_diagnosis}`)
+   console.debug(`load Diag AdminPageComponentdata ${route.query.id_diagnosis}`)
    await useHttp(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
    console.debug('DIAG VALUES', diagnosis.value)
   }
@@ -44,5 +47,7 @@ const getData = async () =>{
 
 onMounted(()=> {
   getData()
+  cablesStore.setFormSupportId(supportId.value)
 })
-</script>
+
+</script>UT

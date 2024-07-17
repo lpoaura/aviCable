@@ -49,11 +49,12 @@
     "equipment": "Structure équipée",
     "make-dissuasive": "rendre dissuasif",
     "isolate" : "isoler",
-    "make-attractive": "rendre attractif"
+    "make-attractive": "rendre attractif",
+    "change-advice": "changer l'armement"
   },
   "forms": {
     "coordinates": "Coordonnées",
-    "datecreate": "Date de création",
+    "datecreate": "Date du diagnostic",
     "general": "Informations Générales",
     "general-infrastructure": "Informations générales de l'infrastructure",
     "risk_assessment": "Evaluation des Risques",

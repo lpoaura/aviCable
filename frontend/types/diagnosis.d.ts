@@ -1,6 +1,8 @@
 export interface DiagData {
-  date: string;
+  id?: number|null;
+  date: string|Date;
   remark: string | null;
+  technical_proposal: string|null;
   infrastructure: number | null;
   pole_type_id: Array<number>;
   neutralized: boolean;
@@ -14,10 +16,11 @@ export interface DiagData {
 }
 
 export interface Diagnosis {
-  id: number;
+  id?: number|null;
   infrastructure: number;
   date: string;
-  remark: string;
+  remark: string|null;
+  technical_proposal: string|null;
   neutralized: boolean;
   condition: number;
   isolation_advice: boolean;

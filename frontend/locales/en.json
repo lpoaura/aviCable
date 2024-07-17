@@ -30,7 +30,7 @@
   },
   "forms": {
     "coordinates": "Coordinates",
-    "datecreate": "Creation date",
+    "datecreate": "Diagnostic date",
     "general": "General Information",
     "general-infrastructure": "Information general infrastructure",
     "risk_assessment": "Risks Assessment",

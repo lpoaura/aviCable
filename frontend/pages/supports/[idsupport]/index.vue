@@ -6,18 +6,18 @@
 </template>
 
 <script setup>
-import {useCoordinatesStore} from '../../../store/coordinatesStore';
 import {geoJSON} from 'leaflet'
 
 const route = useRoute()
 
 const coordinateStore = useCoordinatesStore()
 
-const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`)
+const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}/`)
 
 const zoomTo = () => {
   // const layer = geoJSON(info.value)
   coordinateStore.setCenter([...info.value.geometry.coordinates].reverse())
+  coordinateStore.setSelectedFeature(info.value)
   coordinateStore.setZoom(14)
 }
 

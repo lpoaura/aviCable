@@ -14,7 +14,9 @@ export default defineNuxtConfig({
     "@invictus.codes/nuxt-vuetify",
     "@nuxtjs/i18n",
   ],
+
   ssr: false,
+
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
@@ -57,6 +59,7 @@ export default defineNuxtConfig({
       type: 'module',
     },
   },
+
   vuetify: {
     /* vuetify options */
     vuetifyOptions: {
@@ -71,19 +74,23 @@ export default defineNuxtConfig({
       autoImport: true,
     },
   },
+
   css: [
     "vuetify/lib/styles/main.css",
     "@mdi/font/css/materialdesignicons.min.css",
     "leaflet/dist/leaflet.css",
     "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
   ],
+
   build: {
     transpile: ["vuetify", "leaflet-geoman"],
   },
+
   imports: {
     // Auto-import pinia stores defined in `~/stores`
     dirs: ["store"],
   },
+
   i18n: {
     locales: [
       { code: "en", iso: "en-US", file: "en.json" },
@@ -93,6 +100,7 @@ export default defineNuxtConfig({
     defaultLocale: "fr",
     langDir: "locales",
   },
+
   // devtools: {
   //     // Enable devtools (default: true)
   //     enabled: true,
@@ -108,7 +116,9 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8000",
     },
   },
+
   http: {},
+
   auth: {
     // cookie: false,
     redirect: {
@@ -159,4 +169,6 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  compatibilityDate: "2024-07-15",
 });

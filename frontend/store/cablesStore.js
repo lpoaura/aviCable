@@ -9,7 +9,8 @@ export const useCablesStore = defineStore('cables', {
     // lineData: {}, // Cable lines data
     opData: [],
     pointOpData: [],
-    lineOpData: []
+    lineOpData: [],
+    formSupportId: null,
   }),
   getters: {
     // // get FeatureCollection data
@@ -17,6 +18,9 @@ export const useCablesStore = defineStore('cables', {
     //   return state.infstrData
     // },
     // get FeatureCollection array containing data (Json Object)
+    getFormSupportId (state) {
+      return state.formSupportId
+    },
     getInfstrDatafeatures (state) {
       return state.infstrData.features
     },
@@ -65,6 +69,9 @@ export const useCablesStore = defineStore('cables', {
         console.log(error)
       }
       this.infrstrDataLoadingStatus = false
+    },
+    setFormSupportId(supportId) {
+      this.formSupportId = supportId
     },
     setInfrstrDataLoadingStatus(status) {
       this.infrstrDataLoadingStatus = status

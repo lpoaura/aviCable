@@ -9,7 +9,7 @@
         :layer-type="baseLayer.layer_type" />
       <l-control-layers />
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
-        :options="infrastructureGeoJsonOptions" options-style="infrastructureGeoJsonOptionsStyle"/>
+        :options="infrastructureGeoJsonOptions" :options-style="infrastructureGeoJsonOptionsStyle"/>
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import leaflet from 'leaflet'
-import "leaflet.locatecontrol";
+import "leaflet.locatecontrol"
 import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
 // import 'leaflet-search'
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch"
@@ -86,8 +86,8 @@ const baseLayers = computed(() => mapLayersStore.baseLayers)
 
 const newPointCoord = computed(() => coordinatesStore.newPointCoord)
 const newLineCoord = computed(() => coordinatesStore.newLineCoord)
-const selectedFeature : ComputedRef<GeoJSON|null> = computed<GeoJSON|null>(() => 
-  !(Object.keys(coordinatesStore.selectedFeature).length === 0) 
+const selectedFeature : ComputedRef<GeoJSON|null> = computed<GeoJSON|null>(() =>
+  !(Object.keys(coordinatesStore.selectedFeature).length === 0)
   ? buffer(coordinatesStore.selectedFeature, 150, {units: 'meters'})
   : null
 )
@@ -96,7 +96,7 @@ const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
   // TODO To be adapted
   layer.bindPopup(
     `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
-      </span><a to="/search#mortality">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'} 
+      </span><a to="/search#mortality">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
         ${feature.properties?.owner.label} ${feature.properties?.id}</a></h2>`
     )
 
@@ -152,7 +152,7 @@ const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
 // })
 watch(selectedFeature, (newVal, oldVal) => {
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-    
+
     console.log('selectedFeature update')
     const newObj = leaflet.geoJSON(newVal)
     // const centroid = newVal.geometry.type == ''
@@ -201,7 +201,7 @@ const hookUpDraw = async () => {
 
   // GeoLocate plugin
   leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
-  
+
   // GeoSearch plugin
   const provider = new OpenStreetMapProvider()
   GeoSearchControl({

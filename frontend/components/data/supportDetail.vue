@@ -17,60 +17,26 @@
     </v-app-bar>
     <v-main scrollable>
       <v-container>
-        <v-card title="Information contextuelle">
-          <v-card-text>
-            <v-row>
-              <v-col cols="12" lg="6">
-                <p class="text-strong" v-if="data.properties.geo_area.length > 0">
-                  Limites administratives
-                </p>
-                <v-chip-group>
-                  <v-chip v-for="(ga, index) in data.properties.geo_area" :key="index">
-                    {{ ga.name }} ({{ ga.code }})
-                  </v-chip>
-                </v-chip-group>
-              </v-col>
-              <v-col cols="12" lg="6">
-                <p v-if="data.properties.sensitive_area.length > 0">
-                  Zones sensibles
-                </p>
-                <v-chip-group>
-                  <v-chip v-for="sa in data.properties.sensitive_area" :key="sa.id">
-                    {{ sa.name }} {{ sa.name }}
-                  </v-chip>
-                </v-chip-group>
-              </v-col>
-              <v-col cols="12" v-if="lastDiag && lastDiag.pole_type.length">
-                <p>Type de support</p>
-                <!-- <pre>{{ lastDiag }}</pre> -->
-                <v-chip-group>
-                <v-chip v-for="pt in lastDiag?.pole_type" :key="pt.id">
-                  <pre>{{ pt.label }}</pre>
-                </v-chip>
-              </v-chip-group>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn density="compact" color="orange" @click="$router.push('/search')"><v-icon>mdi-pencil</v-icon> Modifier</v-btn>
-          </v-card-actions>
-        </v-card>
+        <data-support-card :data="data"></data-support-card>
         <data-diagnosis-card :diagnosis="lastDiag" />
-        <data-operation-card v-if="lastOp" :operation="lastOp" />
-        <!-- <v-card class="my-2" v-if="previousActions.length">
+        <data-operation-card v-if="lastOp" :operation="lastOp" :supportId="data.properties.id"/>
+
+        <v-card class="my-2" >
           <v-layout>
             <v-app-bar density="compact" color="blue-lighten-2" @click="expandHistory = !expandHistory">
               <v-app-bar-title> {{ $t('support.history') }} </v-app-bar-title><v-spacer />
+              <v-chip prepend-icon="mdi-list-status">{{ otherDiags.length }}</v-chip>&nbsp;
+              <v-chip prepend-icon="mdi-cog">{{ otherOps.length }}</v-chip>
               <v-btn density="compact" :icon="expandHistory ? 'mdi-chevron-up':'mdi-chevron-down'" />
             </v-app-bar>
             <v-main :class="expandHistory? 'ma-2':''">
-              <div v-if="expandHistory" v-for="action in previousActions" :key="action.id">
-                <data-diagnosis-card v-if="action.resourcetype === 'Diagnosis'" :diagnosis="action" />
-                <data-operation-card v-if="action.resourcetype === 'Operation'" :operation="action" />
+              <div v-if="expandHistory" >
+                <data-diagnosis-card v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" />
+                <data-operation-card v-for="ops in otherOps" :key="ops.id"  :operation="ops" />
               </div>
             </v-main>
           </v-layout>
-        </v-card> -->
+        </v-card>
 
       </v-container>
     </v-main>
@@ -93,6 +59,13 @@ const lastDiag = computed(() => {
       )
 })
 
+const otherDiags = computed(() => {
+  return data?.properties.diagnosis.filter(
+        (action: { last: boolean }) =>
+           !action.last
+      )
+})
+
 const neutralized : boolean = computed(() => {
   return data?.properties.operations.length>0
 })
@@ -101,6 +74,13 @@ const lastOp = computed(() => {
   return data?.properties.operations.find(
         (action: {  last: boolean }) =>
           action.last
+      )
+})
+
+const otherOps = computed(() => {
+  return data?.properties.operations.filter(
+        (action: { last: boolean }) =>
+           !action.last
       )
 })
 // const previousActions = computed(() => {

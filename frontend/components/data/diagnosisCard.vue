@@ -1,16 +1,18 @@
 <template>
   <v-card class="my-2" :title="$t('display.diagnosis')" :subtitle="`Réalisé le ${diagnosis.date}`">
-
     <template v-slot:text>
       <span class="font-weight-bold">Recommandations&nbsp;:</span><br>
-      <v-chip :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': false" :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
         {{ diagnosis.isolation_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.isolate') }}
       </v-chip>
-      <v-chip :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation': false" :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
         {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.make-dissuasive') }}
       </v-chip>
-      <v-chip :class="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation': false" :color="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
         {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.make-attractive') }}
+      </v-chip>
+      <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation': false" :color="[diagnosis.change_advice == true ? 'warning' : '']"  class="ma-2">
+        {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.change-advice') }}
       </v-chip>
       <p>
         <span class="font-weight-bold">{{ $t('support.condition') }}&nbsp;:</span>
@@ -20,7 +22,7 @@
       </p>
       <p>
         <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
-        <v-chip v-if="diagnosis.pole_type.length>0" v-for="pt in diagnosis.pole_type" :key="pt.id" class="ma-2">
+        <v-chip v-if="diagnosis.pole_type.length>0" color="info" v-for="pt in diagnosis.pole_type" :key="pt.id" class="ma-2">
           {{ pt.label }}
         </v-chip>
         <span v-else>&nbsp;- </span>
