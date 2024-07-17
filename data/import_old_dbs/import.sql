@@ -7,6 +7,7 @@
 -- TRUNCATE cables_app.cables_infrastructure RESTART IDENTITY CASCADE;
 -- TRUNCATE cables_app.mortality_mortality RESTART IDENTITY CASCADE;
 
+ROLLBACK;
 
 BEGIN;
 
@@ -21,27 +22,27 @@ ALTER TABLE ${schema_name}.t_equipements_troncons_erdf
     DROP COLUMN IF EXISTS uuid_action;
 
 ALTER TABLE ${schema_name}.t_inventaire_poteaux_erdf
-    ADD COLUMN IF NOT EXISTS uuid_infstr uuid NOT NULL DEFAULT uuid_generate_v4();
+    ADD COLUMN IF NOT EXISTS uuid_infstr UUID NOT NULL DEFAULT uuid_generate_v4();
 ALTER TABLE ${schema_name}.t_inventaire_poteaux_erdf
-    ADD COLUMN IF NOT EXISTS uuid_diagnosis uuid NOT NULL DEFAULT uuid_generate_v4();
+    ADD COLUMN IF NOT EXISTS uuid_diagnosis UUID NOT NULL DEFAULT uuid_generate_v4();
 ALTER TABLE ${schema_name}.t_equipements_poteaux_erdf
-    ADD COLUMN IF NOT EXISTS uuid_operation uuid NOT NULL DEFAULT uuid_generate_v4();
+    ADD COLUMN IF NOT EXISTS uuid_operation UUID NOT NULL DEFAULT uuid_generate_v4();
 
 
 ALTER TABLE ${schema_name}.t_inventaire_troncons_erdf
-    ADD COLUMN IF NOT EXISTS uuid_infstr uuid NOT NULL DEFAULT uuid_generate_v4();
+    ADD COLUMN IF NOT EXISTS uuid_infstr UUID NOT NULL DEFAULT uuid_generate_v4();
 ALTER TABLE ${schema_name}.t_inventaire_troncons_erdf
-    ADD COLUMN IF NOT EXISTS uuid_diagnosis uuid NOT NULL DEFAULT uuid_generate_v4();
+    ADD COLUMN IF NOT EXISTS uuid_diagnosis UUID NOT NULL DEFAULT uuid_generate_v4();
 ALTER TABLE ${schema_name}.t_equipements_troncons_erdf
-    ADD COLUMN IF NOT EXISTS uuid_operation uuid NOT NULL DEFAULT uuid_generate_v4();
+    ADD COLUMN IF NOT EXISTS uuid_operation UUID NOT NULL DEFAULT uuid_generate_v4();
 
 
 INSERT INTO cables_app.cables_infrastructure (timestamp_create, timestamp_update, uuid,
                                               created_by_id,
                                               owner_id,
                                               polymorphic_ctype_id, updated_by_id)
-SELECT COALESCE(date_inventaire, NOW()),
-       NOW(),
+SELECT coalesce(date_inventaire, now()),
+       now(),
        uuid_infstr,
        1,
        sinp_nomenclatures_nomenclature.id,
@@ -50,7 +51,7 @@ SELECT COALESCE(date_inventaire, NOW()),
 FROM ${schema_name}.t_inventaire_poteaux_erdf
    , cables_app.sinp_nomenclatures_nomenclature
    , cables_app.django_content_type
-WHERE mnemonic LIKE 'IO_ENEDIS'
+WHERE code LIKE 'IO_ENEDIS'
   AND (django_content_type.app_label, django_content_type.model) = ('cables', 'point');
 
 INSERT INTO cables_app.cables_point (infrastructure_ptr_id, geom)
@@ -66,8 +67,8 @@ INSERT INTO cables_app.cables_infrastructure (timestamp_create, timestamp_update
                                               created_by_id,
                                               owner_id,
                                               polymorphic_ctype_id, updated_by_id)
-SELECT COALESCE(date_inventaire, NOW()),
-       NOW(),
+SELECT coalesce(date_inventaire, now()),
+       now(),
        uuid_infstr,
        1,
        sinp_nomenclatures_nomenclature.id,
@@ -76,7 +77,7 @@ SELECT COALESCE(date_inventaire, NOW()),
 FROM ${schema_name}.t_inventaire_troncons_erdf
    , cables_app.sinp_nomenclatures_nomenclature
    , cables_app.django_content_type
-WHERE mnemonic LIKE 'IO_ENEDIS'
+WHERE code LIKE 'IO_ENEDIS'
   AND (django_content_type.app_label, django_content_type.model) = ('cables', 'line');
 
 INSERT INTO cables_app.cables_line (infrastructure_ptr_id, geom)
@@ -96,7 +97,7 @@ FROM cables_app.cables_infrastructure
          LEFT JOIN cables_app.cables_point
                    ON cables_infrastructure.id = cables_point.infrastructure_ptr_id
          JOIN cables_app.geo_area
-              ON st_intersects(COALESCE(cables_line.geom, cables_point.geom), geo_area.geom)
+              ON st_intersects(coalesce(cables_line.geom, cables_point.geom), geo_area.geom)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO cables_app.cables_diagnosis(timestamp_create, timestamp_update, uuid, date, remark, last, neutralized,
@@ -105,17 +106,17 @@ INSERT INTO cables_app.cables_diagnosis(timestamp_create, timestamp_update, uuid
                                         pole_attractivity_id, pole_dangerousness_id, sgmt_build_integr_risk_id,
                                         sgmt_moving_risk_id, sgmt_topo_integr_risk_id, sgmt_veget_integr_risk_id,
                                         updated_by_id)
-SELECT COALESCE(date_inventaire, NOW())                  AS timestamp_create,
-       NOW()                                             AS timestamp_update,
+SELECT coalesce(date_inventaire, now())                  AS timestamp_create,
+       now()                                             AS timestamp_update,
        t_inventaire_poteaux_erdf.uuid_diagnosis          AS uuid,
-       COALESCE(date_inventaire, '2000-01-01'::DATE)     AS date,
+       coalesce(date_inventaire, '2000-01-01'::DATE)     AS date,
        remarques                                         AS remark,
        TRUE                                              AS last,
-       COALESCE(deja_neutralise, FALSE)                  AS neutralized,
+       coalesce(deja_neutralise, FALSE)                  AS neutralized,
 
-       COALESCE(neutralisation_prevue_isolation, FALSE)  AS isolation_advice,
-       COALESCE(neutralisation_prevue_dissuasion, FALSE) AS dissuasion_advice,
-       COALESCE(neutralisation_prevue_attraction, FALSE) AS attraction_advice,
+       coalesce(neutralisation_prevue_isolation, FALSE)  AS isolation_advice,
+       coalesce(neutralisation_prevue_dissuasion, FALSE) AS dissuasion_advice,
+       coalesce(neutralisation_prevue_attraction, FALSE) AS attraction_advice,
        FALSE                                             AS change_advice,
        NULL                                              AS technical_proposal,
        6                                                 AS condition_id,
@@ -195,10 +196,10 @@ FROM ${schema_name}.t_inventaire_poteaux_erdf
 
 INSERT INTO cables_app.cables_operation(timestamp_create, timestamp_update, uuid, date, remark, last, created_by_id,
                                         infrastructure_id, operation_type_id, polymorphic_ctype_id, updated_by_id)
-SELECT COALESCE(date_equipement, NOW())              AS timestamp_create,
-       NOW()                                         AS timestamp_update,
+SELECT coalesce(date_equipement, now())              AS timestamp_create,
+       now()                                         AS timestamp_update,
        t_equipements_poteaux_erdf.uuid_operation     AS uuid,
-       COALESCE(date_equipement, '2000-01-01'::DATE) AS date,
+       coalesce(date_equipement, '2000-01-01'::DATE) AS date,
        NULL                                          AS remark,
        TRUE                                          AS last,
        1                                             AS created_by_id,
@@ -208,7 +209,7 @@ SELECT COALESCE(date_equipement, NOW())              AS timestamp_create,
        1                                             AS updated_by_id
 FROM ${schema_name}.t_equipements_poteaux_erdf
          JOIN ${schema_name}.t_inventaire_poteaux_erdf ON t_equipements_poteaux_erdf.id_inventaire_poteau_erdf =
-                                                    t_inventaire_poteaux_erdf.id_inventaire_poteau_erdf
+                                                          t_inventaire_poteaux_erdf.id_inventaire_poteau_erdf
          JOIN cables_app.cables_infrastructure
               ON t_inventaire_poteaux_erdf.uuid_infstr = cables_infrastructure.uuid
    , cables_app.sinp_nomenclatures_nomenclature AS op_nom
@@ -217,12 +218,14 @@ WHERE op_nom.code = 'OP_TYPE_INSTALL'
   AND (django_content_type.app_label, django_content_type.model) = ('cables', 'pointoperation')
 ;
 
-INSERT INTO cables_app.cables_equipment (timestamp_create, timestamp_update, count, reference, comment, created_by_id,
+INSERT INTO cables_app.cables_equipment (uuid, timestamp_create, timestamp_update, count, reference, comment,
+                                         created_by_id,
                                          type_id, updated_by_id)
 --     (timestamp_create, timestamp_update, count, reference, comment, created_by_id, type_id, updated_by_id)
-SELECT cables_operation.date              AS timestamp_create,
+SELECT uuid_generate_v4()                 AS uuid,
+       cables_operation.date              AS timestamp_create,
        cables_operation.date              AS timestamp_update,
-       COALESCE(id_nb_equipements, 0)     AS count,
+       coalesce(id_nb_equipements, 0)     AS count,
        NULL                               AS reference,
        NULL                               AS comment,
        1                                  AS created_by_id,
@@ -231,7 +234,7 @@ SELECT cables_operation.date              AS timestamp_create,
 FROM cables_app.cables_operation
          JOIN ${schema_name}.t_equipements_poteaux_erdf ON uuid_operation = cables_operation.uuid
          JOIN ${schema_name}.dico_type_equipement_poteau ON t_equipements_poteaux_erdf.id_type_equipement_poteau =
-                                                      dico_type_equipement_poteau.id_type_equipement_poteau
+                                                            dico_type_equipement_poteau.id_type_equipement_poteau
          JOIN tmp.equipement_poteau ON dico_type_equipement_poteau.id_type_equipement_poteau = equipement_poteau.id
          JOIN cables_app.sinp_nomenclatures_nomenclature
               ON equipement_poteau.final_code = sinp_nomenclatures_nomenclature.code AND type_id = 7;
@@ -248,10 +251,10 @@ FROM cables_app.cables_operation
 
 INSERT INTO cables_app.cables_operation(timestamp_create, timestamp_update, uuid, date, remark, last, created_by_id,
                                         infrastructure_id, operation_type_id, polymorphic_ctype_id, updated_by_id)
-SELECT COALESCE(t_equipements_troncons_erdf.date_equipement_troncon, NOW())              AS timestamp_create,
-       NOW()                                                                             AS timestamp_update,
+SELECT coalesce(t_equipements_troncons_erdf.date_equipement_troncon, now())              AS timestamp_create,
+       now()                                                                             AS timestamp_update,
        t_equipements_troncons_erdf.uuid_operation                                        AS uuid,
-       COALESCE(t_equipements_troncons_erdf.date_equipement_troncon, '2000-01-01'::DATE) AS date,
+       coalesce(t_equipements_troncons_erdf.date_equipement_troncon, '2000-01-01'::DATE) AS date,
        NULL                                                                              AS remark,
        TRUE                                                                              AS last,
        1                                                                                 AS created_by_id,
@@ -261,7 +264,7 @@ SELECT COALESCE(t_equipements_troncons_erdf.date_equipement_troncon, NOW())     
        1                                                                                 AS updated_by_id
 FROM ${schema_name}.t_equipements_troncons_erdf
          JOIN ${schema_name}.t_inventaire_troncons_erdf ON t_equipements_troncons_erdf.id_inventaire_troncon_erdf =
-                                                     t_inventaire_troncons_erdf.id_inventaire_troncon_erdf
+                                                           t_inventaire_troncons_erdf.id_inventaire_troncon_erdf
          JOIN cables_app.cables_infrastructure
               ON t_inventaire_troncons_erdf.uuid_infstr = cables_infrastructure.uuid
    , cables_app.sinp_nomenclatures_nomenclature AS op_nom
@@ -270,10 +273,12 @@ WHERE op_nom.code = 'OP_TYPE_INSTALL'
   AND (django_content_type.app_label, django_content_type.model) = ('cables', 'lineoperation')
 ;
 
-INSERT INTO cables_app.cables_equipment (timestamp_create, timestamp_update, count, reference, comment, created_by_id,
+INSERT INTO cables_app.cables_equipment (uuid, timestamp_create, timestamp_update, count, reference, comment,
+                                         created_by_id,
                                          type_id, updated_by_id)
 --     (timestamp_create, timestamp_update, count, reference, comment, created_by_id, type_id, updated_by_id)
-SELECT cables_operation.date              AS timestamp_create,
+SELECT uuid_generate_v4()                 AS uuid,
+       cables_operation.date              AS timestamp_create,
        cables_operation.date              AS timestamp_update,
        0                                  AS count,
        NULL                               AS reference,
@@ -284,7 +289,7 @@ SELECT cables_operation.date              AS timestamp_create,
 FROM cables_app.cables_operation
          JOIN ${schema_name}.t_equipements_troncons_erdf ON uuid_operation = cables_operation.uuid
          JOIN ${schema_name}.dico_type_equipement_troncon ON t_equipements_troncons_erdf.id_type_equipement_troncon =
-                                                       dico_type_equipement_troncon.id_type_equipement_troncon
+                                                             dico_type_equipement_troncon.id_type_equipement_troncon
          JOIN tmp.equipement_troncon ON dico_type_equipement_troncon.id_type_equipement_troncon = equipement_troncon.id
          JOIN cables_app.sinp_nomenclatures_nomenclature
               ON equipement_troncon.final_code = sinp_nomenclatures_nomenclature.code AND type_id = 7;
@@ -299,7 +304,7 @@ FROM cables_app.cables_operation
 
 WITH data AS (SELECT t_especes.nom_espece,
                      species_from_olddbs.cd_nom,
-                     COALESCE(date, '1900-01-01') AS date,
+                     coalesce(date, '1900-01-01') AS date,
                      t_cas_mortalite.geom,
                      t_cas_mortalite.nb_cas,
                      t_cas_mortalite.source,
@@ -319,11 +324,11 @@ INTO cables_app.mortality_mortality(timestamp_create, timestamp_update, author, 
                                     data_source_id, death_cause_id, infrstr_id, species_id,
                                     updated_by_id)
 SELECT date,
-       NOW(),
+       now(),
        1,
        st_transform(geom, 4326),
        date,
-       COALESCE(nb_cas, 1),
+       coalesce(nb_cas, 1),
        1,
        NULL,
        nom_dc.id,
