@@ -8,21 +8,16 @@
             <v-col cols="12">{{ formValid ? 'Form valid': 'Form not valid' }} {{ supportId }}
             </v-col>
             <v-col cols="12" md="6">
-              <v-date-input
-                v-model="formDate"
-                label="Date de visite"
-                inner-prepend-icon="mdi-calendar" variant="solo" density="compact"
-                :rules="[rules.required]"
-                :max="new Date()"
-              ></v-date-input>
+              <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
+                density="compact" :rules="[rules.required]" :max="new Date()"></v-date-input>
               <!-- <v-date-picker v-model="formDate" v-if="showDatePicker" @input="showDatePicker = false" :max="new Date()" picker-type="dialog"></v-date-picker> -->
               <!-- <v-menu>
                 <template v-slot:activator="{ props }">
                   <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
                     inner-prepend-icon="mdi-calendar" variant="solo" density="compact" v-bind="props" />
                 </template>
-                <v-date-picker v-model="diagData.date" no-title></v-date-picker>
-              </v-menu> -->
+<v-date-picker v-model="diagData.date" no-title></v-date-picker>
+</v-menu> -->
             </v-col>
             <v-col cols="12" md="6">
               <v-select v-model="diagData.condition_id" :items="conditions" item-title="label" item-value="id"
@@ -141,7 +136,7 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 const initData = async () => {
   if (diagnosisId.value) {
     const {data:diagnosis} = await useHttp(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, {method: 'get'})
-    console.log('HAS DIAG', diagnosis)
+    formDate.value = new Date(diagnosis.value.date)
     const diagdata: DiagData = {
       id : diagnosis.value.id,
       date: diagnosis.value.date,
