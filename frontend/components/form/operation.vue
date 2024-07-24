@@ -73,6 +73,10 @@ const opData = reactive({
   geom: coordinatesStore.newGeoJSONPoint,
 })
 
+const updateEquipmentData = (index, updatedEquipment) => {
+      opData.equipments.value[index] = updatedEquipment;
+    };
+
 const newEquipment = () => {
   const eq = {
     id: null,
