@@ -6,7 +6,7 @@
 
     <v-app-bar color="pink" flat dark density="compact">
       <template v-slot:prepend>
-        <v-btn icon="mdi-pencil"></v-btn>
+        <v-btn icon="mdi-pencil-circle"></v-btn>
         <v-app-bar-title>{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
           {{ $t('mortality.new_mortality') }}
         </v-app-bar-title>
@@ -163,7 +163,7 @@ const rules = reactive({
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
       // Species Autocomplete data
-     const  descriptionLimit = ref(60)
+      const descriptionLimit = ref(60)
       const isLoading = ref(false)
       const speciesSearch = ref(null)
       const specieSearchEntries = ref([])

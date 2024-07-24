@@ -85,7 +85,9 @@ urlpatterns = [
     ),
     path(
         "operations/",
-        OperationViewSet.as_view({"get": "list", "post": "create"}),
+        OperationViewSet.as_view(
+            {"get": "list", "post": "create", "put": "update"}
+        ),
         name="operation_list",
     ),
     path(

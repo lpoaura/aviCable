@@ -1,24 +1,28 @@
 <template>
-  <v-card title="equipement">
-    <v-container>
+  <v-card  class="my-2">
+    <v-card-text>
       <v-row>
-        <v-col lg="6" md="12">
+        <v-col lg="4" md="12">
           <v-autocomplete v-model="equipment.type_id" :items="equipmentType" item-title="label" item-value="id"
             :rules="[rules.required]" hide-selected :label="$t('support.support-type')" variant="solo" density="compact"
-            @input="updateType($event.target.value)"></v-autocomplete>
-            <p>{{ equipment.type_id }}</p>
+            @input="updateEquipmentData()"></v-autocomplete>
         </v-col>
-        <v-col lg="6" md="12">
+        <v-col lg="4" md="12">
           <v-text-field type="number" v-model="equipment.count" placeholder="Nombre" variant="solo" density="compact"
-            :rules="[rules.required]" @input="updateCount($event.target.value)"></v-text-field></v-col>
-        <v-col lg="12">
+            :rules="[rules.required]" @input="updateEquipmentData()" min="0" max="100"></v-text-field></v-col>
+        <v-col lg="4" md="12">
           <v-text-field v-model="equipment.reference" placeholder="Reference" variant="solo" density="compact"
-            @input="updateReference($event.target.value)"></v-text-field>
+          @input="updateEquipmentData()" counter="50"></v-text-field>
         </v-col>
-        <v-col lg="12"><v-text-field v-model="equipment.comment" :rules="[rules.textLength]" placeholder="Commentaire"
-            variant="solo" density="compact" @input="updateRemark($event.target.value)"></v-text-field></v-col>
+        <v-col lg="12"><v-textarea v-model="equipment.comment" :rules="[rules.textLength]" placeholder="Commentaire"
+            variant="solo" density="compact" rows="2" counter="300"  @input="updateEquipmentData()"></v-textarea></v-col>
+
       </v-row>
-    </v-container>
+    </v-card-text>
+
+    <v-card-actions>
+    <v-spacer></v-spacer>  <v-btn prepend-icon="mdi-delete-circle" color="red" @click="deleteItem()">Supprimer</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -51,21 +55,31 @@ const {index, equipment } = defineProps({
 
 const emit = defineEmits();
 
-const updateType = (value: string) => {
-  emit('update', { ...equipment, type_id: value });
-};
 
-const updateCount = (value: string) => {
-  emit('update', { ...equipment, count: value });
-};
-
-const updateReference = (value: string) => {
-  emit('update', { ...equipment, reference: value });
+const updateEquipmentData = () => {
+  emit('update', equipment);
 };
 
 
-const updateRemark = (value: string) => {
-  emit('update', { ...equipment, comment: value });
+// const updateType = (value: string) => {
+//   emit('update', { ...equipment, type_id: value });
+// };
+
+// const updateCount = (value: string) => {
+//   emit('update', { ...equipment, count: value });
+// };
+
+// const updateReference = (value: string) => {
+//   emit('update', { ...equipment, reference: value });
+// };
+
+
+// const updateRemark = (value: string) => {
+//   emit('update', { ...equipment, comment: value });
+// };
+
+const deleteItem = () => {
+  emit('delete');
 };
 
 onMounted(() => {

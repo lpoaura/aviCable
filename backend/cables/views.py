@@ -32,7 +32,12 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     queryset = (
         Infrastructure.objects.all()
         .select_related("owner")
-        .prefetch_related(Prefetch("geo_area", queryset=GeoArea.objects.only("id","code","name","type")))
+        .prefetch_related(
+            Prefetch(
+                "geo_area",
+                queryset=GeoArea.objects.only("id", "code", "name", "type"),
+            )
+        )
         .prefetch_related("geo_area__type")
         .prefetch_related("sensitive_area")
         .prefetch_related("diagnosis")
@@ -64,7 +69,7 @@ class PointViewSet(viewsets.ModelViewSet):
     # permission_classes = [DjangoModelPermissions]
     filter_backends = (InBBoxFilter,)
     bbox_filter_field = "geom"
-    bbox_filter_include_overlapping = True 
+    bbox_filter_include_overlapping = True
     # Define queryset by optimizing DB requests
     queryset = (
         Point.objects.all()
@@ -81,7 +86,7 @@ class LineViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions]
     filter_backends = (InBBoxFilter,)
     bbox_filter_field = "geom"
-    bbox_filter_include_overlapping = True 
+    bbox_filter_include_overlapping = True
     # Define queryset by optimizing DB requests
     queryset = (
         Line.objects.all()
@@ -116,4 +121,4 @@ class OperationViewSet(viewsets.ModelViewSet):
     # filterset_class = OperationFilter
     bbox_filter_fields = ["pointoperation__geom", "lineoperation__geom"]
     filter_backends = (InfrstrInBboxFilter,)
-    bbox_filter_include_overlapping = True 
+    bbox_filter_include_overlapping = True

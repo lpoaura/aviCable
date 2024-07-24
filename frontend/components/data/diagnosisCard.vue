@@ -2,16 +2,20 @@
   <v-card class="my-2" :title="$t('display.diagnosis')" :subtitle="`Réalisé le ${diagnosis.date}`">
     <template v-slot:text>
       <span class="font-weight-bold">Recommandations&nbsp;:</span><br>
-      <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': false" :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': false"
+        :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
         {{ diagnosis.isolation_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.isolate') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation': false" :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation': false"
+        :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
         {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.make-dissuasive') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation': false" :color="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation': false"
+        :color="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
         {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.make-attractive') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation': false" :color="[diagnosis.change_advice == true ? 'warning' : '']"  class="ma-2">
+      <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation': false"
+        :color="[diagnosis.change_advice == true ? 'warning' : '']" class="ma-2">
         {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.change-advice') }}
       </v-chip>
       <p>
@@ -22,7 +26,8 @@
       </p>
       <p>
         <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
-        <v-chip v-if="diagnosis.pole_type.length>0" color="info" v-for="pt in diagnosis.pole_type" :key="pt.id" class="ma-2">
+        <v-chip v-if="diagnosis.pole_type.length>0" color="info" v-for="pt in diagnosis.pole_type" :key="pt.id"
+          class="ma-2">
           {{ pt.label }}
         </v-chip>
         <span v-else>&nbsp;- </span>
@@ -67,17 +72,42 @@
         </v-list-item>
       </v-list>
     </template>
-    <template v-slot:actions>
-      <v-btn color="orange" @click="updateDiag"><v-icon>mdi-pencil</v-icon> Modifier</v-btn>
-    </template>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-dialog max-width="500">
+        <template v-slot:activator="{ props: activatorProps }">
+          <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle"></v-btn>
+        </template>
+
+        <template v-slot:default="{ isActive }">
+          <v-card title="Suppression d'un diagnostic" color="red" prepend-icon="mdi-alert">
+            <v-card-text>
+              <div class="my-4">
+              Vous êtes sur le point de supprimer un diagnostic, en êtes vous bien certain&nbsp;?
+            </div>
+              <v-btn color="white" block text="Oui, Supprimer" prepend-icon="mdi-delete-circle" @click="deleteDiag()"></v-btn>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn text="Annuler" @click="isActive.value = false" prepend-icon="mdi-close-circle"></v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
+      <v-btn color="orange" @click="updateDiag" prepend-icon="mdi-pencil-circle">Modifier</v-btn>
+    </v-card-actions>
     <!-- <pre><code>{{ diagnosis }}</code></pre> -->
   </v-card>
+
+
 </template>
 
 <script setup>
 
 const {diagnosis} = defineProps(['diagnosis'])
 const router = useRouter()
+const deletedDiagConfirm = ref(true)
 
 const riskColors = reactive({
   RISK_L: 'light-green',
@@ -96,6 +126,11 @@ const updateDiag = () => {
     path: `/supports/${diagnosis.infrastructure}/diagnosis`,
     query: { modifyDiag: 'true', id_diagnosis: diagnosis.id }
   })
+}
+
+const deleteDiag = async () => {
+  const deletedDiag = await useHttp(`/api/v1/cables/diagnosis/${diagnosis.id}/`, {method: 'delete'})
+  console.log('deletedDiag',deletedDiag)
 }
 
 onMounted(()=>{

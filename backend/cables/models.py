@@ -252,6 +252,7 @@ class Equipment(BaseModel):
         verbose_name=_("Type of equipment"),
         help_text=_("Type of equipment"),
         on_delete=models.CASCADE,
+        null=True,
     )
     count = models.PositiveIntegerField(_("Number of equipments"), default=1)
     reference = models.TextField(
@@ -284,7 +285,7 @@ class Operation(Action, PolymorphicModel):
     operation_type = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "operation_type"},
+        limit_choices_to={"type__code": "OP_TYPE"},
         related_name="operation_type",
         verbose_name=_("Type of operation"),
         help_text=_("Type of operation"),

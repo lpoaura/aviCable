@@ -18,7 +18,7 @@
     <v-main scrollable>
       <v-container>
         <data-support-card :data="data"></data-support-card>
-        <data-diagnosis-card :diagnosis="lastDiag" />
+        <data-diagnosis-card v-if="lastDiag" :diagnosis="lastDiag" />
         <data-operation-card v-if="lastOp" :operation="lastOp" :supportId="data.properties.id"/>
 
         <v-card class="my-2" >

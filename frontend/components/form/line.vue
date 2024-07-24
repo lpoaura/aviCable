@@ -4,7 +4,7 @@
       <v-form ref="form" v-model="formValid" class="text-center">
         <v-app-bar color="pink" flat dark density="compact">
           <template v-slot:prepend>
-            <v-btn icon="mdi-pencil"></v-btn>
+            <v-btn icon="mdi-pencil-circle"></v-btn>
             <v-app-bar-title>{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
               {{ $t('line.new_segment') }}
             </v-app-bar-title>

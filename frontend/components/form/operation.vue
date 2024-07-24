@@ -1,12 +1,18 @@
 <template>
-
-  <v-card elevation="0" class="fill-height">
-    <v-form ref="form" v-model="formValid">
-      <v-card-text>
-        <v-container>
+  <v-layout full-height>
+    <v-app-bar density="compact" color="blue-grey-lighten-5">
+      <v-app-bar-title>
+        {{operationId ? "Mise à jour d'une": 'Nouvelle' }} neutralisation
+      </v-app-bar-title>
+      <v-spacer />
+      <v-app-bar-nav-icon>
+        <v-btn density="compact" icon="mdi-close" @click="$router.back()" />
+      </v-app-bar-nav-icon>
+    </v-app-bar>
+    <v-main scrollable>
+      <v-form ref="form" v-model="formValid">
+        <v-card-text>
           <v-row>
-            <v-col cols="12">{{ formValid ? 'Form valid': 'Form not valid' }} {{ currentLocale.iso }}
-            </v-col>
             <v-col cols="12" md="6">
               <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
                 inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
@@ -16,30 +22,35 @@
               <v-select v-model="opData.operation_type" :items="operationType" item-title="label" item-value="id"
                 :rules="[rules.required]" :label="`Type d'opération`" variant="solo" density="compact"></v-select>
             </v-col>
-            <v-divider></v-divider>
             <v-col cols="12">
               <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
                 :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact"></v-textarea>
             </v-col>
             <v-col cols="12">
+              <p><strong>Equipements</strong></p>
               <div v-for="(equipment, index) in opData.equipments" :key="index">
-                <form-equipment :equipment="equipment" @update="updateEquipmentData(index, $event)" :index="index"></form-equipment>
+                <form-equipment :equipment="equipment" @update="updateEquipmentData(index, $event)"
+                  @delete="deleteEquipment(index)" :index="index"></form-equipment>
               </div>
-              <v-btn @click="newEquipment">+</v-btn>
+
             </v-col>
           </v-row>
-        </v-container>
-        <v-btn :disabled="!formValid" @click="moveToNextStep">Suivant</v-btn>
-      </v-card-text>
-    </v-form>
-    <pre>{{ opData }}</pre>
-  </v-card>
+
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer><v-btn @click="newEquipment" color="info" variant="flat"
+            prepend-icon="mdi-plus-circle">équipement</v-btn> <v-btn color="success" :disabled="!formValid"
+            @click="submit" variant="flat" prepend-icon="mdi-content-save-all">Sauvegarder</v-btn>
+        </v-card-actions>
+      </v-form>
+      <pre>{{ opData }}</pre>
+    </v-main>
+  </v-layout>
 </template>
 
 <script lang="ts" setup>
 import { VDateInput} from 'vuetify/labs/VDateInput'
 // import type {DiagData, Diagnosis} from '~/types/diagnosis';
-import type { NomenclatureItem } from '~/types/nomenclature';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
@@ -77,11 +88,16 @@ const updateEquipmentData = (index, updatedEquipment) => {
       opData.equipments.value[index] = updatedEquipment;
     };
 
+const deleteEquipment=(index) => {
+  console.log("opData.equipments.value", opData.equipments)
+  opData.equipments.splice(index,1)
+}
+
 const newEquipment = () => {
   const eq = {
     id: null,
     type: null,
-    count:null,
+    count:1,
     reference: null,
     comment: null,
   }
@@ -90,7 +106,11 @@ const newEquipment = () => {
 
 const locale = useLocale()
 const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
+const newGeoJSONPoint = computed(() => coordinatesStore.newGeoJSONPoint)
 
+watch(newGeoJSONPoint, (value) => {
+  opData.value.geom = value
+})
 //       // rules for form validation
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),
@@ -140,7 +160,7 @@ const initData = async () => {
     opData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const {data : operation }= await useHttp('/api/v1/cables/operation/', {method:'post', body: opData})
+    const {data : operation }= await useHttp('/api/v1/cables/operations/', {method:'post', body: opData})
     console.debug('newDiagData', operation)
     return operation
   } catch (_err) {
@@ -190,7 +210,7 @@ const updateOperation = async () => {
   }
 }
 
-const moveToNextStep = async () => {
+const submit = async () => {
   const operation = operationId.value ?  await updateOperation() : await createOperation()
   if (operation) {
     router.push(`/supports/${supportId.value}`)

@@ -18,16 +18,20 @@
       </p>
       <div v-if="operation.equipments">
         <span class="font-weight-bold">Equipements&nbsp;: </span>
-          <p v-for="(equipment, index) in operation.equipments" :key="index">
-            -&nbsp;{{ equipment.type.label }} x{{ equipment.count }}
-          </p>
+        <p v-for="(equipment, index) in operation.equipments" :key="index">
+          -&nbsp;{{ equipment.type.label }} x{{ equipment.count }}
+        </p>
       </div>
     </template>
-    <template v-slot:actions>
-      <v-btn color="orange"
-        @click="$router.push(`/supports/${supportId}/operation?id_operation=${props.operation.id}`)"><v-icon>mdi-pencil</v-icon>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="red" prepend-icon="mdi-delete-circle"
+        @click="$router.push(`/supports/${supportId}/operation?id_operation=${props.operation.id}`)">
         Modifier</v-btn>
-    </template>
+      <v-btn color="orange" prepend-icon="mdi-pencil-circle"
+        @click="$router.push(`/supports/${supportId}/operation?id_operation=${props.operation.id}`)">
+        Modifier</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
