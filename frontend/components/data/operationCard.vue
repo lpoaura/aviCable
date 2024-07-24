@@ -16,11 +16,16 @@
         <span class="font-weight-bold">{{ $t('app.remark') }}</span>
         {{ operation.remark }}
       </p>
+      <div v-if="operation.equipments">
+        <span class="font-weight-bold">Equipements&nbsp;: </span>
+          <p v-for="(equipment, index) in operation.equipments" :key="index">
+            -&nbsp;{{ equipment.type.label }} x{{ equipment.count }}
+          </p>
+      </div>
     </template>
     <template v-slot:actions>
-      <v-btn v-if="operation.last" color="green" @click="newDiag"><v-icon>mdi-eye-plus</v-icon> Nouveau</v-btn>
       <v-btn color="orange"
-        @click="$router.push(`/supports/${supportId}/operation/${props.operation.id}`)"><v-icon>mdi-pencil</v-icon>
+        @click="$router.push(`/supports/${supportId}/operation?id_operation=${props.operation.id}`)"><v-icon>mdi-pencil</v-icon>
         Modifier</v-btn>
     </template>
   </v-card>

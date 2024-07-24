@@ -23,6 +23,8 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
     poleTypeItems: [] as NomenclatureItem[],
     riskLevelItems: [] as NomenclatureItem[],
     deathCauseItems: [] as NomenclatureItem[],
+    operationTypeItems: [] as NomenclatureItem[],
+    equipmentTypeItems: [] as NomenclatureItem[],
   }),
   getters: {
     /**
@@ -89,7 +91,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         const types = await $http.$get("/api/v1/nomenclatures/types", {params}); // get Types list
         // gather Infrastructure Condition Items from all Items
         const conditions = types.find(
-          (elem: NomenclatureItem) => elem.mnemonic === "infrastr_condition"
+          (elem: NomenclatureItem) => elem.code === "IFR_COND"
         );
         // If no Items is gathered, an Error is thrown
         if (conditions === undefined) {
@@ -99,7 +101,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         this.conditionItems = conditions.nomenclatures;
         // gather Owner Items from all Items
         const owners = types.find(
-          (elem: NomenclatureItem) => elem.mnemonic === "owner"
+          (elem: NomenclatureItem) => elem.code === "OWNER"
         );
         // If no Items is gathered, an Error is thrown
         if (owners === undefined) {
@@ -109,7 +111,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         this.ownerItems = owners.nomenclatures;
         // gather Pole type Items from all Items
         const poleTypes = types.find(
-          (elem: NomenclatureItem) => elem.mnemonic === "pole_type"
+          (elem: NomenclatureItem) => elem.code === "POLE_TYP"
         );
         // If no Items is gathered, an Error is thrown
         if (poleTypes === undefined) {
@@ -119,7 +121,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         this.poleTypeItems = poleTypes.nomenclatures;
         // // gather Risk Level Items from all Items
         const riskLevels = types.find(
-          (elem: NomenclatureItem) => elem.mnemonic === "risk_level"
+          (elem: NomenclatureItem) => elem.code === "RISK_LEV"
         );
         // If no Items is gathered, an Error is thrown
         if (riskLevels === undefined) {
@@ -131,7 +133,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
 
         // // gather Death cause Items from all Items
         const deathCause = types.find(
-          (elem: NomenclatureItem) => elem.mnemonic === "cause_of_death"
+          (elem: NomenclatureItem) => elem.code === "CAUSE_OF_DEATH"
         );
         // If no Items is gathered, an Error is thrown
         if (deathCause === undefined) {
@@ -140,6 +142,25 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         // set "riskLevels" to state value "riskLevelItems"
         this.deathCauseItems = deathCause.nomenclatures;
 
+        const operationType = types.find(
+          (elem: NomenclatureItem) => elem.code === "OP_TYPE"
+        );
+        // If no Items is gathered, an Error is thrown
+        if (operationType === undefined) {
+          throw new Error("operationType");
+        }
+        // set "riskLevels" to state value "riskLevelItems"
+        this.operationTypeItems = operationType.nomenclatures;
+
+        const equipmentType = types.find(
+          (elem: NomenclatureItem) => elem.code === "EQMT_TYPE"
+        );
+        // If no Items is gathered, an Error is thrown
+        if (equipmentType === undefined) {
+          throw new Error("equipmentType");
+        }
+        // set "riskLevels" to state value "riskLevelItems"
+        this.equipmentTypeItems = equipmentType.nomenclatures;
         // error handling
       } catch (err: unknown) {
         const error: ErrorInfo = {} as ErrorInfo;

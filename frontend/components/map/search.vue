@@ -8,8 +8,9 @@
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution"
         :layer-type="baseLayer.layer_type" />
       <l-control-layers />
+
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
-        :options="infrastructureGeoJsonOptions" :options-style="infrastructureGeoJsonOptionsStyle"/>
+        :options="infrastructureGeoJsonOptions" :options-style="infrastructureGeoJsonOptionsStyle" />
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
@@ -19,6 +20,7 @@
         :geojson="operatedLineStringData" :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
         :options="operatedInfrastructureGeoJsonOptions" />
+      <l-geo-json v-if="newGeoJSONPoint.coordinates.length==2" :geojson="newGeoJSONPoint"></l-geo-json>
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
@@ -81,6 +83,7 @@ const operatedPointData : ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableSt
 const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
 const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
 const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures)
+const newGeoJSONPoint: ComputedRef<GeoJSON> = computed<GeoJSON>(() => coordinatesStore.newGeoJSONPoint)
 // const mortalityItem:
 const baseLayers = computed(() => mapLayersStore.baseLayers)
 
@@ -358,7 +361,7 @@ onBeforeMount(async () => {
     }
 })
 
-
+onMounted(() => {})
 
 </script>
 
