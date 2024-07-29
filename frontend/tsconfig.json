@@ -4,7 +4,7 @@
       "@types/node",
       "@nuxt/vue-app",
       "@types/leaflet"
-    ]
+    ],
   },
   // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
@@ -13,5 +13,5 @@
   //   "env.d.ts",
     ".nuxt/nuxt.d.ts",
   //   "**/*"
-  ]
+  ],
 }

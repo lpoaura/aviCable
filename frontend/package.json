@@ -20,6 +20,7 @@
     "@nuxt-alt/auth": "^2.7.6",
     "@nuxt-alt/http": "^1.7.1",
     "@nuxt/devtools": "^0.4.6",
+    "@nuxt/eslint": "^0.3.13",
     "@nuxtjs/eslint-config": "^12.0.0",
     "@nuxtjs/i18n": "^8.0.0-beta.12",
     "@pinia/nuxt": "^0.4.11",

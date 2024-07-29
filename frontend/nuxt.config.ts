@@ -1,19 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: [
-    "@vite-pwa/nuxt",
-    "@nuxt-alt/auth",
-    "@nuxt-alt/http",
+  modules: ["@vite-pwa/nuxt", "@nuxt-alt/auth", "@nuxt-alt/http", "@pinia/nuxt", [
     "@pinia/nuxt",
-    [
-      "@pinia/nuxt",
-      {
-        autoImports: ["defineStore", "acceptHMRUpdate"],
-      },
-    ],
-    "@invictus.codes/nuxt-vuetify",
-    "@nuxtjs/i18n",
-  ],
+    {
+      autoImports: ["defineStore", "acceptHMRUpdate"],
+    },
+  ], "@invictus.codes/nuxt-vuetify", "@nuxtjs/i18n", "@nuxt/eslint"],
 
   ssr: false,
 
