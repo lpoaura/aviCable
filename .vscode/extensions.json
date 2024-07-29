@@ -18,6 +18,7 @@
     "himanoa.python-autopep8",
     "visualstudioexptteam.vscodeintellicode",
     "jcbuisson.vue",
-    "peakchen90.vue-beautify"
+    "peakchen90.vue-beautify",
+    "vue.volar"
   ]
 }
