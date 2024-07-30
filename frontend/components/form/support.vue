@@ -9,7 +9,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="4">
+            <!-- <v-col cols="12" md="4">
               <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
                 :label="$t('support.latitude')" type="number" placeholder="Latitude" variant="solo" density="compact" />
             </v-col>
@@ -18,8 +18,8 @@
               <v-text-field ref="lng" v-model="coordinatesStore.newGeoJSONPoint.coordinates[0]"
                 :label="$t('support.longitude')" type="number" placeholder="Longitude" variant="solo"
                 density="compact" />
-            </v-col>
-            <v-col v-if="!diagnosis" cols="12" md="4">
+            </v-col> -->
+            <v-col v-if="!diagnosis" cols="12">
               <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
                 :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required />
             </v-col>

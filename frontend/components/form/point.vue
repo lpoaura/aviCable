@@ -1,11 +1,11 @@
 <template>
   <v-card elevation="0" class="fill-height">
-    <v-stepper v-model="step" :items="['Support', 'Diagnostic']" fill-height>
-      <template v-slot:item.1 >
-        <form-support @nextStep="nextStep"></form-support>
+    <v-stepper v-model="step" :items="['Support', 'Diagnostic']" fill-height hide-actions>
+      <template #item.1>
+        <form-support @next-step="nextStep" />
       </template>
-      <template v-slot:item.2>
-        <form-diagnosis></form-diagnosis>
+      <template #item.2>
+        <form-diagnosis />
       </template>
     </v-stepper>
   </v-card>
