@@ -12,7 +12,7 @@
         {{ neutralized ? 'neutralisé' : 'pas neutralisé' }}
       </v-chip>
       <v-app-bar-nav-icon>
-        <v-btn density="compact" icon="mdi-close" @click="$router.back()" />
+        <v-btn density="compact" icon="mdi-close" @click="$router.push('/search')" />
       </v-app-bar-nav-icon>
     </v-app-bar>
     <v-main scrollable>

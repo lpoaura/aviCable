@@ -5,11 +5,9 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12">{{ formValid ? 'Form valid': 'Form not valid' }} {{ supportId }}
-            </v-col>
             <v-col cols="12" md="6">
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
-                density="compact" :rules="[rules.required]" :max="new Date()"></v-date-input>
+                density="compact" :rules="[rules.required]" :max="new Date()" />
               <!-- <v-date-picker v-model="formDate" v-if="showDatePicker" @input="showDatePicker = false" :max="new Date()" picker-type="dialog"></v-date-picker> -->
               <!-- <v-menu>
                 <template v-slot:activator="{ props }">
@@ -21,7 +19,7 @@
             </v-col>
             <v-col cols="12" md="6">
               <v-select v-model="diagData.condition_id" :items="conditions" item-title="label" item-value="id"
-                :rules="[rules.required]" :label="$t('support.condition')" variant="solo" density="compact"></v-select>
+                :rules="[rules.required]" :label="$t('support.condition')" variant="solo" density="compact" />
             </v-col>
             <!-- TODO: virer champ  Neutralisé pour remplacer par la présence d'équipement (oui/non) -->
             <!-- <v-col cols="12" md="4">
@@ -30,57 +28,58 @@
           </v-col> -->
 
             <v-col cols="12">
-              <v-autocomplete chips v-model="diagData.pole_type_id" :items="poleTypes" item-title="label"
+              <v-autocomplete v-model="diagData.pole_type_id" chips :items="poleTypes" item-title="label"
                 item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
-                deletable-chips variant="solo" density="compact"></v-autocomplete>
+                deletable-chips variant="solo" density="compact" />
             </v-col>
             <v-col cols="12" md="6">
               <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
-                :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
-                density="compact"></v-select>
+                :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo" density="compact" />
             </v-col>
             <v-col cols="12" md="6">
               <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label" item-value="id"
-                :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
-                density="compact"></v-select>
+                :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo" density="compact" />
             </v-col>
-            <v-divider></v-divider>
+            <v-divider />
             <v-col cols="12" class="text-left">
               <strong>{{$t('diagnosis.actions')}}</strong>
             </v-col>
 
 
             <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')"
-                density="compact"></v-checkbox>
+              <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')" density="compact" />
             </v-col>
             <v-col cols="12" md="3">
               <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.advice_disrupt')"
-                density="compact"></v-checkbox>
+                density="compact" />
             </v-col>
 
             <v-col cols="12" md="3">
               <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')"
-                density="compact"></v-checkbox>
+                density="compact" />
             </v-col>
             <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.change_advice" :label="$t('support.change_advice')"
-                density="compact"></v-checkbox>
+              <v-checkbox v-model="diagData.change_advice" :label="$t('support.change_advice')" density="compact" />
             </v-col>
             <v-col cols="12" class="text-left">
               <v-textarea v-model="diagData.technical_proposal" clearable clear-icon="mdi-close-circle"
                 :label="$t('diagnosis.technical_proposal')" :rules="[rules.textLength]" rows="2" counter="300"
-                variant="solo" density="compact"></v-textarea>
+                variant="solo" density="compact" />
             </v-col>
-            <v-divider></v-divider>
+            <v-divider />
             <v-col cols="12">
               <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
-                :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact"></v-textarea>
+                :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
             </v-col>
           </v-row>
         </v-container>
-        <v-btn :disabled="!formValid" @click="moveToNextStep">Suivant</v-btn>
+
       </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="success" :disabled="!formValid" variant="flat" prepend-icon="mdi-content-save-all"
+          @click="moveToNextStep">Sauvegarder</v-btn>
+      </v-card-actions>
     </v-form>
   </v-card>
 </template>

@@ -1,51 +1,40 @@
 <template>
-  <v-layout full-height>
-    <v-app-bar density="compact" color="blue-grey-lighten-5">
-      <v-app-bar-title>
-        {{operationId ? "Mise à jour d'une": 'Nouvelle' }} neutralisation
-      </v-app-bar-title>
-      <v-spacer />
-      <v-app-bar-nav-icon>
-        <v-btn density="compact" icon="mdi-close" @click="$router.back()" />
-      </v-app-bar-nav-icon>
-    </v-app-bar>
-    <v-main scrollable>
-      <v-form ref="form" v-model="formValid">
-        <v-card-text>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
-                inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
-                :max="new Date()" />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-select v-model="opData.operation_type_id" :items="operationType" item-title="label" item-value="id"
-                :rules="[rules.required]" :label="`Type d'opération`" variant="solo" density="compact" />
-            </v-col>
-            <v-col cols="12">
-              <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
-                :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
-            </v-col>
-            <v-col cols="12">
-              <p><strong>Equipements</strong></p>
-              <div v-for="(equipment, index) in opData.equipments" :key="index">
-                <form-equipment :equipment="equipment" :index="index" @update="updateEquipmentData(index, $event)"
-                  @delete="deleteEquipment(index)" />
-              </div>
+  <v-card elevation="0" class="fill-height">
+    <v-form ref="form" v-model="formValid">
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
+              inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
+              :max="new Date()" />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select v-model="opData.operation_type_id" :items="operationType" item-title="label" item-value="id"
+              :rules="[rules.required]" :label="`Type d'opération`" variant="solo" density="compact" />
+          </v-col>
+          <v-col cols="12">
+            <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
+              :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
+          </v-col>
+          <v-col cols="12">
+            <p><strong>Equipements</strong></p>
+            <div v-for="(equipment, index) in opData.equipments" :key="index">
+              <form-equipment :equipment="equipment" :index="index" @update="updateEquipmentData(index, $event)"
+                @delete="deleteEquipment(index)" />
+            </div>
 
-            </v-col>
-          </v-row>
+          </v-col>
+        </v-row>
 
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer /><v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
-            @click="newEquipment">équipement</v-btn> <v-btn color="success" :disabled="!formValid" variant="flat"
-            prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
-        </v-card-actions>
-      </v-form>
-      <pre>{{ opData }}</pre>
-    </v-main>
-  </v-layout>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer /><v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
+          @click="newEquipment">équipement</v-btn> <v-btn color="success" :disabled="!formValid" variant="flat"
+          prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
+      </v-card-actions>
+    </v-form>
+    <pre>{{ opData }}</pre>
+  </v-card>
 </template>
 
 <script lang="ts" setup>

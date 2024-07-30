@@ -1,27 +1,27 @@
 <template>
-  <v-card  class="my-2">
+  <v-card class="my-2">
     <v-card-text>
       <v-row>
         <v-col lg="4" md="12">
           <v-autocomplete v-model="equipment.type_id" :items="equipmentType" item-title="label" item-value="id"
             :rules="[rules.required]" hide-selected :label="$t('support.support-type')" variant="solo" density="compact"
-            @input="updateEquipmentData()"></v-autocomplete>
+            @input="updateEquipmentData()" />
         </v-col>
         <v-col lg="4" md="12">
-          <v-text-field type="number" v-model="equipment.count" placeholder="Nombre" variant="solo" density="compact"
-            :rules="[rules.required]" @input="updateEquipmentData()" min="0" max="100"></v-text-field></v-col>
+          <v-text-field v-model="equipment.count" type="number" placeholder="Nombre" variant="solo" density="compact"
+            :rules="[rules.required]" min="0" max="100" @input="updateEquipmentData()" /></v-col>
         <v-col lg="4" md="12">
           <v-text-field v-model="equipment.reference" placeholder="Reference" variant="solo" density="compact"
-          @input="updateEquipmentData()" counter="50"></v-text-field>
+            counter="50" @input="updateEquipmentData()" />
         </v-col>
         <v-col lg="12"><v-textarea v-model="equipment.comment" :rules="[rules.textLength]" placeholder="Commentaire"
-            variant="solo" density="compact" rows="2" counter="300"  @input="updateEquipmentData()"></v-textarea></v-col>
+            variant="solo" density="compact" rows="2" counter="300" @input="updateEquipmentData()" /></v-col>
 
       </v-row>
     </v-card-text>
 
     <v-card-actions>
-    <v-spacer></v-spacer>  <v-btn prepend-icon="mdi-delete-circle" color="red" @click="deleteItem()">Supprimer</v-btn>
+      <v-spacer /> <v-btn prepend-icon="mdi-delete-circle" color="red" @click="deleteItem()">Supprimer</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -35,6 +35,8 @@
 //     count:null,
 // })
 // const {equipment} = defineProps(['equipment'])
+import { ref, defineProps, defineEmits } from 'vue';
+
 const { t } = useI18n()
 const nomenclaturesStore = useNomenclaturesStore()
 
@@ -44,8 +46,6 @@ const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
-
-import { ref, defineProps, defineEmits } from 'vue';
 
 const {index, equipment } = defineProps({
   index: Number,

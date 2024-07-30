@@ -1,7 +1,18 @@
 <template>
   <NuxtLayout name="view">
     <template #map><map-search :edit-mode="support ? false : true" mode="point" /></template>
-    <form-diagnosis :diagnosis="diagnosis" :support="support" />
+    <v-layout full-height>
+      <v-app-bar density="compact" color="blue-grey-lighten-5">
+        <v-app-bar-title>
+          Edition du diagnostic
+        </v-app-bar-title>
+      </v-app-bar>
+      <v-main scrollable>
+        <v-container>
+          <form-diagnosis :diagnosis="diagnosis" :support="support" />
+        </v-container>
+      </v-main>
+    </v-layout>
   </NuxtLayout>
 </template>
 
