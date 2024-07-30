@@ -26,8 +26,12 @@
 
           </v-row>
         </v-container>
-        <v-btn :disabled="!formValid" @click="moveToNextStep">Next Step</v-btn>
       </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="success" :disabled="!formValid" variant="flat" prepend-icon="mdi-content-save-all"
+          @click="moveToNextStep">Sauvegarder</v-btn>
+      </v-card-actions>
     </v-form>
   </v-card>
 
