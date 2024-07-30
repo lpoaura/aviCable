@@ -4,25 +4,16 @@ from geo_area.models import GeoArea
 from geo_area.serializers import GeoAreaSerializer
 from media.serializers import MediaSerializer
 from rest_framework.exceptions import APIException
-from rest_framework_gis.serializers import GeoFeatureModelSerializer, ModelSerializer
+from rest_framework_gis.serializers import (GeoFeatureModelSerializer,
+                                            ModelSerializer)
 from rest_polymorphic.serializers import PolymorphicSerializer
 from sensitive_area.models import SensitiveArea
 from sensitive_area.serializers import SensitiveAreaSerializer
-from sinp_nomenclatures.serializers import (
-    NomenclatureSerializer as NomenclatureSerializer,
-)
+from sinp_nomenclatures.serializers import \
+    NomenclatureSerializer as NomenclatureSerializer
 
-from .models import (
-    Action,
-    Diagnosis,
-    Equipment,
-    Infrastructure,
-    Line,
-    LineOperation,
-    Operation,
-    Point,
-    PointOperation,
-)
+from .models import (Action, Diagnosis, Equipment, Infrastructure, Line,
+                     LineOperation, Operation, Point, PointOperation)
 
 logger = logging.getLogger(__name__)
 
@@ -204,15 +195,14 @@ class EquipmentSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(EquipmentSerializer, self).__init__(*args, **kwargs)
         if self.instance:
-            self.fields['id'].required = False  # Make id field not required for existing instances
-        
+            self.fields["id"].required = (
+                False  # Make id field not required for existing instances
+            )
+
     def update(self, instance, validated_data):
         # Prevent updating the id field
-        validated_data.pop('id', None)
+        validated_data.pop("id", None)
         return super().update(instance, validated_data)
-
-
-
 
 
 class OperationSerializer(ModelSerializer):
@@ -338,16 +328,21 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
             "date",
             "remark",
             "operation_type",
-            # "operation_type_id",
+            "operation_type_id",
             "equipments",
             "media",
             # "media_id",
             "last",
             "geom",
         ]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "operation_type_id": {"source": "operation_type", "write_only": True},
+        }
 
     def update(self, instance, validated_data):
         equipments_data = validated_data.pop("equipments")
+        print('validated_data', validated_data)
         # equipments = instance.equipments.all()
         equipments = []
         for equipment_data in equipments_data:
@@ -407,19 +402,47 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
 
     #     return super().update(instance, validated_data)
 
-    def save(self, **kwargs):
-        equipments_data = self.validated_data.pop("equipments")
-        instance = super().save(**kwargs)
+    # def save(self, **kwargs):
+    #     equipments_data = self.validated_data.pop("equipments")
+    #     instance = super().save(**kwargs)
 
-        # Perform update on authors
-        equipments = instance.equipments.all()
+    #     # Perform update on authors
+    #     equipments = instance.equipments.all()
+    #     for equipment_data in equipments_data:
+    #         equipment, _created = Equipment.objects.get_or_create(
+    #             **equipment_data["name"]
+    #         )
+    #         equipments.add(equipment)
+
+    #     return instance
+
+    def create(self, validated_data):
+        equipments_data = validated_data.pop("equipments", [])
+
+        # Create the PointOperation instance
+        point_operation = PointOperation.objects.create(**validated_data)
+
+        equipments = []
         for equipment_data in equipments_data:
-            equipment, _created = Equipment.objects.get_or_create(
-                **equipment_data["name"]
-            )
-            equipments.add(equipment)
+            equipment_type_id = equipment_data.get("type")
+            create_values = {
+                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
+                "count": equipment_data.get("count"),
+                "reference": equipment_data.get("reference"),
+                "comment": equipment_data.get("comment"),
+            }
 
-        return instance
+            # Create the Equipment instance
+            equipment = Equipment.objects.create(**create_values)
+            equipments.append(equipment)
+
+        # Optionally, you can set the equipments to the point_operation if needed
+        point_operation.equipments.set(equipments)
+        Operation.objects.filter(
+            infrastructure=validated_data["infrastructure"], last=True
+        ).exclude(pk=point_operation.id).update(last=False)
+
+        return point_operation
 
 
 class LineOperationSerializer(GeoFeatureModelSerializer):

@@ -10,20 +10,9 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="4">
-              <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
-                :label="$t('support.latitude')" type="number" placeholder="Latitude" variant="solo" density="compact" />
-            </v-col>
-
-            <v-col cols="12" md="4">
-              <v-text-field ref="lng" v-model="coordinatesStore.newGeoJSONPoint.coordinates[0]"
-                :label="$t('support.longitude')" type="number" placeholder="Longitude" variant="solo"
-                density="compact" />
-            </v-col>
-            <v-col v-if="!diagnosis" cols="12" md="4">
-              <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
+              <v-select v-model="infrastructureData.owner_id" :items="networkOwners" item-title="label" item-value="id"
                 :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required />
             </v-col>
-
           </v-row>
         </v-container>
         <v-btn :disabled="!formValid" @click="moveToNextStep">Next Step</v-btn>
@@ -47,7 +36,7 @@ const errorStore = useErrorsStore()
 const {t} = useI18n()
 
 interface Props{
-  support?: Object
+  infrastructure?: Object
 }
 const upc = ref(null)
 // data
@@ -57,11 +46,11 @@ const formValid = ref(true)
 const props = defineProps<Props>()
 
 // Adding operations
-const {support}  = props;
+const {infrastructure}  = props;
 
-const pointData = reactive({
-  geom: coordinatesStore.newGeoJSONObject.geometry,
-  owner_id: support ? support.value.owner_id : null,
+const infrastructureData = reactive({
+  geom: coordinatesStore.getNewGeoJSONPoint(),
+  owner_id: infrastructure ? infrastructure.value.owner_id : null,
 })
 
 const networkOwners = computed(() => nomenclaturesStore.ownerItems)
@@ -116,7 +105,7 @@ const moveToNextStep = async () => {
 
 const createNewPoint = async () => {
   try {
-    pointData.geom = coordinatesStore.newGeoJSONObject.geometry
+    infrastructureData.geom = coordinatesStore.getNewGeoJSONPoint()
     const {data : support} = await useHttp('/api/v1/cables/points/', {method: 'post', body: pointData})
     cablesStore.setFormSupportId(support.value.properties.id)
     return support.value

@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="view">
     <template #map><map-search :edit-mode="false" /></template>
-    <data-support-detail :data="info" />
+    <data-support-detail :data="info" @update="updateData()" />
   </NuxtLayout>
 </template>
 
@@ -13,6 +13,10 @@ const route = useRoute()
 const coordinateStore = useCoordinatesStore()
 
 const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}/`)
+
+const updateData = async () => {
+  const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}/`)
+}
 
 const zoomTo = () => {
   // const layer = geoJSON(info.value)

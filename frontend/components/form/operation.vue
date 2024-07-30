@@ -16,21 +16,21 @@
             <v-col cols="12" md="6">
               <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
                 inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
-                :max="new Date()"></v-date-input>
+                :max="new Date()" />
             </v-col>
             <v-col cols="12" md="6">
-              <v-select v-model="opData.operation_type" :items="operationType" item-title="label" item-value="id"
-                :rules="[rules.required]" :label="`Type d'opération`" variant="solo" density="compact"></v-select>
+              <v-select v-model="opData.operation_type_id" :items="operationType" item-title="label" item-value="id"
+                :rules="[rules.required]" :label="`Type d'opération`" variant="solo" density="compact" />
             </v-col>
             <v-col cols="12">
               <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
-                :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact"></v-textarea>
+                :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
             </v-col>
             <v-col cols="12">
               <p><strong>Equipements</strong></p>
               <div v-for="(equipment, index) in opData.equipments" :key="index">
-                <form-equipment :equipment="equipment" @update="updateEquipmentData(index, $event)"
-                  @delete="deleteEquipment(index)" :index="index"></form-equipment>
+                <form-equipment :equipment="equipment" :index="index" @update="updateEquipmentData(index, $event)"
+                  @delete="deleteEquipment(index)" />
               </div>
 
             </v-col>
@@ -38,9 +38,9 @@
 
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer><v-btn @click="newEquipment" color="info" variant="flat"
-            prepend-icon="mdi-plus-circle">équipement</v-btn> <v-btn color="success" :disabled="!formValid"
-            @click="submit" variant="flat" prepend-icon="mdi-content-save-all">Sauvegarder</v-btn>
+          <v-spacer /><v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
+            @click="newEquipment">équipement</v-btn> <v-btn color="success" :disabled="!formValid" variant="flat"
+            prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
         </v-card-actions>
       </v-form>
       <pre>{{ opData }}</pre>
@@ -71,7 +71,7 @@ const opData = reactive({
   date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0,10),
   remark: '',
   infrastructure: supportId.value,
-  operation_type: null,
+  operation_type_id: null,
   equipments: [{
     id: null,
     type_id: null,
@@ -81,7 +81,7 @@ const opData = reactive({
   }],
   media: [],
   resourcetype: 'PointOperation',
-  geom: coordinatesStore.newGeoJSONPoint,
+  geom: null,
 })
 
 const updateEquipmentData = (index, updatedEquipment) => {
@@ -106,10 +106,12 @@ const newEquipment = () => {
 
 const locale = useLocale()
 const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
-const newGeoJSONPoint = computed(() => coordinatesStore.newGeoJSONPoint)
+const newGeoJSONObject = computed(() => coordinatesStore.newGeoJSONObject)
 
-watch(newGeoJSONPoint, (value) => {
-  opData.value.geom = value
+watch(newGeoJSONObject, (value) => {
+  if (value) {
+  opData.geom = value.geometry
+  }
 })
 //       // rules for form validation
 const rules = reactive({
@@ -122,6 +124,13 @@ const rules = reactive({
 const operationType = computed(() => nomenclaturesStore.operationTypeItems)
 
 const initData = async () => {
+  if (supportId.value && !operationId.value) {
+    const {data:support} = await useHttp(`/api/v1/cables/infrastructures/${supportId.value}/`, {method: 'get'})
+    coordinatesStore.setNewGeoJSONObject(support)
+    if (!opData.geom) {
+      opData.geom = coordinatesStore.newGeoJSONObject.geometry
+    }
+  }
   if (operationId.value) {
     const {data:operation} = await useHttp(`/api/v1/cables/operations/${operationId.value}/`, {method: 'get'})
     formDate.value = new Date(operation.value.properties.date)
@@ -129,7 +138,7 @@ const initData = async () => {
       id : operation.value.properties.id,
       remark: operation.value.properties.remark,
       infrastructure: supportId.value,
-      operation_type: operation.value.properties.operation_type.id,
+      operation_type_id: operation.value.properties.operation_type?.id,
       equipments: operation.value.properties.equipments,
       media: operation.value.properties.media.map(item => item.id),
       resourcetype: operation.value.resourcetype,

@@ -17,11 +17,12 @@
     </v-app-bar>
     <v-main scrollable>
       <v-container>
-        <data-support-card :data="data"></data-support-card>
+        <data-support-card :data="data" />
         <data-diagnosis-card v-if="lastDiag" :diagnosis="lastDiag" />
-        <data-operation-card v-if="lastOp" :operation="lastOp" :supportId="data.properties.id"/>
+        <data-operation-card v-if="lastOp" :operation="lastOp" :support-id="data.properties.id"
+          @delete="$emit('update')" />
 
-        <v-card class="my-2" >
+        <v-card class="my-2">
           <v-layout>
             <v-app-bar density="compact" color="blue-lighten-2" @click="expandHistory = !expandHistory">
               <v-app-bar-title> {{ $t('support.history') }} </v-app-bar-title><v-spacer />
@@ -30,9 +31,9 @@
               <v-btn density="compact" :icon="expandHistory ? 'mdi-chevron-up':'mdi-chevron-down'" />
             </v-app-bar>
             <v-main :class="expandHistory? 'ma-2':''">
-              <div v-if="expandHistory" >
+              <div v-if="expandHistory">
                 <data-diagnosis-card v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" />
-                <data-operation-card v-for="ops in otherOps" :key="ops.id"  :operation="ops" />
+                <data-operation-card v-for="ops in otherOps" :key="ops.id" :operation="ops" />
               </div>
             </v-main>
           </v-layout>

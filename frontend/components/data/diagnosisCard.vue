@@ -1,6 +1,6 @@
 <template>
   <v-card class="my-2" :title="$t('display.diagnosis')" :subtitle="`Réalisé le ${diagnosis.date}`">
-    <template v-slot:text>
+    <template #text>
       <span class="font-weight-bold">Recommandations&nbsp;:</span><br>
       <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': false"
         :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
@@ -26,7 +26,7 @@
       </p>
       <p>
         <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
-        <v-chip v-if="diagnosis.pole_type.length>0" color="info" v-for="pt in diagnosis.pole_type" :key="pt.id"
+        <v-chip v-for="pt in diagnosis.pole_type" v-if="diagnosis.pole_type.length>0" :key="pt.id" color="info"
           class="ma-2">
           {{ pt.label }}
         </v-chip>
@@ -40,20 +40,20 @@
       </p>
       <p>
         <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
-        <v-icon icon="mdi-circle" :color="riskColors[diagnosis.pole_dangerousness.code]" class="mx-2">
-        </v-icon> <span>{{ diagnosis.pole_dangerousness.label }}</span>
+        <v-icon icon="mdi-circle" :color="riskColors[diagnosis.pole_dangerousness.code]" class="mx-2" /> <span>{{
+          diagnosis.pole_dangerousness.label }}</span>
       </p>
       <p v-if="diagnosis.technical_proposal">
         <span class="font-weight-bold">{{ $t('app.technical_proposal') }}</span>
+      </p>
       <p>
         {{ diagnosis.technical_proposal }}
       </p>
-      </p>
       <p v-if="diagnosis.remark">
         <span class="font-weight-bold">{{ $t('app.remark') }}</span>
+      </p>
       <p>
         {{ diagnosis.remark }}
-      </p>
       </p>
       <v-list>
         <v-list-item v-for="img in diagnosis.media" :key="img.id">
@@ -73,29 +73,29 @@
       </v-list>
     </template>
     <v-card-actions>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-dialog max-width="500">
-        <template v-slot:activator="{ props: activatorProps }">
-          <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle"></v-btn>
+        <template #activator="{ props: activatorProps }">
+          <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle" />
         </template>
 
-        <template v-slot:default="{ isActive }">
+        <template #default="{ isActive }">
           <v-card title="Suppression d'un diagnostic" color="red" prepend-icon="mdi-alert">
             <v-card-text>
               <div class="my-4">
-              Vous êtes sur le point de supprimer un diagnostic, en êtes vous bien certain&nbsp;?
-            </div>
-              <v-btn color="white" block text="Oui, Supprimer" prepend-icon="mdi-delete-circle" @click="deleteDiag()"></v-btn>
+                Vous êtes sur le point de supprimer un diagnostic, en êtes vous bien certain&nbsp;?
+              </div>
+              <v-btn color="white" block text="Oui, Supprimer" prepend-icon="mdi-delete-circle" @click="deleteDiag()" />
             </v-card-text>
 
             <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn text="Annuler" @click="isActive.value = false" prepend-icon="mdi-close-circle"></v-btn>
+              <v-spacer />
+              <v-btn text="Annuler" prepend-icon="mdi-close-circle" @click="isActive.value = false" />
             </v-card-actions>
           </v-card>
         </template>
       </v-dialog>
-      <v-btn color="orange" @click="updateDiag" prepend-icon="mdi-pencil-circle">Modifier</v-btn>
+      <v-btn color="orange" prepend-icon="mdi-pencil-circle" @click="updateDiag">Modifier</v-btn>
     </v-card-actions>
     <!-- <pre><code>{{ diagnosis }}</code></pre> -->
   </v-card>
@@ -129,8 +129,7 @@ const updateDiag = () => {
 }
 
 const deleteDiag = async () => {
-  const deletedDiag = await useHttp(`/api/v1/cables/diagnosis/${diagnosis.id}/`, {method: 'delete'})
-  console.log('deletedDiag',deletedDiag)
+  await useHttp(`/api/v1/cables/diagnosis/${diagnosis.id}/`, {method: 'delete'})
 }
 
 onMounted(()=>{

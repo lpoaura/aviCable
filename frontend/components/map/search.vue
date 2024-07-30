@@ -3,12 +3,10 @@
     @moveend="getMapBounds">
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
-
-      <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
+      <l-tile-layer v-for="baseLayer in baseLayers" v-if="mapReady" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution"
         :layer-type="baseLayer.layer_type" />
       <l-control-layers />
-
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
         :options="infrastructureGeoJsonOptions" :options-style="infrastructureGeoJsonOptionsStyle" />
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
@@ -20,7 +18,7 @@
         :geojson="operatedLineStringData" :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
         :options="operatedInfrastructureGeoJsonOptions" />
-      <l-geo-json v-if="newGeoJSONPoint.coordinates.length==2" :geojson="newGeoJSONPoint"></l-geo-json>
+      <l-geo-json v-if="newGeoJSONPoint.coordinates.length==2" :geojson="newGeoJSONPoint" />
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
@@ -28,7 +26,7 @@
       <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
         <v-alert density="compact" type="warning" title="Information" text="Zoomez pour
         afficher
-        les données"></v-alert>
+        les données" />
       </l-control>
       <l-control-scale position="bottomright" />
 
@@ -67,7 +65,7 @@ const {editMode, mode, mortalityItem} = defineProps({
 const map : Ref<typeof LMap|null> = ref(null)
 const mapObject : Ref<typeof LMap|null> = ref(null)
 const createLayer: Ref<Layer |null> = ref(null)
-const mapReady : Ref<Boolean> = ref(false)
+const mapReady : Ref<boolean> = ref(false)
 
 // Stores
 const cableStore : StoreGeneric  = useCablesStore()
@@ -165,6 +163,15 @@ watch(selectedFeature, (newVal, oldVal) => {
   }
 })
 
+watch(createLayer, (newLayer, oldLayer) => {
+  if (newLayer) {
+    console.log('Unique layer changed:', newLayer);
+    // You can perform additional actions here based on the unique layer's changes
+  } else {
+    console.log('Unique layer removed');
+  }
+});
+
 const getMapBounds = () => {
   // console.log(mapObject.value.getBounds().toBBoxString())
   if (mapObject.value) {
@@ -231,37 +238,33 @@ const hookUpDraw = async () => {
           removalMode: false,
           cutPolygon: false,
           rotateMode: false,
-    });
+    })
     mapObject.value.pm.setPathOptions({
           color: 'red',
           fillColor: 'red',
           fillOpacity: 0.4,
         })
     mapObject.value.on('pm:create', (e) => {
+      if (createLayer.value) {
+        mapObject.value.removeLayer(createLayer.value);
+      }
+      console.log('map on createLayer', e)
+      console.log('createLayers before assign', createLayer, createLayer?.value)
           createLayer.value = e.layer
+          console.log('createLayers after assign', createLayer, createLayer.value)
           if (createLayer.value){
-          switch (mode) {
-            case 'point':
-              // console.log('createLayer', createLayer.value.toGeoJSON())
-              if (createLayer.value.toGeoJSON()) {
-              coordinatesStore.setNewGeoJSONPoint(
-                createLayer.value.toGeoJSON().geometry
+            if (createLayer.value.toGeoJSON()) {
+              coordinatesStore.setNewGeoJSONObject(
+                createLayer.value.toGeoJSON()
               )
               mapObject.value?.pm.disableDraw()
               mapObject.value?.pm.addControls({
                 drawMarker: false,
-                dragMode: true,
-                removalMode: true,
-              })}
-              break
-            case 'line':
-              coordinatesStore.newLineCoord = createLayer.value.toGeoJSON().geometry.coordinates
-              mapObject.value?.pm.addControls({
-                drawPolyline: false,
-                editMode: true,
+                dragMode: mode==='point' ? true : false,
+                drawPolyline:false,
+                editMode: mode === 'line' ? true : false,
                 removalMode: true,
               })
-              break
             }
           }
           // // set listener on drag event on this layer
@@ -283,6 +286,22 @@ const hookUpDraw = async () => {
     // mapObject.value.on("pm:drawend", () => {
     //   console.log("drawend", geofence.value);
     // });
+    mapObject.value.on('pm:remove', (e) => {
+      if (createLayer.value === e.layer) {
+        createLayer.value = null; // Clear the unique layer reference
+        console.log('Layer removed:', e.layer);
+      }
+    })
+    mapObject.value.on('pm:edit', (e) => {
+    // Trigger a change in the uniqueLayer reference
+    console.log('edit', e)
+    createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
+  })
+  mapObject.value.on('pm:update', (e) => {
+    // Trigger a change in the uniqueLayer reference
+    console.log('update', e)
+    createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
+  })
   }
 };
 
@@ -350,7 +369,7 @@ onBeforeMount(async () => {
       COD_UNKNOWN: 'help',
     }
     const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
-    let deathCaseIcon = leaflet.divIcon({
+    const deathCaseIcon = leaflet.divIcon({
       html: `<span class="mdi mdi-${icon}"></span>`,
       iconSize: [15, 15],
       className: 'mapMarkerIcon'}
