@@ -163,9 +163,6 @@ class CreatePointOperationTestCase(TestCase):
 
         # Gather data from DB to create Diagnosis
         owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
-        self.infCond = Nomenclature.objects.filter(
-            type__mnemonic="infrastr_condition"
-        )[0].id
 
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"
@@ -376,9 +373,6 @@ class CreateLineOperationTestCase(TestCase):
 
         # Gather data from DB to create Diagnosis
         owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
-        self.infCond = Nomenclature.objects.filter(
-            type__mnemonic="infrastr_condition"
-        )[0].id
 
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"

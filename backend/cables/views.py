@@ -8,13 +8,9 @@ from rest_framework_gis.filters import InBBoxFilter
 
 from .filters import InfrstrInBboxFilter
 from .models import Diagnosis, Infrastructure, Line, Operation, Point
-from .serializers import (
-    DiagnosisSerializer,
-    InfrastructurePolymorphicSerializer,
-    LineSerializer,
-    OperationPolymorphicSerializer,
-    PointSerializer,
-)
+from .serializers import (DiagnosisSerializer,
+                          InfrastructurePolymorphicSerializer, LineSerializer,
+                          OperationPolymorphicSerializer, PointSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +38,6 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
         .prefetch_related("sensitive_area")
         .prefetch_related("diagnosis")
         .prefetch_related("diagnosis__media")
-        .prefetch_related("diagnosis__condition")
         .prefetch_related("diagnosis__pole_type")
         .prefetch_related("diagnosis__pole_attractivity")
         .prefetch_related("diagnosis__pole_dangerousness")

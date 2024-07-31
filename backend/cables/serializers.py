@@ -38,7 +38,6 @@ class DiagnosisSerializer(ModelSerializer):
     """
 
     # Allow to display nested data
-    condition = NomenclatureSerializer(read_only=True)
     pole_type = NomenclatureSerializer(many=True, read_only=True)
     pole_attractivity = NomenclatureSerializer(read_only=True)
     pole_dangerousness = NomenclatureSerializer(read_only=True)
@@ -55,9 +54,6 @@ class DiagnosisSerializer(ModelSerializer):
             "infrastructure",
             "date",
             "remark",
-            "neutralized",
-            "condition",
-            "condition_id",
             "isolation_advice",
             "dissuasion_advice",
             "attraction_advice",
@@ -83,7 +79,6 @@ class DiagnosisSerializer(ModelSerializer):
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
-            "condition_id": {"source": "condition", "write_only": True},
             "pole_type_id": {"source": "pole_type", "write_only": True},
             "pole_attractivity_id": {
                 "source": "pole_attractivity",

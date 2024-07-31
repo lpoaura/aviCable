@@ -11,6 +11,8 @@ export const useCablesStore = defineStore('cables', {
     pointOpData: [],
     lineOpData: [],
     formSupportId: null,
+    formInfrastructureId: null,
+    formInfrastructure: null,
   }),
   getters: {
     // // get FeatureCollection data
@@ -72,6 +74,12 @@ export const useCablesStore = defineStore('cables', {
     },
     setFormSupportId(supportId) {
       this.formSupportId = supportId
+    },
+    setFormInfrastructureId(id) {
+      this.formInfrastructureId = id
+    },
+    setFormInfrastructure(infrastructure) {
+      this.formInfrastructure = infrastructure
     },
     setInfrstrDataLoadingStatus(status) {
       this.infrstrDataLoadingStatus = status

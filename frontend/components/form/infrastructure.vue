@@ -9,7 +9,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="4">
+            <v-col cols="12" lg="12">
               <v-select v-model="infrastructureData.owner_id" :items="networkOwners" item-title="label" item-value="id"
                 :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required />
             </v-col>
@@ -41,20 +41,20 @@ const errorStore = useErrorsStore()
 const {t} = useI18n()
 
 interface Props{
-  infrastructure?: Object
+  infrastructure?: Object,
+  type: string
 }
 const upc = ref(null)
 // data
 const form = ref(null) // used to get form ref from "<v-form ref="form">"
 const formValid = ref(true)
 
-const props = defineProps<Props>()
+const {infrastructure, type} = defineProps<Props>()
 
 // Adding operations
-const {infrastructure}  = props;
 
 const infrastructureData = reactive({
-  geom: coordinatesStore.getNewGeoJSONPoint(),
+  geom: coordinatesStore.newGeoJSONObject,
   owner_id: infrastructure ? infrastructure.value.owner_id : null,
 })
 
@@ -74,47 +74,23 @@ const rules = reactive({
 // }
 
 const moveToNextStep = async () => {
-  const support = await createNewPoint()
-  console.log('SUPPORT', support)
-  if (support) {
+  const infrastructure = await createNewInfrastructure()
+  console.log('SUPPORT', infrastructure)
+  if (infrastructure) {
     emit('nextStep');
   }
 };
 
 
-
-// const initData = async () => {
-//   if (support) {
-//     const {data:diagnosis} = await useHttp(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, {method: 'get'})
-//     console.log('HAS DIAG', diagnosis)
-//     const diagdata: DiagData = {
-//       id : diagnosis.value.id,
-//       date: diagnosis.value.date,
-//       remark: diagnosis.value.remark,
-//       technical_proposal: diagnosis.value.technical_proposal,
-//       infrastructure: diagnosis.value.infrastructure,
-//       pole_type_id: diagnosis.value.pole_type?.map((item:NomenclatureItem) => item.id),
-//       neutralized: diagnosis.value.neutralized,
-//       condition_id: diagnosis.value.condition?.id,
-//       attraction_advice:diagnosis.value.attraction_advice,
-//       dissuasion_advice: diagnosis.value.dissuasion_advice,
-//       isolation_advice: diagnosis.value.isolation_advice,
-//       pole_attractivity_id: diagnosis.value.pole_attractivity?.id,
-//       pole_dangerousness_id: diagnosis.value.pole_dangerousness?.id,
-//       media_id: [],
-//     }
-//     Object.assign(diagData, diagdata)
-//   }
-//   // const diagData = null
-// }
-
-const createNewPoint = async () => {
+const createNewInfrastructure = async () => {
   try {
-    infrastructureData.geom = coordinatesStore.getNewGeoJSONPoint()
-    const {data : support} = await useHttp('/api/v1/cables/points/', {method: 'post', body: pointData})
-    cablesStore.setFormSupportId(support.value.properties.id)
-    return support.value
+    infrastructureData.geom = coordinatesStore.newGeoJSONObject.geometry
+    const {data : infrastructure} = await useHttp(`/api/v1/cables/${type}/`, {method: 'post', body: infrastructureData})
+    console.log('infrastructure', infrastructure?.value.properties.id)
+    cablesStore.setFormInfrastructureId(infrastructure.value.properties.id)
+    return infrastructure?.value
   } catch (_err) {
+    console.error(_err)
     const error : ErrorInfo = {
       code:errorCodes['create_point']['code'],
       msg:t(`error.${errorCodes.create_point.msg}`)

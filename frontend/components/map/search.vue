@@ -3,10 +3,9 @@
     @moveend="getMapBounds">
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
-      <l-tile-layer v-for="baseLayer in baseLayers" v-if="mapReady" :key="baseLayer.id" :name="baseLayer.name"
-        :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution"
-        :layer-type="baseLayer.layer_type" />
-      <l-control-layers />
+      <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
+        :visible="baseLayer.default" :attribution="baseLayer.attribution" :layer-type="baseLayer.layer_type" />
+
       <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
         :options="infrastructureGeoJsonOptions" :options-style="infrastructureGeoJsonOptionsStyle" />
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
@@ -18,7 +17,7 @@
         :geojson="operatedLineStringData" :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
         :options="operatedInfrastructureGeoJsonOptions" />
-      <l-geo-json v-if="newGeoJSONPoint.coordinates.length==2" :geojson="newGeoJSONPoint" />
+      <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
@@ -28,6 +27,7 @@
         afficher
         les données" />
       </l-control>
+      <l-control-layers />
       <l-control-scale position="bottomright" />
 
       <!-- <l-marker :lat-lng="center" ></l-marker> -->
@@ -66,7 +66,7 @@ const map : Ref<typeof LMap|null> = ref(null)
 const mapObject : Ref<typeof LMap|null> = ref(null)
 const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<boolean> = ref(false)
-
+const router = useRouter()
 // Stores
 const cableStore : StoreGeneric  = useCablesStore()
 const mortalityStore: StoreGeneric = useMortalityStore()
@@ -85,28 +85,29 @@ const newGeoJSONPoint: ComputedRef<GeoJSON> = computed<GeoJSON>(() => coordinate
 // const mortalityItem:
 const baseLayers = computed(() => mapLayersStore.baseLayers)
 
-const newPointCoord = computed(() => coordinatesStore.newPointCoord)
-const newLineCoord = computed(() => coordinatesStore.newLineCoord)
 const selectedFeature : ComputedRef<GeoJSON|null> = computed<GeoJSON|null>(() =>
   !(Object.keys(coordinatesStore.selectedFeature).length === 0)
   ? buffer(coordinatesStore.selectedFeature, 150, {units: 'meters'})
   : null
 )
 
-const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
-  // TODO To be adapted
-  layer.bindPopup(
-    `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
-      </span><a to="/search#mortality">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
-        ${feature.properties?.owner.label} ${feature.properties?.id}</a></h2>`
-    )
+const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
+      </span><span id="routerLink" style="cursor: pointer">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
+        ${feature.properties?.owner.label} ${feature.properties?.id}</span></h2>`
 
-    layer.on('click', (e)=> {console.log('click', feature, e)})
-    // cableStore.setSelectedFeature(feature)
-  // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
-  // console.log('layer', layer)
-  // delete layer.pm
-  // layer.setStyle({ pmIgnore: false })
+const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
+  layer.bindPopup(infrastructurePopupContent(feature))
+
+    layer.on('popupopen', () => {
+      const id = feature?.properties?.id
+        const link = document.getElementById('routerLink');
+        link.addEventListener('click', (event) => {
+          event.preventDefault(); // Prevent the default anchor behavior
+          if (['Point','Lines'].includes(feature?.resourcetype) && id) {
+            router.push(`/${feature.resourcetype ==='Point'? 'supports':'lines'}/${id}`)
+          }
+        });
+      });
 }
 
 const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
@@ -127,6 +128,7 @@ const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
   // delete layer.pm
   // layer.setStyle({ pmIgnore: false })
 }
+
 
 
 const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
@@ -308,19 +310,44 @@ const hookUpDraw = async () => {
 const levelColor = (feature: Feature) => {
   const lastDiag=feature.properties?.diagnosis[0]
   const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
-  const attractivity = lastDiag.pole_attractivity.code
-  const dangerousness = lastDiag.pole_dangerousness.code
-  const note = levelNotes[attractivity] + levelNotes[dangerousness]
-  if (note == 2) {
-    return 'blue'
+  if (lastDiag) {
+    const attractivity = lastDiag.pole_attractivity.code
+    const dangerousness = lastDiag.pole_dangerousness.code
+    const note = levelNotes[attractivity] + levelNotes[dangerousness]
+    if (note == 2) {
+      return 'blue'
+    }
+    if (note > 2 && note < 5)
+    {
+      return 'orange'
+    }
+    else {return 'red'}
   }
-  if (note > 2 && note < 5)
-  {
-    return 'orange'
-  }
-  else {return 'red'}
+  return 'grey'
 }
 
+const abortController : Ref<AbortController | undefined> = ref<AbortController|undefined>(undefined)
+const bbox : ComputedRef<string|null> = computed<string|null>(() => coordinatesStore.mapBounds)
+    // const zoom : ComputedRef<number> = computed<number>(() => coordinatesStore.zoom)
+
+watch(bbox, (newVal, _oldVal) => {
+  console.log('zoom', zoom.value)
+  console.log(abortController)
+  if (abortController.value) {
+    abortController.value.abort();
+    console.log("Download aborted");
+  }
+  abortController.value = new AbortController()
+  if (zoom.value >= 10) {
+    cableStore.getInfrstrData({in_bbox: newVal}, abortController.value)
+    mortalityStore.getMortalityData({in_bbox: newVal}, abortController.value)
+
+  } else {
+    cableStore.setInfrstrData({})
+    cableStore.setInfrstrDataLoadingStatus(false)
+    mortalityStore.setMortalityData({} as FeatureCollection)
+  }
+})
 
 onBeforeMount(async () => {
   // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");

@@ -12,21 +12,20 @@ Dans un modal
           <v-col cols="12" md="6">
             <v-select v-model="display" label="Type d'infrastructure"
               :items="[{state:$t('display.all') ,value:'both'}, {state:$t('support.supports'),value:'poles'},{state:$t('display.lines'),value:'segments'}]"
-              item-title="state" item-value="value" variant="outlined" density="compact"></v-select>
+              item-title="state" item-value="value" variant="outlined" density="compact" />
 
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line variant="outlined"
-              hide-details density="compact"></v-text-field>
+            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line
+              variant="outlined" hide-details density="compact" />
           </v-col>
         </v-row>
 
       </v-card-text>
     </v-card>
-    <v-data-table v-model="selected" :headers="tableHeaders" :items="dataSource[display]"
-      item-value="properties.id" :loading="cableStore.infrstrDataLoadingStatus" :search="search"
-      :loading-text="$t('common.loading')" :items-per-page="-1" :fixed-header="true" class="elevation-1"
-      density="compact" @click:row="handleRowClick">
+    <v-data-table v-model="selected" :headers="tableHeaders" :items="dataSource[display]" item-value="properties.id"
+      :loading="cableStore.infrstrDataLoadingStatus" :search="search" :loading-text="$t('common.loading')"
+      :items-per-page="-1" :fixed-header="true" class="elevation-1" density="compact" @click:row="handleRowClick">
       <!-- <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
@@ -36,27 +35,27 @@ Dans un modal
 
       </template> -->
 
-      <template v-slot:item.properties.id="{ value, item }">
-        <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(item)" color="primary" link>
+      <template #item.properties.id="{ value, item }">
+        <v-chip prepend-icon="mdi-eye-circle-outline" color="primary" link @click="showDetail(item)">
           {{ value }}
         </v-chip>
       </template>
-      <template v-slot:item.properties.diagnosis.0="{ _, item }">
+      <template #item.properties.diagnosis.0="{ _, item }">
         <v-chip prepend-icon="mdi-circle" :color="notationValues(item).color">
           {{ notationValues(item).label }}
         </v-chip>
       </template>
-      <template v-slot:item.resourcetype="{ value }">
+      <template #item.resourcetype="{ value }">
         <v-chip>
           <v-icon :color="value =='Point' ? 'green' : 'blue'">
             {{ value =='Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}}
           </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
         </v-chip>
       </template>
-      <template v-slot:item.properties.operations="{ value }">
+      <template #item.properties.operations="{ value }">
         <v-chip :prepend-icon="value.length> 0 ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'"
           :color="value.length>0 ? 'green':'red'">
-          {{ value.length>0 ? $t('common.yes') : $t('common.no')}}
+          {{ value[0] ? value[0].date : $t('common.no')}}
         </v-chip>
       </template>
     </v-data-table>
@@ -64,18 +63,12 @@ Dans un modal
 </template>
 
 <script setup lang="ts">
-// import { mapState } from 'pinia'
-// import { useCablesStore } from '~/store/cablesStore'
 const router = useRouter()
 const { t } = useI18n()
 
-// const singleExpand = ref(false)
-// const expanded = reactive([])
 const display = ref('both')
 const search = ref('')
-const expanded = ref([])
 const selected= ref([])
-const selectedData = reactive([])
 const tableHeaders = reactive([
   {
     title: t('app.id'),
@@ -100,7 +93,6 @@ const tableHeaders = reactive([
 
 const coordinatesStore = useCoordinatesStore()
 const cableStore = useCablesStore()
-const mortalityStore = useMortalityStore()
 const dataSource = computed(() => {
   return {
     both: cableStore.getInfstrDatafeatures,
@@ -110,33 +102,8 @@ const dataSource = computed(() => {
 })
 
 
-
-
-
-onMounted(() => {
-  // setInfrstrData({})
-  // cableStore.getInfrstrData({})
-
-})
-
-// const source = (choice) => {
-//   switch (choice) {
-//     case 'both':
-//       selectedData = infstrDataFeatures
-//       break
-//     case 'poles':
-//       selectedData = pointDataFeatures
-//       break
-//     case 'segments':
-//       selectedData = lineDataFeatures
-//       break
-//     default:
-//     // TODO raise an exception and handle it or display message to user
-//   }
-// }
 const showDetail = (rowItem) => {
   const id = rowItem?.properties.id
-  // console.log('showDetail', rowItem?.resourcetype, id)
   if (rowItem?.resourcetype === 'Point' && id) {
     console.log('PUSH SHUPPRT')
     router.push(`/supports/${id}`)
@@ -157,7 +124,7 @@ const notationValues =(item) => {
     const note = risks[diagnosis.pole_attractivity?.code]?.note + risks[diagnosis.pole_dangerousness?.code]?.note
     result = note < 3 ? 'RISK_L' : note >= 5 ? 'RISK_H' : 'RISK_M'
   } else {
-    // Manage lines risks
+    // TODO: Manage lines risks
     result = 'RISK_L'
   }
   return risks[result]
@@ -168,70 +135,6 @@ const handleRowClick = (_, object) => {
   coordinatesStore.setSelectedFeature(object.item)
 }
 
-// export default {
-//   name: 'InfrastructureDisplay',
-
-//   data() {
-//     return {
-//       singleExpand: false,
-//       expanded: [],
-//       display: 'both',
-//       selectedData: [],
-//       tableHeaders: [
-//         {
-//           text: this.$t('app.id'),
-//           align: 'start',
-//           sortable: true,
-//           value: 'properties.id',
-//         },
-//         { text: this.$t('app.type'), value: 'resourcetype' },
-//         { text: this.$t('support.owner'), value: 'properties.owner.label' },
-//         { text: 'Notation', value: 'score' },
-//         {
-//           text: 'Neutralisé',
-//           value: 'properties.diagnosis.0.neutralized',
-//         },
-//         {
-//           text: 'Dernier diagnostic',
-//           value: 'properties.diagnosis.0.date',
-//         },toRaw
-//       ],
-//     }
-//   },
-//   async fetch() {
-//     const data = await useFetch('/api/v1/cables/infrastructures') // get FeatureCollection
-//     this.$store.commit('cablesStore/add', data)
-//     // needed to load data at start
-//     this.selectedData = this.infstrDataFeatures
-//   },
-//   computed: {
-//     ...mapState(useCablesStore, ['infstrDataFeatures', 'pointDataFeatures', 'lineDataFeatures'])
-//   },
-//   methods: {
-//     source(choice) {
-//       switch (choice) {
-//         case 'both':
-//           this.selectedData = this.infstrDataFeatures
-//           break
-//         case 'poles':
-//           this.selectedData = this.pointDataFeatures
-//           break
-//         case 'segments':
-//           this.selectedData = this.lineDataFeatures
-//           break
-//         default:
-//         // TODO raise an exception and handle it or display message to user
-//       }
-//     },
-//     showDetail(evt) {
-//       if (evt.resourcetype === 'Point') {
-//         this.$router.push(`/supports/${evt.properties.id}`)
-//       } else if (evt.resourcetype === 'Line') {
-//         this.$router.push(`/lines/${evt.properties.id}`)
-//       }
-//     },
-//   },
-// }
 </script>
 
 <style>

@@ -1,26 +1,30 @@
 <template>
-  <v-navigation-drawer v-if="!mobile" expand-on-hover rail class="bg-light-blue-darken-3" >
+  <v-navigation-drawer v-if="!mobile" v-model="drawer" :rail="rail" class="bg-light-blue-darken-3" @click="rail=false">
     <v-list class="bg-orange-darken-2">
       <v-list-item
         :prepend-avatar="$auth.loggedIn ? 'https://randomuser.me/api/portraits/lego/7.jpg' : 'https://randomuser.me/api/portraits/lego/1.jpg'"
-        :title="$auth.user?.username || 'Not connected'" :subtitle="$auth.user?.email || 'mail@dot.com'"></v-list-item>
+        :title="$auth.user?.username || 'Not connected'" :subtitle="$auth.user?.email || 'mail@dot.com'">
+        <template #append>
+          <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail" />
+        </template>
+      </v-list-item>
     </v-list>
-    <v-divider></v-divider>
+    <v-divider />
     <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-home" :title="t('nav.home_page')"
-        to="/"></v-list-item>
-      <v-list-item v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :prepend-icon="icon" :title="text"
-        :to="url"></v-list-item>
+      <v-list-item prepend-icon="mdi-home" :title="t('nav.home_page')" to="/" />
+      <v-list-item v-for="[icon, text, url, loggedIn] in links" v-if="$auth.loggedIn" :prepend-icon="icon" :title="text"
+        :to="url" />
     </v-list>
-    <template v-if="$auth.loggedIn" v-slot:append>
+    <template v-if="$auth.loggedIn" #append>
       <v-list density="compact" nav>
         <v-list-item v-if="$auth.loggedIn" link href="/api/admin/" prepend-icon="mdi-cogs" :title="t('nav.admin')"
-          value="starred"></v-list-item>
+          value="starred" />
       </v-list>
     </template>
   </v-navigation-drawer>
-  <v-bottom-navigation v-if="mobile" :elevation="5" grow density="default" class="text-light-blue-darken-3" theme="dark">
-    <v-btn v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :to="url">
+  <v-bottom-navigation v-if="mobile" :elevation="5" grow density="default" class="text-light-blue-darken-3"
+    theme="dark">
+    <v-btn v-for="[icon, text, url, loggedIn] in links" v-if="$auth.loggedIn" :to="url">
       <v-icon>{{icon}}</v-icon>
       <span>{{text}}</span>
     </v-btn>
@@ -43,4 +47,8 @@ const links = ref([
   ['mdi-map-search', t('nav.application'), '/search', true],
   ['mdi-information', t('nav.about'), '/about', true]
 ]);
+
+const rail=ref(true)
+const drawer=ref(true)
+
 </script>

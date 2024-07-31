@@ -2,10 +2,10 @@
   <v-card elevation="0" class="fill-height">
     <v-stepper v-model="step" :items="['Support', 'Diagnostic']" fill-height hide-actions>
       <template #item.1>
-        <form-support @next-step="nextStep" />
+        <form-infrastructure type="points" @next-step="nextStep" />
       </template>
       <template #item.2>
-        <form-diagnosis />
+        <form-point-diagnosis />
       </template>
     </v-stepper>
   </v-card>

@@ -163,9 +163,6 @@ class CreatePointDiagnosisTestCase(TestCase):
 
         # Gather data from DB to create Diagnosis
         owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
-        self.infCond = Nomenclature.objects.filter(
-            type__mnemonic="infrastr_condition"
-        )[0].id
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"
         )[0].id
@@ -196,7 +193,6 @@ class CreatePointDiagnosisTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
@@ -215,7 +211,6 @@ class CreatePointDiagnosisTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
@@ -248,7 +243,6 @@ class CreatePointDiagnosisTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
@@ -289,8 +283,6 @@ class CreatePointDiagnosisTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "neutralized": False,
-            "condition_id": self.infCond,
             "isolation_advice": False,
             "dissuasion_advice": False,
             "attraction_advice": False,
@@ -385,7 +377,6 @@ class CreateLineDiagnosisTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
@@ -405,7 +396,6 @@ class CreateLineDiagnosisTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
@@ -439,7 +429,6 @@ class CreateLineDiagnosisTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
@@ -477,7 +466,6 @@ class CreateLineDiagnosisTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,

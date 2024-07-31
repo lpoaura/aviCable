@@ -9,7 +9,7 @@
       </v-app-bar>
       <v-main scrollable>
         <v-container>
-          <form-diagnosis :diagnosis="diagnosis" :support="support" />
+          <form-point-diagnosis :diagnosis="diagnosis" :support="support" />
         </v-container>
       </v-main>
     </v-layout>

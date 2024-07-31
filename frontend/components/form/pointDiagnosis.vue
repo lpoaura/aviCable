@@ -1,4 +1,5 @@
 <template>
+
   <v-card elevation="0" class="fill-height">
     <v-form ref="form" v-model="formValid">
       <v-card-text>
@@ -8,43 +9,19 @@
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
                 density="compact" :rules="[rules.required]" :max="new Date()" />
             </v-col>
-            <template v-if="type==='points'">
-              <v-col cols="12">
-                <v-autocomplete v-model="diagData.pole_type_id" chips :items="poleTypes" item-title="label"
-                  item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
-                  deletable-chips variant="solo" density="compact" />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
-                  :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo" density="compact" />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
-                  item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
-                  density="compact" />
-              </v-col>
-            </template>
-            <template v-if="type==='lines'">
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_build_integr_risk" :items="riskLevels" item-title="label"
-                  item-value="id" :rules="[rules.required]" :label="$t('line.buildIntegRisk')" variant="solo"
-                  density="compact" />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_moving_risk" :items="riskLevels" item-title="label" item-value="id"
-                  :rules="[rules.required]" :label="$t('line.movingRisk')" variant="solo" density="compact" />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_topo_integr_risk" :items="riskLevels" item-title="label"
-                  item-value="id" :rules="[rules.required]" :label="$t('line.topoIntegRisk')" variant="solo"
-                  density="compact" />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_veget_integr_risk" :items="riskLevels" item-title="label"
-                  item-value="id" :rules="[rules.required]" :label="$t('line.vegetIntegRisk')" variant="solo"
-                  density="compact" />
-              </v-col>
-            </template>
+            <v-col cols="12">
+              <v-autocomplete v-model="diagData.pole_type_id" chips :items="poleTypes" item-title="label"
+                item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
+                deletable-chips variant="solo" density="compact" />
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
+                :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo" density="compact" />
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label" item-value="id"
+                :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo" density="compact" />
+            </v-col>
             <v-divider />
             <v-col cols="12" class="text-left">
               <strong>{{$t('diagnosis.actions')}}</strong>
@@ -100,32 +77,27 @@ const emit = defineEmits();
 const {t} = useI18n()
 const router = useRouter()
 const route = useRoute()
-interface Props{
-  type?: Object,
-  diagnosis?: Diagnosis,
-}
-
-const {type} = defineProps<Props>()
 
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 const formValid=ref(false)
-const infrastructureId = computed(() => cablesStore.formInfrastructureId)
-
+const supportId = computed(() => cablesStore.getFormSupportId)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const diagData : DiagData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
   remark: '',
   technical_proposal: '',
-  infrastructure: infrastructureId.value,
+  infrastructure: supportId.value,
   pole_type_id: [],
   neutralized: false,
   condition_id: null,
   attraction_advice:false,
   dissuasion_advice: false,
   isolation_advice: false,
+  pole_attractivity_id: null,
+  pole_dangerousness_id: null,
   media_id: [],
 })
 
@@ -158,17 +130,9 @@ const initData = async () => {
       attraction_advice:diagnosis.value.attraction_advice,
       dissuasion_advice: diagnosis.value.dissuasion_advice,
       isolation_advice: diagnosis.value.isolation_advice,
+      pole_attractivity_id: diagnosis.value.pole_attractivity?.id,
+      pole_dangerousness_id: diagnosis.value.pole_dangerousness?.id,
       media_id: [],
-    }
-    if (type==='points') {
-      diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
-      diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
-    }
-    if (type==="lines"){
-      diagdata.sgmt_build_integr_risk= diagnosis.value.sgmt_build_integr_risk?.id
-      diagdata.sgmt_moving_risk= diagnosis.value.sgmt_moving_risk?.id
-      diagdata.sgmt_topo_integr_risk= diagnosis.value.sgmt_topo_integr_risk?.id
-      diagdata.sgmt_veget_integr_risk= diagnosis.value.sgmt_veget_integr_risk?.id
     }
     Object.assign(diagData, diagdata)
   }
@@ -189,7 +153,7 @@ const initData = async () => {
   // Create Media as selected in component form and get list of Ids of created Media
   // const mediaIdList = await createNewMedia()
   try {
-    diagData.infrastructure = infrastructureId.value
+    diagData.infrastructure = supportId.value
     diagData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
@@ -218,7 +182,7 @@ const updateDiagnosis = async () => {
   // const mediaIdList = await createNewMedia()
   try {
 
-    diagData.infrastructure = infrastructureId.value
+    diagData.infrastructure = supportId.value
     diagData.date = formDate.value.toISOString().substring(0, 10)
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
@@ -244,7 +208,7 @@ const updateDiagnosis = async () => {
 const moveToNextStep = async () => {
   const diagnosis = diagnosisId.value ?  await updateDiagnosis() : await createDiagnosis()
   if (diagnosis) {
-    router.push(`/${type==='points'?'supports':'lines'}/${infrastructureId.value}`)
+    router.push(`/supports/${supportId.value}`)
   }
 };
 

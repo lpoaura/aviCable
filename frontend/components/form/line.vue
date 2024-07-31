@@ -1,11 +1,11 @@
 <template>
   <v-card elevation="0" class="fill-height">
-    <v-stepper v-model="step" :items="['Ligne', 'Diagnostic']" fill-height>
+    <v-stepper v-model="step" :items="['Ligne', 'Diagnostic']" fill-height hide-actions>
       <template #item.1>
-        <form-infrastructure type="line" @next-step="nextStep" />
+        <form-infrastructure type="lines" @next-step="nextStep" />
       </template>
       <template #item.2>
-        <form-diagnosis />
+        <form-diagnosis type="lines" />
       </template>
     </v-stepper>
   </v-card>
@@ -15,7 +15,6 @@
 const step = ref(1)
 
 const nextStep= () => {
-  console.log('STEP', step)
   step.value++;
 }
 

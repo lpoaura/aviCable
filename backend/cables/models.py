@@ -136,16 +136,6 @@ class Diagnosis(Action):
         help_text=_("Media attached with this diagnosis"),
         related_query_name="diagnosis",
     )
-    neutralized = models.BooleanField(_("Neutralized"), default=False)
-    condition = models.ForeignKey(
-        Nomenclature,
-        on_delete=models.PROTECT,
-        null=True,
-        limit_choices_to={"type__mnemonic": "infrastr_condition"},
-        related_name="pole_condition",
-        verbose_name=_("Pole condition"),
-        help_text=_("Pole condition"),
-    )
     isolation_advice = models.BooleanField(
         _("To be insulated"),
         default=False,
