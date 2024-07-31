@@ -2,7 +2,7 @@
   <v-layout full-height>
     <v-app-bar density="compact" color="blue-grey-lighten-5">
       <v-app-bar-title>
-        #{{data.properties.id}} {{ $t('support.support') }}
+        #{{data.properties.id}} {{ type === 'Point' ?$t('support.support') : $t('line.line')}}
         <strong>{{ data.properties.owner.label }}</strong>
       </v-app-bar-title>
 
@@ -17,11 +17,10 @@
     </v-app-bar>
     <v-main scrollable>
       <v-container>
-        <data-support-card :data="data" />
-        <data-diagnosis-card v-if="lastDiag" :diagnosis="lastDiag" />
+        <data-infrastructure-card :data="data" />
+        <data-diagnosis-card v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type" />
         <data-operation-card v-if="lastOp" :operation="lastOp" :support-id="data.properties.id"
           @delete="$emit('update')" />
-
         <v-card class="my-2">
           <v-layout>
             <v-app-bar density="compact" color="blue-lighten-2" @click="expandHistory = !expandHistory">
@@ -32,7 +31,7 @@
             </v-app-bar>
             <v-main :class="expandHistory? 'ma-2':''">
               <div v-if="expandHistory">
-                <data-diagnosis-card v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" />
+                <data-diagnosis-card v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" :type="type" />
                 <data-operation-card v-for="ops in otherOps" :key="ops.id" :operation="ops" />
               </div>
             </v-main>
@@ -45,9 +44,14 @@
 </template>
 
 <script setup lang="ts">
+import type {Feature} from 'geojson'
 
+interface Props  {
+  // type: string,
+  data: Feature
+}
 
-const {data} = defineProps(['data'])
+const {data} = defineProps<Props>()
 
 console.log('props.data' , data)
 
@@ -76,6 +80,11 @@ const lastOp = computed(() => {
         (action: {  last: boolean }) =>
           action.last
       )
+})
+
+const type=computed(() => {
+  console.log("data type", data, data?.resourcetype)
+  return data?.resourcetype
 })
 
 const otherOps = computed(() => {

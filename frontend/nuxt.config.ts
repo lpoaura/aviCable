@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@vite-pwa/nuxt", "@nuxt-alt/auth", "@nuxt-alt/http", "@pinia/nuxt", [
+  modules: ["@vite-pwa/nuxt", "@nuxt-alt/auth", "@nuxt-alt/http", [
     "@pinia/nuxt",
     {
       autoImports: ["defineStore", "acceptHMRUpdate"],
@@ -36,7 +36,7 @@ export default defineNuxtConfig({
     },
     workbox: {
       navigateFallback: "/",
-      globPatterns: ["**/*.{js,css,html,json,ico,png,svg}"], 
+      globPatterns: ["**/*.{js,css,html,json,ico,png,svg}"],
     },
     client: {
       installPrompt: true,

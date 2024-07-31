@@ -3,12 +3,13 @@
     <v-form ref="form" v-model="formValid">
       <v-card-text>
         <v-container>
+          {{ infrastructureType ? infrastructureType:'Non' }}
           <v-row>
             <v-col cols="12">
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
                 density="compact" :rules="[rules.required]" :max="new Date()" />
             </v-col>
-            <template v-if="type==='points'">
+            <template v-if="infrastructureType==='point'">
               <v-col cols="12">
                 <v-autocomplete v-model="diagData.pole_type_id" chips :items="poleTypes" item-title="label"
                   item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
@@ -24,23 +25,23 @@
                   density="compact" />
               </v-col>
             </template>
-            <template v-if="type==='lines'">
+            <template v-if="infrastructureType==='line'">
               <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_build_integr_risk" :items="riskLevels" item-title="label"
+                <v-select v-model="diagData.sgmt_build_integr_risk_id" :items="riskLevels" item-title="label"
                   item-value="id" :rules="[rules.required]" :label="$t('line.buildIntegRisk')" variant="solo"
                   density="compact" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_moving_risk" :items="riskLevels" item-title="label" item-value="id"
+                <v-select v-model="diagData.sgmt_moving_risk_id" :items="riskLevels" item-title="label" item-value="id"
                   :rules="[rules.required]" :label="$t('line.movingRisk')" variant="solo" density="compact" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_topo_integr_risk" :items="riskLevels" item-title="label"
+                <v-select v-model="diagData.sgmt_topo_integr_risk_id" :items="riskLevels" item-title="label"
                   item-value="id" :rules="[rules.required]" :label="$t('line.topoIntegRisk')" variant="solo"
                   density="compact" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_veget_integr_risk" :items="riskLevels" item-title="label"
+                <v-select v-model="diagData.sgmt_veget_integr_risk_id" :items="riskLevels" item-title="label"
                   item-value="id" :rules="[rules.required]" :label="$t('line.vegetIntegRisk')" variant="solo"
                   density="compact" />
               </v-col>
@@ -101,11 +102,10 @@ const {t} = useI18n()
 const router = useRouter()
 const route = useRoute()
 interface Props{
-  type?: Object,
-  diagnosis?: Diagnosis,
+  infrastructureType?: string
 }
 
-const {type} = defineProps<Props>()
+const {infrastructureType} = defineProps<Props>()
 
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
@@ -160,15 +160,15 @@ const initData = async () => {
       isolation_advice: diagnosis.value.isolation_advice,
       media_id: [],
     }
-    if (type==='points') {
+    if (infrastructureType==='point') {
       diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
       diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
     }
-    if (type==="lines"){
-      diagdata.sgmt_build_integr_risk= diagnosis.value.sgmt_build_integr_risk?.id
-      diagdata.sgmt_moving_risk= diagnosis.value.sgmt_moving_risk?.id
-      diagdata.sgmt_topo_integr_risk= diagnosis.value.sgmt_topo_integr_risk?.id
-      diagdata.sgmt_veget_integr_risk= diagnosis.value.sgmt_veget_integr_risk?.id
+    if (infrastructureType==="line"){
+      diagdata.sgmt_build_integr_risk_id= diagnosis.value.sgmt_build_integr_risk?.id
+      diagdata.sgmt_moving_risk_id= diagnosis.value.sgmt_moving_risk?.id
+      diagdata.sgmt_topo_integr_risk_id= diagnosis.value.sgmt_topo_integr_risk?.id
+      diagdata.sgmt_veget_integr_risk_id= diagnosis.value.sgmt_veget_integr_risk?.id
     }
     Object.assign(diagData, diagdata)
   }
@@ -208,7 +208,7 @@ const initData = async () => {
 }
 
 /**
- * updateDiagnosis(): Method that update Diagnosis based on forms data (cf.this.diagData)
+ * updateDiagnosis(): Metypethod that update Diagnosis based on forms data (cf.this.diagData)
  *
  * Error handling: If Diagnosis update fails, new created Media will be deleted.
  * Finally, error message is displayed in snackBar through error handling process.
@@ -244,7 +244,7 @@ const updateDiagnosis = async () => {
 const moveToNextStep = async () => {
   const diagnosis = diagnosisId.value ?  await updateDiagnosis() : await createDiagnosis()
   if (diagnosis) {
-    router.push(`/${type==='points'?'supports':'lines'}/${infrastructureId.value}`)
+    router.push(`/infrastructures/${infrastructureId.value}`)
   }
 };
 

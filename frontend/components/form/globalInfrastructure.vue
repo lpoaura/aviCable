@@ -2,10 +2,10 @@
   <v-card elevation="0" class="fill-height">
     <v-stepper v-model="step" :items="['Support', 'Diagnostic']" fill-height hide-actions>
       <template #item.1>
-        <form-infrastructure type="points" @next-step="nextStep" />
+        <form-infrastructure :infrastructure-type="infrastructureType" @next-step="nextStep" />
       </template>
       <template #item.2>
-        <form-point-diagnosis />
+        <form-diagnosis :infrastructure-type="infrastructureType" />
       </template>
     </v-stepper>
   </v-card>
@@ -14,11 +14,13 @@
 <script setup lang="ts">
 const step = ref(1)
 
+const route = useRoute()
 const nextStep= () => {
   console.log('STEP', step)
   step.value++;
 }
 
+const infrastructureType = computed(() => route.query.type)
 </script>
 
 <style>

@@ -18,31 +18,51 @@
         :color="[diagnosis.change_advice == true ? 'warning' : '']" class="ma-2">
         {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.change-advice') }}
       </v-chip>
-      <p>
-        <span class="font-weight-bold">{{ $t('support.condition') }}&nbsp;:</span>
-        <v-icon icon="mdi-circle" :color="diagnosis.condition ? stateColors[diagnosis.condition.code] :'grey'"
-          class="mx-2" />
-        <span>{{ diagnosis.condition?.label }}</span>
-      </p>
-      <p>
-        <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
-        <v-chip v-for="pt in diagnosis.pole_type" v-if="diagnosis.pole_type.length>0" :key="pt.id" color="info"
-          class="ma-2">
-          {{ pt.label }}
-        </v-chip>
-        <span v-else>&nbsp;- </span>
-      </p>
-      <p>
-        <span class="font-weight-bold">{{ $t('support.attractiveness') }}&nbsp;:</span>
-        <v-icon icon="mdi-circle"
-          :color="diagnosis?.pole_attractivity ? riskColors[diagnosis?.pole_attractivity.code]:'grey'" class="mx-2" />
-        <span>{{ diagnosis?.pole_attractivity.label}}</span>
-      </p>
-      <p>
-        <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
-        <v-icon icon="mdi-circle" :color="riskColors[diagnosis.pole_dangerousness.code]" class="mx-2" /> <span>{{
-          diagnosis.pole_dangerousness.label }}</span>
-      </p>
+      <template v-if="isPoint">
+        <p>
+          <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
+          <v-chip v-for="pt in diagnosis.pole_type" v-if="diagnosis.pole_type.length>0" :key="pt.id" color="info"
+            class="ma-2">
+            {{ pt.label }}
+          </v-chip>
+          <span v-else>&nbsp;- </span>
+        </p>
+        <p>
+          <span class="font-weight-bold">{{ $t('support.attractiveness') }}&nbsp;:</span>
+          <v-icon icon="mdi-circle"
+            :color="diagnosis?.pole_attractivity ? riskColors[diagnosis?.pole_attractivity.code]:'grey'" class="mx-2" />
+          <span>{{ diagnosis?.pole_attractivity.label}}</span>
+        </p>
+        <p>
+          <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
+          <v-icon icon="mdi-circle" :color="riskColors[diagnosis.pole_dangerousness.code]" class="mx-2" /> <span>{{
+            diagnosis.pole_dangerousness.label }}</span>
+        </p>
+      </template>
+      <template v-if="isLine">
+        <p>
+          <span class="font-weight-bold">{{ $t('support.attractiveness') }}&nbsp;:</span>
+          <v-icon icon="mdi-circle"
+            :color="diagnosis?.sgmt_build_integr_risk ? riskColors[diagnosis?.sgmt_build_integr_risk?.code]:'grey'"
+            class="mx-2" />
+          <span>{{ diagnosis?.sgmt_build_integr_risk?.label}}</span>
+        </p>
+        <p>
+          <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
+          <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_moving_risk?.code]" class="mx-2" /> <span>{{
+            diagnosis.sgmt_moving_risk?.label }}</span>
+        </p>
+        <p>
+          <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
+          <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_topo_integr_risk?.code]" class="mx-2" /> <span>{{
+            diagnosis.sgmt_topo_integr_risk?.label }}</span>
+        </p>
+        <p>
+          <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
+          <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_veget_integr_risk?.code]" class="mx-2" /> <span>{{
+            diagnosis.sgmt_veget_integr_risk?.label }}</span>
+        </p>
+      </template>
       <p v-if="diagnosis.technical_proposal">
         <span class="font-weight-bold">{{ $t('app.technical_proposal') }}</span>
       </p>
@@ -103,9 +123,14 @@
 
 </template>
 
-<script setup>
+<script setup lang="ts">
 
-const {diagnosis} = defineProps(['diagnosis'])
+interface Props {
+  type: string,
+  diagnosis: Object,
+}
+
+const {type, diagnosis} = defineProps<Props>()
 const router = useRouter()
 const deletedDiagConfirm = ref(true)
 
@@ -120,11 +145,13 @@ const stateColors = reactive({
   POOR: 'yellow',
 })
 
+const isPoint= computed(() => type==='Point')
+const isLine = computed(() => type==='Line')
 
 const updateDiag = () => {
   router.push({
-    path: `/supports/${diagnosis.infrastructure}/diagnosis`,
-    query: { modifyDiag: 'true', id_diagnosis: diagnosis.id }
+    path: `/infrastructures/${diagnosis.infrastructure}/diagnosis`,
+    query: {id_diagnosis: diagnosis.id }
   })
 }
 

@@ -1,4 +1,5 @@
 <template>
+  {{ mode }}
   <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getMapBounds"
     @moveend="getMapBounds">
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
@@ -310,9 +311,9 @@ const hookUpDraw = async () => {
 const levelColor = (feature: Feature) => {
   const lastDiag=feature.properties?.diagnosis[0]
   const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
-  if (lastDiag) {
+  if (lastDiag && lastDiag.pole_attractivity && lastDiag.pole_attractivity) {
     const attractivity = lastDiag.pole_attractivity.code
-    const dangerousness = lastDiag.pole_dangerousness.code
+    const dangerousness = lastDiag.pole_attractivity.code
     const note = levelNotes[attractivity] + levelNotes[dangerousness]
     if (note == 2) {
       return 'blue'
@@ -376,6 +377,7 @@ onBeforeMount(async () => {
 
   selectedFeatureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
     console.log('selectedFeatureGeoJsonOptions',feature, latlng)
+    if (feature.resourcetype === 'Point') {
     return leaflet.circleMarker(latlng, {
       radius: 20,
       fillColor: 'red',
@@ -384,7 +386,10 @@ onBeforeMount(async () => {
       opacity: 1,
       fillOpacity: 0.2,
       // draggable: true,
-    })
+    })}
+    else {
+      return null
+    }
   }
 
 

@@ -104,11 +104,8 @@ const dataSource = computed(() => {
 
 const showDetail = (rowItem) => {
   const id = rowItem?.properties.id
-  if (rowItem?.resourcetype === 'Point' && id) {
-    console.log('PUSH SHUPPRT')
-    router.push(`/supports/${id}`)
-  } else if (rowItem?.resourcetype === 'Line' && id) {
-    router.push(`/lines/${id}`)
+  if (id) {
+    router.push(`/infrastructures/${id}`)
   }
 }
 

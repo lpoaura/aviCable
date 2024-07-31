@@ -211,7 +211,7 @@ const updateOperation = async () => {
 const submit = async () => {
   const operation = operationId.value ?  await updateOperation() : await createOperation()
   if (operation) {
-    router.push(`/supports/${supportId.value}`)
+    router.push(`/infrastructures/${supportId.value}`)
   }
 };
 

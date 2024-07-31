@@ -61,7 +61,7 @@ const emit = defineEmits()
 
 const updateDiag = () => {
   router.push({
-    path: `/supports/${supportId}/operation`,
+    path: `/infrastructures/${supportId}/operation`,
     query: { id_operation: operation.id }
   })
 }

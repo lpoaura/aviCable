@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="view">
     <template #map><map-search :edit-mode="false" /></template>
-    <data-support-detail :data="info" @update="updateData()" />
+    <data-infrastructure-detail :data="info" @update="updateData()" />
   </NuxtLayout>
 </template>
 
@@ -12,13 +12,14 @@ const route = useRoute()
 
 const coordinateStore = useCoordinatesStore()
 
-const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}/`)
+const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.id}/`)
 
 const updateData = async () => {
-  const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}/`)
+  const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.id}/`)
 }
 
 const zoomTo = () => {
+  console.log('zoomTo', info.value)
   // const layer = geoJSON(info.value)
   coordinateStore.setCenter([...info.value.geometry.coordinates].reverse())
   coordinateStore.setSelectedFeature(info.value)

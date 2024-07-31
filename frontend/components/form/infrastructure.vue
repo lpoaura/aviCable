@@ -5,7 +5,7 @@
         <v-container>
           <v-row>
             <v-col cols="12" class="text-left">
-              <strong> {{ $t('forms.general-infrastructure') }}</strong>
+              <strong> {{ $t('forms.general-infrastructure') }}</strong> {{ infrastructureType.toLowerCase() }}
             </v-col>
           </v-row>
           <v-row>
@@ -42,14 +42,14 @@ const {t} = useI18n()
 
 interface Props{
   infrastructure?: Object,
-  type: string
+  infrastructureType: string
 }
 const upc = ref(null)
 // data
 const form = ref(null) // used to get form ref from "<v-form ref="form">"
 const formValid = ref(true)
 
-const {infrastructure, type} = defineProps<Props>()
+const {infrastructure, infrastructureType} = defineProps<Props>()
 
 // Adding operations
 
@@ -85,7 +85,7 @@ const moveToNextStep = async () => {
 const createNewInfrastructure = async () => {
   try {
     infrastructureData.geom = coordinatesStore.newGeoJSONObject.geometry
-    const {data : infrastructure} = await useHttp(`/api/v1/cables/${type}/`, {method: 'post', body: infrastructureData})
+    const {data : infrastructure} = await useHttp(`/api/v1/cables/${infrastructureType.toLowerCase()}s/`, {method: 'post', body: infrastructureData})
     console.log('infrastructure', infrastructure?.value.properties.id)
     cablesStore.setFormInfrastructureId(infrastructure.value.properties.id)
     return infrastructure?.value
