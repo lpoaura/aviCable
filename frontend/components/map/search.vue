@@ -11,7 +11,7 @@
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
-        :options="deathCasesGeoJsonOptions" />-->
+        :options="deathCasesGeoJsonOptions" />
       <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options-style="selectedFeatureGeoJsonStyle" />
       <!--<l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
         :geojson="operatedLineStringData" :options="infrastructureGeoJsonOptions" />
@@ -82,12 +82,15 @@ const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.
 const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
 const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures)
 const baseLayers = computed(() => mapLayersStore.baseLayers)
+const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
+const selectedFeature : Ref<Feature|null> = ref(null)
 
-const selectedFeature : ComputedRef<GeoJSON|null> = computed<GeoJSON|null>(() =>
-  !(Object.keys(coordinatesStore.selectedFeature).length === 0)
-  ? buffer(coordinatesStore.selectedFeature, 150, {units: 'meters'})
+watch(storedSelectedFeature, (newVal, _oldVal) => {
+  console.log('storedSelectedFeature',newVal, newVal ? 'buffer':'null')
+  selectedFeature.value = newVal
+  ? buffer(newVal, 150, {units: 'meters'})
   : null
-)
+})
 
 const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
       </span><span id="routerLink" style="cursor: pointer">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
@@ -164,9 +167,11 @@ watch(selectedFeature, (newVal, oldVal) => {
 })
 
 watch(createLayer, (newLayer, oldLayer) => {
-  if (newLayer) {
-    console.log('Unique layer changed:', newLayer);
+  console.log('watch createLayer',newLayer, newLayer.toGeoJSON())
+  if (newLayer && newLayer.toGeoJSON()) {
+    console.log('createLayer.value.toGeoJSON()',newLayer.toGeoJSON().geometry)
     // You can perform additional actions here based on the unique layer's changes
+    coordinatesStore.setNewGeoJSONObject(newLayer.toGeoJSON())
   } else {
     console.log('Unique layer removed');
   }
@@ -253,12 +258,12 @@ const hookUpDraw = async () => {
           createLayer.value = e.layer
           console.log('createLayers after assign', createLayer, createLayer.value)
           if (createLayer.value){
-            if (createLayer.value.toGeoJSON()) {
-              console.log('createLayer.value.toGeoJSON()',createLayer.value.toGeoJSON().geometry)
-              coordinatesStore.setNewGeoJSONObject(
-                createLayer.value.toGeoJSON().geometry
-              )
-            }
+            // if (createLayer.value.toGeoJSON()) {
+            //   console.log('createLayer.value.toGeoJSON()',createLayer.value.toGeoJSON().geometry)
+            //   coordinatesStore.setNewGeoJSONObject(
+            //     createLayer.value.toGeoJSON().geometry
+            //   )
+            // }
               mapObject.value?.pm.disableDraw()
               mapObject.value?.pm.addControls({
                 drawMarker: false,

@@ -5,7 +5,7 @@ export interface NomenclatureItem {
   label: string;
   type: number;
 }
-export type NomenclatureSerializer = {
+export type Nomenclature = {
   code: string
   id: number
   label: string
@@ -13,16 +13,16 @@ export type NomenclatureSerializer = {
   type: any
 }
 
-export type SourceSerializer = {
+export type Source = {
   id: number
   name: string
   version: string
 }
 
-export type TypeSerializer = {
+export type Type = {
   code: string
   id: number
-  itemNomenclature: NomenclatureSerializer[]
+  itemNomenclature: Nomenclature[]
   label: string
   mnemonic: string
 }

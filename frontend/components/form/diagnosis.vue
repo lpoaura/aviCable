@@ -2,7 +2,7 @@
   <v-card elevation="0" class="fill-height">
     <v-form ref="form" v-model="formValid">
       <v-card-text>
-        <v-container>
+        <v-container v-if="diagnosisReady">
           <v-row>
             <v-col cols="12">
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
@@ -78,7 +78,7 @@
             </v-col>
           </v-row>
         </v-container>
-
+        <pre>{{diagData }}</pre>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -111,7 +111,7 @@ const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 const formValid=ref(false)
 const infrastructureId = computed(() => cablesStore.formInfrastructureId)
-
+const diagnosisReady=ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const diagData : DiagData = reactive({
@@ -142,7 +142,7 @@ const conditions = computed(() => nomenclaturesStore.conditionItems)
 const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 
 const initData = async () => {
-  if (diagnosisId.value) {
+  if (diagnosisId.value && infrastructureType) {
     const {data:diagnosis} = await useHttp(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, {method: 'get'})
     formDate.value = new Date(diagnosis.value.date)
     const diagdata: DiagData = {
@@ -159,6 +159,7 @@ const initData = async () => {
       isolation_advice: diagnosis.value.isolation_advice,
       media_id: [],
     }
+    console.log('infrastructureType', infrastructureType)
     if (infrastructureType==='point') {
       diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
       diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
@@ -170,6 +171,7 @@ const initData = async () => {
       diagdata.sgmt_veget_integr_risk_id= diagnosis.value.sgmt_veget_integr_risk?.id
     }
     Object.assign(diagData, diagdata)
+    diagnosisReady.value=true
   }
   // const diagData = null
 }
@@ -247,6 +249,7 @@ const moveToNextStep = async () => {
   }
 };
 
+// watch(infrastructureType,(newVal, _oldVal) => initData())
 
 onMounted(()=> {
   initData()

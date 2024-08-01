@@ -6,6 +6,9 @@
         <v-app-bar-title>
           Edition d'une opération
         </v-app-bar-title>
+        <v-app-bar-nav-icon>
+          <v-btn density="compact" icon="mdi-close" @click="router.push(`/infrastructures/${infrastructureId}`)" />
+        </v-app-bar-nav-icon>
       </v-app-bar>
       <v-main scrollable>
         <v-container>
@@ -29,6 +32,7 @@ definePageMeta({
 });
 
 const route = useRoute()
+const router = useRouter()
 const support = ref(null)
 const infrastructureId = computed(() => route.params.id)
 

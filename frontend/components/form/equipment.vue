@@ -1,25 +1,23 @@
 <template>
-  <v-card class="my-2">
+  <v-card v-if="equipmentData" class="my-2">
     <v-card-text>
       <v-row>
         <v-col lg="4" md="12">
-          <v-autocomplete v-model="equipment.type_id" :items="equipmentType" item-title="label" item-value="id"
+          <v-autocomplete v-model="equipmentData.type_id" :items="equipmentType" item-title="label" item-value="id"
             :rules="[rules.required]" hide-selected :label="$t('support.support-type')" variant="solo" density="compact"
-            @input="updateEquipmentData()" />
+            @input="updateEquipmentData" />
         </v-col>
         <v-col lg="4" md="12">
-          <v-text-field v-model="equipment.count" type="number" placeholder="Nombre" variant="solo" density="compact"
-            :rules="[rules.required]" min="0" max="100" @input="updateEquipmentData()" /></v-col>
+          <v-text-field v-model="equipmentData.count" type="number" placeholder="Nombre" variant="solo"
+            density="compact" :rules="[rules.required]" min="0" max="100" @input="updateEquipmentData" /></v-col>
         <v-col lg="4" md="12">
-          <v-text-field v-model="equipment.reference" placeholder="Reference" variant="solo" density="compact"
-            counter="50" @input="updateEquipmentData()" />
+          <v-text-field v-model="equipmentData.reference" placeholder="Reference" variant="solo" density="compact"
+            counter="50" @input="updateEquipmentData" />
         </v-col>
-        <v-col lg="12"><v-textarea v-model="equipment.comment" :rules="[rules.textLength]" placeholder="Commentaire"
-            variant="solo" density="compact" rows="2" counter="300" @input="updateEquipmentData()" /></v-col>
-
+        <v-col lg="12"><v-textarea v-model="equipmentData.comment" :rules="[rules.textLength]" placeholder="Commentaire"
+            variant="solo" density="compact" rows="2" counter="300" @input="updateEquipmentData" /></v-col>
       </v-row>
     </v-card-text>
-
     <v-card-actions>
       <v-spacer /> <v-btn prepend-icon="mdi-delete-circle" color="red" @click="deleteItem()">Supprimer</v-btn>
     </v-card-actions>
@@ -27,15 +25,6 @@
 </template>
 
 <script lang="ts" setup>
-
-// const equipment = ref({
-//     type: null,
-//     remark: null,
-//     reference: null,
-//     count:null,
-// })
-// const {equipment} = defineProps(['equipment'])
-import { ref, defineProps, defineEmits } from 'vue';
 
 const { t } = useI18n()
 const nomenclaturesStore = useNomenclaturesStore()
@@ -48,16 +37,19 @@ const rules = reactive({
 })
 
 const {index, equipment } = defineProps({
-  index: Number,
-  equipment:
-  {type: Object,required:true}
+  index: {type: Number, default: 0},
+  equipment: {type: Object ,required:true}
 });
+
+const equipmentData = ref(null)
+
 
 const emit = defineEmits();
 
 
 const updateEquipmentData = () => {
-  emit('update', equipment);
+  console.log('eqipForm updateEquipmentData', equipment)
+  emit('update', equipmentData.value);
 };
 
 
@@ -83,8 +75,7 @@ const deleteItem = () => {
 };
 
 onMounted(() => {
-  equipment.type_id = equipment.type?.id
-  console.log('equipment',equipment.type)
+  console.log('created', index, equipment);
+  equipmentData.value = {...equipment}
 })
-
 </script>

@@ -14,7 +14,7 @@ interface NewPointCoord {
 
 export const useCoordinatesStore = defineStore("coordinates", {
   state: () => ({
-    selectedFeature: {} as Feature,
+    selectedFeature: null as Feature | null,
     center: [46.6423682169416, 2.1940236627886227] as PointTuple,
     zoom: 6,
     newPointCoord: {} as NewPointCoord,

@@ -22,6 +22,7 @@
         <v-btn color="success" :disabled="!formValid" variant="flat" prepend-icon="mdi-content-save-all"
           @click="moveToNextStep">Sauvegarder</v-btn>
       </v-card-actions>
+      {{ infrastructureData }}
     </v-form>
   </v-card>
 
@@ -55,7 +56,7 @@ const {infrastructure, infrastructureType} = defineProps<Props>()
 
 const infrastructureData = reactive({
   geom: coordinatesStore.newGeoJSONObject,
-  owner_id: infrastructure ? infrastructure.value.owner_id : null,
+  owner_id: infrastructure ? infrastructure.owner_id : null,
 })
 
 const networkOwners = computed(() => nomenclaturesStore.ownerItems)

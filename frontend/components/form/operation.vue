@@ -12,7 +12,7 @@
             <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
               :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
           </v-col>
-          <v-col cols="12">
+          <v-col v-if="equipmentsReady" cols="12">
             <p><strong>Equipements</strong></p>
             <div v-for="(equipment, index) in opData.equipments" :key="index">
               <form-equipment :equipment="equipment" :index="index" @update="updateEquipmentData(index, $event)"
@@ -27,7 +27,6 @@
           prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
       </v-card-actions>
     </v-form>
-    <pre>{{ opData }}</pre>
   </v-card>
 </template>
 
@@ -51,6 +50,7 @@ const infrastructureId = computed(() => cablesStore.formInfrastructureId)
 const infrastructure = computed(() => cablesStore.formInfrastructure)
 const operationId = computed(() => route.query.id_operation)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
+const equipmentsReady = ref(false)
 const opData = reactive({
   date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0,10),
   remark: '',
@@ -67,8 +67,9 @@ const opData = reactive({
 })
 
 const updateEquipmentData = (index, updatedEquipment) => {
-      opData.equipments.value[index] = updatedEquipment;
-    };
+  console.log('updateEquipmentData', index, updatedEquipment)
+  opData.equipments[index] = updatedEquipment;
+};
 
 const deleteEquipment=(index) => {
   console.log("opData.equipments.value", opData.equipments)
@@ -105,27 +106,35 @@ const rules = reactive({
 
 const initData = async () => {
   if (infrastructureId.value && !operationId.value) {
+    console.log('new Operation')
     coordinatesStore.setNewGeoJSONObject(infrastructure.value.geometry)
-    if (!opData.geom) {
-      opData.geom = coordinatesStore.newGeoJSONObject.geometry
-    }
+    opData.resourcetype = infrastructure.value?.resourcetype === 'Point' ? 'PointOperation':'LineOperation'
+    opData.geom = infrastructure.value?.geometry
+    equipmentsReady.value=true
   }
   if (operationId.value) {
+    console.log('update Operation')
     const {data:operation} = await useHttp(`/api/v1/cables/operations/${operationId.value}/`, {method: 'get'})
     formDate.value = new Date(operation.value.properties.date)
     const opdata = {
       id : operation.value.properties.id,
       remark: operation.value.properties.remark,
-      infrastructure: operation.value.infrastructure,
-      equipments: operation.value.properties.equipments,
+      infrastructure: operation.value.properties.infrastructure,
+      equipments: operation.value.properties.equipments.map(item => {
+        item.type_id=item.type.id
+        delete item['type']
+        return item
+      }),
+      // equipments: operation.value.properties.equipments,
       media: operation.value.properties.media.map(item => item.id),
       resourcetype: operation.value.resourcetype,
       geom: operation.value.geometry,
     }
     Object.assign(opData, opdata)
-    coordinatesStore.setNewGeoJSONObject(operation.value.geometry)
     coordinatesStore.setSelectedFeature(operation.value)
+    equipmentsReady.value=true
   }
+  console.log('equipmentsReady',equipmentsReady.value)
   // const opData = null
 }
 
@@ -171,11 +180,7 @@ const updateOperation = async () => {
   // Create new Media as selected in component form and get list of Ids of created Media
   // const mediaIdList = await createNewMedia()
   try {
-
-    opData.infrastructure = infrastructureId.value
     opData.date = formDate.value.toISOString().substring(0, 10)
-    opData.resourcetype = 'PointOperation',
-    opData.geom = coordinatesStore.newGeoJSONObject
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const {data}= await useHttp(`/api/v1/cables/operations/${operationId.value}/`, {method:'put', body: opData})
@@ -200,7 +205,7 @@ const updateOperation = async () => {
 const submit = async () => {
   const operation = operationId.value ?  await updateOperation() : await createOperation()
   if (operation) {
-    router.push(`/infrastructures/${supportId.value}`)
+    router.push(`/infrastructures/${infrastructureId.value}`)
   }
 };
 

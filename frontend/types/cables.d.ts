@@ -1,16 +1,18 @@
-export type MediaSerializer = {
-  author?: string | null
-  date: string
-  id: number
-  remark?: string | null
-  source?: string | null
-  storage: any
+import type { Geometry } from "geojson";
+
+export interface Media  {
+  author?: string | null;
+  date: string;
+  id: number;
+  remark?: string | null;
+  source?: string | null;
+  storage: any;
 }
 
-export type DiagnosisSerializer = {
+export type Diagnosis = {
   attractionAdvice?: boolean
   changeAdvice?: boolean
-  condition: NomenclatureSerializer
+  condition: Nomenclature
   conditionId?: any | null
   date?: string
   dissuasionAdvice?: boolean
@@ -18,28 +20,28 @@ export type DiagnosisSerializer = {
   infrastructure: any
   isolationAdvice?: boolean
   last?: boolean
-  media: MediaSerializer[]
+  media: Media[]
   mediaId?: any
   neutralized?: boolean
-  poleAttractivity: NomenclatureSerializer
+  poleAttractivity: Nomenclature
   poleAttractivityId?: any | null
-  poleDangerousness: NomenclatureSerializer
+  poleDangerousness: Nomenclature
   poleDangerousnessId?: any | null
-  poleType: NomenclatureSerializer[]
+  poleType: Nomenclature[]
   poleTypeId?: any
   remark?: string | null
-  sgmtBuildIntegrRisk: NomenclatureSerializer
+  sgmtBuildIntegrRisk: Nomenclature
   sgmtBuildIntegrRiskId?: any | null
-  sgmtMovingRisk: NomenclatureSerializer
+  sgmtMovingRisk: Nomenclature
   sgmtMovingRiskId?: any | null
-  sgmtTopoIntegrRisk: NomenclatureSerializer
+  sgmtTopoIntegrRisk: Nomenclature
   sgmtTopoIntegrRiskId?: any | null
-  sgmtVegetIntegrRisk: NomenclatureSerializer
+  sgmtVegetIntegrRisk: Nomenclature
   sgmtVegetIntegrRiskId?: any | null
   technicalProposal?: string | null
 }
 
-export type InfrastructurePolymorphicSerializer = {
+export type InfrastructurePolymorphic = {
   createdBy: any | null
   geoArea?: any
   id: number
@@ -52,49 +54,50 @@ export type InfrastructurePolymorphicSerializer = {
   uuid: string
 }
 
-export type GeoAreaSerializer = {
+export type GeoArea = {
   code: string
   id: number
   name: string
-  type: NomenclatureSerializer
+  type: Nomenclature
 }
 
-export type EquipmentSerializer = {
-  comment?: string | null
-  count?: number
-  reference?: string | null
-  type: NomenclatureSerializer[]
+export interface Equipment {
+  comment: string | null
+  count: number
+  reference: string | null
+  type?: Nomenclature[]
+  type_id?: number
 }
 
-export type OperationSerializer = {
+export type Operation = {
   date?: string
-  equipments: EquipmentSerializer[]
+  equipments: Equipment[]
   id: number
-  infrastructure: any
+  infrastructure: number
   last?: boolean
-  media: MediaSerializer[]
-  mediaId?: any
+  media: Media[]
+  mediaId?: number[]
   remark?: string | null
 }
 
-export type SensitiveAreaSerializer = {
+export type SensitiveArea = {
   code: string
   id: number
   name: string
 }
 
-export type LineSerializer = {
-  diagnosis: DiagnosisSerializer[]
-  geoArea: GeoAreaSerializer[]
-  geom?: any | null
+export type Line = {
+  diagnosis: Diagnosis[]
+  geoArea: GeoArea[]
+  geom?: Geometry | null
   id: number
-  operations: OperationSerializer[]
-  owner: NomenclatureSerializer
+  operations: Operation[]
+  owner: Nomenclature
   ownerId: any
-  sensitiveArea: SensitiveAreaSerializer[]
+  sensitiveArea: SensitiveArea[]
 }
 
-export type OperationPolymorphicSerializer = {
+export type OperationPolymorphic = {
   createdBy: any | null
   date?: string
   equipments?: any
@@ -110,14 +113,14 @@ export type OperationPolymorphicSerializer = {
   uuid: string
 }
 
-export type PointSerializer = {
-  diagnosis: DiagnosisSerializer[]
-  geoArea: GeoAreaSerializer[]
+export type Point = {
+  diagnosis: Diagnosis[]
+  geoArea: GeoArea[]
   geom: any
   id: number
-  operations: OperationSerializer[]
-  owner: NomenclatureSerializer
+  operations: Operation[]
+  owner: Nomenclature
   ownerId: any
-  sensitiveArea: SensitiveAreaSerializer[]
+  sensitiveArea: SensitiveArea[]
 }
 
