@@ -68,11 +68,6 @@ const rules = reactive({
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
 
-// const back = () => {
-//   coordinatesStore.setNewGeoJSONPoint({coordinates: [], type: 'Point'})
-//   router.back()
-// }
-
 const moveToNextStep = async () => {
   const infrastructure = await createNewInfrastructure()
   console.log('SUPPORT', infrastructure)

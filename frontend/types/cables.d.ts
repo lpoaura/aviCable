@@ -74,8 +74,6 @@ export type OperationSerializer = {
   last?: boolean
   media: MediaSerializer[]
   mediaId?: any
-  operationType: NomenclatureSerializer
-  operationTypeId?: any | null
   remark?: string | null
 }
 
@@ -104,7 +102,6 @@ export type OperationPolymorphicSerializer = {
   infrastructure: any
   last?: boolean
   media?: any
-  operationType?: any | null
   polymorphicCtype: any | null
   remark?: string | null
   timestampCreate: string

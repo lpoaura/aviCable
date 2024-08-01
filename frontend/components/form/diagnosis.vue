@@ -3,7 +3,6 @@
     <v-form ref="form" v-model="formValid">
       <v-card-text>
         <v-container>
-          {{ infrastructureType ? infrastructureType:'Non' }}
           <v-row>
             <v-col cols="12">
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"

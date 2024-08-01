@@ -18,10 +18,8 @@
               <form-equipment :equipment="equipment" :index="index" @update="updateEquipmentData(index, $event)"
                 @delete="deleteEquipment(index)" />
             </div>
-
           </v-col>
         </v-row>
-
       </v-card-text>
       <v-card-actions>
         <v-spacer /><v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
@@ -46,16 +44,17 @@ const route = useRoute()
 
 const coordinatesStore = useCoordinatesStore()
 const cablesStore = useCablesStore()
-const nomenclaturesStore = useNomenclaturesStore()
+// const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 const formValid=ref(false)
-const supportId = computed(() => cablesStore.getFormSupportId)
+const infrastructureId = computed(() => cablesStore.formInfrastructureId)
+const infrastructure = computed(() => cablesStore.formInfrastructure)
 const operationId = computed(() => route.query.id_operation)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const opData = reactive({
   date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0,10),
   remark: '',
-  infrastructure: supportId.value,
+  infrastructure: infrastructureId.value,
   equipments: [{
     id: null,
     type_id: null,
@@ -64,7 +63,6 @@ const opData = reactive({
     comment: null,
   }],
   media: [],
-  resourcetype: 'PointOperation',
   geom: null,
 })
 
@@ -94,7 +92,7 @@ const newGeoJSONObject = computed(() => coordinatesStore.newGeoJSONObject)
 
 watch(newGeoJSONObject, (value) => {
   if (value) {
-  opData.geom = value.geometry
+    opData.geom = value.geometry
   }
 })
 //       // rules for form validation
@@ -104,13 +102,10 @@ const rules = reactive({
 })
 
 
-// Menu items
-const operationType = computed(() => nomenclaturesStore.operationTypeItems)
 
 const initData = async () => {
-  if (supportId.value && !operationId.value) {
-    const {data:support} = await useHttp(`/api/v1/cables/infrastructures/${supportId.value}/`, {method: 'get'})
-    coordinatesStore.setNewGeoJSONObject(support)
+  if (infrastructureId.value && !operationId.value) {
+    coordinatesStore.setNewGeoJSONObject(infrastructure.value.geometry)
     if (!opData.geom) {
       opData.geom = coordinatesStore.newGeoJSONObject.geometry
     }
@@ -121,14 +116,14 @@ const initData = async () => {
     const opdata = {
       id : operation.value.properties.id,
       remark: operation.value.properties.remark,
-      infrastructure: supportId.value,
+      infrastructure: operation.value.infrastructure,
       equipments: operation.value.properties.equipments,
       media: operation.value.properties.media.map(item => item.id),
       resourcetype: operation.value.resourcetype,
       geom: operation.value.geometry,
     }
     Object.assign(opData, opdata)
-    coordinatesStore.setNewGeoJSONPoint(operation.value.geometry)
+    coordinatesStore.setNewGeoJSONObject(operation.value.geometry)
     coordinatesStore.setSelectedFeature(operation.value)
   }
   // const opData = null
@@ -148,7 +143,7 @@ const initData = async () => {
   // Create Media as selected in component form and get list of Ids of created Media
   // const mediaIdList = await createNewMedia()
   try {
-    opData.infrastructure = supportId.value
+    opData.infrastructure = infrastructureId.value
     opData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
@@ -177,10 +172,10 @@ const updateOperation = async () => {
   // const mediaIdList = await createNewMedia()
   try {
 
-    opData.infrastructure = supportId.value
+    opData.infrastructure = infrastructureId.value
     opData.date = formDate.value.toISOString().substring(0, 10)
     opData.resourcetype = 'PointOperation',
-    opData.geom = coordinatesStore.newGeoJSONPoint
+    opData.geom = coordinatesStore.newGeoJSONObject
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const {data}= await useHttp(`/api/v1/cables/operations/${operationId.value}/`, {method:'put', body: opData})
@@ -210,7 +205,7 @@ const submit = async () => {
 };
 
 
-onMounted(()=> {
-  initData()
+onMounted(async ()=> {
+  await initData()
 })
 </script>

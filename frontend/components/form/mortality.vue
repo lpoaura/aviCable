@@ -5,13 +5,13 @@
 
 
     <v-app-bar color="pink" flat dark density="compact">
-      <template v-slot:prepend>
-        <v-btn icon="mdi-pencil-circle"></v-btn>
+      <template #prepend>
+        <v-btn icon="mdi-pencil-circle" />
         <v-app-bar-title>{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
           {{ $t('mortality.new_mortality') }}
         </v-app-bar-title>
       </template>
-      <template v-slot:append>
+      <template #append>
         <v-btn icon="mdi-close" @click="router.back()" />
       </template>
     </v-app-bar>
@@ -26,21 +26,8 @@
                 <strong>{{ $t('forms.coordinates') }}</strong>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="12" lg="6">
-                <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
-                  :label="$t('support.latitude')" type="number" :rules="[rules.requiredOrNotValid, rules.latRange]"
-                  placeholder="Latitude" required variant="solo" density="compact" />
-              </v-col>
-
-              <v-col cols="12" lg="6">
-                <v-text-field ref="lng" v-model="coordinatesStore.newGeoJSONPoint.coordinates[0]"
-                  :label="$t('support.longitude')" type="number" :rules="[rules.requiredOrNotValid, rules.lngRange]"
-                  required variant="solo" density="compact" />
-              </v-col>
-            </v-row>
           </v-container>
-          <v-divider></v-divider>
+          <v-divider />
           <v-container>
             <v-row>
               <v-col cols="12" class="text-left">
@@ -50,11 +37,11 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-menu :close-on-content-click="false" transition="scale-transition">
-                  <template v-slot:activator="{ props }">
+                  <template #activator="{ props }">
                     <v-text-field v-model="mortalityData.date" :label="$t('forms.datecreate')" persistent-hint
-                      prepend-icon="mdi-calendar" variant="solo" density="compact" v-bind="props"></v-text-field>
+                      prepend-icon="mdi-calendar" variant="solo" density="compact" v-bind="props" />
                   </template>
-                  <v-date-picker v-model="mortalityData.date" no-title></v-date-picker>
+                  <v-date-picker v-model="mortalityData.date" no-title />
                 </v-menu>
               </v-col>
 
@@ -71,7 +58,7 @@
               <v-col cols="12" md="6">
                 <v-select v-model="mortalityData.death_cause_id" :items="nomenclaturesStore.deathCauseItems"
                   item-title="label" item-value="id" :rules="[rules.required]" label="Cause de la mortalité"
-                  variant="solo" density="compact"></v-select>
+                  variant="solo" density="compact" />
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field ref="lat" v-model="mortalityData.infrstr" label="support/ligne concerné" type="string"
@@ -81,12 +68,12 @@
               <v-col cols="12">
                 <v-textarea v-model="mortalityData.remark" clearable clear-icon="mdi-close-circle"
                   :label="$t('app.remark')" :rules="[rules.textLength]" rows="2" counter="300" variant="solo"
-                  density="compact"></v-textarea>
+                  density="compact" />
               </v-col>
             </v-row>
           </v-container>
 
-          <v-divider></v-divider>
+          <v-divider />
           <v-container>
             <v-row>
               <v-col cols="12" class="text-left">
@@ -130,14 +117,6 @@ const formValid = ref(true)
       // form values
 
       // define data related to Point
-const pointData = reactive({
-        geom: {
-          type: 'Point',
-          coordinates: [],
-        },
-        owner_id: 1, // null,
-      })
-      // define data related to Diagnosis
 
       const mortalityData = reactive({
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -262,7 +241,7 @@ const back = () => {
      */
     const createNewData= async () => {
       try {
-        mortalityData.geom = coordinatesStore.newGeoJSONPoint
+        mortalityData.geom = coordinatesStore.newGeoJSONObject
         return await useHttp('/api/v1/mortality/', {method: 'post', body: mortalityData})
       } catch (_err) {
         console.error(_err)

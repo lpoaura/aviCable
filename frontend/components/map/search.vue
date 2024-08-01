@@ -1,5 +1,4 @@
 <template>
-  {{ mode }}
   <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getMapBounds"
     @moveend="getMapBounds">
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
@@ -7,14 +6,14 @@
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
         :visible="baseLayer.default" :attribution="baseLayer.attribution" :layer-type="baseLayer.layer_type" />
 
-      <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
-        :options="infrastructureGeoJsonOptions" :options-style="infrastructureGeoJsonOptionsStyle" />
+      <!--  <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
+        :options="infrastructureGeoJsonOptions" :options-style="infrastructureGeoJsonOptionsStyle" />-->
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
-        :options="deathCasesGeoJsonOptions" />
+        :options="deathCasesGeoJsonOptions" />-->
       <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options-style="selectedFeatureGeoJsonStyle" />
-      <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
+      <!--<l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
         :geojson="operatedLineStringData" :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
         :options="operatedInfrastructureGeoJsonOptions" />
@@ -45,13 +44,13 @@ import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
 // import 'leaflet-search'
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch"
 import "leaflet-geosearch/assets/css/leaflet.css"
-import { LMap, LTileLayer, LMarker, LGeoJson, LControlLayers, LControl, LControlScale, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
 import buffer from '@turf/buffer'
 import type { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
 import type { StoreGeneric } from "pinia"
-import type {Map, PointTuple, GeoJSONOptions, Layer} from "leaflet";
+import type {PointTuple, GeoJSONOptions, Layer, LatLng} from "leaflet";
 
 // import { useCoordinatesStore } from "../store/coordinatesStore";
 
@@ -82,8 +81,6 @@ const operatedPointData : ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableSt
 const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
 const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
 const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures)
-const newGeoJSONPoint: ComputedRef<GeoJSON> = computed<GeoJSON>(() => coordinatesStore.newGeoJSONPoint)
-// const mortalityItem:
 const baseLayers = computed(() => mapLayersStore.baseLayers)
 
 const selectedFeature : ComputedRef<GeoJSON|null> = computed<GeoJSON|null>(() =>
@@ -196,7 +193,7 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
     }
   }
 
-  const infrastructureGeoJsonOptionsStyle = (feature: Feature, latlng : any ) => {
+  const infrastructureGeoJsonOptionsStyle = (feature: Feature, _latlng : LatLng | null) => {
     return  {
       radius: 6,
       fillColor: levelColor(feature),
@@ -257,9 +254,11 @@ const hookUpDraw = async () => {
           console.log('createLayers after assign', createLayer, createLayer.value)
           if (createLayer.value){
             if (createLayer.value.toGeoJSON()) {
+              console.log('createLayer.value.toGeoJSON()',createLayer.value.toGeoJSON().geometry)
               coordinatesStore.setNewGeoJSONObject(
-                createLayer.value.toGeoJSON()
+                createLayer.value.toGeoJSON().geometry
               )
+            }
               mapObject.value?.pm.disableDraw()
               mapObject.value?.pm.addControls({
                 drawMarker: false,
@@ -270,6 +269,7 @@ const hookUpDraw = async () => {
               })
             }
           }
+          )
           // // set listener on drag event on this layer
           // this.handleDrag(createLayer)
 
@@ -277,7 +277,7 @@ const hookUpDraw = async () => {
           // e.layer.on('pm:remove', (_e) => {
           //   this.handleRemove()
           // })
-        })
+
     // mapObject.value.on("pm:drawstart", ({ workingLayer, shape }) => {
     //   console.log('drawstart', workingLayer)
     //   workingLayer.on("pm:vertexadded", (e) => {
@@ -352,7 +352,7 @@ watch(bbox, (newVal, _oldVal) => {
 
 onBeforeMount(async () => {
   // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-  infrastructureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
+  infrastructureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng | null ) => {
     if (latlng) {
       return leaflet.circleMarker(latlng, {
         radius: 6,
@@ -365,7 +365,8 @@ onBeforeMount(async () => {
       })
     }
   }
-  operatedInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : any ) => {
+  operatedInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : LatLng | null ) => {
+    if (latlng) {
     return leaflet.circleMarker(latlng, {
       radius: 3,
       fillColor: '#00ff00',
@@ -376,10 +377,11 @@ onBeforeMount(async () => {
       // draggable: true,
     })
   }
+  }
 
-  selectedFeatureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
+  selectedFeatureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng | null ) => {
     console.log('selectedFeatureGeoJsonOptions',feature, latlng)
-    if (feature.resourcetype === 'Point') {
+    if (feature.resourcetype === 'Point' && latlng) {
     return leaflet.circleMarker(latlng, {
       radius: 20,
       fillColor: 'red',
@@ -396,7 +398,7 @@ onBeforeMount(async () => {
 
 
 
-  deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
+  deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng ) => {
     const iconDict : {[key: string]: string} = {
       COD_EL: 'lightning-bolt',
       COD_IM : 'star',
@@ -413,8 +415,6 @@ onBeforeMount(async () => {
       // draggable: true,
     }
 })
-
-onMounted(() => {})
 
 </script>
 

@@ -13,7 +13,6 @@ Dans un modal
             <v-select v-model="display" label="Type d'infrastructure"
               :items="[{state:$t('display.all') ,value:'both'}, {state:$t('support.supports'),value:'poles'},{state:$t('display.lines'),value:'segments'}]"
               item-title="state" item-value="value" variant="outlined" density="compact" />
-
           </v-col>
           <v-col cols="12" md="6">
             <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line
@@ -29,7 +28,7 @@ Dans un modal
       <!-- <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
-            <data-diagnosis-card :diagnosis="item.properties.diagnosis[0]"></data-diagnosis-card>
+            <data-card-diagnosis :diagnosis="item.properties.diagnosis[0]"></data-card-diagnosis>
           </td>
         </tr>
 

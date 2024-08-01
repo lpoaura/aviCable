@@ -17,9 +17,9 @@
     </v-app-bar>
     <v-main scrollable>
       <v-container>
-        <data-infrastructure-card :data="data" />
-        <data-diagnosis-card v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type" />
-        <data-operation-card v-if="lastOp" :operation="lastOp" :support-id="data.properties.id"
+        <data-card-infrastructure :data="data" />
+        <data-card-diagnosis v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type" />
+        <data-card-operation v-if="lastOp" :operation="lastOp" :support-id="data.properties.id"
           @delete="$emit('update')" />
         <v-card class="my-2">
           <v-layout>
@@ -31,8 +31,8 @@
             </v-app-bar>
             <v-main :class="expandHistory? 'ma-2':''">
               <div v-if="expandHistory">
-                <data-diagnosis-card v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" :type="type" />
-                <data-operation-card v-for="ops in otherOps" :key="ops.id" :operation="ops" />
+                <data-card-diagnosis v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" :type="type" />
+                <data-card-operation v-for="ops in otherOps" :key="ops.id" :operation="ops" />
               </div>
             </v-main>
           </v-layout>

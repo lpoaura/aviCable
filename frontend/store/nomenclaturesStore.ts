@@ -23,7 +23,6 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
     poleTypeItems: [] as NomenclatureItem[],
     riskLevelItems: [] as NomenclatureItem[],
     deathCauseItems: [] as NomenclatureItem[],
-    operationTypeItems: [] as NomenclatureItem[],
     equipmentTypeItems: [] as NomenclatureItem[],
   }),
   getters: {
@@ -142,15 +141,6 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         // set "riskLevels" to state value "riskLevelItems"
         this.deathCauseItems = deathCause.nomenclatures;
 
-        const operationType = types.find(
-          (elem: NomenclatureItem) => elem.code === "OP_TYPE"
-        );
-        // If no Items is gathered, an Error is thrown
-        if (operationType === undefined) {
-          throw new Error("operationType");
-        }
-        // set "riskLevels" to state value "riskLevelItems"
-        this.operationTypeItems = operationType.nomenclatures;
 
         const equipmentType = types.find(
           (elem: NomenclatureItem) => elem.code === "EQMT_TYPE"

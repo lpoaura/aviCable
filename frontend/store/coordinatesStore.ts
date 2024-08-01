@@ -19,7 +19,6 @@ export const useCoordinatesStore = defineStore("coordinates", {
     zoom: 6,
     newPointCoord: {} as NewPointCoord,
     newLineCoord: [],
-    newGeoJSONPoint: { coordinates: [], type: "Point" } as Point,
     newGeoJSONLine: { coordinates: [], type: "LineString" } as LineString,
     newGeoJSONObject: {} as GeoJSON,
     mapBounds: null as string|null,
@@ -67,10 +66,8 @@ export const useCoordinatesStore = defineStore("coordinates", {
     setNewLineCoord(data: []) {
       this.newLineCoord = data;
     },
-    setNewGeoJSONPoint(data: Point) {
-      this.newGeoJSONPoint = data;
-    },
-    setNewGeoJSONObject(data: GeoJSON) {
+    setNewGeoJSONObject(data) {
+      console.log('setNewGeoJSONObject', data)
       this.newGeoJSONObject = data;
     },
     setNewGeoJSONLine(data: LineString) {

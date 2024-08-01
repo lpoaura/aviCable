@@ -22,19 +22,21 @@
 <script setup>
 
 const cablesStore = useCablesStore()
+const coordinatesStore = useCoordinatesStore()
 
 definePageMeta({
   auth: true,
 });
+
 const route = useRoute()
-const diagnosis = ref(null)
 const support = ref(null)
-const supportId = computed(() => route.params.idsupport)
+const infrastructureId = computed(() => route.params.id)
 
-const modifyDiag = computed(() => route.query.modifyDiag === 'true' ? true : false)
-
-onMounted(()=> {
-  cablesStore.setFormSupportId(supportId.value)
+onMounted(async ()=> {
+  const {data: infrastructure} = await useHttp(`/api/v1/cables/infrastructures/${infrastructureId.value}/`)
+  cablesStore.setFormInfrastructureId(infrastructureId.value)
+  cablesStore.setFormInfrastructure(infrastructure)
+  coordinatesStore.setSelectedFeature(infrastructure)
 })
 
 </script>UT
