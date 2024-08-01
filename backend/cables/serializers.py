@@ -207,7 +207,6 @@ class OperationSerializer(ModelSerializer):
     """
 
     # Allow to display nested data
-    operation_type = NomenclatureSerializer(read_only=True)
     equipments = EquipmentSerializer(many=True, read_only=True)
     media = MediaSerializer(many=True, read_only=True)
 
@@ -219,8 +218,6 @@ class OperationSerializer(ModelSerializer):
             "infrastructure",
             "date",
             "remark",
-            "operation_type",
-            "operation_type_id",
             "equipments",
             "media",
             "media_id",
@@ -229,10 +226,6 @@ class OperationSerializer(ModelSerializer):
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
-            "operation_type_id": {
-                "source": "operation_type",
-                "write_only": True,
-            },
             "media_id": {"source": "media", "write_only": True},
         }
 
@@ -310,7 +303,6 @@ class OperationSerializer(ModelSerializer):
 class PointOperationSerializer(GeoFeatureModelSerializer):
 
     # Allow to display nested data
-    operation_type = NomenclatureSerializer(read_only=True)
     equipments = EquipmentSerializer(many=True)
     media = MediaSerializer(many=True, read_only=True)
 
@@ -322,8 +314,6 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
             "infrastructure",
             "date",
             "remark",
-            "operation_type",
-            "operation_type_id",
             "equipments",
             "media",
             # "media_id",
@@ -332,7 +322,6 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
         ]
         extra_kwargs = {
             "id": {"read_only": True},
-            "operation_type_id": {"source": "operation_type", "write_only": True},
         }
 
     def update(self, instance, validated_data):
@@ -443,7 +432,6 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
 class LineOperationSerializer(GeoFeatureModelSerializer):
 
     # Allow to display nested data
-    operation_type = NomenclatureSerializer(read_only=True)
     equipments = EquipmentSerializer(many=True)
     media = MediaSerializer(many=True, read_only=True)
 
@@ -455,8 +443,6 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
             "infrastructure",
             "date",
             "remark",
-            "operation_type",
-            # "operation_type_id",
             "equipments",
             "media",
             # "media_id",

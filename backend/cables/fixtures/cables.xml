@@ -1,2 +1,396 @@
 <?xml version="1.0" encoding="utf-8"?>
-<django-objects version="1.0"><object model="cables.infrastructure" pk="1"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">17</field><field name="timestamp_create" type="DateTimeField">2022-03-27T16:07:02.744320+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T16:07:02.936414+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">48072fd0-044f-4466-b755-290286229561</field><field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field><field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea"><object pk="56"></object><object pk="20180"></object></field><field name="sensitive_area" rel="ManyToManyRel" to="sensitive_area.sensitivearea"></field></object><object model="cables.infrastructure" pk="2"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">17</field><field name="timestamp_create" type="DateTimeField">2022-03-27T16:08:47.120620+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T16:08:47.259993+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">bd62da0a-8e5d-4440-9540-a42fd7faacb4</field><field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">2</field><field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea"><object pk="94"></object><object pk="18599"></object></field><field name="sensitive_area" rel="ManyToManyRel" to="sensitive_area.sensitivearea"><object pk="2"></object></field></object><object model="cables.infrastructure" pk="3"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">15</field><field name="timestamp_create" type="DateTimeField">2022-03-27T18:27:34.445042+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T18:27:34.545536+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">d84a9c56-9ac7-42d0-b92e-0e9d4ff3739b</field><field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field><field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea"><object pk="56"></object><object pk="20180"></object></field><field name="sensitive_area" rel="ManyToManyRel" to="sensitive_area.sensitivearea"></field></object><object model="cables.infrastructure" pk="4"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">15</field><field name="timestamp_create" type="DateTimeField">2022-03-27T18:28:46.985981+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T18:28:47.089849+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">3a1a429d-c533-4304-90af-551ced351cb0</field><field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field><field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea"><object pk="56"></object><object pk="20180"></object></field><field name="sensitive_area" rel="ManyToManyRel" to="sensitive_area.sensitivearea"></field></object><object model="cables.point" pk="2"><field name="geom" type="PointField">SRID=4326;POINT (4.58353 45.3917)</field></object><object model="cables.point" pk="1"><field name="geom" type="PointField">SRID=4326;POINT (3.088413 45.751179)</field></object><object model="cables.line" pk="4"><field name="geom" type="LineStringField">SRID=4326;LINESTRING (3.088574 45.75055, 3.08984 45.750449, 3.090892 45.750378)</field></object><object model="cables.line" pk="3"><field name="geom" type="LineStringField">SRID=4326;LINESTRING (3.08843 45.751026, 3.088413 45.751179, 3.088462 45.751302, 3.089057 45.751385)</field></object><object model="cables.action" pk="1"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field><field name="timestamp_create" type="DateTimeField">2022-03-27T16:07:03.238065+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T16:07:03.238077+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">86da482b-3f62-4e1d-a9e1-742767f58222</field><field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">1</field><field name="date" type="DateField">2022-03-27</field><field name="remark" type="TextField">Création d'un poteau ENEDIS</field><field name="last" type="BooleanField">True</field><field name="media" rel="ManyToManyRel" to="media.media"><object pk="1"></object></field></object><object model="cables.action" pk="2"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field><field name="timestamp_create" type="DateTimeField">2022-03-27T16:08:47.556438+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T16:13:30.036879+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">a821ab26-39a2-4311-8189-32bb1c6b7d89</field><field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field><field name="date" type="DateField">2022-03-01</field><field name="remark" type="TextField">Création d'un pylône RTE</field><field name="last" type="BooleanField">False</field><field name="media" rel="ManyToManyRel" to="media.media"><object pk="2"></object></field></object><object model="cables.action" pk="3"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">16</field><field name="timestamp_create" type="DateTimeField">2022-03-27T16:11:50.049332+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T16:11:50.049392+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">d8268c0d-9978-4af1-903e-2cebc70c3133</field><field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field><field name="date" type="DateField">2022-03-15</field><field name="remark" type="TextField">Installation réalisée sans difficulté</field><field name="last" type="BooleanField">False</field><field name="media" rel="ManyToManyRel" to="media.media"></field></object><object model="cables.action" pk="4"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field><field name="timestamp_create" type="DateTimeField">2022-03-27T16:13:30.021909+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T16:15:56.241275+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">0de4ad18-2718-4d56-9343-36df82c533ce</field><field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field><field name="date" type="DateField">2022-03-16</field><field name="remark" type="TextField">Création d'un pylône RTE</field><field name="last" type="BooleanField">False</field><field name="media" rel="ManyToManyRel" to="media.media"><object pk="3"></object></field></object><object model="cables.action" pk="5"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">16</field><field name="timestamp_create" type="DateTimeField">2022-03-27T16:14:25.145718+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T16:14:25.145772+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">2b7a36f6-9a86-402e-ae6f-c9af8d53af04</field><field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field><field name="date" type="DateField">2022-03-18</field><field name="remark" type="TextField">RAS</field><field name="last" type="BooleanField">True</field><field name="media" rel="ManyToManyRel" to="media.media"></field></object><object model="cables.action" pk="6"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field><field name="timestamp_create" type="DateTimeField">2022-03-27T16:15:56.224761+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T16:15:56.224814+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">dda617b7-83b6-482a-a94c-2bbc2040df19</field><field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field><field name="date" type="DateField">2022-03-27</field><field name="remark" type="TextField">Création d'un pylône RTE</field><field name="last" type="BooleanField">True</field><field name="media" rel="ManyToManyRel" to="media.media"><object pk="4"></object></field></object><object model="cables.action" pk="7"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field><field name="timestamp_create" type="DateTimeField">2022-03-27T18:27:34.712425+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T18:27:34.712438+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">36e925be-e345-40a0-8462-91639ac8c964</field><field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">3</field><field name="date" type="DateField">2022-03-01</field><field name="remark" type="TextField">Création d'une ligne</field><field name="last" type="BooleanField">True</field><field name="media" rel="ManyToManyRel" to="media.media"></field></object><object model="cables.action" pk="8"><field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field><field name="timestamp_create" type="DateTimeField">2022-03-27T18:28:47.255243+00:00</field><field name="timestamp_update" type="DateTimeField">2022-03-27T18:28:47.255257+00:00</field><field name="created_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="updated_by" rel="ManyToOneRel" to="users.user"><None></None></field><field name="uuid" type="UUIDField">504494e7-e2f2-4c85-ac4a-98d283200ae7</field><field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">4</field><field name="date" type="DateField">2022-03-15</field><field name="remark" type="TextField">Création d'une seconde ligne</field><field name="last" type="BooleanField">True</field><field name="media" rel="ManyToManyRel" to="media.media"></field></object><object model="cables.diagnosis" pk="1"><field name="neutralized" type="BooleanField">True</field><field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">6</field><field name="isolation_advice" type="BooleanField">False</field><field name="dissuasion_advice" type="BooleanField">False</field><field name="attraction_advice" type="BooleanField">True</field><field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">8</field><field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">8</field><field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object pk="11"></object></field></object><object model="cables.diagnosis" pk="6"><field name="neutralized" type="BooleanField">False</field><field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">7</field><field name="isolation_advice" type="BooleanField">True</field><field name="dissuasion_advice" type="BooleanField">True</field><field name="attraction_advice" type="BooleanField">True</field><field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field><field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field><field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object pk="11"></object><object pk="12"></object></field></object><object model="cables.diagnosis" pk="4"><field name="neutralized" type="BooleanField">False</field><field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">7</field><field name="isolation_advice" type="BooleanField">True</field><field name="dissuasion_advice" type="BooleanField">True</field><field name="attraction_advice" type="BooleanField">True</field><field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field><field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field><field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object pk="11"></object><object pk="12"></object></field></object><object model="cables.diagnosis" pk="8"><field name="neutralized" type="BooleanField">True</field><field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="isolation_advice" type="BooleanField">False</field><field name="dissuasion_advice" type="BooleanField">False</field><field name="attraction_advice" type="BooleanField">False</field><field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object pk="11"></object><object pk="12"></object></field></object><object model="cables.diagnosis" pk="2"><field name="neutralized" type="BooleanField">False</field><field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">7</field><field name="isolation_advice" type="BooleanField">True</field><field name="dissuasion_advice" type="BooleanField">True</field><field name="attraction_advice" type="BooleanField">True</field><field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field><field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field><field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object pk="11"></object><object pk="12"></object></field></object><object model="cables.diagnosis" pk="7"><field name="neutralized" type="BooleanField">False</field><field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="isolation_advice" type="BooleanField">False</field><field name="dissuasion_advice" type="BooleanField">False</field><field name="attraction_advice" type="BooleanField">False</field><field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature"><None></None></field><field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object pk="11"></object><object pk="12"></object></field></object><object model="cables.operation" pk="5"><field name="operation_type" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">14</field><field name="eqmt_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object pk="16"></object><object pk="15"></object></field></object><object model="cables.operation" pk="3"><field name="operation_type" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">13</field><field name="eqmt_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object pk="16"></object><object pk="15"></object></field></object></django-objects>
+<django-objects version="1.0">
+    <object model="cables.infrastructure" pk="1">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">17</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T16:07:02.744320+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T16:07:02.936414+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">48072fd0-044f-4466-b755-290286229561</field>
+        <field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field>
+        <field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea">
+            <object pk="56"></object>
+            <object pk="20180"></object>
+        </field>
+        <field name="sensitive_area" rel="ManyToManyRel" to="sensitive_area.sensitivearea"></field>
+    </object>
+    <object model="cables.infrastructure" pk="2">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">17</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T16:08:47.120620+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T16:08:47.259993+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">bd62da0a-8e5d-4440-9540-a42fd7faacb4</field>
+        <field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">2</field>
+        <field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea">
+            <object pk="94"></object>
+            <object pk="18599"></object>
+        </field>
+        <field name="sensitive_area" rel="ManyToManyRel" to="sensitive_area.sensitivearea">
+            <object pk="2"></object>
+        </field>
+    </object>
+    <object model="cables.infrastructure" pk="3">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">15</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T18:27:34.445042+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T18:27:34.545536+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">d84a9c56-9ac7-42d0-b92e-0e9d4ff3739b</field>
+        <field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field>
+        <field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea">
+            <object pk="56"></object>
+            <object pk="20180"></object>
+        </field>
+        <field name="sensitive_area" rel="ManyToManyRel" to="sensitive_area.sensitivearea"></field>
+    </object>
+    <object model="cables.infrastructure" pk="4">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">15</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T18:28:46.985981+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T18:28:47.089849+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">3a1a429d-c533-4304-90af-551ced351cb0</field>
+        <field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field>
+        <field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea">
+            <object pk="56"></object>
+            <object pk="20180"></object>
+        </field>
+        <field name="sensitive_area" rel="ManyToManyRel" to="sensitive_area.sensitivearea"></field>
+    </object>
+    <object model="cables.point" pk="2">
+        <field name="geom" type="PointField">SRID=4326;POINT (4.58353 45.3917)</field>
+    </object>
+    <object model="cables.point" pk="1">
+        <field name="geom" type="PointField">SRID=4326;POINT (3.088413 45.751179)</field>
+    </object>
+    <object model="cables.line" pk="4">
+        <field name="geom" type="LineStringField">SRID=4326;LINESTRING (3.088574 45.75055, 3.08984
+            45.750449, 3.090892 45.750378)</field>
+    </object>
+    <object model="cables.line" pk="3">
+        <field name="geom" type="LineStringField">SRID=4326;LINESTRING (3.08843 45.751026, 3.088413
+            45.751179, 3.088462 45.751302, 3.089057 45.751385)</field>
+    </object>
+    <object model="cables.action" pk="1">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T16:07:03.238065+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T16:07:03.238077+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">86da482b-3f62-4e1d-a9e1-742767f58222</field>
+        <field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">1</field>
+        <field name="date" type="DateField">2022-03-27</field>
+        <field name="remark" type="TextField">Création d'un poteau ENEDIS</field>
+        <field name="last" type="BooleanField">True</field>
+        <field name="media" rel="ManyToManyRel" to="media.media">
+            <object pk="1"></object>
+        </field>
+    </object>
+    <object model="cables.action" pk="2">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T16:08:47.556438+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T16:13:30.036879+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">a821ab26-39a2-4311-8189-32bb1c6b7d89</field>
+        <field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field>
+        <field name="date" type="DateField">2022-03-01</field>
+        <field name="remark" type="TextField">Création d'un pylône RTE</field>
+        <field name="last" type="BooleanField">False</field>
+        <field name="media" rel="ManyToManyRel" to="media.media">
+            <object pk="2"></object>
+        </field>
+    </object>
+    <object model="cables.action" pk="3">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">16</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T16:11:50.049332+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T16:11:50.049392+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">d8268c0d-9978-4af1-903e-2cebc70c3133</field>
+        <field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field>
+        <field name="date" type="DateField">2022-03-15</field>
+        <field name="remark" type="TextField">Installation réalisée sans difficulté</field>
+        <field name="last" type="BooleanField">False</field>
+        <field name="media" rel="ManyToManyRel" to="media.media"></field>
+    </object>
+    <object model="cables.action" pk="4">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T16:13:30.021909+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T16:15:56.241275+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">0de4ad18-2718-4d56-9343-36df82c533ce</field>
+        <field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field>
+        <field name="date" type="DateField">2022-03-16</field>
+        <field name="remark" type="TextField">Création d'un pylône RTE</field>
+        <field name="last" type="BooleanField">False</field>
+        <field name="media" rel="ManyToManyRel" to="media.media">
+            <object pk="3"></object>
+        </field>
+    </object>
+    <object model="cables.action" pk="5">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">16</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T16:14:25.145718+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T16:14:25.145772+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">2b7a36f6-9a86-402e-ae6f-c9af8d53af04</field>
+        <field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field>
+        <field name="date" type="DateField">2022-03-18</field>
+        <field name="remark" type="TextField">RAS</field>
+        <field name="last" type="BooleanField">True</field>
+        <field name="media" rel="ManyToManyRel" to="media.media"></field>
+    </object>
+    <object model="cables.action" pk="6">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T16:15:56.224761+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T16:15:56.224814+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">dda617b7-83b6-482a-a94c-2bbc2040df19</field>
+        <field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">2</field>
+        <field name="date" type="DateField">2022-03-27</field>
+        <field name="remark" type="TextField">Création d'un pylône RTE</field>
+        <field name="last" type="BooleanField">True</field>
+        <field name="media" rel="ManyToManyRel" to="media.media">
+            <object pk="4"></object>
+        </field>
+    </object>
+    <object model="cables.action" pk="7">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T18:27:34.712425+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T18:27:34.712438+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">36e925be-e345-40a0-8462-91639ac8c964</field>
+        <field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">3</field>
+        <field name="date" type="DateField">2022-03-01</field>
+        <field name="remark" type="TextField">Création d'une ligne</field>
+        <field name="last" type="BooleanField">True</field>
+        <field name="media" rel="ManyToManyRel" to="media.media"></field>
+    </object>
+    <object model="cables.action" pk="8">
+        <field name="polymorphic_ctype" rel="ManyToOneRel" to="contenttypes.contenttype">14</field>
+        <field name="timestamp_create" type="DateTimeField">2022-03-27T18:28:47.255243+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-03-27T18:28:47.255257+00:00</field>
+        <field name="created_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="updated_by" rel="ManyToOneRel" to="users.user">
+            <None></None>
+        </field>
+        <field name="uuid" type="UUIDField">504494e7-e2f2-4c85-ac4a-98d283200ae7</field>
+        <field name="infrastructure" rel="ManyToOneRel" to="cables.infrastructure">4</field>
+        <field name="date" type="DateField">2022-03-15</field>
+        <field name="remark" type="TextField">Création d'une seconde ligne</field>
+        <field name="last" type="BooleanField">True</field>
+        <field name="media" rel="ManyToManyRel" to="media.media"></field>
+    </object>
+    <object model="cables.diagnosis" pk="1">
+        <field name="neutralized" type="BooleanField">True</field>
+        <field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">6</field>
+        <field name="isolation_advice" type="BooleanField">False</field>
+        <field name="dissuasion_advice" type="BooleanField">False</field>
+        <field name="attraction_advice" type="BooleanField">True</field>
+        <field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">8</field>
+        <field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">8</field>
+        <field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
+            <object pk="11"></object>
+        </field>
+    </object>
+    <object model="cables.diagnosis" pk="6">
+        <field name="neutralized" type="BooleanField">False</field>
+        <field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">7</field>
+        <field name="isolation_advice" type="BooleanField">True</field>
+        <field name="dissuasion_advice" type="BooleanField">True</field>
+        <field name="attraction_advice" type="BooleanField">True</field>
+        <field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field>
+        <field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field>
+        <field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
+            <object pk="11"></object>
+            <object pk="12"></object>
+        </field>
+    </object>
+    <object model="cables.diagnosis" pk="4">
+        <field name="neutralized" type="BooleanField">False</field>
+        <field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">7</field>
+        <field name="isolation_advice" type="BooleanField">True</field>
+        <field name="dissuasion_advice" type="BooleanField">True</field>
+        <field name="attraction_advice" type="BooleanField">True</field>
+        <field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field>
+        <field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field>
+        <field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
+            <object pk="11"></object>
+            <object pk="12"></object>
+        </field>
+    </object>
+    <object model="cables.diagnosis" pk="8">
+        <field name="neutralized" type="BooleanField">True</field>
+        <field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="isolation_advice" type="BooleanField">False</field>
+        <field name="dissuasion_advice" type="BooleanField">False</field>
+        <field name="attraction_advice" type="BooleanField">False</field>
+        <field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
+            <object pk="11"></object>
+            <object pk="12"></object>
+        </field>
+    </object>
+    <object model="cables.diagnosis" pk="2">
+        <field name="neutralized" type="BooleanField">False</field>
+        <field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">7</field>
+        <field name="isolation_advice" type="BooleanField">True</field>
+        <field name="dissuasion_advice" type="BooleanField">True</field>
+        <field name="attraction_advice" type="BooleanField">True</field>
+        <field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field>
+        <field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">10</field>
+        <field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
+            <object pk="11"></object>
+            <object pk="12"></object>
+        </field>
+    </object>
+    <object model="cables.diagnosis" pk="7">
+        <field name="neutralized" type="BooleanField">False</field>
+        <field name="condition" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="isolation_advice" type="BooleanField">False</field>
+        <field name="dissuasion_advice" type="BooleanField">False</field>
+        <field name="attraction_advice" type="BooleanField">False</field>
+        <field name="pole_attractivity" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="pole_dangerousness" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_build_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_moving_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+            <None></None>
+        </field>
+        <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
+            <object pk="11"></object>
+            <object pk="12"></object>
+        </field>
+    </object>
+</django-objects>

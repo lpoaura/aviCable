@@ -238,7 +238,7 @@ class Equipment(BaseModel):
     type = models.ForeignKey(
         Nomenclature,
         limit_choices_to={"type__mnemonic": "equipment_type"},
-        related_name="operation_pole_eqmt_type",
+        related_name="operation_eqmt_type",
         verbose_name=_("Type of equipment"),
         help_text=_("Type of equipment"),
         on_delete=models.CASCADE,
@@ -271,16 +271,6 @@ class Operation(Action, PolymorphicModel):
         verbose_name=_("Media attached with this diagnosis"),
         help_text=_("Media attached with this diagnosis"),
         related_query_name="operations",
-    )
-    operation_type = models.ForeignKey(
-        Nomenclature,
-        on_delete=models.PROTECT,
-        limit_choices_to={"type__code": "OP_TYPE"},
-        related_name="operation_type",
-        verbose_name=_("Type of operation"),
-        help_text=_("Type of operation"),
-        # TODO to be removed
-        null=True,
     )
     equipments = models.ManyToManyField(
         Equipment,

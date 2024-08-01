@@ -167,9 +167,6 @@ class CreatePointOperationTestCase(TestCase):
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"
         )[0].id
-        self.op_type_id = Nomenclature.objects.filter(
-            type__mnemonic="operation_type"
-        )[0].id
         self.eqmtTypeList = Nomenclature.objects.filter(
             type__mnemonic="equipment_type"
         )
@@ -197,7 +194,6 @@ class CreatePointOperationTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
         }
 
@@ -217,7 +213,6 @@ class CreatePointOperationTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
         }
 
@@ -251,7 +246,6 @@ class CreatePointOperationTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
             "media_id": self.mediaIdList,
         }
@@ -293,7 +287,6 @@ class CreatePointOperationTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "media_id": self.mediaIdList,
         }
 
@@ -310,7 +303,6 @@ class CreatePointOperationTestCase(TestCase):
             "infrastructure": self.point_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
         }
         range_len = 2
@@ -377,9 +369,6 @@ class CreateLineOperationTestCase(TestCase):
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"
         )[0].id
-        self.op_type_id = Nomenclature.objects.filter(
-            type__mnemonic="operation_type"
-        )[0].id
         self.eqmtTypeList = Nomenclature.objects.filter(
             type__mnemonic="equipment_type"
         )
@@ -409,7 +398,6 @@ class CreateLineOperationTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
         }
 
@@ -429,7 +417,6 @@ class CreateLineOperationTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
         }
 
@@ -463,7 +450,6 @@ class CreateLineOperationTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
             "media_id": self.mediaIdList,
         }
@@ -505,7 +491,6 @@ class CreateLineOperationTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
         }
 
         resp = self.authentified_client.post(
@@ -521,7 +506,6 @@ class CreateLineOperationTestCase(TestCase):
             "infrastructure": self.line_id,
             "date": "2022-01-01",
             "remark": "My remark",
-            "operation_type_id": self.op_type_id,
             "eqmt_type_id": self.eqmtTypeIdList,
         }
 

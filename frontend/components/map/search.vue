@@ -353,15 +353,17 @@ watch(bbox, (newVal, _oldVal) => {
 onBeforeMount(async () => {
   // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
   infrastructureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
-    return leaflet.circleMarker(latlng, {
-      radius: 6,
-      fillColor: levelColor(feature),
-      color: '#000',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.8,
-      // draggable: true,
-    })
+    if (latlng) {
+      return leaflet.circleMarker(latlng, {
+        radius: 6,
+        fillColor: levelColor(feature),
+        color: '#000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8,
+        // draggable: true,
+      })
+    }
   }
   operatedInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : any ) => {
     return leaflet.circleMarker(latlng, {

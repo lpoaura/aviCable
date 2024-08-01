@@ -1,10 +1,6 @@
 <template>
   <v-card class="my-2" :title="$t('display.operation')" :subtitle="`${$t('operation.last-one')} ${operation.date}`">
     <template #text>
-      <p>
-        <span class="font-weight-bold">{{ $t('operation.type') }}</span>
-        {{ operation.operation_type?.label }}
-      </p>
       <p v-if="operation.equipments.length>0">
         <span class="font-weight-bold">{{ $t('operation.eqmt-type') }}</span>
         <v-chip v-for="et in operation.eqmt_type" :key="et.id">

@@ -195,7 +195,7 @@ FROM ${schema_name}.t_inventaire_poteaux_erdf
 -- POINT OPERATIONS
 
 INSERT INTO cables_app.cables_operation(timestamp_create, timestamp_update, uuid, date, remark, last, created_by_id,
-                                        infrastructure_id, operation_type_id, polymorphic_ctype_id, updated_by_id)
+                                        infrastructure_id, polymorphic_ctype_id, updated_by_id)
 SELECT coalesce(date_equipement, now())              AS timestamp_create,
        now()                                         AS timestamp_update,
        t_equipements_poteaux_erdf.uuid_operation     AS uuid,
@@ -204,7 +204,6 @@ SELECT coalesce(date_equipement, now())              AS timestamp_create,
        TRUE                                          AS last,
        1                                             AS created_by_id,
        cables_infrastructure.id                      AS infrastructure_id,
-       op_nom.id                                     AS operation_type_id,
        django_content_type.id                        AS polymorphic_ctype_id,
        1                                             AS updated_by_id
 FROM ${schema_name}.t_equipements_poteaux_erdf
@@ -212,10 +211,8 @@ FROM ${schema_name}.t_equipements_poteaux_erdf
                                                           t_inventaire_poteaux_erdf.id_inventaire_poteau_erdf
          JOIN cables_app.cables_infrastructure
               ON t_inventaire_poteaux_erdf.uuid_infstr = cables_infrastructure.uuid
-   , cables_app.sinp_nomenclatures_nomenclature AS op_nom
    , cables_app.django_content_type
-WHERE op_nom.code = 'OP_TYPE_INSTALL'
-  AND (django_content_type.app_label, django_content_type.model) = ('cables', 'pointoperation')
+  WHERE (django_content_type.app_label, django_content_type.model) = ('cables', 'pointoperation')
 ;
 
 INSERT INTO cables_app.cables_equipment (uuid, timestamp_create, timestamp_update, count, reference, comment,
@@ -250,7 +247,7 @@ FROM cables_app.cables_operation
 -- LINE OPERATIONS
 
 INSERT INTO cables_app.cables_operation(timestamp_create, timestamp_update, uuid, date, remark, last, created_by_id,
-                                        infrastructure_id, operation_type_id, polymorphic_ctype_id, updated_by_id)
+                                        infrastructure_id, polymorphic_ctype_id, updated_by_id)
 SELECT coalesce(t_equipements_troncons_erdf.date_equipement_troncon, now())              AS timestamp_create,
        now()                                                                             AS timestamp_update,
        t_equipements_troncons_erdf.uuid_operation                                        AS uuid,
@@ -259,7 +256,6 @@ SELECT coalesce(t_equipements_troncons_erdf.date_equipement_troncon, now())     
        TRUE                                                                              AS last,
        1                                                                                 AS created_by_id,
        cables_infrastructure.id                                                          AS infrastructure_id,
-       op_nom.id                                                                         AS operation_type_id,
        django_content_type.id                                                            AS polymorphic_ctype_id,
        1                                                                                 AS updated_by_id
 FROM ${schema_name}.t_equipements_troncons_erdf
@@ -267,10 +263,8 @@ FROM ${schema_name}.t_equipements_troncons_erdf
                                                            t_inventaire_troncons_erdf.id_inventaire_troncon_erdf
          JOIN cables_app.cables_infrastructure
               ON t_inventaire_troncons_erdf.uuid_infstr = cables_infrastructure.uuid
-   , cables_app.sinp_nomenclatures_nomenclature AS op_nom
    , cables_app.django_content_type
-WHERE op_nom.code = 'OP_TYPE_INSTALL'
-  AND (django_content_type.app_label, django_content_type.model) = ('cables', 'lineoperation')
+WHERE (django_content_type.app_label, django_content_type.model) = ('cables', 'lineoperation')
 ;
 
 INSERT INTO cables_app.cables_equipment (uuid, timestamp_create, timestamp_update, count, reference, comment,

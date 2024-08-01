@@ -3,14 +3,10 @@
     <v-form ref="form" v-model="formValid">
       <v-card-text>
         <v-row>
-          <v-col cols="12" md="6">
+          <v-col cols="12">
             <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
               inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
               :max="new Date()" />
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-select v-model="opData.operation_type_id" :items="operationType" item-title="label" item-value="id"
-              :rules="[rules.required]" :label="`Type d'opération`" variant="solo" density="compact" />
           </v-col>
           <v-col cols="12">
             <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
@@ -60,7 +56,6 @@ const opData = reactive({
   date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0,10),
   remark: '',
   infrastructure: supportId.value,
-  operation_type_id: null,
   equipments: [{
     id: null,
     type_id: null,
@@ -127,7 +122,6 @@ const initData = async () => {
       id : operation.value.properties.id,
       remark: operation.value.properties.remark,
       infrastructure: supportId.value,
-      operation_type_id: operation.value.properties.operation_type?.id,
       equipments: operation.value.properties.equipments,
       media: operation.value.properties.media.map(item => item.id),
       resourcetype: operation.value.resourcetype,

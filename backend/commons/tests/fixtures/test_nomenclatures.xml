@@ -64,17 +64,6 @@
         <field name="update_date" type="DateField">2022-01-28</field>
         <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source">1</field>
     </object>
-    <object model="sinp_nomenclatures.type" pk="6">
-        <field name="timestamp_create" type="DateTimeField">2022-02-01T07:59:37.475680+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2022-02-01T07:59:37.475695+00:00</field>
-        <field name="code" type="CharField">OP_TYPE</field>
-        <field name="mnemonic" type="CharField">operation_type</field>
-        <field name="label" type="CharField">Type of operation</field>
-        <field name="status" type="CharField">VALID</field>
-        <field name="create_date" type="DateField">2022-02-01</field>
-        <field name="update_date" type="DateField">2022-02-01</field>
-        <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source">1</field>
-    </object>
     <object model="sinp_nomenclatures.type" pk="7">
         <field name="timestamp_create" type="DateTimeField">2022-02-01T08:00:04.904341+00:00</field>
         <field name="timestamp_update" type="DateTimeField">2022-02-01T08:00:04.904369+00:00</field>
@@ -257,30 +246,6 @@
         <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type">4</field>
         <field name="code" type="CharField">POLE_TYPE_2</field>
         <field name="label" type="CharField">Support H61 (poste électrique)</field>
-        <field name="description" type="TextField"></field>
-        <field name="active" type="BooleanField">True</field>
-        <field name="parent" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
-            <None></None>
-        </field>
-    </object>
-    <object model="sinp_nomenclatures.nomenclature" pk="13">
-        <field name="timestamp_create" type="DateTimeField">2022-02-01T08:01:11.429631+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2022-02-01T08:01:11.429647+00:00</field>
-        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type">6</field>
-        <field name="code" type="CharField">OP_TYPE_INSTALL</field>
-        <field name="label" type="CharField">Installation</field>
-        <field name="description" type="TextField"></field>
-        <field name="active" type="BooleanField">True</field>
-        <field name="parent" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
-            <None></None>
-        </field>
-    </object>
-    <object model="sinp_nomenclatures.nomenclature" pk="14">
-        <field name="timestamp_create" type="DateTimeField">2022-02-01T08:01:37.445880+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2022-02-01T08:01:37.445911+00:00</field>
-        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type">6</field>
-        <field name="code" type="CharField">OP_TYPE_FIX</field>
-        <field name="label" type="CharField">Réparation</field>
         <field name="description" type="TextField"></field>
         <field name="active" type="BooleanField">True</field>
         <field name="parent" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
