@@ -1,6 +1,8 @@
 <template>
+  {{bbox}}
   <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getMapBounds"
     @moveend="getMapBounds">
+
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
@@ -87,9 +89,7 @@ const selectedFeature : Ref<Feature|null> = ref(null)
 
 watch(storedSelectedFeature, (newVal, _oldVal) => {
   console.log('storedSelectedFeature',newVal, newVal ? 'buffer':'null')
-  selectedFeature.value = newVal
-  ? buffer(newVal, 150, {units: 'meters'})
-  : null
+  selectedFeature.value = newVal  ? buffer(newVal, 150, {units: 'meters'})    : null
 })
 
 const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
@@ -156,12 +156,8 @@ const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
 // })
 watch(selectedFeature, (newVal, oldVal) => {
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-
-    console.log('selectedFeature update')
+    console.log('selectedFeature update', newVal)
     const newObj = leaflet.geoJSON(newVal)
-    // const centroid = newVal.geometry.type == ''
-    // coordinatesStore.setCenter(newObj.getBounds().getCenter())
-    // coordinatesStore.setZoom(15)
     mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
   }
 })
@@ -213,7 +209,6 @@ const hookUpDraw = async () => {
   mapObject.value = map.value?.leafletObject;
   // console.log('mapObject.value', mapObject.value.getBounds(), map)
   mapReady.value = true;
-
   // GeoLocate plugin
   leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
 
