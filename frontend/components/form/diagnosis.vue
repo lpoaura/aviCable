@@ -78,7 +78,7 @@
             </v-col>
           </v-row>
         </v-container>
-        <pre>{{diagData }}</pre>
+        <!-- <pre>{{diagData }}</pre> -->
       </v-card-text>
       <v-card-actions>
         <v-spacer />

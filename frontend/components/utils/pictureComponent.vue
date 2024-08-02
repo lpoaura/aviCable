@@ -1,8 +1,8 @@
 <template>
   <v-sheet>
     <v-file-input ref="pictInput" v-model="newImg" :rules="rules" hide-input accept="image/png, image/jpeg"
-      prepend-inner-icon="mdi-camera" chips multiple :label="$t('picture.add_file')" @change="displayImage" variant="solo"
-      density="compact"></v-file-input>
+      prepend-inner-icon="mdi-camera" chips multiple :label="$t('picture.add_file')" variant="solo" density="compact"
+      @change="displayImage" />
     <pre>{{ newImg }}</pre>
     <v-list>
       <v-list-item v-for="(img, index) in imgFileContent" :key="index">
@@ -11,7 +11,7 @@
             <v-img :src="img" max-height="100" max-width="166" class="ma-2" />
           </v-col>
           <v-col>date: {{ pictDate }}</v-col>
-          <v-col></v-col>
+          <v-col />
           <v-col cols="1">
             <v-icon small color="red">mdi-trash-can</v-icon>
           </v-col>
@@ -47,14 +47,14 @@ const rules = reactive([
 
 const displayImage = () => {
   try {
-    if (newImg ) {
+    if (newImg.value ) {
       const reader = new FileReader()
       reader.readAsDataURL(newImg.value)
       // event listener on successful loading,
       reader.addEventListener('load', () => {
-        imgFileContent.push(reader.result) // file content push to array
-        imgFileObject.push(newImg.value) // File object push to array
-        pictInput.reset() // reset v-file-input
+        imgFileContent.value.push(reader.result) // file content push to array
+        imgFileObject.value.push(newImg.value) // File object push to array
+        pictInput.value.reset() // reset v-file-input
       })
     }
   } catch (_err) {
