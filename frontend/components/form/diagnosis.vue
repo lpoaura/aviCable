@@ -2,7 +2,7 @@
   <v-card elevation="0" class="fill-height">
     <v-form ref="form" v-model="formValid">
       <v-card-text>
-        <v-container v-if="diagnosisReady">
+        <v-container>
           <v-row>
             <v-col cols="12">
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
@@ -100,20 +100,18 @@ const emit = defineEmits();
 const {t} = useI18n()
 const router = useRouter()
 const route = useRoute()
-interface Props{
-  infrastructureType?: string
-}
 
-const {infrastructureType} = defineProps<Props>()
 
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 const formValid=ref(false)
 const infrastructureId = computed(() => cablesStore.formInfrastructureId)
+const infrastructureType = computed(() => (route.query.type).toLowerCase())
 const diagnosisReady=ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
+
 const diagData : DiagData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
   remark: '',
@@ -160,11 +158,11 @@ const initData = async () => {
       media_id: [],
     }
     console.log('infrastructureType', infrastructureType)
-    if (infrastructureType==='point') {
+    if (infrastructureType.value==='point') {
       diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
       diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
     }
-    if (infrastructureType==="line"){
+    if (infrastructureType.value==="line"){
       diagdata.sgmt_build_integr_risk_id= diagnosis.value.sgmt_build_integr_risk?.id
       diagdata.sgmt_moving_risk_id= diagnosis.value.sgmt_moving_risk?.id
       diagdata.sgmt_topo_integr_risk_id= diagnosis.value.sgmt_topo_integr_risk?.id

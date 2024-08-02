@@ -1,7 +1,7 @@
 <template>
   <v-card class="my-2" :title="$t('display.diagnosis')" :subtitle="`Réalisé le ${diagnosis.date}`">
     <template #text>
-      <span class="font-weight-bold">Recommandations&nbsp;:</span><br>
+      <span class="font-weight-bold">Recommandations&nbsp;: </span><br>
       <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': false"
         :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
         {{ diagnosis.isolation_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.isolate') }}
@@ -126,11 +126,11 @@
 <script setup lang="ts">
 
 interface Props {
-  type: string,
+  infrastructureType: string,
   diagnosis: Object,
 }
 
-const {type, diagnosis} = defineProps<Props>()
+const {infrastructureType, diagnosis} = defineProps<Props>()
 const router = useRouter()
 const deletedDiagConfirm = ref(true)
 
@@ -145,13 +145,13 @@ const stateColors = reactive({
   POOR: 'yellow',
 })
 
-const isPoint= computed(() => type==='Point')
-const isLine = computed(() => type==='Line')
+const isPoint= computed(() => infrastructureType==='Point')
+const isLine = computed(() => infrastructureType==='Line')
 
 const updateDiag = () => {
   router.push({
     path: `/infrastructures/${diagnosis.infrastructure}/diagnosis`,
-    query: {id_diagnosis: diagnosis.id }
+    query: {id_diagnosis: diagnosis.id, type:infrastructureType.toLowerCase() }
   })
 }
 

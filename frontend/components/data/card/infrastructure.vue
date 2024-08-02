@@ -26,13 +26,12 @@
     <v-card-actions>
 
       <v-btn color="green" prepend-icon="mdi-plus-circle"
-        @click="router.push({ path: `/infrastructures/${data?.properties.id}/diagnosis`, query: {type:data.resourcetype}})">Diagnostic
-        {{data.resourcetype}}</v-btn>
+        @click="router.push({ path: `/infrastructures/${data?.properties.id}/diagnosis`, query: {type:data.resourcetype}})">Diagnostic</v-btn>
       <v-btn color="green" prepend-icon="mdi-plus-circle"
         @click="router.push(`/infrastructures/${data?.properties.id}/operation`)">Neutralisation</v-btn>
       <v-spacer />
       <v-btn density="compact" color="orange"
-        @click="router.push(`/infrastructures/${data.properties.id}/infrastructure?type=${data.resourcetype.toLowerCase()}`)"><v-icon>mdi-pencil-circle</v-icon>
+        @click="router.push({path:`/infrastructures/${data.properties.id}/infrastructure`, query: {type:data.resourcetype}})"><v-icon>mdi-pencil-circle</v-icon>
         Modifier</v-btn>
     </v-card-actions>
   </v-card>
