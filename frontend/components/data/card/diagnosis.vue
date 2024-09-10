@@ -41,24 +41,24 @@
       </template>
       <template v-if="isLine">
         <p>
-          <span class="font-weight-bold">{{ $t('support.attractiveness') }}&nbsp;:</span>
+          <span class="font-weight-bold">Intégration bati&nbsp;:</span>
           <v-icon icon="mdi-circle"
             :color="diagnosis?.sgmt_build_integr_risk ? riskColors[diagnosis?.sgmt_build_integr_risk?.code]:'grey'"
             class="mx-2" />
           <span>{{ diagnosis?.sgmt_build_integr_risk?.label}}</span>
         </p>
         <p>
-          <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
+          <span class="font-weight-bold">Déplacement&nbsp;:</span>
           <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_moving_risk?.code]" class="mx-2" /> <span>{{
             diagnosis.sgmt_moving_risk?.label }}</span>
         </p>
         <p>
-          <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
+          <span class="font-weight-bold">Risque topographique&nbsp;:</span>
           <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_topo_integr_risk?.code]" class="mx-2" /> <span>{{
             diagnosis.sgmt_topo_integr_risk?.label }}</span>
         </p>
         <p>
-          <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
+          <span class="font-weight-bold">Végétation&nbsp;:</span>
           <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_veget_integr_risk?.code]" class="mx-2" /> <span>{{
             diagnosis.sgmt_veget_integr_risk?.label }}</span>
         </p>

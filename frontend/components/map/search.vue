@@ -7,9 +7,8 @@
     <template v-if="mapReady">
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
         :visible="baseLayer.default" :attribution="baseLayer.attribution" :layer-type="baseLayer.layer_type" />
-
-      <!--  <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
-        :options="infrastructureGeoJsonOptions" :options-style="infrastructureGeoJsonOptionsStyle" />-->
+      <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
+        :options="infrastructureGeoJsonOptions" :options-style="infrastructureLineStyle" />
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
@@ -87,6 +86,8 @@ const baseLayers = computed(() => mapLayersStore.baseLayers)
 const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
 const selectedFeature : Ref<Feature|null> = ref(null)
 
+const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
+
 watch(storedSelectedFeature, (newVal, _oldVal) => {
   console.log('storedSelectedFeature',newVal, newVal ? 'buffer':'null')
   selectedFeature.value = newVal  ? buffer(newVal, 150, {units: 'meters'})    : null
@@ -129,7 +130,6 @@ const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
   // delete layer.pm
   // layer.setStyle({ pmIgnore: false })
 }
-
 
 
 const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
@@ -194,14 +194,12 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
     }
   }
 
-  const infrastructureGeoJsonOptionsStyle = (feature: Feature, _latlng : LatLng | null) => {
+  const infrastructureLineStyle = (feature: Feature) => {
+    console.log("infrastructureLineStyle")
+    console.log('infrastructureLineStyle feature style',feature.geometry.type, lineColor(feature))
     return  {
-      radius: 6,
-      fillColor: levelColor(feature),
-      color:  levelColor(feature),
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.8,
+      color:  lineColor(feature),
+      weight: 3,
       // draggable: true,
     }
   }
@@ -308,9 +306,30 @@ const hookUpDraw = async () => {
   }
 };
 
-const levelColor = (feature: Feature) => {
+const lineColor=(feature:Feature) => {
   const lastDiag=feature.properties?.diagnosis[0]
-  const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
+  console.log( "lastDiag")
+  if (lastDiag) {
+    console.log("lineColor - set line color")
+    const sgmt_build_integr_risk = lastDiag.sgmt_build_integr_risk?.code
+    const sgmt_moving_risk = lastDiag.sgmt_moving_risk?.code
+    const sgmt_veget_integr_risk = lastDiag.sgmt_veget_integr_risk?.code
+    const sgmt_topo_integr_risk = lastDiag.sgmt_topo_integr_risk?.code
+    const note = levelNotes[sgmt_build_integr_risk] + levelNotes[sgmt_moving_risk] + levelNotes[sgmt_veget_integr_risk] + levelNotes[sgmt_topo_integr_risk]
+    if (note < 6) {
+      return 'blue'
+    }
+    if (note >= 6 && note <= 8)
+    {
+      return 'orange'
+    }
+    else {return 'red'}
+  }
+  return 'grey'
+}
+
+const supportColor = (feature: Feature) => {
+  const lastDiag=feature.properties?.diagnosis[0]
   if (lastDiag && lastDiag.pole_attractivity && lastDiag.pole_attractivity) {
     const attractivity = lastDiag.pole_attractivity.code
     const dangerousness = lastDiag.pole_attractivity.code
@@ -356,7 +375,7 @@ onBeforeMount(async () => {
     if (latlng) {
       return leaflet.circleMarker(latlng, {
         radius: 6,
-        fillColor: levelColor(feature),
+        fillColor: supportColor(feature),
         color: '#000',
         weight: 1,
         opacity: 1,
@@ -365,6 +384,7 @@ onBeforeMount(async () => {
       })
     }
   }
+
   operatedInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : LatLng | null ) => {
     if (latlng) {
     return leaflet.circleMarker(latlng, {
