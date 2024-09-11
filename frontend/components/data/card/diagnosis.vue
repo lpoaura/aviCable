@@ -1,5 +1,6 @@
 <template>
-  <v-card class="my-2" :title="$t('display.diagnosis')" :subtitle="`Réalisé le ${diagnosis.date}`">
+  <v-card class="my-2" :title="$t('display.diagnosis')">
+    <template #subtitle>{{ $t("realizedOn") }} <strong>{{ diagnosis.date }}</strong></template>
     <template #text>
       <span class="font-weight-bold">Recommandations&nbsp;: </span><br>
       <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': false"
@@ -8,15 +9,15 @@
       </v-chip>
       <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation': false"
         :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
-        {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.make-dissuasive') }}
+        {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.makeDissuasive') }}
       </v-chip>
       <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation': false"
         :color="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
-        {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.make-attractive') }}
+        {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.makeAttractive') }}
       </v-chip>
       <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation': false"
         :color="[diagnosis.change_advice == true ? 'warning' : '']" class="ma-2">
-        {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.change-advice') }}
+        {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.changeArming') }}
       </v-chip>
       <template v-if="isPoint">
         <p>
@@ -63,11 +64,11 @@
             diagnosis.sgmt_veget_integr_risk?.label }}</span>
         </p>
       </template>
-      <p v-if="diagnosis.technical_proposal">
-        <span class="font-weight-bold">{{ $t('app.technical_proposal') }}</span>
+      <p v-if="diagnosis.technicalProposal">
+        <span class="font-weight-bold">{{ $t('app.technicalProposal') }}</span>
       </p>
       <p>
-        {{ diagnosis.technical_proposal }}
+        {{ diagnosis.technicalProposal }}
       </p>
       <p v-if="diagnosis.remark">
         <span class="font-weight-bold">{{ $t('app.remark') }}</span>

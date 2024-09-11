@@ -5,9 +5,9 @@
         <v-tab value="#infra" bg-color="green"> {{ $t('display.infrastructures') }} </v-tab>
         <!-- <v-tab value="#support"> {{ $t('support.supports-eqmt') }} </v-tab>
         <v-tab value="#sensitivearea">
-          {{ $t('display.sensitive-areas') }}
+          {{ $t('display.sensitiveAreas') }}
         </v-tab> -->
-        <v-tab value="#mortality" bg-color="red"> {{ $t('display.mortality-cases') }} </v-tab>
+        <v-tab value="#mortality" bg-color="red"> {{ $t('display.mortalityCases') }} </v-tab>
       </v-tabs>
 
       <v-window v-model="tab">

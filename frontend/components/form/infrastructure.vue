@@ -5,7 +5,7 @@
         <v-container>
           <v-row>
             <v-col cols="12" class="text-left">
-              <strong> {{ $t('forms.general-infrastructure') }}</strong> {{ infrastructureType.toLowerCase() }}
+              <strong> {{ $t('forms.generalInfrastructure') }}</strong> {{ infrastructureType.toLowerCase() }}
             </v-col>
           </v-row>
           <v-row>

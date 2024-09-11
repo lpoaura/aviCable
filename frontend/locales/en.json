@@ -22,26 +22,26 @@
   "display": {
     "all": "All",
     "infrastructures": "Supports and Cables",
-    "mortality-cases": "Mortality cases",
+    "mortalityCases": "Mortality cases",
     "line": "Line",
     "lines": "Lines",
     "lines-eqmt": "Lines Equipments",
-    "sensitive-areas": "Sensitive areas"
+    "sensitiveAreas": "Sensitive areas"
   },
   "forms": {
     "coordinates": "Coordinates",
     "datecreate": "Diagnostic date",
     "general": "General Information",
-    "general-infrastructure": "Information general infrastructure",
+    "generalInfrastructure": "Information general infrastructure",
     "risk_assessment": "Risks Assessment",
     "too_big_file": "File size should less than",
     "not_img_file": "Selected file should be an image file"
   },
   "support": {
     "advice": "Advices",
-    "advice_isol": "Isolate",
-    "advice_disrupt": "Make it disruptive",
-    "advice_attract": "Make it attractive",
+    "toInsulate": "Isolate",
+    "Discourage": "Make it disruptive",
+    "providingIncentives": "Make it attractive",
     "attractiveness": "Attractiveness",
     "condition": "Condition",
     "dangerousness": "Dangerousness",

@@ -14,11 +14,11 @@
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
         :options="deathCasesGeoJsonOptions" />
       <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options-style="selectedFeatureGeoJsonStyle" />
-      <!--<l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
-        :geojson="operatedLineStringData" :options="infrastructureGeoJsonOptions" />
-      <l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
-        :options="operatedInfrastructureGeoJsonOptions" />
-      <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
+      <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
+        :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
+      <!--<l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
+        :options="operatedInfrastructureGeoJsonOptions" />-->
+      <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" />
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
@@ -80,7 +80,7 @@ const center : ComputedRef<PointTuple> = computed<PointTuple>(() => coordinatesS
 const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures)
 const operatedPointData : ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getOperatedPointDataFeatures)
 const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
-const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
+const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getOperatedLineDataFeatures)
 const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures)
 const baseLayers = computed(() => mapLayersStore.baseLayers)
 const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
@@ -195,11 +195,17 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
   }
 
   const infrastructureLineStyle = (feature: Feature) => {
-    console.log("infrastructureLineStyle")
-    console.log('infrastructureLineStyle feature style',feature.geometry.type, lineColor(feature))
     return  {
       color:  lineColor(feature),
-      weight: 3,
+      weight: 5,
+      // draggable: true,
+    }
+  }
+  const infrastructureOperatedLineStyle = (feature: Feature) => {
+    console.log('infrastructureOperatedLineStyle',feature)
+    return  {
+      color:  '#00ff00',
+      weight: 2,
       // draggable: true,
     }
   }

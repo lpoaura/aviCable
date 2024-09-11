@@ -1,21 +1,23 @@
 <template>
-  <v-card class="my-2" :title="$t('display.operation')" :subtitle="`${$t('operation.last-one')} ${operation.date}`">
+  <v-card class="my-2" :title="$t('display.operation')">
+    <template #subtitle>{{ $t("realizedOn") }} <strong>{{ operation.date }}</strong></template>
     <template #text>
-      <p v-if="operation.equipments.length>0">
-        <span class="font-weight-bold">{{ $t('operation.eqmt-type') }}</span>
-        <v-chip v-for="et in operation.eqmt_type" :key="et.id">
-          {{ et.label}}
-        </v-chip>
-      </p>
-      <p v-if="operation.remark">
-        <span class="font-weight-bold">{{ $t('app.remark') }}</span>
-        {{ operation.remark }}
-      </p>
-      <div v-if="operation.equipments">
-        <span class="font-weight-bold">Equipements&nbsp;: </span>
-        <p v-for="(equipment, index) in operation.equipments" :key="index">
-          -&nbsp;{{ equipment.type.label }} x{{ equipment.count }}
-        </p>
+      <div v-if="operation.remark"><strong>{{$t("app.remark")}}</strong>&nbsp;: {{ operation.remark }}
+      </div>
+      <div>
+        <span class="font-weight-bold">
+          {{ $t("operation.equipment", operation.equipments.length, {count: operation.equipments.length} )}}
+        </span>
+        <v-list lines="two">
+          <v-list-item v-for="(equipment, index) in operation.equipments" :key="index">
+            <template #title><v-chip>{{ equipment.type.code }} </v-chip> {{ equipment.type.label }} <strong>x{{
+                equipment.count }}</strong>
+            </template>
+            <div v-if="equipment.reference"><strong>{{$t("reference")}}</strong>&nbsp;: {{ equipment.reference }}
+            </div>
+            <div v-if="equipment.comment"><strong>{{$t("app.remark")}}</strong>&nbsp;: {{ equipment.comment }}</div>
+          </v-list-item>
+        </v-list>
       </div>
     </template>
     <v-card-actions>

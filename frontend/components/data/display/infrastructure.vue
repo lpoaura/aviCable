@@ -23,8 +23,8 @@ Dans un modal
       </v-card-text>
     </v-card>
     <v-data-table v-model="selected" :headers="tableHeaders" :items="dataSource[display]" item-value="properties.id"
-      :loading="cableStore.infrstrDataLoadingStatus" :search="search" :loading-text="$t('common.loading')"
-      :items-per-page="-1" :fixed-header="true" class="elevation-1" density="compact" @click:row="handleRowClick">
+      :loading="cableStore.infrstrDataLoadingStatus" :search="search" :loading-text="$t('loading')" :items-per-page="-1"
+      :fixed-header="true" class="elevation-1" density="compact" @click:row="handleRowClick">
       <!-- <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" height="500px">
@@ -54,7 +54,7 @@ Dans un modal
       <template #item.properties.operations="{ value }">
         <v-chip :prepend-icon="value.length> 0 ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'"
           :color="value.length>0 ? 'green':'red'">
-          {{ value[0] ? value[0].date : $t('common.no')}}
+          {{ value[0] ? value[0].date : $t('no')}}
         </v-chip>
       </template>
     </v-data-table>

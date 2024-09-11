@@ -299,12 +299,88 @@ class OperationSerializer(ModelSerializer):
 
         return newOp  # returns new Diag if success
 
-
-class PointOperationSerializer(GeoFeatureModelSerializer):
-
-    # Allow to display nested data
+class BaseOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
     media = MediaSerializer(many=True, read_only=True)
+
+    class Meta:
+        geo_field = "geom"
+        fields = [
+            "id",
+            "infrastructure",
+            "date",
+            "remark",
+            "equipments",
+            "media",
+            # "media_id",
+            "last",
+            "geom",
+        ]
+        extra_kwargs = {
+            "id": {"read_only": True},
+        }
+
+    def update(self, instance, validated_data):
+        equipments_data = validated_data.pop("equipments")
+        print('validated_data', validated_data)
+        # equipments = instance.equipments.all()
+        equipments = []
+        for equipment_data in equipments_data:
+            print(
+                f"equipment_data.keys() {equipment_data.keys()} {equipment_data.get('id')}"
+            )
+            equipment_id = (
+                equipment_data.get("id") if id in equipment_data else None
+            )
+            equipment_type_id = equipment_data.get("type")
+
+            update_values = {
+                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
+                "count": equipment_data.get("count"),
+                "reference": equipment_data.get("reference"),
+                "comment": equipment_data.get("comment"),
+            }
+
+            equipment, _created = Equipment.objects.update_or_create(
+                id=equipment_id, defaults=update_values
+            )
+            equipments.append(equipment)
+        instance.equipments.set(equipments)
+        # instance.equipments.
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        equipments_data = validated_data.pop("equipments", [])
+
+        # Create the PointOperation instance
+        point_operation = self.Meta.model.objects.create(**validated_data)
+
+        equipments = []
+        for equipment_data in equipments_data:
+            equipment_type_id = equipment_data.get("type")
+            create_values = {
+                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
+                "count": equipment_data.get("count"),
+                "reference": equipment_data.get("reference"),
+                "comment": equipment_data.get("comment"),
+            }
+
+            # Create the Equipment instance
+            equipment = Equipment.objects.create(**create_values)
+            equipments.append(equipment)
+
+        # Optionally, you can set the equipments to the point_operation if needed
+        point_operation.equipments.set(equipments)
+        Operation.objects.filter(
+            infrastructure=validated_data["infrastructure"], last=True
+        ).exclude(pk=point_operation.id).update(last=False)
+
+        return point_operation
+
+
+
+class PointOperationSerializer(GeoFeatureModelSerializer):
+    equipments = EquipmentSerializer(many=True)
 
     class Meta:
         model = PointOperation
@@ -353,61 +429,21 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
         # instance.equipments.
         return super().update(instance, validated_data)
 
-    # def update(self, instance, validated_data):
-    #     logger.debug(
-    #         "update PointOperationSerialiazer %s %s",
-    #         type(validated_data),
-    #         str(validated_data.keys()),
-    #     )
-    #     equipments_data = validated_data.pop("equipments")
-    #     equipments = instance.equipments.all()
-
-    #     # Perform update on authors
-    #     for equipment_data in equipments_data:
-    #         logger.debug(
-    #             "type(equipment_data) %s %s",
-    #             type(equipment_data),
-    #             str(equipment_data.keys()),
-    #         )
-    #         equipment_id = equipment_data.pop("id")
-    #         lookup_params = {"id": equipment_id}
-
-    #         update_values = {
-    #             "type": equipment_data.type,
-    #             "count": equipment_data.count,
-    #             "reference": equipment_data.reference,
-    #             "comment": equipment_data.comment,
-    #         }
-
-    #         equipment, _created = Equipment.objects.update_or_create(
-    #             defaults=equipment_data, **lookup_params
-    #         )
-    #         equipments.add(equipment)
-
-    #     return super().update(instance, validated_data)
-
-    # def save(self, **kwargs):
-    #     equipments_data = self.validated_data.pop("equipments")
-    #     instance = super().save(**kwargs)
-
-    #     # Perform update on authors
-    #     equipments = instance.equipments.all()
-    #     for equipment_data in equipments_data:
-    #         equipment, _created = Equipment.objects.get_or_create(
-    #             **equipment_data["name"]
-    #         )
-    #         equipments.add(equipment)
-
-    #     return instance
-
     def create(self, validated_data):
         equipments_data = validated_data.pop("equipments", [])
+        geom = validated_data.pop("geom", validated_data.infrastructure.geom)
 
         # Create the PointOperation instance
-        point_operation = PointOperation.objects.create(**validated_data)
+        operation = self.Meta.model.objects.create(**validated_data, geom = geom)
 
         equipments = []
+        print(
+            f"create operation {equipments_data}"
+        )
         for equipment_data in equipments_data:
+            print(
+                f"PointOperationSerializer create equipement {equipment_data.keys()} {equipment_data.get('id')}"
+            )
             equipment_type_id = equipment_data.get("type")
             create_values = {
                 "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
@@ -421,19 +457,16 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
             equipments.append(equipment)
 
         # Optionally, you can set the equipments to the point_operation if needed
-        point_operation.equipments.set(equipments)
+        operation.equipments.set(equipments)
         Operation.objects.filter(
             infrastructure=validated_data["infrastructure"], last=True
-        ).exclude(pk=point_operation.id).update(last=False)
+        ).exclude(pk=operation.id).update(last=False)
 
-        return point_operation
-
+        return operation
+        
 
 class LineOperationSerializer(GeoFeatureModelSerializer):
-
-    # Allow to display nested data
     equipments = EquipmentSerializer(many=True)
-    media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = LineOperation
@@ -449,6 +482,79 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
             "last",
             "geom",
         ]
+        extra_kwargs = {
+            "id": {"read_only": True},
+        }
+
+    def update(self, instance, validated_data):
+        equipments_data = validated_data.pop("equipments")
+        print('validated_data', validated_data)
+        # equipments = instance.equipments.all()
+        equipments = []
+        for equipment_data in equipments_data:
+            print(
+                f"equipment_data.keys() {equipment_data.keys()} {equipment_data.get('id')}"
+            )
+            equipment_id = (
+                equipment_data.get("id") if id in equipment_data else None
+            )
+            equipment_type_id = equipment_data.get("type")
+
+            update_values = {
+                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
+                "count": equipment_data.get("count"),
+                "reference": equipment_data.get("reference"),
+                "comment": equipment_data.get("comment"),
+            }
+
+            equipment, _created = Equipment.objects.update_or_create(
+                id=equipment_id, defaults=update_values
+            )
+            equipments.append(equipment)
+        instance.equipments.set(equipments)
+        # instance.equipments.
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        print(f"LineOperationSerializer {validated_data}")
+        equipments_data = validated_data.pop("equipments", [])
+        media = validated_data.pop("media", [])
+        geom = validated_data.pop("geom", validated_data.infrastructure.geom)
+
+        # Create the PointOperation instance
+        print(media)
+        # Create the PointOperation instance
+        operation = self.Meta.model.objects.create(**validated_data, geom = geom)
+        
+
+        equipments = []
+        print(
+            f"LineOperationSerializer create line operation {equipments_data}"
+        )
+        for equipment_data in equipments_data:
+            print(
+                f"LineOperationSerializer create equipement {equipment_data.keys()} {equipment_data.get('id')}"
+            )
+        for equipment_data in equipments_data:
+            equipment_type_id = equipment_data.get("type")
+            create_values = {
+                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
+                "count": equipment_data.get("count"),
+                "reference": equipment_data.get("reference"),
+                "comment": equipment_data.get("comment"),
+            }
+
+            # Create the Equipment instance
+            equipment = Equipment.objects.create(**create_values)
+            equipments.append(equipment)
+
+        # Optionally, you can set the equipments to the point_operation if needed
+        operation.equipments.set(equipments)
+        Operation.objects.filter(
+            infrastructure=validated_data["infrastructure"], last=True
+        ).exclude(pk=operation.id).update(last=False)
+
+        return operation
 
 
 class OperationPolymorphicSerializer(

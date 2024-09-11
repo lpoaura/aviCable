@@ -1,13 +1,14 @@
 {
-  "common": {
-    "yes": "Oui",
-    "no": "Non",
-    "low": "Faible",
-    "moderate": "Modéré",
-    "high": "Elevé",
-    "risks": "Risques",
-    "loading": "Chargement en cours..."
-  },
+  "yes": "Oui",
+  "no": "Non",
+  "low": "Faible",
+  "moderate": "Modéré",
+  "high": "Elevé",
+  "risks": "Risques",
+  "loading": "Chargement en cours...",
+  "equipment": "Aucun équipement déclaré | Equipement | {count} equipements",
+  "reference": "Référence",
+  "realizedOn": "Réalisé le",
   "app": {
     "app-name": "Avifaune & câbles aériens",
     "cancel": "Annuler",
@@ -18,7 +19,7 @@
     "remark": "Commentaire",
     "type": "Type",
     "valid": "Valider",
-    "technical_proposal": "Proposition technique"
+    "technicalProposal": "Proposition technique"
   },
   "nav": {
     "application": "Application",
@@ -34,40 +35,41 @@
     "diagnosis": "Diagnostic",
     "infrastructure": "Infrastructure",
     "infrastructures": "Supports et Lignes",
-    "mortality-cases": "Cas de mortalité",
+    "mortalityCases": "Cas de mortalité",
     "line": "Ligne",
     "lines": "Lignes",
     "lines-eqmt": "Equipements Lignes",
     "operation": "Opération",
-    "sensitive-areas": "Zones Sensibles"
+    "sensitiveAreas": "Zones Sensibles"
   },
   "diagnosis": {
-    "last-one": "Dernier diagnostic le ",
+    "lastOne": "Dernier diagnostic le ",
     "proposals": "Propositions",
-    "actions":"Actions",
-    "technical_proposal":"Proposition technique",
+    "actions": "Actions",
+    "technicalProposal": "Proposition technique",
     "equipment": "Structure équipée",
-    "make-dissuasive": "rendre dissuasif",
-    "isolate" : "isoler",
-    "make-attractive": "rendre attractif",
-    "change-advice": "changer l'armement"
+    "makeDissuasive": "rendre dissuasif",
+    "isolate": "isoler",
+    "makeAttractive": "rendre attractif",
+    "changeAdvice": "changer l'armement",
+    "buildingIntegration": "Intégration bâti"
   },
   "forms": {
     "coordinates": "Coordonnées",
     "datecreate": "Date du diagnostic",
     "general": "Informations Générales",
-    "general-infrastructure": "Informations générales de l'infrastructure",
+    "generalInfrastructure": "Informations générales de l'infrastructure",
     "risk_assessment": "Evaluation des Risques",
     "too_big_file": "La taille du fichier ne doit pas exéder",
     "not_img_file": "Le fichier sélectionné doit-être une image"
   },
   "support": {
     "advice": "Recommandations",
-    "advice_isol": "A isoler",
-    "advice_disrupt": "Dissuader",
-    "advice_attract": "Rendre incitatif",
+    "toInsulate": "A isoler",
+    "discourage": "Dissuader",
+    "providingIncentives": "Rendre incitatif",
     "attractiveness": "Attractivité",
-    "change_advice": "Changer l'armement",
+    "changeArming": "Changer l'armement",
     "nest_platform": "Installer plateforme nid",
     "condition": "Etat",
     "dangerousness": "Dangerosité",
@@ -102,8 +104,9 @@
   },
   "operation": {
     "eqmt-type": "Type d'équipements",
-    "last-one": "Dernière opération le ",
-    "type": "Type d'intervention"
+    "lastOne": "Dernière opération le ",
+    "type": "Type d'intervention",
+    "equipment": "Aucun équipement déclaré | Equipement | {count} equipements"
   },
   "picture": {
     "add_file": "Ajouter des Images",

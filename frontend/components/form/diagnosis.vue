@@ -52,23 +52,22 @@
 
 
             <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')" density="compact" />
+              <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.toInsulate')" density="compact" />
             </v-col>
             <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.advice_disrupt')"
-                density="compact" />
+              <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.discourage')" density="compact" />
             </v-col>
 
             <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')"
+              <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.providingIncentives')"
                 density="compact" />
             </v-col>
             <v-col cols="12" md="3">
               <v-checkbox v-model="diagData.change_advice" :label="$t('support.change_advice')" density="compact" />
             </v-col>
             <v-col cols="12" class="text-left">
-              <v-textarea v-model="diagData.technical_proposal" clearable clear-icon="mdi-close-circle"
-                :label="$t('diagnosis.technical_proposal')" :rules="[rules.textLength]" rows="2" counter="300"
+              <v-textarea v-model="diagData.technicalProposal" clearable clear-icon="mdi-close-circle"
+                :label="$t('diagnosis.technicalProposal')" :rules="[rules.textLength]" rows="2" counter="300"
                 variant="solo" density="compact" />
             </v-col>
             <v-divider />
@@ -147,7 +146,7 @@ const initData = async () => {
       id : diagnosis.value.id,
       date: diagnosis.value.date,
       remark: diagnosis.value.remark,
-      technical_proposal: diagnosis.value.technical_proposal,
+      technical_proposal: diagnosis.value.technicalProposal,
       infrastructure: diagnosis.value.infrastructure,
       pole_type_id: diagnosis.value.pole_type?.map((item:NomenclatureItem) => item.id),
       neutralized: diagnosis.value.neutralized,

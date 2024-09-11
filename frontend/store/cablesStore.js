@@ -39,6 +39,11 @@ export const useCablesStore = defineStore('cables', {
         elem => elem.resourcetype === 'Point' && elem.properties.operations.length > 0
       )
     },
+    getOperatedLineDataFeatures (state) {
+      return state.infstrData.features?.filter(
+        elem => elem.resourcetype === 'Line' && elem.properties.operations.length > 0
+      )
+    },
     // lineData(state) {
     //   return state.lineData
     // },

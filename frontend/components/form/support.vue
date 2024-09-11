@@ -5,7 +5,7 @@
         <v-container>
           <v-row>
             <v-col cols="12" class="text-left">
-              <strong> {{ $t('forms.general-infrastructure') }}</strong>
+              <strong> {{ $t('forms.generalInfrastructure') }}</strong>
             </v-col>
           </v-row>
           <v-row>
@@ -87,7 +87,7 @@ const moveToNextStep = async () => {
 //       id : diagnosis.value.id,
 //       date: diagnosis.value.date,
 //       remark: diagnosis.value.remark,
-//       technical_proposal: diagnosis.value.technical_proposal,
+//       technicalProposal: diagnosis.value.technicalProposal,
 //       infrastructure: diagnosis.value.infrastructure,
 //       pole_type_id: diagnosis.value.pole_type?.map((item:NomenclatureItem) => item.id),
 //       neutralized: diagnosis.value.neutralized,
