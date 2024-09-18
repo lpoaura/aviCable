@@ -27,6 +27,9 @@
           prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
       </v-card-actions>
     </v-form>
+    <div>
+      <pre><code>{{opData}}</code></pre>
+    </div>
   </v-card>
 </template>
 
@@ -46,7 +49,7 @@ const cablesStore = useCablesStore()
 // const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 const formValid=ref(false)
-const infrastructureId = computed(() => cablesStore.formInfrastructureId)
+const infrastructureId = computed(() => route.params.id)
 const infrastructure = computed(() => cablesStore.formInfrastructure)
 const operationId = computed(() => route.query.id_operation)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
@@ -106,11 +109,13 @@ const rules = reactive({
 
 const initData = async () => {
   if (infrastructureId.value && !operationId.value) {
-    console.log('new Operation')
-    coordinatesStore.setNewGeoJSONObject(infrastructure.value.geometry)
+    console.log('<initData> new Operation')
+    console.log('<initData> infrastructure', infrastructure.value)
+    coordinatesStore.setNewGeoJSONObject(infrastructure.value?.geometry)
     opData.resourcetype = infrastructure.value?.resourcetype === 'Point' ? 'PointOperation':'LineOperation'
     opData.geom = infrastructure.value?.geometry
-    equipmentsReady.value=true
+    equipmentsReady.value = true
+    console.log("<initData> equipmentsReady", equipmentsReady)
   }
   if (operationId.value) {
     console.log('update Operation')

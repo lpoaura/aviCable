@@ -2,8 +2,6 @@
   <v-card class="my-2" :title="$t('display.operation')">
     <template #subtitle>{{ $t("realizedOn") }} <strong>{{ operation.date }}</strong></template>
     <template #text>
-      <div v-if="operation.remark"><strong>{{$t("app.remark")}}</strong>&nbsp;: {{ operation.remark }}
-      </div>
       <div>
         <span class="font-weight-bold">
           {{ $t("operation.equipment", operation.equipments.length, {count: operation.equipments.length} )}}
@@ -18,6 +16,8 @@
             <div v-if="equipment.comment"><strong>{{$t("app.remark")}}</strong>&nbsp;: {{ equipment.comment }}</div>
           </v-list-item>
         </v-list>
+      </div>
+      <div v-if="operation.remark"><strong>{{$t("app.remark")}}</strong>&nbsp;: {{ operation.remark }}
       </div>
     </template>
     <v-card-actions>

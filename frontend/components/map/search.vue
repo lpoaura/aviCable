@@ -16,8 +16,8 @@
       <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options-style="selectedFeatureGeoJsonStyle" />
       <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
         :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
-      <!--<l-geo-json v-if="pointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
-        :options="operatedInfrastructureGeoJsonOptions" />-->
+      <l-geo-json v-if="operatedPointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
+        :options="operatedInfrastructureGeoJsonOptions" />
       <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" />
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
