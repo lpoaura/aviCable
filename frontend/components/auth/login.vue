@@ -22,7 +22,7 @@
           prepend-inner-icon="mdi-lock-outline" variant="outlined" :rules="pwdRules"
           @click:append-inner="visible = !visible" />
 
-        <v-btn block class="mb-8" color="blue" size="large" variant="flat" :loading="loading" :disabled="!valid"
+        <v-btn block class="mb-8" color="blue" size="large" variant="flat" :loading="loading" :disabled="!formValid"
           @click="userLogin()">
           {{ $t('login.sign-in') }}
         </v-btn>
