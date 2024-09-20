@@ -1,5 +1,5 @@
 ## Build
-FROM node:lts as builder
+FROM node:lts AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
