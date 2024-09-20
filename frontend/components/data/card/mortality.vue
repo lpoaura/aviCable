@@ -46,7 +46,7 @@
         </v-col>
       </v-row>
     </v-card-text>
-    <v-card-actions>
+    <!--<v-card-actions>
       <v-spacer />
       <v-dialog max-width="500">
         <template #activator="{ props: activatorProps }">
@@ -71,7 +71,7 @@
       </v-dialog>
       <v-btn color="orange" prepend-icon="mdi-pencil-circle" disabled @click="updateDiag()">
         Modifier</v-btn>
-    </v-card-actions>
+    </v-card-actions>-->
   </v-card>
 </template>
 
