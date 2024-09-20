@@ -9,6 +9,7 @@
   "equipment": "Aucun équipement déclaré | Equipement | {count} equipements",
   "reference": "Référence",
   "realizedOn": "Réalisé le",
+  "observedOn": "Observé le",
   "app": {
     "app-name": "Avifaune & câbles aériens",
     "cancel": "Annuler",
@@ -134,6 +135,8 @@
   },
   "mortality": {
     "new_mortality": "Nouveau cas de mortalité",
-    "observer": "Observateur"
+    "observer": "Observateur",
+    "specie": "Espèce",
+    "dataSourceUrl": "URL de la donnée originale"
   }
 }

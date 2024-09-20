@@ -4,36 +4,39 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" md="6">
-            <v-select clearable v-model="specie" label="Espèce" :items="speciesList" item-title="state" item-value="value"
-              variant="outlined" density="compact"></v-select>
+            <v-select v-model="specie" clearable label="Espèce" :items="speciesList" item-title="state"
+              item-value="value" variant="outlined" density="compact" />
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line variant="outlined"
-              hide-details density="compact"></v-text-field>
+            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line
+              variant="outlined" hide-details density="compact" />
           </v-col>
         </v-row>
-
       </v-card-text>
     </v-card>
     <v-data-table v-model="selected" fixed-header height="100%" :headers="headers" :search="search"
-      :items="observationList" :loading="!mortalityStore.getMortalityFeatures"
-      loading-text="Loading... Please wait" item-value="name" class="elevation-1" density="compact"
-      @click:row="handleRowClick" show-select>
-      <template v-slot:item.id="{ value, item }">
-        <v-chip prepend-icon="mdi-eye-circle-outline" @click="showDetail(item)" color="primary" link>
+      :items="observationList" :loading="!mortalityStore.getMortalityFeatures" loading-text="Loading... Please wait"
+      item-value="name" class="elevation-1" density="compact" @click:row="handleRowClick">
+      <template #item.id="{ value, _item }">
+        <v-chip prepend-icon="mdi-eye-circle-outline" color="primary" link @click="router.push(`/mortality/${value}`)">
           {{ value }}
         </v-chip>
       </template>
-      <template v-slot:item.properties.death_cause.label="{ value , item}">
+      <template #item.properties.death_cause.label="{ value , item}">
         <v-chip>
           <v-icon :color="'red'">
             {{deathCauseIcons[item.properties?.death_cause.code] || 'mdi-help' }}
           </v-icon> {{ value }}
         </v-chip>
       </template>
+      <template #item.properties.species.scientific_name="{ value , _item}">
+        <i>
+          {{ value }}
+        </i>
+      </template>
     </v-data-table>
   </div>
-</template> 
+</template>
 
 <script setup lang="ts">
 
@@ -65,10 +68,7 @@ const speciesList = computed(() => mortalityStore.getMortalitySpecies.map(i => {
 const observationList = computed(() => {
   return specie.value !== null ? mortalityStore.getMortalityFeatures.filter(i => i.properties?.species.id == specie.value) : mortalityStore.getMortalityFeatures
 })
-const showDetail = (_, {item}) => {
-  const rowData = item.columns
-  router.push(`/mortality/${rowData['id']}`)
-}
+
 
 onMounted(() => {
   // setInfrstrData({})

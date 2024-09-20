@@ -12,7 +12,7 @@
         </field>
         <field name="uuid" type="UUIDField">48072fd0-044f-4466-b755-290286229561</field>
         <field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field>
-        <field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea">
+        <field name="areas" rel="ManyToManyRel" to="geo_area.geoarea">
             <object pk="56"></object>
             <object pk="20180"></object>
         </field>
@@ -30,7 +30,7 @@
         </field>
         <field name="uuid" type="UUIDField">bd62da0a-8e5d-4440-9540-a42fd7faacb4</field>
         <field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">2</field>
-        <field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea">
+        <field name="areas" rel="ManyToManyRel" to="geo_area.geoarea">
             <object pk="94"></object>
             <object pk="18599"></object>
         </field>
@@ -50,7 +50,7 @@
         </field>
         <field name="uuid" type="UUIDField">d84a9c56-9ac7-42d0-b92e-0e9d4ff3739b</field>
         <field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field>
-        <field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea">
+        <field name="areas" rel="ManyToManyRel" to="geo_area.geoarea">
             <object pk="56"></object>
             <object pk="20180"></object>
         </field>
@@ -68,7 +68,7 @@
         </field>
         <field name="uuid" type="UUIDField">3a1a429d-c533-4304-90af-551ced351cb0</field>
         <field name="owner" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">1</field>
-        <field name="geo_area" rel="ManyToManyRel" to="geo_area.geoarea">
+        <field name="areas" rel="ManyToManyRel" to="geo_area.geoarea">
             <object pk="56"></object>
             <object pk="20180"></object>
         </field>

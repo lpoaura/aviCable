@@ -64,9 +64,12 @@
                 <v-text-field ref="lat" v-model="mortalityData.infrstr" label="support/ligne concerné" type="string"
                   placeholder="support/ligne concerné" hide-spin-buttons variant="solo" density="compact" />
               </v-col>
-
               <v-col cols="12">
-                <v-textarea v-model="mortalityData.remark" clearable clear-icon="mdi-close-circle"
+                <v-text-field v-model="mortalityData.data_source_url" clearable clear-icon="mdi-close-circle"
+                  :label="$t('mortality.dataSourceUrl')" :rules="[rules.urlRules]" variant="solo" density="compact" />
+              </v-col>
+              <v-col cols="12">
+                <v-textarea v-model="mortalityData.comment" clearable clear-icon="mdi-close-circle"
                   :label="$t('app.remark')" :rules="[rules.textLength]" rows="2" counter="300" variant="solo"
                   density="compact" />
               </v-col>
@@ -128,6 +131,8 @@ const formValid = ref(true)
         nb_death: 1,
         death_cause_id: null,
         data_source: null,
+        data_source_url: null,
+        comment: null,
         geom: {
           type: 'Point' as string,
           coordinates: [] as number[],
@@ -140,6 +145,7 @@ const rules = reactive({
   latRange: (v: number) => (v >= 40 && v <= 52) || `${t('valid.range')}40 : 52`,
   lngRange: (v: number) => (v >= -20 && v <= 20) || `${t('valid.range')}-20 : 20`,
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
+  urlRules: (v: string) => !v || /^(ftp|http|https):\/\/[^ "]+$/.test(v) || 'Must be a valid URL (http://, https://, ftp://)',
 })
       // Species Autocomplete data
       const descriptionLimit = ref(60)

@@ -30,11 +30,11 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
         .select_related("owner")
         .prefetch_related(
             Prefetch(
-                "geo_area",
+                "areas",
                 queryset=GeoArea.objects.only("id", "code", "name", "type"),
             )
         )
-        .prefetch_related("geo_area__type")
+        .prefetch_related("areas__type")
         .prefetch_related("sensitive_area")
         .prefetch_related("diagnosis")
         .prefetch_related("diagnosis__media")
@@ -68,7 +68,7 @@ class PointViewSet(viewsets.ModelViewSet):
     queryset = (
         Point.objects.all()
         .select_related("owner")
-        .prefetch_related("geo_area")
+        .prefetch_related("areas")
         .prefetch_related("sensitive_area")
     )
 
@@ -85,7 +85,7 @@ class LineViewSet(viewsets.ModelViewSet):
     queryset = (
         Line.objects.all()
         .select_related("owner")
-        .prefetch_related("geo_area")
+        .prefetch_related("areas")
         .prefetch_related("sensitive_area")
     )
 

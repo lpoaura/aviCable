@@ -8,6 +8,7 @@ from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from geo_area.models import GeoArea
 from media.models import Media
 from sinp_nomenclatures.models import Nomenclature
 from species.models import Species
@@ -43,6 +44,13 @@ class Mortality(BaseModel):
         verbose_name=_("Infrastructure related to mortality case"),
         help_text=_("Infrastructure related to mortality case"),
     )
+    areas = models.ManyToManyField(
+        GeoArea,
+        blank=True,
+        related_name="%(class)s_areas",
+        verbose_name=_("Associated Administrative and Natural Areas"),
+        help_text=_("Associated Administrative and Natural Areas"),
+    )
     nb_death = models.IntegerField(_("Number found dead"), default=1)
     death_cause = models.ForeignKey(
         Nomenclature,
@@ -62,12 +70,24 @@ class Mortality(BaseModel):
         verbose_name=_("Mortality data source"),
         help_text=_("Mortality data source"),
     )
+    data_source_url = models.URLField(
+        blank=True,
+        null=True,
+        verbose_name=_("Mortality data source URL"),
+        help_text=_("Mortality data source URL"),
+    )
     media = models.ManyToManyField(
         Media,
         blank=True,
         related_name="mortality_media",
         verbose_name=_("Media related to the mortality case"),
         help_text=_("Media related to the mortality case"),
+    )
+    comment = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_("Comment"),
+        help_text=_("Comment on this mortality observations"),
     )
 
     class Meta:

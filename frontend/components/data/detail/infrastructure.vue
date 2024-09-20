@@ -2,7 +2,9 @@
   <v-layout full-height>
     <v-app-bar density="compact" color="blue-grey-lighten-5">
       <v-app-bar-title>
-        #{{data.properties.id}} {{ type === 'Point' ?$t('support.support') : $t('line.line')}}
+        <v-chip prepend-icon="mdi-eye-circle-outline" color="primary">
+          {{ data.properties.id }}
+        </v-chip>&nbsp;{{ type === 'Point' ?$t('support.support') : $t('line.line')}}
         <strong>{{ data.properties.owner.label }}</strong>
       </v-app-bar-title>
 

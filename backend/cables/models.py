@@ -41,10 +41,10 @@ class Infrastructure(BaseModel, PolymorphicModel):
         verbose_name=_("Infrastructure owner"),
         help_text=_("Infrastructure owner"),
     )
-    geo_area = models.ManyToManyField(
+    areas = models.ManyToManyField(
         GeoArea,
         blank=True,
-        related_name="%(class)s_geo_area",
+        related_name="%(class)s_areas",
         verbose_name=_("Associated Administrative and Natural Areas"),
         help_text=_("Associated Administrative and Natural Areas"),
     )

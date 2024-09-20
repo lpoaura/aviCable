@@ -3,11 +3,11 @@
     <v-card-text>
       <v-row>
         <v-col cols="12">
-          <p v-if="data.properties.geo_area.length > 0" class="text-strong">
+          <p v-if="data.properties.areas.length > 0" class="text-strong">
             Limites administratives
           </p>
           <v-chip-group>
-            <v-chip v-for="(ga, index) in data.properties.geo_area" :key="index">
+            <v-chip v-for="(ga, index) in data.properties.areas" :key="index">
               {{ ga.name }} ({{ ga.code }})
             </v-chip>
           </v-chip-group>

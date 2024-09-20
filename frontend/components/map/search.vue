@@ -1,5 +1,5 @@
 <template>
-  {{bbox}}
+  <!-- {{bbox}} -->
   <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getMapBounds"
     @moveend="getMapBounds">
 
@@ -103,10 +103,11 @@ const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
     layer.on('popupopen', () => {
       const id = feature?.properties?.id
         const link = document.getElementById('routerLink');
+        console.log('feature?.resourcetype', feature?.resourcetype)
         link.addEventListener('click', (event) => {
           event.preventDefault(); // Prevent the default anchor behavior
-          if (['Point','Lines'].includes(feature?.resourcetype) && id) {
-            router.push(`/${feature.resourcetype ==='Point'? 'supports':'lines'}/${id}`)
+          if (['Point','Line'].includes(feature?.resourcetype) && id) {
+            router.push(`/infrastructures/${id}`)
           }
         });
       });
@@ -352,6 +353,12 @@ const supportColor = (feature: Feature) => {
   return 'grey'
 }
 
+
+const isNeutralized = (feature: Feature) => {
+  const lastOp=feature.properties?.operations[0]
+  return !!lastOp
+}
+
 const abortController : Ref<AbortController | undefined> = ref<AbortController|undefined>(undefined)
 const bbox : ComputedRef<string|null> = computed<string|null>(() => coordinatesStore.mapBounds)
     // const zoom : ComputedRef<number> = computed<number>(() => coordinatesStore.zoom)
@@ -383,8 +390,8 @@ onBeforeMount(async () => {
         radius: 6,
         fillColor: supportColor(feature),
         color: '#000',
-        weight: 1,
-        opacity: 1,
+        weight: 0.5,
+        opacity: 0.5,
         fillOpacity: 0.8,
         // draggable: true,
       })

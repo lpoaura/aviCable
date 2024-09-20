@@ -170,7 +170,7 @@ class DiagnosisSerializer(ModelSerializer):
                     Diagnosis.objects.get(id=id).update(last=True)
 
             msg = "Issue with Diagnosis configuration. No Diagnosis created."
-            logging.error(msg)
+            logger.error(msg)
             raise APIException(msg)
 
         return newDiag  # returns new Diag if success
@@ -294,7 +294,7 @@ class OperationSerializer(ModelSerializer):
                     Operation.objects.get(id=id).update(last=True)
 
             msg = "Issue with Diagnosis configuration. No Diagnosis created."
-            logging.error(msg)
+            logger.error(msg)
             raise APIException(msg)
 
         return newOp  # returns new Diag if success
@@ -598,7 +598,7 @@ class InfrastructureSerializer(GeoFeatureModelSerializer):
 
     # Allow to display nested data
     owner = NomenclatureSerializer()
-    geo_area = GeoAreaSerializer(many=True)
+    areas = GeoAreaSerializer(many=True)
     sensitive_area = SensitiveAreaSerializer(many=True)
     diagnosis = DiagnosisSerializer(many=True)
     operations = OperationSerializer(many=True)
@@ -610,7 +610,7 @@ class InfrastructureSerializer(GeoFeatureModelSerializer):
             "id",
             "owner",
             "geom",
-            "geo_area",
+            "areas",
             "sensitive_area",
             "diagnosis",
             "operations",
@@ -636,7 +636,7 @@ class PointSerializer(GeoFeatureModelSerializer):
 
     # Allow to display nested data
     owner = NomenclatureSerializer(read_only=True)
-    geo_area = GeoAreaSerializer(many=True, read_only=True)
+    areas = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
     diagnosis = DiagnosisSerializer(many=True, read_only=True)
     operations = OperationSerializer(many=True, read_only=True)
@@ -649,7 +649,7 @@ class PointSerializer(GeoFeatureModelSerializer):
             "geom",
             "owner",
             "owner_id",
-            "geo_area",
+            "areas",
             # "geo_area_id",
             "sensitive_area",
             # "sensitive_area_id",
@@ -691,7 +691,7 @@ class PointSerializer(GeoFeatureModelSerializer):
                 geom__intersects=point.geom
             )
             # set the lists to point.geo_area and save it
-            point.geo_area.set(geoareas)
+            point.areas.set(geoareas)
             point.sensitive_area.set(sensitiveareas)
             point.save()
 
@@ -699,7 +699,7 @@ class PointSerializer(GeoFeatureModelSerializer):
             if point is not None:
                 point.delete()
             msg = "Issue with attachment from new point to sensitive/geo areas. No Point created."
-            logging.error(msg)
+            logger.error(msg)
             raise APIException(msg)
 
         return point
@@ -714,7 +714,7 @@ class LineSerializer(GeoFeatureModelSerializer):
 
     # Allow to display nested data
     owner = NomenclatureSerializer(read_only=True)
-    geo_area = GeoAreaSerializer(many=True, read_only=True)
+    areas = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
     diagnosis = DiagnosisSerializer(many=True, read_only=True)
     operations = OperationSerializer(many=True, read_only=True)
@@ -727,7 +727,7 @@ class LineSerializer(GeoFeatureModelSerializer):
             "geom",
             "owner",
             "owner_id",
-            "geo_area",
+            "areas",
             # "geo_area_id",
             "sensitive_area",
             # "sensitive_area_id",
@@ -767,7 +767,7 @@ class LineSerializer(GeoFeatureModelSerializer):
                 geom__intersects=line.geom
             )
             # set the lists to line.geo_area and save it
-            line.geo_area.set(geoareas)
+            line.areas.set(geoareas)
             line.sensitive_area.set(sensitiveareas)
             line.save()
 
@@ -775,7 +775,7 @@ class LineSerializer(GeoFeatureModelSerializer):
             if line is not None:
                 line.delete()
             msg = "Issue with attachment from new Line to sensitive/geo areas. No Line created."
-            logging.error(msg)
+            logger.error(msg)
             raise APIException(msg)
 
         return line

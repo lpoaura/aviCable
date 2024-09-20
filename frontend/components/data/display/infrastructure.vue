@@ -25,15 +25,6 @@ Dans un modal
     <v-data-table v-model="selected" :headers="tableHeaders" :items="dataSource[display]" item-value="properties.id"
       :loading="cableStore.infrstrDataLoadingStatus" :search="search" :loading-text="$t('loading')" :items-per-page="-1"
       :fixed-header="true" class="elevation-1" density="compact" @click:row="handleRowClick">
-      <!-- <template v-slot:expanded-row="{ columns, item }">
-        <tr>
-          <td :colspan="columns.length" height="500px">
-            <data-card-diagnosis :diagnosis="item.properties.diagnosis[0]"></data-card-diagnosis>
-          </td>
-        </tr>
-
-      </template> -->
-
       <template #item.properties.id="{ value, item }">
         <v-chip prepend-icon="mdi-eye-circle-outline" color="primary" link @click="showDetail(item)">
           {{ value }}
@@ -77,7 +68,7 @@ const tableHeaders = reactive([
   },
   { title: t('app.type'), key: 'resourcetype' },
   { title: t('support.owner'), key: 'properties.owner.label' },
-  { title: t('common.risks'), key: 'properties.diagnosis.0' },
+  { title: t('risks'), key: 'properties.diagnosis.0' },
   {
     title: 'Neutralisé',
     key: 'properties.operations'
@@ -86,7 +77,6 @@ const tableHeaders = reactive([
     title: 'Dernier diagnostic',
     key: 'properties.diagnosis.0.date'
   },
-  { title: '+', key: 'data-table-expand' },
 ])
 
 

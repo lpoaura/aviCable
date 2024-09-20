@@ -1,27 +1,23 @@
 <template>
   <NuxtLayout name="view">
-    <template #map><map-search :edit-mode="false" :mortalityItem="info" /></template>
-    <data-detail-mortality :data="info" />
+    <template #map><map-search :edit-mode="false" :mortality-item="info" /></template>
+    <data-detail-mortality :data="item" />
   </NuxtLayout>
 </template>
 
 <script setup>
-import {useCoordinatesStore} from '../../../store/coordinatesStore';
-import {geoJSON} from 'leaflet'
-
 const route = useRoute()
-
 const coordinateStore = useCoordinatesStore()
 
 
 const zoomTo = () => {
   console.log('coordinateStore',coordinateStore)
   // const layer = geoJSON(info.value)
-  coordinateStore.setCenter([...info.value.geometry.coordinates].reverse())
+  coordinateStore.setCenter([...item.value.geometry.coordinates].reverse())
   coordinateStore.setZoom(14)
 }
 
-const { data: info } = await useHttp(`/api/v1/mortality/${route.params.idmortality}`)
+const { data: item } = await useHttp(`/api/v1/mortality/${route.params.idmortality}`)
 
 
 
