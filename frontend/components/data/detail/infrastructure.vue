@@ -9,10 +9,7 @@
       </v-app-bar-title>
 
       <v-spacer />
-      <v-chip :prepend-icon="neutralized ? 'mdi-check-circle-outline': 'mdi-alert-outline'" small class="mr-2"
-        :color="neutralized ? 'success' : 'error'" variant="elevated">
-        {{ neutralized ? 'neutralisé' : 'pas neutralisé' }}
-      </v-chip>
+
       <v-app-bar-nav-icon>
         <v-btn density="compact" icon="mdi-close" @click="$router.push('/search')" />
       </v-app-bar-nav-icon>
@@ -95,14 +92,6 @@ const otherOps = computed(() => {
            !action.last
       )
 })
-// const previousActions = computed(() => {
-//   return data?.properties.actions_infrastructure.filter(
-//         (action: { last: boolean }) => !action.last
-//       )
-// })
 
-onMounted(() =>{
-  console.log('lastDiag', lastDiag)
-})
 
 </script>

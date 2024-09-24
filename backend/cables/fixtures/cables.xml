@@ -249,7 +249,7 @@
         <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
-        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+        <field name="sgmt_landscape_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
         <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
@@ -273,7 +273,7 @@
         <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
-        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+        <field name="sgmt_landscape_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
         <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
@@ -298,7 +298,7 @@
         <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
-        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+        <field name="sgmt_landscape_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
         <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
@@ -329,7 +329,7 @@
         <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
-        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+        <field name="sgmt_landscape_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
         <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
@@ -354,7 +354,7 @@
         <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
-        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+        <field name="sgmt_landscape_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
         <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">
@@ -385,7 +385,7 @@
         <field name="sgmt_topo_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
-        <field name="sgmt_veget_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
+        <field name="sgmt_landscape_integr_risk" rel="ManyToOneRel" to="sinp_nomenclatures.nomenclature">
             <None></None>
         </field>
         <field name="pole_type" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature">

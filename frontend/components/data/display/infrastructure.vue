@@ -31,9 +31,7 @@ Dans un modal
         </v-chip>
       </template>
       <template #item.properties.diagnosis.0="{ _, item }">
-        <v-chip prepend-icon="mdi-circle" :color="notationValues(item).color">
-          {{ notationValues(item).label }}
-        </v-chip>
+        <widgets-risk-level-status :data="item" :detail="false" />
       </template>
       <template #item.resourcetype="{ value }">
         <v-chip>
@@ -42,17 +40,15 @@ Dans un modal
           </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
         </v-chip>
       </template>
-      <template #item.properties.operations="{ value }">
-        <v-chip :prepend-icon="value.length> 0 ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'"
-          :color="value.length>0 ? 'green':'red'">
-          {{ value[0] ? value[0].date : $t('no')}}
-        </v-chip>
+      <template #item.properties.operations="{ _value, item }">
+        <widgets-neutralized-status :data="item" :detail="false" />
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script setup lang="ts">
+
 const router = useRouter()
 const { t } = useI18n()
 
@@ -98,23 +94,6 @@ const showDetail = (rowItem) => {
   }
 }
 
-const notationValues =(item) => {
-  const risks = {
-    'RISK_L': {note: 1, color:'blue', label: 'faible'},
-    'RISK_M': {note: 2, color:'orange', label: 'fort'},
-    'RISK_H': {note: 3, color:'red lighten-1 white--text', label:'très fort'}
-  }
-  const diagnosis = item.properties.diagnosis[0]
-  let result
-  if (item.resourcetype == 'Point' && diagnosis) {
-    const note = risks[diagnosis.pole_attractivity?.code]?.note + risks[diagnosis.pole_dangerousness?.code]?.note
-    result = note < 3 ? 'RISK_L' : note >= 5 ? 'RISK_H' : 'RISK_M'
-  } else {
-    // TODO: Manage lines risks
-    result = 'RISK_L'
-  }
-  return risks[result]
-}
 
 const handleRowClick = (_, object) => {
   console.log(object.item.geometry)

@@ -32,7 +32,13 @@ export interface Diagnosis {
   sgmt_build_integr_risk: number;
   sgmt_moving_risk: number;
   sgmt_topo_integr_risk: number;
-  sgmt_veget_integr_risk: number;
+  sgmt_landscape_integr_risk: number;
   media: Array<T>;
   last?: boolean;
+}
+
+export interface Risk {
+  note: number;
+  label: string;
+  color: string;
 }

@@ -317,16 +317,15 @@ const lineColor=(feature:Feature) => {
   const lastDiag=feature.properties?.diagnosis[0]
   console.log( "lastDiag")
   if (lastDiag) {
-    console.log("lineColor - set line color")
-    const sgmt_build_integr_risk = lastDiag.sgmt_build_integr_risk?.code
     const sgmt_moving_risk = lastDiag.sgmt_moving_risk?.code
-    const sgmt_veget_integr_risk = lastDiag.sgmt_veget_integr_risk?.code
+    const sgmt_landscape_integr_risk = lastDiag.sgmt_landscape_integr_risk?.code
     const sgmt_topo_integr_risk = lastDiag.sgmt_topo_integr_risk?.code
-    const note = levelNotes[sgmt_build_integr_risk] + levelNotes[sgmt_moving_risk] + levelNotes[sgmt_veget_integr_risk] + levelNotes[sgmt_topo_integr_risk]
-    if (note < 6) {
+    const note = levelNotes[sgmt_moving_risk] + levelNotes[sgmt_landscape_integr_risk] + levelNotes[sgmt_topo_integr_risk]
+    console.log("lineColor note", note)
+    if (note < 4) {
       return 'blue'
     }
-    if (note >= 6 && note <= 8)
+    if (note >= 4 && note < 7)
     {
       return 'orange'
     }

@@ -196,7 +196,7 @@ class CreatePointDiagnosisTestCase(TestCase):
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
-            "sgmt_veget_integr_risk": self.risk_id,
+            "sgmt_landscape_integr_risk": self.risk_id,
         }
         resp = self.authentified_client.post(
             "/api/v1/cables/diagnosis/", data, format="json"
@@ -214,7 +214,7 @@ class CreatePointDiagnosisTestCase(TestCase):
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
-            "sgmt_veget_integr_risk": self.risk_id,
+            "sgmt_landscape_integr_risk": self.risk_id,
         }
         resp = self.authentified_client.post(
             "/api/v1/cables/diagnosis/", data, format="json"
@@ -246,7 +246,7 @@ class CreatePointDiagnosisTestCase(TestCase):
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
-            "sgmt_veget_integr_risk": self.risk_id,
+            "sgmt_landscape_integr_risk": self.risk_id,
             "pole_type_id": self.poletypeIdList,
             "media_id": self.mediaIdList,
         }
@@ -380,7 +380,7 @@ class CreateLineDiagnosisTestCase(TestCase):
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
-            "sgmt_veget_integr_risk": self.risk_id,
+            "sgmt_landscape_integr_risk": self.risk_id,
         }
 
         resp = self.authentified_client.post(
@@ -399,7 +399,7 @@ class CreateLineDiagnosisTestCase(TestCase):
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
-            "sgmt_veget_integr_risk": self.risk_id,
+            "sgmt_landscape_integr_risk": self.risk_id,
         }
 
         resp = self.authentified_client.post(
@@ -432,7 +432,7 @@ class CreateLineDiagnosisTestCase(TestCase):
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
-            "sgmt_veget_integr_risk": self.risk_id,
+            "sgmt_landscape_integr_risk": self.risk_id,
             "media_id": self.mediaIdList,
         }
 
@@ -469,7 +469,7 @@ class CreateLineDiagnosisTestCase(TestCase):
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
-            "sgmt_veget_integr_risk": self.risk_id,
+            "sgmt_landscape_integr_risk": self.risk_id,
         }
 
         # create 2 Diagnosis on same infrastructure

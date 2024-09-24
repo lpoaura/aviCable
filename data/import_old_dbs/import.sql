@@ -139,6 +139,52 @@ FROM ${schema_name}.t_inventaire_poteaux_erdf
                    ON t_inventaire_poteaux_erdf.id_dangerosite = dangerosity.id_classe_risque
          LEFT JOIN cables_app.sinp_nomenclatures_nomenclature AS pole_dangerosity
                    ON dangerosity.lib_classe_risque = pole_dangerosity.label;
+                  
+INSERT INTO cables_app.cables_diagnosis(timestamp_create, timestamp_update, uuid, date, remark, last, 
+                                        isolation_advice, dissuasion_advice, attraction_advice, change_advice,
+                                        technical_proposal, created_by_id, infrastructure_id,
+                                        pole_attractivity_id, pole_dangerousness_id, sgmt_build_integr_risk_id,
+                                        sgmt_moving_risk_id, sgmt_topo_integr_risk_id, sgmt_veget_integr_risk_id,
+                                        updated_by_id)
+select
+	coalesce(date_inventaire,
+	now()) as timestamp_create,
+	now() as timestamp_update,
+	t_inventaire_troncons_erdf.uuid_diagnosis as uuid,
+	coalesce(date_inventaire,
+	'2000-01-01'::DATE) as date,
+	remarques as remark,
+	true as last,
+	false as isolation_advice,
+	false as dissuasion_advice,
+	false as attraction_advice,
+	false as change_advice,
+	'' as technical_proposal,
+	1 as created_by_id,
+	null::int,
+	null::int,
+	null::int,
+	null as sgmt_build_integr_risk_id,
+	nom_dep_risk.id as sgmt_moving_risk_id,
+	nom_topo_risk.id as sgmt_topo_integr_risk_id,
+	null as sgmt_veget_integr_risk_id,
+	1 as updated_by_id
+from
+	cables74.t_inventaire_troncons_erdf
+join cables_app.cables_infrastructure on
+	t_inventaire_troncons_erdf.uuid_infstr = cables_infrastructure.uuid
+left join cables74.dico_classes_risque as dep_risk
+                   on
+	t_inventaire_troncons_erdf.id_risque_deplacement = dep_risk.id_classe_risque
+left join cables_app.sinp_nomenclatures_nomenclature as nom_dep_risk
+                   on
+	dep_risk.lib_classe_risque = nom_dep_risk.label
+left join cables74.dico_classes_risque as topo_risk
+                   on
+	t_inventaire_troncons_erdf.id_risque_integration_topo = topo_risk.id_classe_risque
+left join cables_app.sinp_nomenclatures_nomenclature as nom_topo_risk
+                   on
+	topo_risk.lib_classe_risque = nom_topo_risk.label;
 
 
 

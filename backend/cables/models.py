@@ -183,16 +183,6 @@ class Diagnosis(Action):
         verbose_name=_("dangerousness level of risk"),
         help_text=_("dangerousness level of risk"),
     )
-    sgmt_build_integr_risk = models.ForeignKey(
-        Nomenclature,
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
-        limit_choices_to={"type__mnemonic": "risk_level"},
-        related_name="segment_building_integration_risk",
-        verbose_name=_("Building integration level of risk"),
-        help_text=_("Building integration level of risk"),
-    )
     sgmt_moving_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
@@ -201,7 +191,7 @@ class Diagnosis(Action):
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_moving_risk",
         verbose_name=_("moving level of risk"),
-        help_text=_("moving level of risk"),
+        help_text=_("Moving level of risk"),
     )
     sgmt_topo_integr_risk = models.ForeignKey(
         Nomenclature,
@@ -213,15 +203,15 @@ class Diagnosis(Action):
         verbose_name=_("topological level of risk"),
         help_text=_("Topological level of risk"),
     )
-    sgmt_veget_integr_risk = models.ForeignKey(
+    sgmt_landscape_integr_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
         blank=True,
         null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
-        related_name="segment_vegetation_risk",
-        verbose_name=_("vegetation level of risk"),
-        help_text=_("vegetation level of risk"),
+        related_name="segment_landscape_risk",
+        verbose_name=_("landscape level of risk"),
+        help_text=_("Landscape level of risk"),
     )
 
     class Meta:

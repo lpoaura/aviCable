@@ -42,13 +42,6 @@
       </template>
       <template v-if="isLine">
         <p>
-          <span class="font-weight-bold">Intégration bati&nbsp;:</span>
-          <v-icon icon="mdi-circle"
-            :color="diagnosis?.sgmt_build_integr_risk ? riskColors[diagnosis?.sgmt_build_integr_risk?.code]:'grey'"
-            class="mx-2" />
-          <span>{{ diagnosis?.sgmt_build_integr_risk?.label}}</span>
-        </p>
-        <p>
           <span class="font-weight-bold">Déplacement&nbsp;:</span>
           <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_moving_risk?.code]" class="mx-2" /> <span>{{
             diagnosis.sgmt_moving_risk?.label }}</span>
@@ -60,8 +53,9 @@
         </p>
         <p>
           <span class="font-weight-bold">Végétation&nbsp;:</span>
-          <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_veget_integr_risk?.code]" class="mx-2" /> <span>{{
-            diagnosis.sgmt_veget_integr_risk?.label }}</span>
+          <v-icon icon="mdi-circle" :color="riskColors[diagnosis.sgmt_landscape_integr_risk?.code]" class="mx-2" />
+          <span>{{
+            diagnosis.sgmt_landscape_integr_risk?.label }}</span>
         </p>
       </template>
       <p v-if="diagnosis.technicalProposal">
@@ -136,8 +130,8 @@ const router = useRouter()
 const deletedDiagConfirm = ref(true)
 
 const riskColors = reactive({
-  RISK_L: 'light-green',
-  RISK_M: 'yellow',
+  RISK_L: 'blue lighten-1',
+  RISK_M: 'orange lighten-1',
   RISK_H: 'red lighten-1 white--text'
 })
 

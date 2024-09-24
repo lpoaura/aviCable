@@ -41,10 +41,9 @@ class DiagnosisSerializer(ModelSerializer):
     pole_type = NomenclatureSerializer(many=True, read_only=True)
     pole_attractivity = NomenclatureSerializer(read_only=True)
     pole_dangerousness = NomenclatureSerializer(read_only=True)
-    sgmt_build_integr_risk = NomenclatureSerializer(read_only=True)
     sgmt_moving_risk = NomenclatureSerializer(read_only=True)
     sgmt_topo_integr_risk = NomenclatureSerializer(read_only=True)
-    sgmt_veget_integr_risk = NomenclatureSerializer(read_only=True)
+    sgmt_landscape_integr_risk = NomenclatureSerializer(read_only=True)
     media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
@@ -65,14 +64,12 @@ class DiagnosisSerializer(ModelSerializer):
             "pole_attractivity_id",
             "pole_dangerousness",
             "pole_dangerousness_id",
-            "sgmt_build_integr_risk",
-            "sgmt_build_integr_risk_id",
             "sgmt_moving_risk",
             "sgmt_moving_risk_id",
             "sgmt_topo_integr_risk",
             "sgmt_topo_integr_risk_id",
-            "sgmt_veget_integr_risk",
-            "sgmt_veget_integr_risk_id",
+            "sgmt_landscape_integr_risk",
+            "sgmt_landscape_integr_risk_id",
             "media",
             "media_id",
             "last",
@@ -88,10 +85,6 @@ class DiagnosisSerializer(ModelSerializer):
                 "source": "pole_dangerousness",
                 "write_only": True,
             },
-            "sgmt_build_integr_risk_id": {
-                "source": "sgmt_build_integr_risk",
-                "write_only": True,
-            },
             "sgmt_moving_risk_id": {
                 "source": "sgmt_moving_risk",
                 "write_only": True,
@@ -100,8 +93,8 @@ class DiagnosisSerializer(ModelSerializer):
                 "source": "sgmt_topo_integr_risk",
                 "write_only": True,
             },
-            "sgmt_veget_integr_risk_id": {
-                "source": "sgmt_veget_integr_risk",
+            "sgmt_landscape_integr_risk_id": {
+                "source": "sgmt_landscape_integr_risk",
                 "write_only": True,
             },
             "media_id": {"source": "media", "write_only": True},

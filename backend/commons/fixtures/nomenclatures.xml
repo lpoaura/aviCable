@@ -72,7 +72,6 @@
     <object model="sinp_nomenclatures.type" pk="7">
         <field name="timestamp_create" type="DateTimeField">2022-02-01T08:00:04.904341+00:00</field>
         <field name="timestamp_update" type="DateTimeField">2022-02-01T08:00:04.904369+00:00</field>
-
         <field name="code" type="CharField">EQMT_TYPE</field>
         <field name="mnemonic" type="CharField">equipment_type</field>
         <field name="label" type="CharField">Type of equipment</field>

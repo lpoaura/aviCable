@@ -25,22 +25,17 @@
               </v-col>
             </template>
             <template v-if="infrastructureType==='line'">
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_build_integr_risk_id" :items="riskLevels" item-title="label"
-                  item-value="id" :rules="[rules.required]" :label="$t('line.buildIntegRisk')" variant="solo"
-                  density="compact" />
-              </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <v-select v-model="diagData.sgmt_moving_risk_id" :items="riskLevels" item-title="label" item-value="id"
                   :rules="[rules.required]" :label="$t('line.movingRisk')" variant="solo" density="compact" />
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <v-select v-model="diagData.sgmt_topo_integr_risk_id" :items="riskLevels" item-title="label"
                   item-value="id" :rules="[rules.required]" :label="$t('line.topoIntegRisk')" variant="solo"
                   density="compact" />
               </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.sgmt_veget_integr_risk_id" :items="riskLevels" item-title="label"
+              <v-col cols="12" md="4">
+                <v-select v-model="diagData.sgmt_landscape_integr_risk_id" :items="riskLevels" item-title="label"
                   item-value="id" :rules="[rules.required]" :label="$t('line.vegetIntegRisk')" variant="solo"
                   density="compact" />
               </v-col>
@@ -162,10 +157,9 @@ const initData = async () => {
       diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
     }
     if (infrastructureType.value==="line"){
-      diagdata.sgmt_build_integr_risk_id= diagnosis.value.sgmt_build_integr_risk?.id
       diagdata.sgmt_moving_risk_id= diagnosis.value.sgmt_moving_risk?.id
       diagdata.sgmt_topo_integr_risk_id= diagnosis.value.sgmt_topo_integr_risk?.id
-      diagdata.sgmt_veget_integr_risk_id= diagnosis.value.sgmt_veget_integr_risk?.id
+      diagdata.sgmt_landscape_integr_risk_id= diagnosis.value.sgmt_landscape_integr_risk?.id
     }
     Object.assign(diagData, diagdata)
     diagnosisReady.value=true

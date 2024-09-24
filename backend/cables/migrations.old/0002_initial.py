@@ -254,7 +254,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="diagnosis",
-            name="sgmt_veget_integr_risk",
+            name="sgmt_landscape_integr_risk",
             field=models.ForeignKey(
                 blank=True,
                 help_text="vegetation level of risk",

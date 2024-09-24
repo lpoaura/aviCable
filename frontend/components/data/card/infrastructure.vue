@@ -1,5 +1,10 @@
 <template>
-  <v-card title="Information contextuelle">
+  <v-card>
+    <template #title>
+      Information contextuelle
+      <widgets-neutralized-status :data="data" :detail="true" class="m1-2 float-right" />
+      <widgets-risk-level-status :data="data" class="m1-2 float-right" detail />
+    </template>
     <v-card-text>
       <v-row>
         <v-col cols="12">
@@ -41,6 +46,16 @@
 const {data} = defineProps(['data'])
 
 const router = useRouter()
+
+const lastOp : boolean = computed(() => {
+  return data?.properties.operations?.length > 0 ? data?.properties.operations[0] : null
+})
+
+const neutralized : boolean = computed(() => {
+  return data?.properties.operations.length>0
+})
+
+
 
 const lastDiag = computed(() => {
   return data?.properties.diagnosis.find(
