@@ -52,7 +52,6 @@ watch(infrastructure, (newVal) => {
 
 onMounted(()=> {
   getData()
-
 })
 
 </script>
