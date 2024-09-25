@@ -18,6 +18,9 @@ services:
       - .env
     environment:
       NODE_ENV: production
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   media:

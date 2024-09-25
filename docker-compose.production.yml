@@ -1,8 +1,8 @@
 services:
   db:
-    image: postgis/postgis:14-master
+    image: postgis/postgis:17-master
     volumes:
-      - /opt/docker/cables_app_v2/db/data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     env_file:
       - .env
     networks:
@@ -10,15 +10,17 @@ services:
 
   backend:
     volumes:
-      - /opt/docker/cables_app_v2/backend/media:/app/uploads
+      - backend_media:/app/uploads
       - backend_static:/app/static
     networks:
       - cablesv2_net
-
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     ports:
-      - 10.0.3.1:9011:80
+      - 80:80
     volumes:
       - backend_static:/usr/share/nginx/html/static
     networks:
@@ -27,6 +29,8 @@ services:
 
 volumes:
   backend_static:
+  backend_media:
+  db_data:
 
 networks:
   front:
