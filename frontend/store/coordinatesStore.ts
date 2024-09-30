@@ -21,7 +21,7 @@ export const useCoordinatesStore = defineStore("coordinates", {
     newLineCoord: [],
     newGeoJSONLine: { coordinates: [], type: "LineString" } as LineString,
     newGeoJSONObject: {} as GeoJSON,
-    mapBounds: null as string|null,
+    bbox: null as string|null,
   }),
   getters: {
     /**
@@ -47,9 +47,9 @@ export const useCoordinatesStore = defineStore("coordinates", {
     }
   },
   actions: {
-    setMapBounds(data: string) {
-      this.mapBounds = data;
-      console.log('setMapBounds',this.mapBounds)
+    setbbox(data: string) {
+      this.bbox = data;
+      console.log('setbbox',this.bbox)
     },
     setSelectedFeature(data: Feature) {
       this.selectedFeature = data;

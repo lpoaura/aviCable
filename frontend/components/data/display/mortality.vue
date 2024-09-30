@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="fill-height">
     <v-card>
       <v-card-text>
         <v-row>
@@ -14,9 +14,9 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-data-table v-model="selected" fixed-header height="100%" :headers="headers" :search="search"
-      :items="observationList" :loading="!mortalityStore.getMortalityFeatures" loading-text="Loading... Please wait"
-      item-value="name" class="elevation-1" density="compact" @click:row="handleRowClick">
+    <v-data-table v-model="selected" fixed-header :headers="headers" :search="search" :items="observationList"
+      :loading="!mortalityStore.getMortalityFeatures" loading-text="Loading... Please wait" item-value="name"
+      :items-per-page="-1" class="elevation-1 fill-height" height="200" density="compact" @click:row="handleRowClick">
       <template #item.id="{ value, _item }">
         <v-chip prepend-icon="mdi-eye-circle-outline" color="primary" link @click="router.push(`/mortality/${value}`)">
           {{ value }}
@@ -71,7 +71,7 @@ const observationList = computed(() => {
 
 
 onMounted(() => {
-  // setInfrstrData({})
+  // setInfstrData({})
   // mortalityStore.getMortalityData()
 })
 

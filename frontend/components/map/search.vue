@@ -1,7 +1,6 @@
 <template>
-  <!-- {{bbox}} -->
-  <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getMapBounds"
-    @moveend="getMapBounds">
+  <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getBbox"
+    @moveend="getBbox">
 
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
@@ -13,12 +12,13 @@
         :options="infrastructureGeoJsonOptions" />
       <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
         :options="deathCasesGeoJsonOptions" />
-      <l-geo-json v-if="selectedFeature" :geojson="selectedFeature" :options-style="selectedFeatureGeoJsonStyle" />
+      <l-geo-json v-if="bufferedSelectedFeature" :geojson="bufferedSelectedFeature"
+        :options-style="selectedFeatureGeoJsonStyle" />
       <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
         :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
       <l-geo-json v-if="operatedPointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
         :options="operatedInfrastructureGeoJsonOptions" />
-      <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" />
+      <!-- <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
       <l-wms-tile-layer
         url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
         attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
@@ -40,6 +40,7 @@
 
 <script setup lang="ts">
 import leaflet from 'leaflet'
+import { storeToRefs } from 'pinia';
 import "leaflet.locatecontrol"
 import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
 // import 'leaflet-search'
@@ -74,23 +75,28 @@ const mortalityStore: StoreGeneric = useMortalityStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
 
-const zoom : ComputedRef<number> = computed(() => coordinatesStore.zoom)
-const center : ComputedRef<PointTuple> = computed<PointTuple>(() => coordinatesStore.center)
-
-const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures)
-const operatedPointData : ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getOperatedPointDataFeatures)
-const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures)
-const operatedLineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getOperatedLineDataFeatures)
-const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures)
-const baseLayers = computed(() => mapLayersStore.baseLayers)
-const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
-const selectedFeature : Ref<Feature|null> = ref(null)
+// Store values
+const {zoom, center, bbox} = storeToRefs(coordinatesStore)
+const {
+  infstrData,
+  infstrDataLoadingStatus,
+  pointData,
+  operatedPointData,
+  lineStringData,
+  operatedLineStringData
+} = storeToRefs(cableStore)
+const {mortalityData} = storeToRefs(mortalityStore)
+const {baseLayers} = storeToRefs(mapLayersStore)
+  // const baseLayers = computed(() => mapLayersStore.baseLayers)
+// const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
+const {selectedFeature} = storeToRefs(coordinatesStore)
+const bufferedSelectedFeature : Ref<Feature|null> = ref(null)
 
 const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
 
-watch(storedSelectedFeature, (newVal, _oldVal) => {
+watch(selectedFeature, (newVal, _oldVal) => {
   console.log('storedSelectedFeature',newVal, newVal ? 'buffer':'null')
-  selectedFeature.value = newVal  ? buffer(newVal, 150, {units: 'meters'})    : null
+  bufferedSelectedFeature.value = newVal  ? buffer(newVal, 150, {units: 'meters'}) : null
 })
 
 const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
@@ -99,7 +105,6 @@ const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.
 
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
   layer.bindPopup(infrastructurePopupContent(feature))
-
     layer.on('popupopen', () => {
       const id = feature?.properties?.id
         const link = document.getElementById('routerLink');
@@ -174,12 +179,11 @@ watch(createLayer, (newLayer, oldLayer) => {
   }
 });
 
-const getMapBounds = () => {
-  // console.log(mapObject.value.getBounds().toBBoxString())
+const getBbox = () => {
   if (mapObject.value) {
-    coordinatesStore.setMapBounds(mapObject.value.getBounds().toBBoxString())
-    coordinatesStore.setZoom(mapObject.value.getZoom())
-    coordinatesStore.setCenter(mapObject.value.getCenter())
+    zoom.value = mapObject.value.getZoom()
+    center.value = mapObject.value.getCenter()
+    bbox.value = mapObject.value.getBounds().toBBoxString()
   }
 }
 
@@ -352,32 +356,19 @@ const supportColor = (feature: Feature) => {
   return 'grey'
 }
 
-
-const isNeutralized = (feature: Feature) => {
-  const lastOp=feature.properties?.operations[0]
-  return !!lastOp
-}
-
-const abortController : Ref<AbortController | undefined> = ref<AbortController|undefined>(undefined)
-const bbox : ComputedRef<string|null> = computed<string|null>(() => coordinatesStore.mapBounds)
-    // const zoom : ComputedRef<number> = computed<number>(() => coordinatesStore.zoom)
-
 watch(bbox, (newVal, _oldVal) => {
-  console.log('zoom', zoom.value)
-  console.log(abortController)
-  if (abortController.value) {
-    abortController.value.abort();
-    console.log("Download aborted");
-  }
-  abortController.value = new AbortController()
-  if (zoom.value >= 10) {
-    cableStore.getInfrstrData({in_bbox: newVal}, abortController.value)
-    mortalityStore.getMortalityData({in_bbox: newVal}, abortController.value)
+  cableStore.cancelRequest();
+  mortalityStore.cancelRequest();
+  console.log('watch Bbox', zoom.value, infstrData)
 
+  if (zoom.value >= 10) {
+    console.log('watch Bbox - Update data')
+    cableStore.getInfstrData({in_bbox: newVal})
+    mortalityStore.getMortalityData({in_bbox: newVal})
   } else {
-    cableStore.setInfrstrData({})
-    cableStore.setInfrstrDataLoadingStatus(false)
-    mortalityStore.setMortalityData({} as FeatureCollection)
+    infstrDataLoadingStatus.value = false
+    infstrData.value = {}
+    mortalityData.value= {}
   }
 })
 
@@ -428,23 +419,21 @@ onBeforeMount(async () => {
     }
   }
 
-
-
   deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng ) => {
-    const iconDict : {[key: string]: string} = {
-      COD_EL: 'lightning-bolt',
-      COD_IM : 'star',
-      COD_UNKNOWN: 'help',
-    }
-    const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
-    const deathCaseIcon = leaflet.divIcon({
-      html: `<span class="mdi mdi-${icon}"></span>`,
-      iconSize: [15, 15],
-      className: 'mapMarkerIcon'}
-      );
-    return leaflet.marker(latlng, {icon: deathCaseIcon});
-
-      // draggable: true,
+      if(latlng){
+        const iconDict : {[key: string]: string} = {
+          COD_EL: 'lightning-bolt',
+          COD_IM : 'star',
+          COD_UNKNOWN: 'help',
+        }
+        const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
+        const deathCaseIcon = leaflet.divIcon({
+          html: `<span class="mdi mdi-${icon}"></span>`,
+          iconSize: [15, 15],
+          className: 'mapMarkerIcon'}
+          );
+        return leaflet.marker(latlng, {icon: deathCaseIcon});
+      }
     }
 })
 

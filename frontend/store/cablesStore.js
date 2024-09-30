@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 export const useCablesStore = defineStore('cables', {
   state: () => ({
     infstrData: {}, // Infrastructure data
-    infrstrDataLoadingStatus: false,
+    infstrDataLoadingStatus: false,
     // pointData: {}, // Pole and Pylon data
     // lineData: {}, // Cable lines data
     opData: [],
@@ -13,6 +13,7 @@ export const useCablesStore = defineStore('cables', {
     formSupportId: null,
     formInfrastructureId: null,
     formInfrastructure: null,
+    controller: null,
   }),
   getters: {
     // // get FeatureCollection data
@@ -20,62 +21,78 @@ export const useCablesStore = defineStore('cables', {
     //   return state.infstrData
     // },
     // get FeatureCollection array containing data (Json Object)
-    getFormSupportId (state) {
-      return state.formSupportId
-    },
-    getInfstrDatafeatures (state) {
+    infstrDatafeatures (state) {
       return state.infstrData.features
     },
-    // pointData(state) {
-    //   return state.pointData
-    // },
-    getPointDataFeatures (state) {
+    countInfstr(state) {
+      return state.infstrDatafeatures?.length
+    },
+    countOperatedInfstr(state) {
+      return state.infstrDatafeatures?.length
+    },
+    pointData (state) {
       return state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Point'
       )
     },
-    getOperatedPointDataFeatures (state) {
+    operatedInfstr (state) {
+      return state.infstrData.features?.filter(
+        elem => elem.properties.operations.length > 0
+      )
+    },
+    operatedPointData (state) {
       return state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Point' && elem.properties.operations.length > 0
       )
     },
-    getOperatedLineDataFeatures (state) {
+    operatedLineStringData (state) {
       return state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Line' && elem.properties.operations.length > 0
       )
     },
-    // lineData(state) {
-    //   return state.lineData
-    // },
-    getLineDataFeatures (state) {
+    lineStringData (state) {
       return state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Line'
       )
     },
-    getOpData (state) {
-      return state.opData
-    },
-    getPointOpData (state) {
-      return state.pointOpData
-    },
-    getLineOpData (state) {
-      return state.lineOpData
-    }
   },
   actions: {
-    async getInfrstrData (params, controller) {
+    async getInfstrData (params, _) {
+      this.controller = new AbortController();
+      const { signal } = this.controller;
+      console.log('getInfstrData', signal)
       try {
-        this.infrstrDataLoadingStatus = true
+        this.infstrDataLoadingStatus = true
+        console.log("getInfstrData signal", signal)
         await $http.$get(
-          '/api/v1/cables/infrastructures', {signal: controller.signal, params}
+          '/api/v1/cables/infrastructures', {signal, params}
         ).then(data => {
           this.infstrData = data
-          this.infrstrDataLoadingStatus = false
+          this.infstrDataLoadingStatus = false
         })
-      } catch (error) {
-        console.log(error)
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          console.log('Requête annulée');
+        } else {
+          console.error(err)
+        }
+      }  finally {
+        // Reset loading status and controller
+        this.infstrDataLoadingStatus = false;
+        this.controller = null; // Reset the controller after the request
       }
-      this.infrstrDataLoadingStatus = false
+
+    },
+    cancelRequest() {
+      console.log('aborting getInfstrData check',this.controller)
+      if (this.controller) {
+        console.log('aborting getInfstrData',this.controller)
+        this.controller.abort();
+        this.controller = null; // Reset the controller after aborting
+        console.log('aborted getInfstrData', this.controller)
+      } else {
+        console.log('getInfstrData No request to abort');
+      }
     },
     setFormSupportId(supportId) {
       this.formSupportId = supportId
@@ -86,11 +103,11 @@ export const useCablesStore = defineStore('cables', {
     setFormInfrastructure(infrastructure) {
       this.formInfrastructure = infrastructure
     },
-    setInfrstrDataLoadingStatus(status) {
-      this.infrstrDataLoadingStatus = status
+    setInfstrDataLoadingStatus(status) {
+      this.infstrDataLoadingStatus = status
     },
-    setInfrstrData (data) {
-      console.log('STORE setInfrstrData', data)
+    setInfstrData (data) {
+      console.log('STORE setInfstrData', data)
       this.infstrData = data
     },
     addOperation (data) {

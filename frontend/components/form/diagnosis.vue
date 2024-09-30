@@ -58,7 +58,7 @@
                 density="compact" />
             </v-col>
             <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.change_advice" :label="$t('support.change_advice')" density="compact" />
+              <v-checkbox v-model="diagData.change_advice" :label="$t('diagnosis.changeAdvice')" density="compact" />
             </v-col>
             <v-col cols="12" class="text-left">
               <v-textarea v-model="diagData.technicalProposal" clearable clear-icon="mdi-close-circle"

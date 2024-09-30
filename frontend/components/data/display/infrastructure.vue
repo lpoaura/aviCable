@@ -5,7 +5,7 @@ A faire sur l'interface
 Dans un modal
 -->
 <template>
-  <div>
+  <v-main class="fill-height">
     <v-card>
       <v-card-text>
         <v-row>
@@ -22,32 +22,37 @@ Dans un modal
 
       </v-card-text>
     </v-card>
-    <v-data-table v-model="selected" :headers="tableHeaders" :items="dataSource[display]" item-value="properties.id"
-      :loading="cableStore.infrstrDataLoadingStatus" :search="search" :loading-text="$t('loading')" :items-per-page="-1"
-      :fixed-header="true" class="elevation-1" density="compact" @click:row="handleRowClick">
-      <template #item.properties.id="{ value, item }">
-        <v-chip prepend-icon="mdi-eye-circle-outline" color="primary" link @click="showDetail(item)">
-          {{ value }}
-        </v-chip>
-      </template>
-      <template #item.properties.diagnosis.0="{ _, item }">
-        <widgets-risk-level-status :data="item" :detail="false" />
-      </template>
-      <template #item.resourcetype="{ value }">
-        <v-chip>
-          <v-icon :color="value =='Point' ? 'green' : 'blue'">
-            {{ value =='Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}}
-          </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
-        </v-chip>
-      </template>
-      <template #item.properties.operations="{ _value, item }">
-        <widgets-neutralized-status :data="item" :detail="false" />
-      </template>
-    </v-data-table>
-  </div>
+    <v-layout class="fill-height">
+      <v-data-table-virtual v-model="selected" :headers="tableHeaders" :items="dataSource[display]"
+        item-value="properties.id" :loading="cableStore.infstrDataLoadingStatus" :search="search"
+        :loading-text="$t('loading')" :items-per-page="-1" :fixed-header="true" class="elevation-1 fill-height"
+        height="200" density="compact" @click:row="handleRowClick">
+        <template #item.properties.id="{ value, item }">
+          <v-chip prepend-icon="mdi-eye-circle-outline" color="primary" link @click="showDetail(item)">
+            {{ value }}
+          </v-chip>
+        </template>
+        <template #item.properties.diagnosis.0="{ _, item }">
+          <widgets-risk-level-status :data="item" :detail="false" />
+        </template>
+        <template #item.resourcetype="{ value }">
+          <v-chip>
+            <v-icon :color="value =='Point' ? 'green' : 'blue'">
+              {{ value =='Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}}
+            </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
+          </v-chip>
+        </template>
+        <template #item.properties.operations="{ _value, item }">
+          <widgets-neutralized-status :data="item" :detail="false" />
+        </template>
+      </v-data-table-virtual>
+    </v-layout>
+  </v-main>
 </template>
 
 <script setup lang="ts">
+
+import {storeToRefs} from 'pinia';
 
 const router = useRouter()
 const { t } = useI18n()
@@ -78,11 +83,15 @@ const tableHeaders = reactive([
 
 const coordinatesStore = useCoordinatesStore()
 const cableStore = useCablesStore()
+
+const {infstrDatafeatures,pointData,lineStringData} = storeToRefs(cableStore)
+const {selectedFeature} = storeToRefs(coordinatesStore)
+
 const dataSource = computed(() => {
   return {
-    both: cableStore.getInfstrDatafeatures,
-    poles: cableStore.getPointDataFeatures,
-    segments: cableStore.getLineDataFeatures
+    both: infstrDatafeatures.value,
+    poles: pointData.value,
+    segments: lineStringData.value
   }
 })
 
@@ -96,8 +105,7 @@ const showDetail = (rowItem) => {
 
 
 const handleRowClick = (_, object) => {
-  console.log(object.item.geometry)
-  coordinatesStore.setSelectedFeature(object.item)
+  selectedFeature.value = object.item
 }
 
 </script>

@@ -10,7 +10,7 @@
           </v-row>
           <v-row>
             <v-col cols="12" lg="12">
-              <v-select v-model="infrastructureData.owner_id" :items="networkOwners" item-title="label" item-value="id"
+              <v-select v-model="infrastructureData.owner_id" :items="ownerItems" item-title="label" item-value="id"
                 :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required />
             </v-col>
           </v-row>
@@ -29,6 +29,7 @@
 </template>
 
 <script lang="ts" setup>
+import {storeToRefs} from 'pinia';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
@@ -54,12 +55,14 @@ const {infrastructure, infrastructureType} = defineProps<Props>()
 
 // Adding operations
 
+const {newGeoJSONObject} = storeToRefs(coordinatesStore)
+const {ownerItems} = storeToRefs(nomenclaturesStore)
+
 const infrastructureData = reactive({
-  geom: coordinatesStore.newGeoJSONObject,
+  geom: null,
   owner_id: infrastructure ? infrastructure.owner_id : null,
 })
 
-const networkOwners = computed(() => nomenclaturesStore.ownerItems)
 
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),
@@ -80,7 +83,8 @@ const moveToNextStep = async () => {
 
 const createNewInfrastructure = async () => {
   try {
-    infrastructureData.geom = coordinatesStore.newGeoJSONObject.geometry
+    console.log('<createNewInfrastructure> newGeoJSONObject',newGeoJSONObject, newGeoJSONObject.value?.geometry)
+    infrastructureData.geom = newGeoJSONObject.value?.geometry
     const {data : infrastructure} = await useHttp(`/api/v1/cables/${infrastructureType.toLowerCase()}s/`, {method: 'post', body: infrastructureData})
     console.log('infrastructure', infrastructure?.value.properties.id)
     cablesStore.setFormInfrastructureId(infrastructure.value.properties.id)
@@ -91,7 +95,7 @@ const createNewInfrastructure = async () => {
       code:errorCodes['create_point']['code'],
       msg:t(`error.${errorCodes.create_point.msg}`)
     }
-    errorStore.setError(error )
+    errorStore.setError(error)
   }
 }
 </script>

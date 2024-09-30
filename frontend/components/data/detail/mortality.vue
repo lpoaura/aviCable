@@ -27,5 +27,4 @@ const deathCauseIcons = ref({
   COD_IM:'mdi-star',
   COD_UNKNOWN: 'mdi-help'
 })
-console.debug('props.data' , data)
 </script>

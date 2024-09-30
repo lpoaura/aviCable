@@ -7,61 +7,12 @@ import type { FeatureCollection, Feature } from "geojson";
 
 import { useCoordinatesStore } from "./coordinatesStore";
 
-export const useMortalityStore = defineStore("mortality", {
-  state: () => ({
-    mortalityData: {} as FeatureCollection,
-    mortalityItem: {} as Feature,
-  }),
-  getters: {
-    // // get FeatureCollection data
-    // infstrData(state) {
-    //   return state.infstrData
-    // },
-    // get FeatureCollection array containing data (Json Object)
-    getMortalityFeatures(state) {
-      return state.mortalityData.features;
-    },
-    getMortalitySpecies(state) {
-      const rowList = state.mortalityData.features.map(
-        (i) => i.properties?.species
-      );
-      let unique = rowList.filter(
-        (value, index, self) =>
-          index ===
-          self.findIndex(
-            (t) => t.id === value.id
-          )
-      );
-      return unique;
-    },
-
-    getMortalityItem(state) {
-      return state.mortalityItem;
-    },
-  },
-  actions: {
-    async getMortalityData(
-      params: { [key: string]: string | null },
-      controller: AbortController
-    ) {
-      try {
-        const data = await $http.$get("/api/v1/mortality/", {
-          signal: controller.signal,
-          params,
-        });
-        this.mortalityData = data;
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    setMortalityItem(data: Feature) {
-      this.mortalityItem = data;
-    },
-    setMortalityData (data: FeatureCollection) {
-      this.mortalityData = data
-    },
-  },
-});
+interface MortalityStoreState {
+  mortalityData: FeatureCollection; // Replace 'any' with a more specific type if possible
+  mortalityItem: Feature;
+  error: Error | null;
+  controller: AbortController | null;
+}
 
 interface MortalityData {
   properties: {
@@ -72,3 +23,76 @@ interface MortalityData {
     default: boolean | undefined;
   };
 }
+
+interface Species {
+  id: number;
+  vernacular_name: string;
+  scientific_name: string;
+}
+
+export const useMortalityStore = defineStore("mortality", {
+  state: (): MortalityStoreState => ({
+    mortalityData: {} as FeatureCollection,
+    mortalityItem: {} as Feature,
+    error: null,
+    controller: null,
+  }),
+  getters: {
+    // // get FeatureCollection data
+    // infstrData(state) {
+    //   return state.infstrData
+    // },
+    // get FeatureCollection array containing data (Json Object)
+    getMortalityFeatures(state): Feature[] {
+      return state.mortalityData.features;
+    },
+    getMortalitySpecies(state): Species[] {
+      const rowList = state.mortalityData.features.map(
+        (i) => i.properties?.species
+      );
+      const unique = rowList.filter(
+        (value, index, self) =>
+          index === self.findIndex((t) => t.id === value.id)
+      );
+      return unique;
+    },
+    getMortalityItem(state): Feature {
+      return state.mortalityItem;
+    },
+    countMortality(state) {
+      return state.mortalityData.features?.length
+    },
+  },
+  actions: {
+    async getMortalityData(params: { [key: string]: string | null }) {
+      this.controller = new AbortController();
+      const { signal } = this.controller;
+      console.log("getMortalityData",this.controller, signal);
+      try {
+        const data = await $http.$get("/api/v1/mortality/", { signal, params });
+        this.mortalityData = data;
+      } catch (err: unknown) {
+        if (err.name === "AbortError") {
+          console.log("Requête annulée");
+        } else {
+          console.error(err);
+        }
+      }
+    },
+    cancelRequest() {
+      console.log('aborting getMortalityData check',this.controller)
+      if (this.controller) {
+        console.log('aborting getMortalityData',this.controller)
+        this.controller.abort();
+        this.controller = null; // Reset the controller after aborting
+        console.log('aborted getMortalityData', this.controller)
+      }
+    },
+    setMortalityItem(data: Feature) {
+      this.mortalityItem = data;
+    },
+    setMortalityData(data: FeatureCollection) {
+      this.mortalityData = data;
+    },
+  },
+});

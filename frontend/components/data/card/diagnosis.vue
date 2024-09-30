@@ -3,21 +3,21 @@
     <template #subtitle>{{ $t("realizedOn") }} <strong>{{ diagnosis.date }}</strong></template>
     <template #text>
       <span class="font-weight-bold">Recommandations&nbsp;: </span><br>
-      <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': false"
-        :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': ''"
+        :color="diagnosis.isolation_advice ? 'warning' : ''" class="ma-2">
         {{ diagnosis.isolation_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.isolate') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation': false"
-        :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation': ''"
+        :color="diagnosis.dissuasion_advice ? 'warning' : ''" class="ma-2">
         {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.makeDissuasive') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation': false"
-        :color="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
+      <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation': ''"
+        :color="diagnosis.attraction_advice ? 'warning' : ''" class="ma-2">
         {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.makeAttractive') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation': false"
-        :color="[diagnosis.change_advice == true ? 'warning' : '']" class="ma-2">
-        {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.changeArming') }}
+      <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation': ''"
+        :color="diagnosis.change_advice == true ? 'warning' : ''" class="ma-2">
+        {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.changeAdvice') }}
       </v-chip>
       <template v-if="isPoint">
         <p>
