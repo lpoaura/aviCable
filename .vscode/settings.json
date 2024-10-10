@@ -30,6 +30,7 @@
   "typescript.format.enable": false,
   "typescript.format.insertSpaceAfterCommaDelimiter": false,
   "typescript.format.indentSwitchCase": false,
+  "makefile.configureOnOpen": false,
   // "vue.codeActions.enabled": false,
   // "vue.autoInsert.dotValue": true,
   // "vue.complete.casing.tags": "autoKebab",
