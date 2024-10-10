@@ -16,11 +16,6 @@ export const useCablesStore = defineStore('cables', {
     controller: null,
   }),
   getters: {
-    // // get FeatureCollection data
-    // infstrData(state) {
-    //   return state.infstrData
-    // },
-    // get FeatureCollection array containing data (Json Object)
     infstrDatafeatures (state) {
       return state.infstrData.features
     },
@@ -31,29 +26,49 @@ export const useCablesStore = defineStore('cables', {
       return state.infstrDatafeatures?.length
     },
     pointData (state) {
-      return state.infstrData.features?.filter(
+      const filteredFeatures=state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Point'
       )
+      return {
+        type: "FeatureCollection",
+        features: filteredFeatures || []
+      }
     },
     operatedInfstr (state) {
-      return state.infstrData.features?.filter(
+      const filteredFeatures=state.infstrData.features?.filter(
         elem => elem.properties.operations.length > 0
       )
+      return {
+        type: "FeatureCollection",
+        features: filteredFeatures || []
+      }
     },
     operatedPointData (state) {
-      return state.infstrData.features?.filter(
+      const filteredFeatures=state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Point' && elem.properties.operations.length > 0
       )
+      return {
+        type: "FeatureCollection",
+        features: filteredFeatures || []
+      }
     },
     operatedLineStringData (state) {
-      return state.infstrData.features?.filter(
+      const filteredFeatures=state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Line' && elem.properties.operations.length > 0
       )
+      return {
+        type: "FeatureCollection",
+        features: filteredFeatures || []
+      }
     },
     lineStringData (state) {
-      return state.infstrData.features?.filter(
+      const filteredFeatures=state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Line'
       )
+      return {
+        type: "FeatureCollection",
+        features: filteredFeatures || []
+      }
     },
   },
   actions: {
