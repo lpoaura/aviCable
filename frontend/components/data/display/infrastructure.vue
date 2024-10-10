@@ -26,7 +26,7 @@ Dans un modal
       <v-data-table-virtual v-model="selected" :headers="tableHeaders" :items="dataSource[display]"
         item-value="properties.id" :loading="cableStore.infstrDataLoadingStatus" :search="search"
         :loading-text="$t('loading')" :items-per-page="-1" :fixed-header="true" class="elevation-1 fill-height"
-        height="200" density="compact" @click:row="handleRowClick">
+        height="200" density="compact" :row-props="colorRowItem" @click:row="handleRowClick">
         <template #item.properties.id="{ value, item }">
           <v-chip prepend-icon="mdi-eye-circle-outline" color="primary" link @click="showDetail(item)">
             {{ value }}
@@ -84,6 +84,8 @@ const tableHeaders = reactive([
 const coordinatesStore = useCoordinatesStore()
 const cableStore = useCablesStore()
 
+
+
 const {infstrDatafeatures,pointData,lineStringData} = storeToRefs(cableStore)
 const {selectedFeature} = storeToRefs(coordinatesStore)
 
@@ -108,10 +110,23 @@ const handleRowClick = (_, object) => {
   selectedFeature.value = object.item
 }
 
+const colorRowItem = (item) => {
+
+  if (item.item.properties.id === selectedFeature.value?.properties.id) {
+    console.log('ITEM', item.item.properties.id, selectedFeature.value.properties.id)
+    return { class: 'bg-light-blue-lighten-5' };
+  }
+  return {class: "success"}
+}
+
 </script>
 
 <style>
 .v-data-table /deep/ .v-data-table__wrapper {
   overflow: unset;
+}
+
+.selected-row {
+  background-color: greenyellow;
 }
 </style>
