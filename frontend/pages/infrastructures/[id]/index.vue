@@ -6,12 +6,15 @@
 </template>
 
 <script setup>
-
+import {centroid} from '@turf/centroid';
+import {storeToRefs} from 'pinia';
 const route = useRoute()
 
 const coordinateStore = useCoordinatesStore()
 
 const { data: infrastructure } = await useHttp(`/api/v1/cables/infrastructures/${route.params.id}/`)
+
+const {selectedFeature,center,zoom} = storeToRefs(coordinateStore)
 
 const updateData = async () => {
   zoomTo()
@@ -22,9 +25,9 @@ const zoomTo = () => {
   console.log('zoomTo', infrastructure.value)
   // const layer = geoJSON(info.value)
   // TODO: fix error on lines
-  // coordinateStore.setCenter([...infrastructure.value.geometry.coordinates].reverse())
-  coordinateStore.setSelectedFeature(infrastructure.value)
-  coordinateStore.setZoom(14)
+  center.value = centroid(infrastructure.value)?.geometry?.coordinates.reverse()
+  selectedFeature.value = infrastructure.value
+  zoom.value = 14
 }
 
 onMounted(() => {zoomTo()})
