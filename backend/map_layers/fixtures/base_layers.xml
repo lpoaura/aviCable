@@ -5,23 +5,34 @@
         <field name="url" type="TextField">//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</field>
         <field name="attribution" type="TextField">OpenStreetMap</field>
         <field name="default" type="BooleanField">False</field>
+        <field name="layer_type" type="CharField">base</field>
     </object>
     <object model="map_layers.baselayers" pk="2">
         <field name="name" type="TextField">IGN Ortho</field>
         <field name="url" type="TextField">
-            //data.geopf.fr/wmts?&amp;REQUEST=GetTile&amp;SERVICE=WMTS&amp;VERSION=1.0.0&amp;TILEMATRIXSET=PM&amp;LAYER=ORTHOIMAGERY.ORTHOPHOTOS&amp;STYLE=normal&amp;FORMAT=image/jpeg&amp;TILECOL={x}&amp;TILEROW={y}&amp;TILEMATRIX={z}</field>
+            https://data.geopf.fr/wmts?&amp;REQUEST=GetTile&amp;SERVICE=WMTS&amp;VERSION=1.0.0&amp;TILEMATRIXSET=PM&amp;LAYER=ORTHOIMAGERY.ORTHOPHOTOS&amp;STYLE=normal&amp;FORMAT=image/jpeg&amp;TILECOL={x}&amp;TILEROW={y}&amp;TILEMATRIX={z}</field>
         <field name="attribution" type="TextField">&amp;copy; &lt;a
             href=""https://geoservices.ign.fr/services-web-decouverte"
             target="_blank"&gt;IGN/Geoportail&lt;/a&gt;</field>
         <field name="default" type="BooleanField">False</field>
+        <field name="layer_type" type="CharField">base</field>
     </object>
     <object model="map_layers.baselayers" pk="3">
         <field name="name" type="TextField">IGN Plan</field>
         <field name="url" type="TextField">
-            //data.geopf.fr/wmts?&amp;REQUEST=GetTile&amp;SERVICE=WMTS&amp;VERSION=1.0.0&amp;TILEMATRIXSET=PM&amp;LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&amp;STYLE=normal&amp;FORMAT=image/png&amp;TILECOL={x}&amp;TILEROW={y}&amp;TILEMATRIX={z}</field>
+            https://data.geopf.fr/wmts?&amp;REQUEST=GetTile&amp;SERVICE=WMTS&amp;VERSION=1.0.0&amp;TILEMATRIXSET=PM&amp;LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&amp;STYLE=normal&amp;FORMAT=image/png&amp;TILECOL={x}&amp;TILEROW={y}&amp;TILEMATRIX={z}</field>
         <field name="attribution" type="TextField">&amp;copy; &lt;a
             href=""https://geoservices.ign.fr/services-web-decouverte"
             target="_blank"&gt;IGN/Geoportail&lt;/a&gt;</field>
         <field name="default" type="BooleanField">True</field>
+        <field name="layer_type" type="CharField">base</field>
+    </object>
+    <object model="map_layers.baselayers" pk="4">
+        <field name="name" type="TextField">CRA</field>
+        <field name="url" type="TextField">
+            https://sig.lpo-aura.org/index.php/lizmap/service?repository=projetpublic&amp;project=cra&amp;SERVICE=WMTS&amp;VERSION=1.0.0&amp;REQUEST=GetTile&amp;STYLES=d%C3%A9faut&amp;TRANSPARENT=true&amp;LAYER=cra_aura_latest&amp;FORMAT=image/png&amp;TILEMATRIXSET=EPSG:4326&amp;TILECOL={x}&amp;TILEROW={y}&amp;TILEMATRIX={z}</field>
+        <field name="attribution" type="TextField">LPOAuRA</field>
+        <field name="default" type="BooleanField">False</field>
+        <field name="layer_type" type="CharField">overlay</field>
     </object>
 </django-objects>

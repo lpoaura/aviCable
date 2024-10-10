@@ -64,7 +64,7 @@ class BaseLayers(models.Model):
 
     LAYER_TYPES_CHOICES = [BASE, OVERLAY]
     name = models.TextField(max_length=100, verbose_name=_("Name"))
-    url = models.TextField(max_length=256, verbose_name=_("Url"))
+    url = models.TextField(verbose_name=_("Url"))
     attribution = models.TextField(
         max_length=256, verbose_name=_("Attribution")
     )
