@@ -21,7 +21,8 @@ const zoomTo = () => {
 
   console.log('zoomTo', infrastructure.value)
   // const layer = geoJSON(info.value)
-  coordinateStore.setCenter([...infrastructure.value.geometry.coordinates].reverse())
+  // TODO: fix error on lines
+  // coordinateStore.setCenter([...infrastructure.value.geometry.coordinates].reverse())
   coordinateStore.setSelectedFeature(infrastructure.value)
   coordinateStore.setZoom(14)
 }

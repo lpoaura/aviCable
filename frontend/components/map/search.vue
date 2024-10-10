@@ -6,7 +6,7 @@
     <template v-if="mapReady">
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
         :visible="baseLayer.default" :attribution="baseLayer.attribution" :layer-type="baseLayer.layer_type" />
-      <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
+      <!--<l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
         :options="infrastructureGeoJsonOptions" :options-style="infrastructureLineStyle" />
       <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
@@ -17,12 +17,8 @@
       <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
         :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
       <l-geo-json v-if="operatedPointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
-        :options="operatedInfrastructureGeoJsonOptions" />
+        :options="operatedInfrastructureGeoJsonOptions" />-->
       <!-- <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
-      <l-wms-tile-layer
-        url="https://data.lpo-aura.org/project/1851496a4547ac630b73c581d3f9b56f/?SERVICE=WMS&REQUEST=GetCapabilities"
-        attribution="LPO AuRA" layer-type="base" name="CRA AuRA" version="1.3.0" format="image/png" :transparent="true"
-        layers="osm,cra_aura_latest" :visible="false" />
       <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
         <v-alert density="compact" type="warning" title="Information" text="Zoomez pour
         afficher
@@ -30,7 +26,6 @@
       </l-control>
       <l-control-layers />
       <l-control-scale position="bottomright" />
-
       <!-- <l-marker :lat-lng="center" ></l-marker> -->
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
@@ -76,7 +71,7 @@ const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
 
 // Store values
-const {zoom, center, bbox} = storeToRefs(coordinatesStore)
+const {zoom, center, bbox, selectedFeature} = storeToRefs(coordinatesStore)
 const {
   infstrData,
   infstrDataLoadingStatus,
@@ -89,7 +84,6 @@ const {mortalityData} = storeToRefs(mortalityStore)
 const {baseLayers} = storeToRefs(mapLayersStore)
   // const baseLayers = computed(() => mapLayersStore.baseLayers)
 // const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
-const {selectedFeature} = storeToRefs(coordinatesStore)
 const bufferedSelectedFeature : Ref<Feature|null> = ref(null)
 
 const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
@@ -104,18 +98,19 @@ const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.
         ${feature.properties?.owner.label} ${feature.properties?.id}</span></h2>`
 
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
-  layer.bindPopup(infrastructurePopupContent(feature))
-    layer.on('popupopen', () => {
-      const id = feature?.properties?.id
-        const link = document.getElementById('routerLink');
-        console.log('feature?.resourcetype', feature?.resourcetype)
-        link.addEventListener('click', (event) => {
-          event.preventDefault(); // Prevent the default anchor behavior
-          if (['Point','Line'].includes(feature?.resourcetype) && id) {
-            router.push(`/infrastructures/${id}`)
-          }
-        });
-      });
+  // layer.bindPopup(infrastructurePopupContent(feature))
+  layer.on('click', ()=> {return selectedFeature.value = feature})
+    // layer.on('popupopen', () => {
+    //   const id = feature?.properties?.id
+    //     const link = document.getElementById('routerLink');
+    //     console.log('feature?.resourcetype', feature?.resourcetype)
+    //     link.addEventListener('click', (event) => {
+    //       event.preventDefault(); // Prevent the default anchor behavior
+    //       if (['Point','Line'].includes(feature?.resourcetype) && id) {
+    //         router.push(`/infrastructures/${id}`)
+    //       }
+    //     });
+    //   });
 }
 
 const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
@@ -190,7 +185,7 @@ const getBbox = () => {
 
 
 const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
-  const color='red'
+  const color='#03A9F4' // blue-lighten
     return {
       color: color,
       fillColor: color,

@@ -16,7 +16,7 @@ import leaflet from 'leaflet'
 leaflet.Map.addInitHook('addHandler', 'geoman', leaflet.Control.Geoman);
 
 const zoom = ref(13);
-const center = ref([51.505, -0.09]);
+const center = ref({lat: 51.505, lng:-0.09});
 const map : Ref<typeof LMap|null> = ref(null)
 
 onMounted(() => {
