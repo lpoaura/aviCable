@@ -106,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { mapState } from 'pinia'
+import { mapState, storeToRefs } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
@@ -114,6 +114,18 @@ const {mortality} = defineProps(['mortality'])
 const {t} = useI18n()
 const router =useRouter()
 const errorStore = useErrorsStore()
+const coordinatesStore = useCoordinatesStore()
+const nomenclaturesStore = useNomenclaturesStore()
+// Species Autocomplete data
+const descriptionLimit = ref(60)
+const isLoading = ref(false)
+const speciesSearch = ref(null)
+const specieSearchEntries = ref([])
+const loadedImages = ref([])
+
+
+
+// const speciesStore = useSpeciesStore()
 
 const formValid = ref(true)
       // manualChange: false, // boolean to activate manual coordinate change
@@ -147,18 +159,9 @@ const rules = reactive({
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
   urlRules: (v: string) => !v || /^(ftp|http|https):\/\/[^ "]+$/.test(v) || 'Must be a valid URL (http://, https://, ftp://)',
 })
-      // Species Autocomplete data
-      const descriptionLimit = ref(60)
-      const isLoading = ref(false)
-      const speciesSearch = ref(null)
-      const specieSearchEntries = ref([])
-      const loadedImages = ref([])
 
+const {newGeoJSONObject} = storeToRefs(coordinatesStore)
 
-
-      // const speciesStore = useSpeciesStore()
-      const coordinatesStore = useCoordinatesStore()
-      const nomenclaturesStore = useNomenclaturesStore()
 // const speciesStore = useSpeciesStore()
 
 // const speciesFields = computed(() => {
@@ -247,7 +250,7 @@ const back = () => {
      */
     const createNewData= async () => {
       try {
-        mortalityData.geom = coordinatesStore.newGeoJSONObject
+        mortalityData.geom = newGeoJSONObject.value?.geometry
         return await useHttp('/api/v1/mortality/', {method: 'post', body: mortalityData})
       } catch (_err) {
         console.error(_err)

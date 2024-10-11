@@ -44,10 +44,10 @@ export const useMortalityStore = defineStore("mortality", {
     // },
     // get FeatureCollection array containing data (Json Object)
     getMortalityFeatures(state): Feature[] {
-      return state.mortalityData.features;
+      return state.mortalityData?.features;
     },
     getMortalitySpecies(state): Species[] {
-      const rowList = state.mortalityData.features.map(
+      const rowList = state.mortalityData?.features.map(
         (i) => i.properties?.species
       );
       const unique = rowList.filter(
@@ -59,8 +59,11 @@ export const useMortalityStore = defineStore("mortality", {
     getMortalityItem(state): Feature {
       return state.mortalityItem;
     },
+    getterMortalityData(state): FeatureCollection {
+      return state.mortalityData;
+    },
     countMortality(state) {
-      return state.mortalityData.features?.length
+      return state.mortalityData?.features?.length
     },
   },
   actions: {

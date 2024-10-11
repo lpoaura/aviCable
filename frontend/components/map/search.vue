@@ -6,18 +6,18 @@
     <template v-if="mapReady">
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
         :visible="baseLayer.default" :attribution="baseLayer.attribution" :layer-type="baseLayer.layer_type" />
-      <l-geo-json v-if="lineStringData" name="Réseaux cablés" layer-type="overlay" :geojson="lineStringData"
-        :options="infrastructureGeoJsonOptions" :options-style="infrastructureLineStyle" />
-      <l-geo-json v-if="pointData" name="Supports" layer-type="overlay" :geojson="pointData"
+      <l-geo-json v-if="isFeatureCollection(lineStringData)" name="Réseaux cablés" layer-type="overlay"
+        :geojson="lineStringData" :options="infrastructureGeoJsonOptions" :options-style="infrastructureLineStyle" />
+      <l-geo-json v-if="isFeatureCollection(pointData)" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
-      <l-geo-json v-if="mortalityData" name="Mortalité" layer-type="overlay" :geojson="mortalityData"
-        :options="deathCasesGeoJsonOptions" />
+      <l-geo-json v-if="isFeatureCollection(mortalityData)" name="Mortalité" layer-type="overlay"
+        :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
       <l-geo-json v-if="bufferedSelectedFeature" :geojson="bufferedSelectedFeature"
         :options-style="selectedFeatureGeoJsonStyle" />
-      <l-geo-json v-if="operatedLineStringData" name="Réseaux cablés" layer-type="overlay"
+      <l-geo-json v-if="isFeatureCollection(operatedLineStringData)" name="Réseaux cablés" layer-type="overlay"
         :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
-      <l-geo-json v-if="operatedPointData" name="Supports neutralisés" layer-type="overlay" :geojson="operatedPointData"
-        :options="operatedInfrastructureGeoJsonOptions" />
+      <l-geo-json v-if="isFeatureCollection(operatedPointData)" name="Supports neutralisés" layer-type="overlay"
+        :geojson="operatedPointData" :options="operatedInfrastructureGeoJsonOptions" />
       <!-- <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
       <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
         <v-alert density="compact" type="warning" title="Information" text="Zoomez pour
@@ -44,7 +44,7 @@ import "leaflet-geosearch/assets/css/leaflet.css"
 import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
 import buffer from '@turf/buffer'
-import type { GeoJSON, Feature } from "geojson"
+import type { GeoJSON, Feature, FeatureCollection } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
 import type { StoreGeneric } from "pinia"
 import type {PointTuple, GeoJSONOptions, Layer, LatLng} from "leaflet";
@@ -80,7 +80,7 @@ const {
   lineStringData,
   operatedLineStringData
 } = storeToRefs(cableStore)
-const {mortalityData} = storeToRefs(mortalityStore)
+const {mortalityData, getterMortalityData} = storeToRefs(mortalityStore)
 const {baseLayers} = storeToRefs(mapLayersStore)
   // const baseLayers = computed(() => mapLayersStore.baseLayers)
 // const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
@@ -95,6 +95,19 @@ watch(selectedFeature, (newVal, _oldVal) => {
 const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
       </span><span id="routerLink" style="cursor: pointer">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
         ${feature.properties?.owner.label} ${feature.properties?.id}</span></h2>`
+
+const  isFeatureCollection = (obj: any): obj is FeatureCollection => {
+    return (
+        obj &&
+        obj.type === "FeatureCollection" &&
+        Array.isArray(obj.features) &&
+        obj.features.every((feature: any) =>
+            feature.type === "Feature" &&
+            feature.geometry &&
+            typeof feature.properties === "object"
+        )
+    );
+}
 
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
   // layer.bindPopup(infrastructurePopupContent(feature))
@@ -200,97 +213,101 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
     }
   }
 const hookUpDraw = async () => {
+  console.log(map.value)
   mapObject.value = map.value?.leafletObject;
-  mapReady.value = true;
-  // GeoLocate plugin
-  leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
+  if (mapObject.value) {
+    mapReady.value = true;
 
-  // GeoSearch plugin
-  const provider = new OpenStreetMapProvider()
-  GeoSearchControl({
-    provider,
-  }).addTo(mapObject.value)
+    // GeoLocate plugin
+    leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
 
-  if (mapObject.value && editMode) {
-// mapObject.value.addControl(
-//   L.control.locate()
-// )
+    // GeoSearch plugin
+    const provider = new OpenStreetMapProvider()
+    GeoSearchControl({
+      provider,
+    }).addTo(mapObject.value)
 
-    // mapObject.value.pm.setLang("en_gb");
-    mapObject.value.pm.addControls({
-      position: 'topleft',
-          drawMarker: mode === 'point',
-          drawCircleMarker: mode === 'circle-marker',
-          drawPolyline: mode === 'line',
-          drawPolygon: mode === 'polygon',
-          drawRectangle: mode === 'rectangle',
-          drawCircle: mode === 'circle',
-          drawText: false,
-          editMode: false,
-          dragMode: false,
-          removalMode: false,
-          cutPolygon: false,
-          rotateMode: false,
-    })
-    mapObject.value.pm.setPathOptions({
-          color: 'red',
-          fillColor: 'red',
-          fillOpacity: 0.4,
-        })
-    mapObject.value.on('pm:create', (e) => {
-      if (createLayer.value) {
-        mapObject.value.removeLayer(createLayer.value);
-      }
-          createLayer.value = e.layer
-          if (createLayer.value){
-            // if (createLayer.value.toGeoJSON()) {
-            //   coordinatesStore.setNewGeoJSONObject(
-            //     createLayer.value.toGeoJSON().geometry
-            //   )
-            // }
-              mapObject.value?.pm.disableDraw()
-              mapObject.value?.pm.addControls({
-                drawMarker: false,
-                dragMode: mode==='point' ? true : false,
-                drawPolyline:false,
-                editMode: mode === 'line' ? true : false,
-                removalMode: true,
-              })
+    if (mapObject.value && editMode) {
+  // mapObject.value.addControl(
+  //   L.control.locate()
+  // )
+
+      // mapObject.value.pm.setLang("en_gb");
+      mapObject.value.pm.addControls({
+        position: 'topleft',
+            drawMarker: mode === 'point',
+            drawCircleMarker: mode === 'circle-marker',
+            drawPolyline: mode === 'line',
+            drawPolygon: mode === 'polygon',
+            drawRectangle: mode === 'rectangle',
+            drawCircle: mode === 'circle',
+            drawText: false,
+            editMode: false,
+            dragMode: false,
+            removalMode: false,
+            cutPolygon: false,
+            rotateMode: false,
+      })
+      mapObject.value.pm.setPathOptions({
+            color: 'red',
+            fillColor: 'red',
+            fillOpacity: 0.4,
+          })
+      mapObject.value.on('pm:create', (e) => {
+        if (createLayer.value) {
+          mapObject.value.removeLayer(createLayer.value);
+        }
+            createLayer.value = e.layer
+            if (createLayer.value){
+              // if (createLayer.value.toGeoJSON()) {
+              //   coordinatesStore.setNewGeoJSONObject(
+              //     createLayer.value.toGeoJSON().geometry
+              //   )
+              // }
+                mapObject.value?.pm.disableDraw()
+                mapObject.value?.pm.addControls({
+                  drawMarker: false,
+                  dragMode: mode==='point' ? true : false,
+                  drawPolyline:false,
+                  editMode: mode === 'line' ? true : false,
+                  removalMode: true,
+                })
+              }
             }
-          }
-          )
-          // // set listener on drag event on this layer
-          // this.handleDrag(createLayer)
+            )
+            // // set listener on drag event on this layer
+            // this.handleDrag(createLayer)
 
-          // // in case of remove event, trigger handleRemove() method
-          // e.layer.on('pm:remove', (_e) => {
-          //   this.handleRemove()
-          // })
+            // // in case of remove event, trigger handleRemove() method
+            // e.layer.on('pm:remove', (_e) => {
+            //   this.handleRemove()
+            // })
 
-    // mapObject.value.on("pm:drawstart", ({ workingLayer, shape }) => {
-    //   workingLayer.on("pm:vertexadded", (e) => {
-    //     geofence.value.push(e)
-    //   });
-    // });
+      // mapObject.value.on("pm:drawstart", ({ workingLayer, shape }) => {
+      //   workingLayer.on("pm:vertexadded", (e) => {
+      //     geofence.value.push(e)
+      //   });
+      // });
 
-    // mapObject.value.on("pm:drawend", () => {
-    //   console.log("drawend", geofence.value);
-    // });
-    mapObject.value.on('pm:remove', (e) => {
-      if (createLayer.value === e.layer) {
-        createLayer.value = null; // Clear the unique layer reference
-      }
+      // mapObject.value.on("pm:drawend", () => {
+      //   console.log("drawend", geofence.value);
+      // });
+      mapObject.value.on('pm:remove', (e) => {
+        if (createLayer.value === e.layer) {
+          createLayer.value = null; // Clear the unique layer reference
+        }
+      })
+      mapObject.value.on('pm:edit', (e) => {
+      // Trigger a change in the uniqueLayer reference
+      console.debug('edit', e)
+      createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
     })
-    mapObject.value.on('pm:edit', (e) => {
-    // Trigger a change in the uniqueLayer reference
-    console.debug('edit', e)
-    createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
-  })
-  mapObject.value.on('pm:update', (e) => {
-    // Trigger a change in the uniqueLayer reference
-    console.debug('update', e)
-    createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
-  })
+    mapObject.value.on('pm:update', (e) => {
+      // Trigger a change in the uniqueLayer reference
+      console.debug('update', e)
+      createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
+    })
+    }
   }
 };
 
@@ -341,7 +358,7 @@ watch(bbox, (newVal, _oldVal) => {
   } else {
     infstrDataLoadingStatus.value = false
     infstrData.value = {}
-    mortalityData.value= {}
+    mortalityData.value= {} as FeatureCollection
   }
 })
 
@@ -392,6 +409,7 @@ onBeforeMount(async () => {
   }
 
   deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng ) => {
+    console.log('deathCasesGeoJsonOptions', feature, latlng)
       if(latlng){
         const iconDict : {[key: string]: string} = {
           COD_EL: 'lightning-bolt',

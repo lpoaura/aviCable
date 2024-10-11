@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="view">
-    <template #map><map-search :edit-mode="false" :mortality-item="info" /></template>
+    <template #map><map-search :edit-mode="false" /></template>
     <data-detail-mortality :data="item" />
   </NuxtLayout>
 </template>
@@ -19,8 +19,6 @@ const zoomTo = () => {
 const { data: item } = await useHttp(`/api/v1/mortality/${route.params.idmortality}`)
 
 
-
 onMounted(() => {zoomTo()})
-// watch(info, _value => zoomTo())
 
 </script>

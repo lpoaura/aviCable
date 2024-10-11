@@ -11,7 +11,6 @@ export const useMapLayersStore = defineStore("mapLayers", {
       await $fetch("/api/v1/map-layers/baselayers/")
         .then((data) => {
           this.baseLayers = data;
-          console.debug("this.baseLayers", this.baseLayers, data);
         })
         .catch((error) => {
           console.error(error);
