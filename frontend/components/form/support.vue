@@ -41,7 +41,7 @@ const errorStore = useErrorsStore()
 const {t} = useI18n()
 
 interface Props{
-  support?: Object
+  support?: object
 }
 const upc = ref(null)
 // data
@@ -71,7 +71,6 @@ const rules = reactive({
 
 const moveToNextStep = async () => {
   const support = await createNewPoint()
-  console.log('SUPPORT', support)
   if (support) {
     emit('nextStep');
   }
@@ -82,7 +81,7 @@ const moveToNextStep = async () => {
 // const initData = async () => {
 //   if (support) {
 //     const {data:diagnosis} = await useHttp(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, {method: 'get'})
-//     console.log('HAS DIAG', diagnosis)
+//
 //     const diagdata: DiagData = {
 //       id : diagnosis.value.id,
 //       date: diagnosis.value.date,

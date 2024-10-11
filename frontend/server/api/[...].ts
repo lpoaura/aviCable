@@ -5,7 +5,7 @@ import { createError, readBody, appendHeader, defineEventHandler } from 'h3'
 
 
 export default defineEventHandler (async (event) => {
-  console.log('API [...].ts')
+  console.debug('API [...].ts')
   const config = useRuntimeConfig()
   if (!config.public.apiBase) {
     throw new Error('Missing `runtimeConfig.apiBase` configuration.')

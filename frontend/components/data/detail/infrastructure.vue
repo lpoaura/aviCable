@@ -52,8 +52,6 @@ interface Props  {
 
 const {data} = defineProps<Props>()
 
-console.log('props.data' , data)
-
 const expandHistory=ref(false)
 
 const lastDiag = computed(() => {
@@ -82,7 +80,6 @@ const lastOp = computed(() => {
 })
 
 const type=computed(() => {
-  console.log("data type", data, data?.resourcetype)
   return data?.resourcetype
 })
 

@@ -11,7 +11,6 @@ const coordinateStore = useCoordinatesStore()
 
 
 const zoomTo = () => {
-  console.log('coordinateStore',coordinateStore)
   // const layer = geoJSON(info.value)
   coordinateStore.setCenter([...item.value.geometry.coordinates].reverse())
   coordinateStore.setZoom(14)

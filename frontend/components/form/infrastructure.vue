@@ -43,7 +43,7 @@ const errorStore = useErrorsStore()
 const {t} = useI18n()
 
 interface Props{
-  infrastructure?: Object,
+  infrastructure?: object,
   infrastructureType: string
 }
 const upc = ref(null)
@@ -74,7 +74,6 @@ const rules = reactive({
 
 const moveToNextStep = async () => {
   const infrastructure = await createNewInfrastructure()
-  console.log('SUPPORT', infrastructure)
   if (infrastructure) {
     emit('nextStep');
   }
@@ -83,10 +82,8 @@ const moveToNextStep = async () => {
 
 const createNewInfrastructure = async () => {
   try {
-    console.log('<createNewInfrastructure> newGeoJSONObject',newGeoJSONObject, newGeoJSONObject.value?.geometry)
     infrastructureData.geom = newGeoJSONObject.value?.geometry
     const {data : infrastructure} = await useHttp(`/api/v1/cables/${infrastructureType.toLowerCase()}s/`, {method: 'post', body: infrastructureData})
-    console.log('infrastructure', infrastructure?.value.properties.id)
     cablesStore.setFormInfrastructureId(infrastructure.value.properties.id)
     return infrastructure?.value
   } catch (_err) {

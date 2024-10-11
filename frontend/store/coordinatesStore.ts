@@ -49,7 +49,6 @@ export const useCoordinatesStore = defineStore("coordinates", {
   actions: {
     setbbox(data: string) {
       this.bbox = data;
-      console.log("setbbox", this.bbox);
     },
     setSelectedFeature(data: Feature) {
       this.selectedFeature = data;
@@ -67,7 +66,6 @@ export const useCoordinatesStore = defineStore("coordinates", {
       this.newLineCoord = data;
     },
     setNewGeoJSONObject(data) {
-      console.log("setNewGeoJSONObject", data);
       this.newGeoJSONObject = data;
     },
     setNewGeoJSONLine(data: LineString) {

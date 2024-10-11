@@ -113,7 +113,6 @@ const handleRowClick = (_, object) => {
 const colorRowItem = (item) => {
 
   if (item.item.properties.id === selectedFeature.value?.properties.id) {
-    console.log('ITEM', item.item.properties.id, selectedFeature.value.properties.id)
     return { class: 'bg-light-blue-lighten-5' };
   }
   return {class: "success"}

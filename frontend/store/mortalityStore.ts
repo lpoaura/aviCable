@@ -67,25 +67,25 @@ export const useMortalityStore = defineStore("mortality", {
     async getMortalityData(params: { [key: string]: string | null }) {
       this.controller = new AbortController();
       const { signal } = this.controller;
-      console.log("getMortalityData",this.controller, signal);
+      console.debug("getMortalityData",this.controller, signal);
       try {
         const data = await $http.$get("/api/v1/mortality/", { signal, params });
         this.mortalityData = data;
       } catch (err: unknown) {
         if (err.name === "AbortError") {
-          console.log("Requête annulée");
+          console.debug("Requête annulée");
         } else {
           console.error(err);
         }
       }
     },
     cancelRequest() {
-      console.log('aborting getMortalityData check',this.controller)
+      console.debug('aborting getMortalityData check',this.controller)
       if (this.controller) {
-        console.log('aborting getMortalityData',this.controller)
+        console.debug('aborting getMortalityData',this.controller)
         this.controller.abort();
         this.controller = null; // Reset the controller after aborting
-        console.log('aborted getMortalityData', this.controller)
+        console.debug('aborted getMortalityData', this.controller)
       }
     },
     setMortalityItem(data: Feature) {

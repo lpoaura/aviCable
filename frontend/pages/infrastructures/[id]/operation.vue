@@ -38,7 +38,6 @@ const infrastructureId = computed(() => route.params.id)
 
 onMounted(async ()=> {
   const {data: infrastructure} = await useHttp(`/api/v1/cables/infrastructures/${infrastructureId.value}/`)
-  console.log('INFRASTRUCTURE', infrastructure.value)
   cablesStore.setFormInfrastructureId(infrastructureId.value)
   cablesStore.setFormInfrastructure(infrastructure.value)
   coordinatesStore.setSelectedFeature(infrastructure.value)

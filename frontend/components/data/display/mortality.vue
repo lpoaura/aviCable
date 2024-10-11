@@ -76,8 +76,6 @@ onMounted(() => {
 })
 
 const handleRowClick = (_, object) => {
-  console.log('object', object)
-  console.log(object.item)
   coordinatesStore.setSelectedFeature(object.item)
 }
 </script>

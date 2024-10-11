@@ -5,7 +5,6 @@ export const notationValues: (
   t: (key: string) => string,
   detail: bool
 ) => Risk = (item, t, detail = false) => {
-  console.log("item.resourcetype", item.resourcetype);
   const risks = {
     RISK_L: { note: 1, color: "blue", label: t(detail ? "lowRisk" : "low") },
     RISK_M: { note: 2, color: "orange", label: t(detail ? "midRisk" : "mid") },

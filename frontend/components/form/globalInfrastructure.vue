@@ -16,7 +16,6 @@ const step = ref(1)
 
 const route = useRoute()
 const nextStep= () => {
-  console.log('STEP', step)
   step.value++;
 }
 

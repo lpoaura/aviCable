@@ -89,7 +89,6 @@ const bufferedSelectedFeature : Ref<Feature|null> = ref(null)
 const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
 
 watch(selectedFeature, (newVal, _oldVal) => {
-  console.log('storedSelectedFeature',newVal, newVal ? 'buffer':'null')
   bufferedSelectedFeature.value = newVal  ? buffer(newVal, 150, {units: 'meters'}) : null
 })
 
@@ -103,7 +102,6 @@ const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
     // layer.on('popupopen', () => {
     //   const id = feature?.properties?.id
     //     const link = document.getElementById('routerLink');
-    //     console.log('feature?.resourcetype', feature?.resourcetype)
     //     link.addEventListener('click', (event) => {
     //       event.preventDefault(); // Prevent the default anchor behavior
     //       if (['Point','Line'].includes(feature?.resourcetype) && id) {
@@ -124,10 +122,9 @@ const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
       </dl>
       </p>`
     )
-    layer.on('click', (e)=> {console.log('click', feature, e)})
+    layer.on('click', (e)=> {console.debug('click', feature, e)})
   }
   // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
-  // console.log('layer', layer)
   // delete layer.pm
   // layer.setStyle({ pmIgnore: false })
 }
@@ -152,25 +149,19 @@ const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature: mortalityOnEachFeature ,
 })
 
-// watch(mapObject, (newVal, oldVal) => {
-//   console.log('mapObject watcher', mapObject.value.getBounds())
-// })
 watch(selectedFeature, (newVal, oldVal) => {
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-    console.log('selectedFeature update', newVal)
     const newObj = leaflet.geoJSON(newVal)
     mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
   }
 })
 
 watch(createLayer, (newLayer, oldLayer) => {
-  console.log('watch createLayer',newLayer, newLayer.toGeoJSON())
   if (newLayer && newLayer.toGeoJSON()) {
-    console.log('createLayer.value.toGeoJSON()',newLayer.toGeoJSON().geometry)
     // You can perform additional actions here based on the unique layer's changes
     coordinatesStore.setNewGeoJSONObject(newLayer.toGeoJSON())
   } else {
-    console.log('Unique layer removed');
+    console.debug('Unique layer removed');
   }
 });
 
@@ -202,7 +193,6 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
     }
   }
   const infrastructureOperatedLineStyle = (feature: Feature) => {
-    console.log('infrastructureOperatedLineStyle',feature)
     return  {
       color:  '#00ff00',
       weight: 2,
@@ -211,7 +201,6 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
   }
 const hookUpDraw = async () => {
   mapObject.value = map.value?.leafletObject;
-  // console.log('mapObject.value', mapObject.value.getBounds(), map)
   mapReady.value = true;
   // GeoLocate plugin
   leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
@@ -252,13 +241,9 @@ const hookUpDraw = async () => {
       if (createLayer.value) {
         mapObject.value.removeLayer(createLayer.value);
       }
-      console.log('map on createLayer', e)
-      console.log('createLayers before assign', createLayer, createLayer?.value)
           createLayer.value = e.layer
-          console.log('createLayers after assign', createLayer, createLayer.value)
           if (createLayer.value){
             // if (createLayer.value.toGeoJSON()) {
-            //   console.log('createLayer.value.toGeoJSON()',createLayer.value.toGeoJSON().geometry)
             //   coordinatesStore.setNewGeoJSONObject(
             //     createLayer.value.toGeoJSON().geometry
             //   )
@@ -283,9 +268,7 @@ const hookUpDraw = async () => {
           // })
 
     // mapObject.value.on("pm:drawstart", ({ workingLayer, shape }) => {
-    //   console.log('drawstart', workingLayer)
     //   workingLayer.on("pm:vertexadded", (e) => {
-    //     console.log('vertexadded', e, shape);
     //     geofence.value.push(e)
     //   });
     // });
@@ -296,17 +279,16 @@ const hookUpDraw = async () => {
     mapObject.value.on('pm:remove', (e) => {
       if (createLayer.value === e.layer) {
         createLayer.value = null; // Clear the unique layer reference
-        console.log('Layer removed:', e.layer);
       }
     })
     mapObject.value.on('pm:edit', (e) => {
     // Trigger a change in the uniqueLayer reference
-    console.log('edit', e)
+    console.debug('edit', e)
     createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
   })
   mapObject.value.on('pm:update', (e) => {
     // Trigger a change in the uniqueLayer reference
-    console.log('update', e)
+    console.debug('update', e)
     createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
   })
   }
@@ -314,13 +296,11 @@ const hookUpDraw = async () => {
 
 const lineColor=(feature:Feature) => {
   const lastDiag=feature.properties?.diagnosis[0]
-  console.log( "lastDiag")
   if (lastDiag) {
     const sgmt_moving_risk = lastDiag.sgmt_moving_risk?.code
     const sgmt_landscape_integr_risk = lastDiag.sgmt_landscape_integr_risk?.code
     const sgmt_topo_integr_risk = lastDiag.sgmt_topo_integr_risk?.code
     const note = levelNotes[sgmt_moving_risk] + levelNotes[sgmt_landscape_integr_risk] + levelNotes[sgmt_topo_integr_risk]
-    console.log("lineColor note", note)
     if (note < 4) {
       return 'blue'
     }
@@ -354,10 +334,8 @@ const supportColor = (feature: Feature) => {
 watch(bbox, (newVal, _oldVal) => {
   cableStore.cancelRequest();
   mortalityStore.cancelRequest();
-  console.log('watch Bbox', zoom.value, infstrData)
 
   if (zoom.value >= 10) {
-    console.log('watch Bbox - Update data')
     cableStore.getInfstrData({in_bbox: newVal})
     mortalityStore.getMortalityData({in_bbox: newVal})
   } else {
@@ -398,7 +376,6 @@ onBeforeMount(async () => {
   }
 
   selectedFeatureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng | null ) => {
-    console.log('selectedFeatureGeoJsonOptions',feature, latlng)
     if (feature.resourcetype === 'Point' && latlng) {
     return leaflet.circleMarker(latlng, {
       radius: 20,

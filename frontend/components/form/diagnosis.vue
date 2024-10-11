@@ -151,7 +151,6 @@ const initData = async () => {
       isolation_advice: diagnosis.value.isolation_advice,
       media_id: [],
     }
-    console.log('infrastructureType', infrastructureType)
     if (infrastructureType.value==='point') {
       diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
       diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id

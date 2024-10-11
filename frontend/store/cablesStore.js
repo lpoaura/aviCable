@@ -75,10 +75,10 @@ export const useCablesStore = defineStore('cables', {
     async getInfstrData (params, _) {
       this.controller = new AbortController();
       const { signal } = this.controller;
-      console.log('getInfstrData', signal)
+      console.debug('getInfstrData', signal)
       try {
         this.infstrDataLoadingStatus = true
-        console.log("getInfstrData signal", signal)
+        console.debug("getInfstrData signal", signal)
         await $http.$get(
           '/api/v1/cables/infrastructures', {signal, params}
         ).then(data => {
@@ -87,7 +87,7 @@ export const useCablesStore = defineStore('cables', {
         })
       } catch (err) {
         if (err.name === 'AbortError') {
-          console.log('Requête annulée');
+          console.debug('getInfstrData Requête annulée');
         } else {
           console.error(err)
         }
@@ -99,14 +99,14 @@ export const useCablesStore = defineStore('cables', {
 
     },
     cancelRequest() {
-      console.log('aborting getInfstrData check',this.controller)
+      console.debug('cancelRequest aborting getInfstrData check',this.controller)
       if (this.controller) {
-        console.log('aborting getInfstrData',this.controller)
+        console.debug('cancelRequest aborting getInfstrData',this.controller)
         this.controller.abort();
         this.controller = null; // Reset the controller after aborting
-        console.log('aborted getInfstrData', this.controller)
+        console.debug('cancelRequest aborted getInfstrData', this.controller)
       } else {
-        console.log('getInfstrData No request to abort');
+        console.debug('cancelRequest No request to abort');
       }
     },
     setFormSupportId(supportId) {
@@ -122,7 +122,6 @@ export const useCablesStore = defineStore('cables', {
       this.infstrDataLoadingStatus = status
     },
     setInfstrData (data) {
-      console.log('STORE setInfstrData', data)
       this.infstrData = data
     },
     addOperation (data) {

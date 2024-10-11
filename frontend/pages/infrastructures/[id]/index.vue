@@ -21,8 +21,6 @@ const updateData = async () => {
 }
 
 const zoomTo = () => {
-
-  console.log('zoomTo', infrastructure.value)
   // const layer = geoJSON(info.value)
   // TODO: fix error on lines
   center.value = centroid(infrastructure.value)?.geometry?.coordinates.reverse()

@@ -48,7 +48,6 @@ const emit = defineEmits();
 
 
 const updateEquipmentData = () => {
-  console.log('eqipForm updateEquipmentData', equipment)
   emit('update', equipmentData.value);
 };
 
@@ -75,7 +74,6 @@ const deleteItem = () => {
 };
 
 onMounted(() => {
-  console.log('created', index, equipment);
   equipmentData.value = {...equipment}
 })
 </script>

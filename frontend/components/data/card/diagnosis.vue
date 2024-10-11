@@ -122,7 +122,7 @@
 
 interface Props {
   infrastructureType: string,
-  diagnosis: Object,
+  diagnosis: object,
 }
 
 const {infrastructureType, diagnosis} = defineProps<Props>()
@@ -155,7 +155,7 @@ const deleteDiag = async () => {
 }
 
 onMounted(()=>{
-  console.log('diagnosis',diagnosis)
+  console.debug('diagnosis',diagnosis)
 })
 
 </script>

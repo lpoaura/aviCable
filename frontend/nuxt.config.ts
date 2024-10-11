@@ -9,6 +9,12 @@ export default defineNuxtConfig({
 
   ssr: false,
 
+  app: {
+    head: {
+      title: 'aviCable',
+    }
+  },
+
   pwa: {
     registerType: 'autoUpdate',
     manifest: {

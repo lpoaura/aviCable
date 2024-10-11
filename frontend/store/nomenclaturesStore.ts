@@ -128,8 +128,6 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         }
         // set "riskLevels" to state value "riskLevelItems"
         this.riskLevelItems = riskLevels.nomenclatures;
-        console.log("this.riskLevelItems", this.riskLevelItems);
-
         // // gather Death cause Items from all Items
         const deathCause = types.find(
           (elem: NomenclatureItem) => elem.code === "CAUSE_OF_DEATH"

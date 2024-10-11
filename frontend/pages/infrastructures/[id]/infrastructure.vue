@@ -36,10 +36,8 @@ const infrastructureType = computed(() => route.query.type)
 
 const getData = async () =>{
   if (infrastructureId.value) {
-    console.log('route.params.id',route.params.id)
     const {data: resInfrastructure} = await useHttp(`/api/v1/cables/infrastructures/${route.params.id}`)
     infrastructure.value=resInfrastructure
-    console.log('getData',infrastructure.value)
     coordinatesStore.setSelectedFeature(infrastructure.value)
   }
 }

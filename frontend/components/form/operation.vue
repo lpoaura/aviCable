@@ -70,12 +70,10 @@ const opData = reactive({
 })
 
 const updateEquipmentData = (index, updatedEquipment) => {
-  console.log('updateEquipmentData', index, updatedEquipment)
   opData.equipments[index] = updatedEquipment;
 };
 
 const deleteEquipment=(index) => {
-  console.log("opData.equipments.value", opData.equipments)
   opData.equipments.splice(index,1)
 }
 
@@ -109,16 +107,12 @@ const rules = reactive({
 
 const initData = async () => {
   if (infrastructureId.value && !operationId.value) {
-    console.log('<initData> new Operation')
-    console.log('<initData> infrastructure', infrastructure.value)
     coordinatesStore.setNewGeoJSONObject(infrastructure.value?.geometry)
     opData.resourcetype = infrastructure.value?.resourcetype === 'Point' ? 'PointOperation':'LineOperation'
     opData.geom = infrastructure.value?.geometry
     equipmentsReady.value = true
-    console.log("<initData> equipmentsReady", equipmentsReady)
   }
   if (operationId.value) {
-    console.log('update Operation')
     const {data:operation} = await useHttp(`/api/v1/cables/operations/${operationId.value}/`, {method: 'get'})
     formDate.value = new Date(operation.value.properties.date)
     const opdata = {
@@ -139,7 +133,6 @@ const initData = async () => {
     coordinatesStore.setSelectedFeature(operation.value)
     equipmentsReady.value=true
   }
-  console.log('equipmentsReady',equipmentsReady.value)
   // const opData = null
 }
 
