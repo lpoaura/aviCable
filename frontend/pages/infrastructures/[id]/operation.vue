@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="view">
-    <template #map><map-search :edit-mode="support ? false : true" mode="point" /></template>
+    <template #map><map-search :edit-mode="true" :mode="route.query.type.toLowerCase()" /></template>
     <v-layout full-height>
       <v-app-bar density="compact" color="blue-grey-lighten-5">
         <v-app-bar-title>
@@ -33,7 +33,6 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const support = ref(null)
 const infrastructureId = computed(() => route.params.id)
 
 onMounted(async ()=> {

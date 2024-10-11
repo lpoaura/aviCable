@@ -6,7 +6,7 @@
     <template v-if="mapReady">
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
         :visible="baseLayer.default" :attribution="baseLayer.attribution" :layer-type="baseLayer.layer_type" />
-      <l-geo-json v-if="isFeatureCollection(lineStringData)" name="Réseaux cablés" layer-type="overlay"
+      <l-geo-json v-if="isFeatureCollection(lineStringData)" name="Lignes" layer-type="overlay"
         :geojson="lineStringData" :options="infrastructureGeoJsonOptions" :options-style="infrastructureLineStyle" />
       <l-geo-json v-if="isFeatureCollection(pointData)" name="Supports" layer-type="overlay" :geojson="pointData"
         :options="infrastructureGeoJsonOptions" />
@@ -14,7 +14,7 @@
         :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
       <l-geo-json v-if="bufferedSelectedFeature" :geojson="bufferedSelectedFeature"
         :options-style="selectedFeatureGeoJsonStyle" />
-      <l-geo-json v-if="isFeatureCollection(operatedLineStringData)" name="Réseaux cablés" layer-type="overlay"
+      <l-geo-json v-if="isFeatureCollection(operatedLineStringData)" name="Lignes neutralisées" layer-type="overlay"
         :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
       <l-geo-json v-if="isFeatureCollection(operatedPointData)" name="Supports neutralisés" layer-type="overlay"
         :geojson="operatedPointData" :options="operatedInfrastructureGeoJsonOptions" />
@@ -63,6 +63,7 @@ const map : Ref<typeof LMap|null> = ref(null)
 const mapObject : Ref<typeof LMap|null> = ref(null)
 const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<boolean> = ref(false)
+const opLineRef : Ref<typeof LGeoJson | null> = ref(null)
 const router = useRouter()
 // Stores
 const cableStore : StoreGeneric  = useCablesStore()
@@ -70,8 +71,9 @@ const mortalityStore: StoreGeneric = useMortalityStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
 
+
 // Store values
-const {zoom, center, bbox, selectedFeature} = storeToRefs(coordinatesStore)
+const {zoom, center, bbox, selectedFeature, newGeoJSONObject} = storeToRefs(coordinatesStore)
 const {
   infstrData,
   infstrDataLoadingStatus,
@@ -80,7 +82,7 @@ const {
   lineStringData,
   operatedLineStringData
 } = storeToRefs(cableStore)
-const {mortalityData, getterMortalityData} = storeToRefs(mortalityStore)
+const {mortalityData} = storeToRefs(mortalityStore)
 const {baseLayers} = storeToRefs(mapLayersStore)
   // const baseLayers = computed(() => mapLayersStore.baseLayers)
 // const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
@@ -108,6 +110,7 @@ const  isFeatureCollection = (obj: any): obj is FeatureCollection => {
         )
     );
 }
+
 
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
   // layer.bindPopup(infrastructurePopupContent(feature))
@@ -169,10 +172,10 @@ watch(selectedFeature, (newVal, oldVal) => {
   }
 })
 
-watch(createLayer, (newLayer, oldLayer) => {
+watch(createLayer, (newLayer, _oldLayer) => {
   if (newLayer && newLayer.toGeoJSON()) {
     // You can perform additional actions here based on the unique layer's changes
-    coordinatesStore.setNewGeoJSONObject(newLayer.toGeoJSON())
+    newGeoJSONObject.value = newLayer.toGeoJSON()
   } else {
     console.debug('Unique layer removed');
   }
@@ -194,7 +197,7 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
       color: color,
       fillColor: color,
       weight: 2,
-      opacity: 0.5
+      opacity: 0.5,
     }
   }
 
@@ -205,7 +208,7 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
       // draggable: true,
     }
   }
-  const infrastructureOperatedLineStyle = (feature: Feature) => {
+  const infrastructureOperatedLineStyle = (_feature: Feature) => {
     return  {
       color:  '#00ff00',
       weight: 2,
@@ -215,6 +218,7 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
 const hookUpDraw = async () => {
   console.log(map.value)
   mapObject.value = map.value?.leafletObject;
+
   if (mapObject.value) {
     mapReady.value = true;
 
@@ -249,8 +253,8 @@ const hookUpDraw = async () => {
             rotateMode: false,
       })
       mapObject.value.pm.setPathOptions({
-            color: 'red',
-            fillColor: 'red',
+            color: '#ba02f2',
+            fillColor: '#ba02f2',
             fillOpacity: 0.4,
           })
       mapObject.value.on('pm:create', (e) => {
@@ -354,6 +358,7 @@ watch(bbox, (newVal, _oldVal) => {
 
   if (zoom.value >= 10) {
     cableStore.getInfstrData({in_bbox: newVal})
+    cableStore.getOpData({in_bbox: newVal})
     mortalityStore.getMortalityData({in_bbox: newVal})
   } else {
     infstrDataLoadingStatus.value = false

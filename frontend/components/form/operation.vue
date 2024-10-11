@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+import {storeToRefs} from 'pinia';
 import { VDateInput} from 'vuetify/labs/VDateInput'
 // import type {DiagData, Diagnosis} from '~/types/diagnosis';
 import * as errorCodes from '~/static/errorConfig.json'
@@ -49,6 +50,9 @@ const cablesStore = useCablesStore()
 // const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 const formValid=ref(false)
+
+const {newGeoJSONObject} = storeToRefs(coordinatesStore)
+
 const infrastructureId = computed(() => route.params.id)
 const infrastructure = computed(() => cablesStore.formInfrastructure)
 const operationId = computed(() => route.query.id_operation)
@@ -90,7 +94,6 @@ const newEquipment = () => {
 
 const locale = useLocale()
 const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
-const newGeoJSONObject = computed(() => coordinatesStore.newGeoJSONObject)
 
 watch(newGeoJSONObject, (value) => {
   if (value) {
@@ -107,9 +110,7 @@ const rules = reactive({
 
 const initData = async () => {
   if (infrastructureId.value && !operationId.value) {
-    coordinatesStore.setNewGeoJSONObject(infrastructure.value?.geometry)
     opData.resourcetype = infrastructure.value?.resourcetype === 'Point' ? 'PointOperation':'LineOperation'
-    opData.geom = infrastructure.value?.geometry
     equipmentsReady.value = true
   }
   if (operationId.value) {
@@ -152,6 +153,7 @@ const initData = async () => {
   try {
     opData.infrastructure = infrastructureId.value
     opData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
+    opData.geom = newGeoJSONObject.value?.geometry || infrastructure.value?.geometry
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const {data : operation }= await useHttp('/api/v1/cables/operations/', {method:'post', body: opData})

@@ -35,17 +35,14 @@ export const useCablesStore = defineStore('cables', {
       }
     },
     operatedInfstr (state) {
-      const filteredFeatures=state.infstrData.features?.filter(
-        elem => elem.properties.operations.length > 0
-      )
       return {
         type: "FeatureCollection",
-        features: filteredFeatures || []
+        features: state.opData?.features || []
       }
     },
     operatedPointData (state) {
-      const filteredFeatures=state.infstrData.features?.filter(
-        elem => elem.resourcetype === 'Point' && elem.properties.operations.length > 0
+      const filteredFeatures=state.opData.features?.filter(
+        elem => elem.geometry.type === 'Point'
       )
       return {
         type: "FeatureCollection",
@@ -53,8 +50,8 @@ export const useCablesStore = defineStore('cables', {
       }
     },
     operatedLineStringData (state) {
-      const filteredFeatures=state.infstrData.features?.filter(
-        elem => elem.resourcetype === 'Line' && elem.properties.operations.length > 0
+      const filteredFeatures=state.opData.features?.filter(
+        elem => elem.geometry.type === 'LineString'
       )
       return {
         type: "FeatureCollection",
@@ -98,6 +95,30 @@ export const useCablesStore = defineStore('cables', {
       }
 
     },
+    async getOpData (params, _) {
+      this.controller = new AbortController();
+      const { signal } = this.controller;
+      console.debug('getOpData', signal)
+      try {
+        console.debug("getOpData signal", signal)
+        await $http.$get(
+          '/api/v1/cables/operations/', {signal, params}
+        ).then(data => {
+          this.opData = data
+        })
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          console.debug('getOpData Requête annulée');
+        } else {
+          console.error(err)
+        }
+      }  finally {
+        // Reset loading status and controller
+        this.controller = null; // Reset the controller after the request
+      }
+
+    },
+
     cancelRequest() {
       console.debug('cancelRequest aborting getInfstrData check',this.controller)
       if (this.controller) {

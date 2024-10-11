@@ -110,7 +110,13 @@ class OperationViewSet(viewsets.ModelViewSet):
 
     serializer_class = OperationPolymorphicSerializer
     # permission_classes = [DjangoModelPermissions]
-    queryset = Operation.objects.all()
+    queryset = (
+        Operation.objects.all()
+        .select_related("infrastructure")
+        .prefetch_related("equipments")
+        .prefetch_related("media")
+        .prefetch_related("equipments__type")
+    )
     # filterset_class = OperationFilter
     bbox_filter_fields = ["pointoperation__geom", "lineoperation__geom"]
     filter_backends = (InfrstrInBboxFilter,)
