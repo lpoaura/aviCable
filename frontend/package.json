@@ -1,7 +1,7 @@
 {
-  "name": "ocb-frontend",
+  "name": "aviCable-frontend",
   "version": "0.0.1",
-  "description": "overhead cables and birdlife - frontend",
+  "description": "Overhead cables and birdlife - frontend",
   "author": "LPO AuRA <auvergne-rhone-alpes@lpo.fr>",
   "private": true,
   "type": "module",

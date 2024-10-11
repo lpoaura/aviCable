@@ -1,6 +1,7 @@
 {
   "app": {
-    "app-name": "Birdlife and overhead cables",
+    "appShortName": "aviCable",
+    "appName": "Birdlife and overhead cables",
     "cancel": "Cancel",
     "data": "Data",
     "signin": "Sign in",

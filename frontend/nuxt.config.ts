@@ -12,8 +12,8 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Cables & avifaune',
-      short_name: 'ocb',
+      name: 'Avifaune & cables aériens',
+      short_name: 'aviCable',
       theme_color: '#0277bd',
       icons: [
         {

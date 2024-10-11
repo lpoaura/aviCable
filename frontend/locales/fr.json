@@ -16,7 +16,8 @@
   "midRisk": "Risque modéré",
   "highRisk": "Risque élevé",
   "app": {
-    "app-name": "Avifaune & câbles aériens",
+    "appShortName": "aviCable",
+    "appName": "Avifaune & câbles aériens",
     "cancel": "Annuler",
     "data": "Données",
     "signin": "Se connecter",
