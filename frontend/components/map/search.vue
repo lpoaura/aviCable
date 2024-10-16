@@ -14,6 +14,8 @@
         :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
       <l-geo-json v-if="bufferedSelectedFeature" :geojson="bufferedSelectedFeature"
         :options-style="selectedFeatureGeoJsonStyle" />
+      <l-geo-json v-if="bufferedMortalityInfrastructure" :geojson="bufferedMortalityInfrastructure"
+        :options-style="bufferedMortalityInfrastructureGeoJsonStyle" />
       <l-geo-json v-if="isFeatureCollection(operatedLineStringData)" name="Lignes neutralisées" layer-type="overlay"
         :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
       <l-geo-json v-if="isFeatureCollection(operatedPointData)" name="Supports neutralisés" layer-type="overlay"
@@ -73,7 +75,15 @@ const coordinatesStore : StoreGeneric = useCoordinatesStore()
 
 
 // Store values
-const {zoom, center, bbox, selectedFeature, newGeoJSONObject} = storeToRefs(coordinatesStore)
+const {
+  zoom,
+  center,
+  bbox,
+  selectedFeature,
+  newGeoJSONObject,
+  mortalityGetInfrastructure,
+  mortalityInfrastructure
+} = storeToRefs(coordinatesStore)
 const {
   infstrData,
   infstrDataLoadingStatus,
@@ -87,12 +97,18 @@ const {baseLayers} = storeToRefs(mapLayersStore)
   // const baseLayers = computed(() => mapLayersStore.baseLayers)
 // const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
 const bufferedSelectedFeature : Ref<Feature|null> = ref(null)
+  const bufferedMortalityInfrastructure : Ref<Feature|null> = ref(null)
 
 const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
 
 watch(selectedFeature, (newVal, _oldVal) => {
   bufferedSelectedFeature.value = newVal  ? buffer(newVal, 150, {units: 'meters'}) : null
 })
+
+watch(mortalityInfrastructure, (newVal, _oldVal) => {
+  bufferedMortalityInfrastructure.value = newVal  ? buffer(newVal, 50, {units: 'meters'}) : null
+})
+
 
 const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
       </span><span id="routerLink" style="cursor: pointer">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
@@ -114,7 +130,15 @@ const  isFeatureCollection = (obj: any): obj is FeatureCollection => {
 
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
   // layer.bindPopup(infrastructurePopupContent(feature))
-  layer.on('click', ()=> {return selectedFeature.value = feature})
+  layer.on('click', ()=> {
+    if (mortalityGetInfrastructure.value) {
+      mortalityInfrastructure.value = feature
+      mortalityGetInfrastructure.value = !mortalityGetInfrastructure.value
+    }
+    else {
+      selectedFeature.value = feature
+    }
+  })
     // layer.on('popupopen', () => {
     //   const id = feature?.properties?.id
     //     const link = document.getElementById('routerLink');
@@ -193,6 +217,16 @@ const getBbox = () => {
 
 const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
   const color='#03A9F4' // blue-lighten
+    return {
+      color: color,
+      fillColor: color,
+      weight: 2,
+      opacity: 0.5,
+    }
+  }
+
+  const bufferedMortalityInfrastructureGeoJsonStyle = (_feature: Feature) => {
+  const color='red' // blue-lighten
     return {
       color: color,
       fillColor: color,

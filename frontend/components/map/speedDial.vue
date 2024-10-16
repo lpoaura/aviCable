@@ -8,13 +8,13 @@
     <v-btn fab dark small color="orange">
       <v-icon>mdi-shape-polygon-plus</v-icon>
     </v-btn>
-    <v-btn fab dark small to="/infrastructures/new?type=point" color="green">
+    <v-btn fab dark small to="/infrastructures?type=point" color="green">
       <v-icon>mdi-transmission-tower</v-icon>
     </v-btn>
-    <v-btn fab dark small to="/infrastructures/new?type=line" color="indigo">
+    <v-btn fab dark small to="/infrastructures?type=line" color="indigo">
       <v-icon>mdi-cable-data</v-icon>
     </v-btn>
-    <v-btn fab dark small to="/mortality/new" color="red">
+    <v-btn fab dark small to="/mortality/edit" color="red">
       <v-icon>mdi-coffin</v-icon>
     </v-btn>
   </v-speed-dial>

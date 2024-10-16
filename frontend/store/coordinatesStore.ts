@@ -22,6 +22,8 @@ export const useCoordinatesStore = defineStore("coordinates", {
     newGeoJSONLine: { coordinates: [], type: "LineString" } as LineString,
     newGeoJSONObject: {} as GeoJSON,
     bbox: null as string | null,
+    mortalityGetInfrastructure: false,
+    mortalityInfrastructure:  {} as Feature | null,
   }),
   getters: {
     /**

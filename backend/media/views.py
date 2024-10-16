@@ -9,5 +9,5 @@ class MediaViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Media items"""
 
     serializer_class = MediaSerializer
-    permission_classes = [DjangoModelPermissions]
+    # permission_classes = [DjangoModelPermissions]
     queryset = Media.objects.all()

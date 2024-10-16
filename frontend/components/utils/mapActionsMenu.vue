@@ -4,12 +4,11 @@
       <template v-if="!$parent.editMode" #activator="{ props }">
         <v-btn id="speedDial" dark color="primary" icon="mdi-plus" v-bind="props" class="float-right" />
       </template>
-      <v-btn fab dark class="ma-1" icon="mdi-shape-polygon-plus" size="small" color="orange" />
-      <v-btn fab dark class="ma-1" icon="mdi-transmission-tower" size="small" to="/infrastructures/new?type=point"
+      <!-- <v-btn fab dark class="ma-1" icon="mdi-shape-polygon-plus" size="small" color="orange" /> -->
+      <v-btn fab dark class="ma-1" icon="mdi-transmission-tower" size="small" to="/infrastructures?type=point"
         color="green" />
-      <v-btn fab dark class="ma-1" icon="mdi-cable-data" size="small" to="/infrastructures/new?type=line"
-        color="indigo" />
-      <v-btn fab dark class="ma-1" icon="mdi-coffin" size="small" to="/mortality/new" color="red" />
+      <v-btn fab dark class="ma-1" icon="mdi-cable-data" size="small" to="/infrastructures?type=line" color="indigo" />
+      <v-btn fab dark class="ma-1" icon="mdi-coffin" size="small" to="/mortality" color="red" />
     </v-menu>
   </div>
 </template>

@@ -37,6 +37,7 @@
     "leaflet.locatecontrol": "^0.81.1",
     "nuxt": "^3.13.2",
     "pinia": "^2.2.4",
+    "tslint": "^5.20.1",
     "vuetify": "^3.7.2"
   },
   "overrides": {

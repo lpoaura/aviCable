@@ -1,15 +1,60 @@
 import logging
 
+from cables.models import Infrastructure, Line, Point
 from geo_area.models import GeoArea
 from geo_area.serializers import GeoAreaSerializer
 from rest_framework.exceptions import APIException
+from rest_framework.serializers import ModelSerializer
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
+from rest_polymorphic.serializers import PolymorphicSerializer
 from sinp_nomenclatures.serializers import NomenclatureSerializer
 from species.serializers import SpeciesSerializer
 
 from .models import Mortality
 
 logger = logging.getLogger(__name__)
+
+class MortalityInfrastructureSerializer(ModelSerializer):
+    owner = NomenclatureSerializer(read_only=True)
+
+
+    class Meta:
+        model = Infrastructure
+        fields = [
+            "id",
+            "owner",
+        ]
+        
+        
+
+    
+class MortalitySimpleSerializer(ModelSerializer):
+    """Serializer for Mortality
+
+    Used to serialize all data from mortality cases.
+    """
+
+    # Allow to display nested data
+    species = SpeciesSerializer(read_only=True)
+    death_cause = NomenclatureSerializer(read_only=True)
+
+    class Meta:
+        model = Mortality
+        fields = [
+            "id",
+            "geom",
+            "date",
+            "species",
+            "death_cause",
+            "infrstr",
+            "nb_death",
+            "author",
+            "data_source",
+            "data_source_url",
+            "created_by",
+            "media",
+            "comment",
+        ]
 
 class MortalitySerializer(GeoFeatureModelSerializer):
     """Serializer for Mortality
@@ -20,6 +65,7 @@ class MortalitySerializer(GeoFeatureModelSerializer):
     # Allow to display nested data
     species = SpeciesSerializer(read_only=True)
     death_cause = NomenclatureSerializer(read_only=True)
+    infrstr = MortalityInfrastructureSerializer(read_only=True)
 
     class Meta:
         model = Mortality
@@ -33,6 +79,7 @@ class MortalitySerializer(GeoFeatureModelSerializer):
             "death_cause",
             "death_cause_id",
             "infrstr",
+            "infrstr_id",
             "nb_death",
             "author",
             "data_source",
@@ -45,6 +92,7 @@ class MortalitySerializer(GeoFeatureModelSerializer):
         extra_kwargs = {
             "species_id": {"source": "species", "write_only": True},
             "death_cause_id": {"source": "death_cause", "write_only": True},
+            "infrstr_id": {"source": "infrstr", "write_only": True},
         }
 
 
@@ -58,6 +106,8 @@ class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
     species = SpeciesSerializer(read_only=True)
     death_cause = NomenclatureSerializer(read_only=True)
     areas = GeoAreaSerializer(many=True, read_only=True)
+    infrstr = MortalityInfrastructureSerializer(read_only=True)
+    
     class Meta:
         model = Mortality
         geo_field = "geom"
@@ -70,6 +120,7 @@ class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
             "death_cause",
             "death_cause_id",
             "infrstr",
+            "infrstr_id",
             "nb_death",
             "author",
             "data_source",
@@ -83,6 +134,7 @@ class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
         extra_kwargs = {
             "species_id": {"source": "species", "write_only": True},
             "death_cause_id": {"source": "death_cause", "write_only": True},
+            "infrstr_id": {"source": "infrstr", "write_only": True},
         }
 
 

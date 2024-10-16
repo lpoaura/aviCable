@@ -33,7 +33,7 @@ Dans un modal
           </v-chip>
         </template>
         <template #item.properties.diagnosis.0="{ _, item }">
-          <widgets-risk-level-status :data="item" :detail="false" />
+          <widgets-risk-level-status :display-mortality="true" :data="item" :detail="false" />
         </template>
         <template #item.resourcetype="{ value }">
           <v-chip>

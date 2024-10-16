@@ -48,6 +48,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
         .prefetch_related("operations__equipments")
         .prefetch_related("operations__equipments__type")
         .prefetch_related("operations__media")
+        .prefetch_related("mortality")
     )
 
     # def get_bbox_filter_field(self):

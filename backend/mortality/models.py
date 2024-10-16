@@ -40,7 +40,7 @@ class Mortality(BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="mortality_infrstr",
+        related_name="mortality",
         verbose_name=_("Infrastructure related to mortality case"),
         help_text=_("Infrastructure related to mortality case"),
     )

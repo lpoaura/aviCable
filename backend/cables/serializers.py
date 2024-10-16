@@ -3,6 +3,7 @@ import logging
 from geo_area.models import GeoArea
 from geo_area.serializers import GeoAreaSerializer
 from media.serializers import MediaSerializer
+from mortality.serializers import MortalitySimpleSerializer
 from rest_framework.exceptions import APIException
 from rest_framework_gis.serializers import (GeoFeatureModelSerializer,
                                             GeometryField, ModelSerializer)
@@ -582,7 +583,7 @@ class OperationPolymorphicSerializer(
         fields = "__all__"
 
 
-class InfrastructureSerializer(GeoFeatureModelSerializer):
+class InfrastructureSerializer(ModelSerializer):
     """Serializer for Infrastructure
 
     Used to serialize all data from infrastructures.
@@ -595,10 +596,10 @@ class InfrastructureSerializer(GeoFeatureModelSerializer):
     sensitive_area = SensitiveAreaSerializer(many=True)
     diagnosis = DiagnosisSerializer(many=True)
     operations = OperationSerializer(many=True)
+    mortality = MortalitySimpleSerializer(many=True)
 
     class Meta:
         model = Infrastructure
-        geo_field = "geom"
         fields = [
             "id",
             "owner",
@@ -607,6 +608,7 @@ class InfrastructureSerializer(GeoFeatureModelSerializer):
             "sensitive_area",
             "diagnosis",
             "operations",
+            "mortality",
         ]
 
 
@@ -633,6 +635,7 @@ class PointSerializer(GeoFeatureModelSerializer):
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
     diagnosis = DiagnosisSerializer(many=True, read_only=True)
     operations = OperationSerializer(many=True, read_only=True)
+    mortality = MortalitySimpleSerializer(many=True, read_only=True)
 
     class Meta:
         model = Point
@@ -648,6 +651,7 @@ class PointSerializer(GeoFeatureModelSerializer):
             # "sensitive_area_id",
             "diagnosis",
             "operations",
+            "mortality"
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
@@ -711,6 +715,7 @@ class LineSerializer(GeoFeatureModelSerializer):
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
     diagnosis = DiagnosisSerializer(many=True, read_only=True)
     operations = OperationSerializer(many=True, read_only=True)
+    mortality = MortalitySimpleSerializer(many=True, read_only=True)
 
     class Meta:
         model = Line
@@ -726,6 +731,7 @@ class LineSerializer(GeoFeatureModelSerializer):
             # "sensitive_area_id",
             "diagnosis",
             "operations",
+            "mortality"
         ]
         # Allow to handle create/update/partial_updcreateate with nested data
         extra_kwargs = {
