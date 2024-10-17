@@ -111,9 +111,20 @@ watch(mortalityInfrastructure, (newVal, _oldVal) => {
 })
 
 
-const infrastructurePopupContent = (feature) => `<h2><span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
-      </span><span id="routerLink" style="cursor: pointer">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
-        ${feature.properties?.owner.label} ${feature.properties?.id}</span></h2>`
+
+const infrastructurePopupContent = (feature) => `
+  <div>
+    <h2>
+      <span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
+        </span><span id="routerLink" style="cursor: pointer">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
+          ${feature.properties?.owner?.label} ${feature.properties?.id}</span>
+    </h2>
+    <button class="v-btn v-btn--slim w-100 v-theme--light bg-success v-btn--density-default v-btn--size-default v-btn--variant-flat" type="button"  id="MapInfrstrPopupLink" data-route="/infrastructure/${feature.properties.id}">
+      Fiche support
+    </button>
+  </div>
+`
+
 
 const  isFeatureCollection = (obj: any): obj is FeatureCollection => {
     return (
@@ -130,7 +141,22 @@ const  isFeatureCollection = (obj: any): obj is FeatureCollection => {
 
 
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
-  // layer.bindPopup(infrastructurePopupContent(feature))
+  if (!mortalityGetInfrastructure.value) {
+    layer.bindPopup(infrastructurePopupContent(feature))
+    layer.on('popupopen', () => {
+        const id = feature?.properties?.id
+        const link = document.getElementById('MapInfrstrPopupLink');
+        link?.addEventListener('click', (event) => {
+          console.log('ON Click')
+          event.preventDefault(); // Prevent the default anchor behavior
+          if (['Point','Line'].includes(feature?.resourcetype) && !!id) {
+            console.log('GoTo link')
+            router.push(`/infrastructures/${id}`)
+          }
+        });
+        console.log('btn click', feature, link, (['Point','Line'].includes(feature?.resourcetype) && !!id))
+      });
+  }
   layer.on('click', ()=> {
     if (mortalityGetInfrastructure.value) {
       mortalityInfrastructure.value = feature
@@ -138,18 +164,10 @@ const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
     }
     else {
       selectedFeature.value = feature
+
     }
   })
-    // layer.on('popupopen', () => {
-    //   const id = feature?.properties?.id
-    //     const link = document.getElementById('routerLink');
-    //     link.addEventListener('click', (event) => {
-    //       event.preventDefault(); // Prevent the default anchor behavior
-    //       if (['Point','Line'].includes(feature?.resourcetype) && id) {
-    //         router.push(`/infrastructures/${id}`)
-    //       }
-    //     });
-    //   });
+
 }
 
 const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
