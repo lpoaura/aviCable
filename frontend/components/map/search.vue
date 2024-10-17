@@ -21,13 +21,14 @@
       <l-geo-json v-if="isFeatureCollection(operatedPointData)" name="Supports neutralisés" layer-type="overlay"
         :geojson="operatedPointData" :options="operatedInfrastructureGeoJsonOptions" />
       <!-- <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
+      <l-control-scale position="bottomright" />
       <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
         <v-alert density="compact" type="warning" title="Information" text="Zoomez pour
         afficher
         les données" />
       </l-control>
       <l-control-layers />
-      <l-control-scale position="bottomright" />
+
       <!-- <l-marker :lat-lng="center" ></l-marker> -->
       <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
