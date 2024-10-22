@@ -14,6 +14,8 @@ export const useCablesStore = defineStore('cables', {
     formInfrastructureId: null,
     formInfrastructure: null,
     controller: null,
+    enedisInfrastructure: null,
+    rteInfrastructure: null,
   }),
   getters: {
     infstrDatafeatures (state) {
@@ -67,9 +69,27 @@ export const useCablesStore = defineStore('cables', {
         features: filteredFeatures || []
       }
     },
+    enedisPointData (state) {
+      const filteredFeatures=state.enedisInfrastructure.features?.filter(
+        elem => elem.geometry.type === 'Point'
+      )
+      return {
+        type: "FeatureCollection",
+        features: filteredFeatures || []
+      }
+    },
+    enedisLineStringData (state) {
+      const filteredFeatures=state.enedisInfrastructure.features?.filter(
+        elem => elem.geometry.type === 'LineString'
+      )
+      return {
+        type: "FeatureCollection",
+        features: filteredFeatures || []
+      }
+    },
   },
   actions: {
-    async getInfstrData (params, _) {
+    async getInfstrData (params) {
       this.controller = new AbortController();
       const { signal } = this.controller;
       console.debug('getInfstrData', signal)
@@ -95,7 +115,7 @@ export const useCablesStore = defineStore('cables', {
       }
 
     },
-    async getOpData (params, _) {
+    async getOpData (params) {
       this.controller = new AbortController();
       const { signal } = this.controller;
       console.debug('getOpData', signal)
@@ -118,7 +138,85 @@ export const useCablesStore = defineStore('cables', {
       }
 
     },
+    async getEnedisInfrastructure (bbox) {
+      const params =         {
+          where: `in_bbox(geo_shape,${bbox})` ,
+          limit: "10000",
+          lang: "fr",
+          timezone: "Europe/Paris",
+          use_labels: "false",
+          epsg: "4326"
+      }
+      this.controller = new AbortController();
+      const { signal } = this.controller;
+      console.debug('getEnedisInfrastructure', signal)
+      try{
+        const [ reseauBt, reseauHta, poteaux] = await Promise.all([
+          $http.$get(
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-bt/exports/geojson', {signal, params}
+          ),
+          $http.$get(
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-hta/exports/geojson', {signal, params}
+          ),
+          $http.$get(
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/position-geographique-des-poteaux-hta-et-bt/exports/geojson', {signal, params}
+          )
+        ]);
+        this.enedisInfrastructure = {
+          type: 'FeatureCollection',
+          features : [...reseauBt.features,...reseauHta.features,...poteaux.features,]
+        }
 
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.debug('getEnedisInfrastructure Requête annulée');
+      } else {
+        console.error(err)
+      }
+    }  finally {
+      // Reset loading status and controller
+      this.controller = null; // Reset the controller after the request
+    }
+    },
+    async getRteInfrastructure (bbox) {
+      const paramsLines =         {
+          where: `in_bbox(geo_shape,${bbox})` ,
+          limit: "10000",
+          lang: "fr",
+          timezone: "Europe/Paris",
+          use_labels: "false",
+          epsg: "4326"
+      }
+      const paramsPylones = {...paramsLines}
+      paramsPylones.where =  `in_bbox(geo_point_pylone,${bbox})`
+      this.controller = new AbortController();
+      const { signal } = this.controller;
+      console.debug('getRteInfrastructure', signal)
+      try{
+        const [ Lines,] = await Promise.all([
+          $http.$get(
+            'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', {signal, params: paramsLines}
+          ),
+          $http.$get(
+            'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', {signal, params: paramsPylones}
+          ),
+        ]);
+        this.rteInfrastructure = {
+          type: 'FeatureCollection',
+          features : [...Lines.features,]
+        }
+
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.debug('getRteInfrastructure Requête annulée');
+      } else {
+        console.error(err)
+      }
+    }  finally {
+      // Reset loading status and controller
+      this.controller = null; // Reset the controller after the request
+    }
+    },
     cancelRequest() {
       console.debug('cancelRequest aborting getInfstrData check',this.controller)
       if (this.controller) {

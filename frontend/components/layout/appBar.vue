@@ -1,5 +1,6 @@
 <template>
   <v-app-bar color="light-blue-darken-3" :density="mobile ? 'compact': 'default'">
+    <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer" />
     <v-toolbar-title>{{ $t('app.appShortName') }}</v-toolbar-title>
     <v-spacer />
     <div v-if="!mobile">
@@ -14,4 +15,6 @@
 import  {useDisplay} from 'vuetify'
 const {mobile} = useDisplay()
 const router = useRouter()
+const globalStore = useGlobalStore()
+const {drawer} = storeToRefs(globalStore)
 </script>

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ocb-backend"
+name = "avicable-backend"
 version = "0.0.1"
 description = "overhead cables and birdlife - backend"
 authors = ["LPO AuRA <auvergne-rhone-alpes@lpo.fr>"]

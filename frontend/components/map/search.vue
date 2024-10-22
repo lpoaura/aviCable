@@ -2,6 +2,7 @@
   <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getBbox"
     @moveend="getBbox">
 
+
     <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
@@ -20,6 +21,13 @@
         :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
       <l-geo-json v-if="isFeatureCollection(operatedPointData)" name="Supports neutralisés" layer-type="overlay"
         :geojson="operatedPointData" :options="operatedInfrastructureGeoJsonOptions" />
+      <l-geo-json v-if="isFeatureCollection(enedisInfrastructure)" name="Infra enedis" layer-type="overlay"
+        :geojson="enedisInfrastructure" :options="enedisInfrastructureGeoJsonOptions"
+        :options-style="enedisInfrastructureLineStyle" />
+
+      <l-geo-json v-if="isFeatureCollection(rteInfrastructure)" name="Infra RTE" layer-type="overlay"
+        :geojson="rteInfrastructure" :options="rteInfrastructureGeoJsonOptions"
+        :options-style="rteInfrastructureLineStyle" />
       <!-- <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
       <l-control-scale position="bottomright" />
       <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
@@ -68,11 +76,13 @@ const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<boolean> = ref(false)
 const opLineRef : Ref<typeof LGeoJson | null> = ref(null)
 const router = useRouter()
+const externalSourceDataZoomTreshold = 13
 // Stores
 const cableStore : StoreGeneric  = useCablesStore()
 const mortalityStore: StoreGeneric = useMortalityStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
+
 
 
 // Store values
@@ -83,7 +93,7 @@ const {
   selectedFeature,
   newGeoJSONObject,
   mortalityGetInfrastructure,
-  mortalityInfrastructure
+  mortalityInfrastructure,
 } = storeToRefs(coordinatesStore)
 const {
   infstrData,
@@ -91,7 +101,9 @@ const {
   pointData,
   operatedPointData,
   lineStringData,
-  operatedLineStringData
+  operatedLineStringData,
+  enedisInfrastructure,
+  rteInfrastructure,
 } = storeToRefs(cableStore)
 const {mortalityData} = storeToRefs(mortalityStore)
 const {baseLayers} = storeToRefs(mapLayersStore)
@@ -193,6 +205,12 @@ const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature : infrastructureOnEachFeature,
 })
 
+const enedisInfrastructureGeoJsonOptions : GeoJSONOptions = reactive({
+})
+
+const rteInfrastructureGeoJsonOptions : GeoJSONOptions = reactive({
+})
+
 const operatedInfrastructureGeoJsonOptions : GeoJSONOptions = reactive({
   onEachFeature : infrastructureOnEachFeature,
 })
@@ -268,6 +286,27 @@ const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
       // draggable: true,
     }
   }
+
+  const enedisInfrastructureLineStyle = (feature: Feature) => {
+    return  {
+      color:  "black",
+      opacity: 0.8,
+      weight: 2,
+      // draggable: true,
+      dashArray: '7, 3, 3, 3'
+    }
+  }
+
+  const rteInfrastructureLineStyle = (feature: Feature) => {
+    return  {
+      color:  "black",
+      opacity: 0.8,
+      weight: 2,
+      // draggable: true,
+      dashArray: '10, 10'
+    }
+  }
+
 const hookUpDraw = async () => {
   console.log(map.value)
   mapObject.value = map.value?.leafletObject;
@@ -405,6 +444,12 @@ const supportColor = (feature: Feature) => {
   return 'grey'
 }
 
+const reverseBBoxString = (bounds) => {
+  console.log(typeof bounds)
+  const coords : Array<number> = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()]
+  return coords.toString()
+}
+
 watch(bbox, (newVal, _oldVal) => {
   cableStore.cancelRequest();
   mortalityStore.cancelRequest();
@@ -417,6 +462,13 @@ watch(bbox, (newVal, _oldVal) => {
     infstrDataLoadingStatus.value = false
     infstrData.value = {}
     mortalityData.value= {} as FeatureCollection
+  }
+  if (zoom.value >= externalSourceDataZoomTreshold) {
+    cableStore.getEnedisInfrastructure(reverseBBoxString(mapObject.value.getBounds()))
+    cableStore.getRteInfrastructure(reverseBBoxString(mapObject.value.getBounds()))
+  } else {
+    enedisInfrastructure.value = {} as FeatureCollection
+    rteInfrastructure.value = {} as FeatureCollection
   }
 })
 
@@ -467,7 +519,6 @@ onBeforeMount(async () => {
   }
 
   deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng ) => {
-    console.log('deathCasesGeoJsonOptions', feature, latlng)
       if(latlng){
         const iconDict : {[key: string]: string} = {
           COD_EL: 'lightning-bolt',
@@ -483,6 +534,34 @@ onBeforeMount(async () => {
         return leaflet.marker(latlng, {icon: deathCaseIcon});
       }
     }
+
+    enedisInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : LatLng | null ) => {
+    if (latlng) {
+      return leaflet.circleMarker(latlng, {
+        radius: 3,
+        fillColor: "black",
+        color: 'black',
+        weight: 0.5,
+        opacity: 0.5,
+        fillOpacity: 0.8,
+        // draggable: true,
+      })
+    }
+  }
+
+  rteInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : LatLng | null ) => {
+    if (latlng) {
+      return leaflet.circleMarker(latlng, {
+        radius: 4,
+        fillColor: "grey",
+        color: 'grey',
+        weight: 0.5,
+        opacity: 0.5,
+        fillOpacity: 0,
+        // draggable: true,
+      })
+    }
+  }
 })
 
 </script>
