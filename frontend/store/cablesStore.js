@@ -69,24 +69,6 @@ export const useCablesStore = defineStore('cables', {
         features: filteredFeatures || []
       }
     },
-    enedisPointData (state) {
-      const filteredFeatures=state.enedisInfrastructure.features?.filter(
-        elem => elem.geometry.type === 'Point'
-      )
-      return {
-        type: "FeatureCollection",
-        features: filteredFeatures || []
-      }
-    },
-    enedisLineStringData (state) {
-      const filteredFeatures=state.enedisInfrastructure.features?.filter(
-        elem => elem.geometry.type === 'LineString'
-      )
-      return {
-        type: "FeatureCollection",
-        features: filteredFeatures || []
-      }
-    },
   },
   actions: {
     async getInfstrData (params) {
@@ -221,7 +203,7 @@ export const useCablesStore = defineStore('cables', {
       const { signal } = this.controller;
       console.debug('getRteInfrastructure', signal)
       try{
-        const [ Lines,] = await Promise.all([
+        const [ Lines, Pylones] = await Promise.all([
           $http.$get(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', {signal, params: paramsLines}
           ),
@@ -229,9 +211,10 @@ export const useCablesStore = defineStore('cables', {
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', {signal, params: paramsPylones}
           ),
         ]);
+        console.log('Pylones', Pylones)
         this.rteInfrastructure = {
           type: 'FeatureCollection',
-          features : [...Lines.features,]
+          features : [...Lines.features,...Pylones.features]
         }
 
     } catch (err) {

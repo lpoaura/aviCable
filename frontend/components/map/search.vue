@@ -16,7 +16,7 @@
       </template>
       <l-geo-json v-for="(layer, index) in validOtherNetworksLayers" :key='index' :geojson="layer.data"
         :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name" layer-type='overlay'
-        @ready="otherNetworksLayersReady = true" />
+        @ready="otherNetworksLayersReady = true" :visible="false" />
       <l-geo-json v-if="isValidFeatureCollection(mortalityData)" name="Mortalité" layer-type="overlay"
         :geojson="mortalityData" :options="mortalityGeoJsonOptions()" />
       <l-geo-json v-if="bufferedSelectedInfrastructure" :geojson="bufferedSelectedInfrastructure"
@@ -105,7 +105,8 @@ const iconDict: { [key: string]: string } = {
   COD_UNKNOWN: 'help',
 }
 const levelNotes: { [key: string]: number } = { 'RISK_L': 1, 'RISK_M': 2, 'RISK_H': 3 }
-
+const rteColor : string = '#00838F' // Vuetify cyan-darken-3
+const enedisColor : string = '#2E7D32' // Vuetify green-darken-3
 
 const infraStructureLayers = computed(() => [
   {
@@ -143,7 +144,6 @@ const otherNetworksLayers = computed(() => [
     options: enedisInfrastructureGeoJsonOptions,
     optionsStyle: enedisInfrastructureGeoJsonOptionsStyle,
     name: 'Réseau ENEDIS',
-    layerType: 'base'
   },
   {
     data: rteInfrastructure.value,
@@ -187,10 +187,11 @@ const infrastructurePopupContent = (feature) => `
 const mortalityPopupContent = (feature) => `
   <div>
     <h2>
-      <span class="mdi ${iconDict[feature.properties?.death_cause?.code] || 'help'}">
-        </span><span id="routerLink" style="cursor: pointer">Mortalité</span>
+      <span class="text-red mdi mdi-${iconDict[feature.properties?.death_cause?.code] || 'help'}">
+        ${feature.properties.species?.vernacular_name || feature.properties.species?.scientific_name}
     </h2>
-    <button class="v-btn v-btn--slim w-100 v-theme--light bg-success v-btn--density-default v-btn--size-default v-btn--variant-flat" type="button"  id="MapMortalityLink" data-route="/mortality/${feature.properties.id}">
+    <p>${feature.properties?.death_cause?.label} - ${feature.properties?.date}</p>
+    <button class="v-btn v-btn--slim w-100 v-theme--light bg-success v-btn--density-default v-btn--size-default v-btn--variant-flat" type="button" id="MapMortalityPopupLink" data-route="/mortality/${feature.id}">
       Fiche mortalité
     </button>
   </div>
@@ -237,15 +238,17 @@ const infrastructureOnEachFeature = (feature: Feature, layer: Layer) => {
 }
 
 const mortalityOnEachFeature = (feature: Feature, layer: Layer) => {
-  layer.bindPopup(mortalityPopupContent(feature))
-  layer.on('popupopen', () => {
-    const id = feature?.properties?.id
-    const link = document.getElementById('MapMortalityPopupLink');
-    link?.addEventListener('click', (event) => {
-      event.preventDefault(); // Prevent the default anchor behavior
-      router.push(`/mortality/${id}`)
+  if (!mortalityGetInfrastructure.value) {
+    layer.bindPopup(mortalityPopupContent(feature))
+    layer.on('popupopen', () => {
+      const id = feature?.id
+      const link = document.getElementById('MapMortalityPopupLink');
+      link?.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent the default anchor behavior
+        router.push(`/mortality/${id}`)
+      });
     });
-  });
+  }
 }
 
 
@@ -312,9 +315,9 @@ const enedisInfrastructureGeoJsonOptions = () => {
     pointToLayer: (_feature: Feature, latlng: LatLng | null) => {
       if (latlng) {
         return leaflet.circleMarker(latlng, {
-          radius: 3,
-          fillColor: "black",
-          color: 'black',
+          radius: 2,
+          fillColor: enedisColor,
+          color: enedisColor,
           weight: 0.5,
           opacity: 0.5,
           fillOpacity: 0.8,
@@ -330,10 +333,11 @@ const rteInfrastructureGeoJsonOptions = () => {
   return {
     pointToLayer: (_feature: Feature, latlng: LatLng | null) => {
       if (latlng) {
+        console.log('rteInfrastructureGeoJsonOptions.type', _feature.geometry.type)
         return leaflet.circleMarker(latlng, {
-          radius: 4,
-          fillColor: "black",
-          color: 'black',
+          radius: 3,
+          fillColor: rteColor,
+          color: rteColor,
           weight: 0.5,
           opacity: 0.5,
           fillOpacity: 0.8,
@@ -363,9 +367,9 @@ const operatedInfrastructureGeoJsonOptionsStyle = (feature: Feature) => {
 
 const enedisInfrastructureGeoJsonOptionsStyle = () => {
   return {
-    color: "black",
+    color: enedisColor,
     opacity: 0.8,
-    weight: 2,
+    weight: 1.5,
     dashArray: '7, 3, 3, 3'
   }
 }
@@ -392,7 +396,7 @@ const bufferedSelectedInfrastructureGeoJsonOptionsStyle = (_feature: Feature) =>
 
 const rteInfrastructureGeoJsonOptionsStyle = () => {
   return {
-    color: "black",
+    color: rteColor,
     opacity: 0.8,
     weight: 2,
     dashArray: '10, 10'
