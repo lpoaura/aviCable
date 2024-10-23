@@ -7,7 +7,7 @@
           <map-search :edit-mode="false" />
         </slot>
       </v-col>
-      <v-col :cols="mobile ? 12 : 6" class="pa-0" :class="mobile ? (isSearchPage ? 'fill-height' : 'h-50') : ''">
+      <v-col v-if="!isSearchPage" :cols="mobile ? 12 : 6" class="pa-0" :class="mobile ? (isSearchPage ? 'fill-height' : 'h-50') : ''">
         <slot />
       </v-col>
     </v-row>
