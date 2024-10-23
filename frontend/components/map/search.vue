@@ -17,22 +17,12 @@
       <l-geo-json v-for="(layer, index) in validOtherNetworksLayers" :key='index' :geojson="layer.data"
         :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name" layer-type='overlay'
         @ready="otherNetworksLayersReady = true" />
-      <!--
-      <l-geo-json v-if="isValidFeatureCollection(operatedLineStringData)" name="Lignes neutralisées"
-        layer-type="overlay" :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
-      <l-geo-json v-if="isValidFeatureCollection(operatedPointData)" name="Supports neutralisés" layer-type="overlay"
-        :geojson="operatedPointData" :options="operatedInfrastructureGeoJsonOptions" />
-      <l-geo-json v-if="isValidFeatureCollection(lineStringData)" name="Lignes" layer-type="overlay"
-        :geojson="lineStringData" :options="infrastructureGeoJsonOptions" :options-style="infrastructureLineStyle" />
-      <l-geo-json v-if="isValidFeatureCollection(pointData)" name="Supports" layer-type="overlay" :geojson="pointData"
-        :options="infrastructureGeoJsonOptions" />-->
       <l-geo-json v-if="isValidFeatureCollection(mortalityData)" name="Mortalité" layer-type="overlay"
-        :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
-      <l-geo-json v-if="bufferedSelectedFeature" :geojson="bufferedSelectedFeature"
-        :options-style="selectedFeatureGeoJsonStyle" />
+        :geojson="mortalityData" :options="mortalityGeoJsonOptions()" />
+      <l-geo-json v-if="bufferedSelectedInfrastructure" :geojson="bufferedSelectedInfrastructure"
+        :options-style="bufferedSelectedInfrastructureGeoJsonOptionsStyle" />
       <l-geo-json v-if="bufferedMortalityInfrastructure" :geojson="bufferedMortalityInfrastructure"
-        :options-style="bufferedMortalityInfrastructureGeoJsonStyle" />
-      <!-- <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
+        :options-style="bufferedMortalityInfrastructureGeoJsonOptionsStyle" />
       <l-control-scale position="bottomright" />
       <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
         <v-alert density="compact" type="warning" title="Information" text="Zoomez pour
@@ -40,9 +30,6 @@
         les données" />
       </l-control>
       <l-control-layers />
-
-      <!-- <l-marker :lat-lng="center" ></l-marker> -->
-      <!-- <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" /> -->
     </template>
     <utils-map-actions-menu v-if="!editMode" />
   </l-map>
@@ -53,45 +40,43 @@ import leaflet from 'leaflet'
 import { storeToRefs } from 'pinia';
 import "leaflet.locatecontrol"
 import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
-// import 'leaflet-search'
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch"
 import "leaflet-geosearch/assets/css/leaflet.css"
-import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale, LWmsTileLayer } from "@vue-leaflet/vue-leaflet";
-// import { useMapLayersStore } from "store/mapLayersStore";
+import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale } from "@vue-leaflet/vue-leaflet";
 import buffer from '@turf/buffer'
-import type { GeoJSON, Feature, FeatureCollection } from "geojson"
-// import { useCablesStore } from "~/store/cablesStore"
+import type { Feature, FeatureCollection } from "geojson"
 import type { StoreGeneric } from "pinia"
-import type {PointTuple, GeoJSONOptions, Layer, LatLng} from "leaflet";
-
-// import { useCoordinatesStore } from "../store/coordinatesStore";
+import type {Layer, LatLng} from "leaflet";
 
 await import("@geoman-io/leaflet-geoman-free");
 
-const {editMode, mode, mortalityItem} = defineProps({
+// Props
+const {editMode, mode} = defineProps({
   editMode: Boolean,
   mode: { type: String, default: null },
-  mortalityItem: {} as Feature
 })
 
-const map : Ref<typeof LMap|null> = ref(null)
-const mapObject : Ref<typeof LMap|null> = ref(null)
-const createLayer: Ref<Layer |null> = ref(null)
-const mapReady : Ref<boolean> = ref(false)
-const opLineRef : Ref<typeof LGeoJson | null> = ref(null)
-const router = useRouter()
-const externalSourceDataZoomTreshold = 13
+
 // Stores
 const cableStore : StoreGeneric  = useCablesStore()
 const mortalityStore: StoreGeneric = useMortalityStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
+
+// Data
+const map : Ref<typeof LMap|null> = ref(null)
+const mapObject : Ref<typeof LMap|null> = ref(null)
+const createLayer: Ref<Layer |null> = ref(null)
+const mapReady : Ref<boolean> = ref(false)
+const router = useRouter()
+const externalSourceDataZoomTreshold = 13
 const infrastructureLayersReady : Ref<boolean> = ref(false)
 const otherNetworksLayersReady : Ref<boolean> = ref(false)
-
-const layerReady=(ab, cd) => {console.log('ready', ab, cd), ab.bringToFront()}
-
-// Store values
+  const iconDict : {[key: string]: string} = {
+          COD_EL: 'lightning-bolt',
+          COD_IM : 'star',
+          COD_UNKNOWN: 'help',
+        }
 const {
   zoom,
   center,
@@ -114,20 +99,10 @@ const {
 } = storeToRefs(cableStore)
 const {mortalityData} = storeToRefs(mortalityStore)
 const {baseLayers} = storeToRefs(mapLayersStore)
-  // const baseLayers = computed(() => mapLayersStore.baseLayers)
-// const storedSelectedFeature: ComputedRef<Feature|null> =  computed<Feature|null>(() =>  coordinatesStore.selectedFeature)
-const bufferedSelectedFeature : Ref<Feature|null> = ref(null)
+const bufferedSelectedInfrastructure : Ref<Feature|null> = ref(null)
   const bufferedMortalityInfrastructure : Ref<Feature|null> = ref(null)
 
 const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
-
-watch(selectedFeature, (newVal, _oldVal) => {
-  bufferedSelectedFeature.value = newVal  ? buffer(newVal, 150, {units: 'meters'}) : null
-})
-
-watch(mortalityInfrastructure, (newVal, _oldVal) => {
-  bufferedMortalityInfrastructure.value = newVal  ? buffer(newVal, 50, {units: 'meters'}) : null
-})
 
 const infraStructureLayers = computed(() => [
   {
@@ -144,17 +119,17 @@ const infraStructureLayers = computed(() => [
   },
 ])
 
-
-
 const operatedInfraStructureLayers = computed(() => [
   {
     data: operatedPointData.value,
     options: operatedInfrastructureGeoJsonOptions,
+    optionsStyle:operatedInfrastructureGeoJsonOptionsStyle,
     name: 'Supports neutralisés',
   },
   {
     data: operatedLineStringData.value,
     options: operatedInfrastructureGeoJsonOptions,
+    optionsStyle:operatedInfrastructureGeoJsonOptionsStyle,
     name: 'Lignes neutralisées',
   }
 ])
@@ -177,21 +152,18 @@ const otherNetworksLayers = computed(() => [
 
 const validInfrastructuresLayers = computed(() => {
   return infraStructureLayers.value.filter(layer => {
-    console.log('layer.data', layer.data, isValidFeatureCollection(layer.data))
     return isValidFeatureCollection(layer.data)
   });
 });
 
 const validOperatedInfrastructuresLayers = computed(() => {
   return operatedInfraStructureLayers.value.filter(layer => {
-    console.log('layer.data', layer.data, isValidFeatureCollection(layer.data))
     return isValidFeatureCollection(layer.data)
   });
 });
 
 const validOtherNetworksLayers = computed(() => {
   return otherNetworksLayers.value.filter(layer => {
-    console.log('layer.data', layer.data, isValidFeatureCollection(layer.data))
     return isValidFeatureCollection(layer.data)
   });
 });
@@ -209,6 +181,17 @@ const infrastructurePopupContent = (feature) => `
   </div>
 `
 
+const mortalityPopupContent = (feature) => `
+  <div>
+    <h2>
+      <span class="mdi ${iconDict[feature.properties?.death_cause?.code] || 'help'}">
+        </span><span id="routerLink" style="cursor: pointer">Mortalité</span>
+    </h2>
+    <button class="v-btn v-btn--slim w-100 v-theme--light bg-success v-btn--density-default v-btn--size-default v-btn--variant-flat" type="button"  id="MapMortalityLink" data-route="/mortality/${feature.properties.id}">
+      Fiche mortalité
+    </button>
+  </div>
+`
 
 const  isValidFeatureCollection = (obj: any): obj is FeatureCollection => {
     return (
@@ -223,8 +206,6 @@ const  isValidFeatureCollection = (obj: any): obj is FeatureCollection => {
     );
 }
 
-
-
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
   if (!mortalityGetInfrastructure.value) {
     layer.bindPopup(infrastructurePopupContent(feature))
@@ -232,10 +213,8 @@ const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
         const id = feature?.properties?.id
         const link = document.getElementById('MapInfrstrPopupLink');
         link?.addEventListener('click', (event) => {
-          console.log('ON Click')
           event.preventDefault(); // Prevent the default anchor behavior
           if (['Point','Line'].includes(feature?.resourcetype) && !!id) {
-            console.log('GoTo link')
             router.push(`/infrastructures/${id}`)
           }
         });
@@ -249,33 +228,25 @@ const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
     }
     else {
       selectedFeature.value = feature
-
     }
   })
 
 }
 
 const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
-  // TODO To be adapted
-  if (feature.properties) {
-    layer.bindPopup(
-      `<h2><span class="mdi mdi-coffin"></span><a to="/search#mortality">${feature.properties.species.vernacular_name}</a></h2>
-      <i>${feature.properties.species.scientific_name}</i>
-    <p><strong>Date</strong>&nbsp;:&nbsp;${feature.properties.date}<br>
-        <strong>Cause</strong>&nbsp;:&nbsp;${feature.properties.death_cause.label}
-      </dl>
-      </p>`
-    )
-    layer.on('click', (e)=> {console.debug('click', feature, e)})
-  }
-  // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
-  // delete layer.pm
-  // layer.setStyle({ pmIgnore: false })
+  layer.bindPopup(mortalityPopupContent(feature))
+    layer.on('popupopen', () => {
+        const id = feature?.properties?.id
+        const link = document.getElementById('MapMortalityPopupLink');
+        link?.addEventListener('click', (event) => {
+          event.preventDefault(); // Prevent the default anchor behavior
+          router.push(`/mortality/${id}`)
+        });
+      });
 }
 
 
-const infrastructureGeoJsonOptions = (data) => {
-  console.debug(data)
+const infrastructureGeoJsonOptions = () => {
   return {
     onEachFeature : infrastructureOnEachFeature,
     pointToLayer : (feature: Feature, latlng : LatLng | null ) => {
@@ -287,25 +258,14 @@ const infrastructureGeoJsonOptions = (data) => {
           weight: 0.5,
           opacity: 0.5,
           fillOpacity: 0.8,
-          // draggable: true,
         })
       }
     }
   }
 }
 
-const infrastructureGeoJsonOptionsStyle = (feature: Feature) => {
-      console.log('infrastructureGeoJsonOptions.style', feature)
-      return  {
-        color:  lineColor(feature),
-        weight: 5,
-        // draggable: true,
-      }
-    }
 
-
-const operatedInfrastructureGeoJsonOptions = (data) => {
-  console.debug(data)
+const operatedInfrastructureGeoJsonOptions = () => {
   return {
     onEachFeature : infrastructureOnEachFeature,
     pointToLayer : (_feature: Feature, latlng : LatLng | null ) => {
@@ -317,21 +277,30 @@ const operatedInfrastructureGeoJsonOptions = (data) => {
       weight: 0,
       opacity: 1,
       fillOpacity: 0.8,
-      // draggable: true,
     })
   }
   }
   }
 }
 
-const operatedinfrastructureGeoJsonOptionsstyle = (feature: Feature) => {
-      console.log('infrastructureGeoJsonOptions.style', feature)
-      return  {
-        color:  '#00ff00',
-        weight: 2,
-        // draggable: true,
+
+
+const mortalityGeoJsonOptions = () => {
+  return {
+    onEachFeature: mortalityOnEachFeature,
+    pointToLayer: (feature: Feature, latlng : LatLng ) => {
+      if(latlng){
+        const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
+        const deathCaseIcon = leaflet.divIcon({
+          html: `<span class="mdi mdi-${icon}"></span>`,
+          iconSize: [15, 15],
+          className: 'mapMarkerIcon'}
+          );
+        return leaflet.marker(latlng, {icon: deathCaseIcon});
       }
     }
+}}
+
 
 const enedisInfrastructureGeoJsonOptions = () => {
   return {
@@ -344,20 +313,13 @@ const enedisInfrastructureGeoJsonOptions = () => {
         weight: 0.5,
         opacity: 0.5,
         fillOpacity: 0.8,
-        // draggable: true,
       })
     }
   }
 }
 }
 
-const enedisInfrastructureGeoJsonOptionsStyle = () => {return {
-      color:  "black",
-      opacity: 0.8,
-      weight: 2,
-      // draggable: true,
-      dashArray: '7, 3, 3, 3'
-    }}
+
 
 const rteInfrastructureGeoJsonOptions = () => {
   return {
@@ -370,53 +332,64 @@ const rteInfrastructureGeoJsonOptions = () => {
         weight: 0.5,
         opacity: 0.5,
         fillOpacity: 0.8,
-        // draggable: true,
       })
     }
   }
 }}
 
-const rteInfrastructureGeoJsonOptionsStyle =  () => {return {
+// Layers OptionsStyles
+
+const infrastructureGeoJsonOptionsStyle = (feature: Feature) => {
+      return  {
+        color:  lineColor(feature),
+        weight: 5,
+      }
+    }
+
+
+const operatedInfrastructureGeoJsonOptionsStyle = (feature: Feature) => {
+      return  {
+        color:  '#00ff00',
+        weight: 2,
+      }
+    }
+
+
+const enedisInfrastructureGeoJsonOptionsStyle = () => {return {
       color:  "black",
       opacity: 0.8,
       weight: 2,
-      // draggable: true,
-      dashArray: '10, 10'
+      dashArray: '7, 3, 3, 3'
     }}
 
-const selectedFeatureGeoJsonOptions = () => {
-  return {
-    pointToLayer: (feature: Feature, latlng : LatLng | null ) => {
-    if (feature.resourcetype === 'Point' && latlng) {
-    return leaflet.circleMarker(latlng, {
-      radius: 20,
-      fillColor: 'red',
-      color: 'red',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.2,
-      // draggable: true,
-    })}
-    else {
-      return null
+
+const bufferedMortalityInfrastructureGeoJsonOptionsStyle = (_feature: Feature) => {
+  const color='red'
+    return {
+      color: color,
+      fillColor: color,
+      weight: 2,
+      opacity: 0.5,
     }
-  },
-  style:  {
+  }
+
+  const bufferedSelectedInfrastructureGeoJsonOptionsStyle = (_feature: Feature) => {
+    return   {
       color: '#03A9F4',
       fillColor: '#03A9F4',
       weight: 2,
       opacity: 0.5,
     }
   }
-}
 
+const rteInfrastructureGeoJsonOptionsStyle =  () => {return {
+      color:  "black",
+      opacity: 0.8,
+      weight: 2,
+      dashArray: '10, 10'
+    }}
 
-// const selectedFeatureGeoJsonOptions : GeoJSONOptions = reactive({})
-
-
-const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
-  onEachFeature: mortalityOnEachFeature ,
-})
+// Watchers
 
 watch(selectedFeature, (newVal, oldVal) => {
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
@@ -427,13 +400,45 @@ watch(selectedFeature, (newVal, oldVal) => {
 
 watch(createLayer, (newLayer, _oldLayer) => {
   if (newLayer && newLayer.toGeoJSON()) {
-    // You can perform additional actions here based on the unique layer's changes
     newGeoJSONObject.value = newLayer.toGeoJSON()
   } else {
     console.debug('Unique layer removed');
   }
 });
 
+watch(selectedFeature, (newVal, _oldVal) => {
+  bufferedSelectedInfrastructure.value = newVal  ? buffer(newVal, 150, {units: 'meters'}) : null
+})
+
+watch(mortalityInfrastructure, (newVal, _oldVal) => {
+  bufferedMortalityInfrastructure.value = newVal  ? buffer(newVal, 50, {units: 'meters'}) : null
+})
+
+
+watch(bbox, (newVal, _oldVal) => {
+  cableStore.cancelRequest();
+  mortalityStore.cancelRequest();
+
+  if (zoom.value >= 10) {
+    cableStore.getAllInfrastructureData({in_bbox: newVal})
+    mortalityStore.getMortalityData({in_bbox: newVal})
+  } else {
+    infstrDataLoadingStatus.value = false
+    infstrData.value = {}
+    opData.value = {}
+    mortalityData.value= {} as FeatureCollection
+  }
+  if (zoom.value >= externalSourceDataZoomTreshold) {
+    cableStore.getEnedisInfrastructure(reverseBBoxString(mapObject.value.getBounds()))
+    cableStore.getRteInfrastructure(reverseBBoxString(mapObject.value.getBounds()))
+  } else {
+    enedisInfrastructure.value = {} as FeatureCollection
+    rteInfrastructure.value = {} as FeatureCollection
+  }
+})
+
+
+// helpers functions
 const getBbox = () => {
   if (mapObject.value) {
     zoom.value = mapObject.value.getZoom()
@@ -442,52 +447,6 @@ const getBbox = () => {
   }
 }
 
-
-
-  const bufferedMortalityInfrastructureGeoJsonStyle = (_feature: Feature) => {
-  const color='red' // blue-lighten
-    return {
-      color: color,
-      fillColor: color,
-      weight: 2,
-      opacity: 0.5,
-    }
-  }
-
-  const infrastructureLineStyle = (feature: Feature) => {
-    return  {
-      color:  lineColor(feature),
-      weight: 5,
-      // draggable: true,
-    }
-  }
-  const infrastructureOperatedLineStyle = (_feature: Feature) => {
-    return  {
-      color:  '#00ff00',
-      weight: 2,
-      // draggable: true,
-    }
-  }
-
-  const enedisInfrastructureLineStyle = (feature: Feature) => {
-    return  {
-      color:  "black",
-      opacity: 0.8,
-      weight: 2,
-      // draggable: true,
-      dashArray: '7, 3, 3, 3'
-    }
-  }
-
-  const rteInfrastructureLineStyle = (feature: Feature) => {
-    return  {
-      color:  "black",
-      opacity: 0.8,
-      weight: 2,
-      // draggable: true,
-      dashArray: '10, 10'
-    }
-  }
 
 const hookUpDraw = async () => {
   console.log(map.value)
@@ -506,11 +465,6 @@ const hookUpDraw = async () => {
     }).addTo(mapObject.value)
 
     if (mapObject.value && editMode) {
-  // mapObject.value.addControl(
-  //   L.control.locate()
-  // )
-
-      // mapObject.value.pm.setLang("en_gb");
       mapObject.value.pm.addControls({
         position: 'topleft',
             drawMarker: mode === 'point',
@@ -537,11 +491,6 @@ const hookUpDraw = async () => {
         }
             createLayer.value = e.layer
             if (createLayer.value){
-              // if (createLayer.value.toGeoJSON()) {
-              //   coordinatesStore.setNewGeoJSONObject(
-              //     createLayer.value.toGeoJSON().geometry
-              //   )
-              // }
                 mapObject.value?.pm.disableDraw()
                 mapObject.value?.pm.addControls({
                   drawMarker: false,
@@ -553,23 +502,6 @@ const hookUpDraw = async () => {
               }
             }
             )
-            // // set listener on drag event on this layer
-            // this.handleDrag(createLayer)
-
-            // // in case of remove event, trigger handleRemove() method
-            // e.layer.on('pm:remove', (_e) => {
-            //   this.handleRemove()
-            // })
-
-      // mapObject.value.on("pm:drawstart", ({ workingLayer, shape }) => {
-      //   workingLayer.on("pm:vertexadded", (e) => {
-      //     geofence.value.push(e)
-      //   });
-      // });
-
-      // mapObject.value.on("pm:drawend", () => {
-      //   console.log("drawend", geofence.value);
-      // });
       mapObject.value.on('pm:remove', (e) => {
         if (createLayer.value === e.layer) {
           createLayer.value = null; // Clear the unique layer reference
@@ -631,49 +563,6 @@ const reverseBBoxString = (bounds) => {
   const coords : Array<number> = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()]
   return coords.toString()
 }
-
-watch(bbox, (newVal, _oldVal) => {
-  cableStore.cancelRequest();
-  mortalityStore.cancelRequest();
-
-  if (zoom.value >= 10) {
-    cableStore.getAllInfrastructureData({in_bbox: newVal})
-    mortalityStore.getMortalityData({in_bbox: newVal})
-  } else {
-    infstrDataLoadingStatus.value = false
-    infstrData.value = {}
-    opData.value = {}
-    mortalityData.value= {} as FeatureCollection
-  }
-  if (zoom.value >= externalSourceDataZoomTreshold) {
-    cableStore.getEnedisInfrastructure(reverseBBoxString(mapObject.value.getBounds()))
-    cableStore.getRteInfrastructure(reverseBBoxString(mapObject.value.getBounds()))
-  } else {
-    enedisInfrastructure.value = {} as FeatureCollection
-    rteInfrastructure.value = {} as FeatureCollection
-  }
-})
-
-onBeforeMount(async () => {
-  // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-
-  deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng ) => {
-      if(latlng){
-        const iconDict : {[key: string]: string} = {
-          COD_EL: 'lightning-bolt',
-          COD_IM : 'star',
-          COD_UNKNOWN: 'help',
-        }
-        const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
-        const deathCaseIcon = leaflet.divIcon({
-          html: `<span class="mdi mdi-${icon}"></span>`,
-          iconSize: [15, 15],
-          className: 'mapMarkerIcon'}
-          );
-        return leaflet.marker(latlng, {icon: deathCaseIcon});
-      }
-    }
-})
 
 </script>
 
