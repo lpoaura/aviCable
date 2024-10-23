@@ -138,6 +138,34 @@ export const useCablesStore = defineStore('cables', {
       }
 
     },
+    async getAllInfrastructureData(params) {
+      this.controller = new AbortController();
+      const { signal } = this.controller;
+      console.debug('getAllInfrastructureData', signal)
+      try {
+        console.debug("getAllInfrastructureData signal", signal)
+        const [ infstrData, opData] = await Promise.all([
+          $http.$get(
+            '/api/v1/cables/infrastructures', {signal, params}
+          ),
+          $http.$get(
+            '/api/v1/cables/operations/', {signal, params}
+          ),
+        ]);
+        this.opData = opData
+        this.infstrData = infstrData
+        this.infstrDataLoadingStatus = false
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          console.debug('getAllInfrastructureData Requête annulée');
+        } else {
+          console.error(err)
+        }
+      }  finally {
+        // Reset loading status and controller
+        this.controller = null; // Reset the controller after the request
+      }
+    },
     async getEnedisInfrastructure (bbox) {
       const params =         {
           where: `in_bbox(geo_shape,${bbox})` ,

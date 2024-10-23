@@ -1,33 +1,37 @@
 <template>
   <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getBbox"
     @moveend="getBbox">
-
-
-    <!-- <l-map id="map" ref="map" class="d-flex align-stretch" :zoom="zoom" :center="center" @ready="hookUpDraw"> -->
     <template v-if="mapReady">
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
         :visible="baseLayer.default" :attribution="baseLayer.attribution" :layer-type="baseLayer.layer_type" />
-      <l-geo-json v-if="isFeatureCollection(lineStringData)" name="Lignes" layer-type="overlay"
+      <template v-f="otherNetworksLayersReady = true">
+        <l-geo-json v-for="(layer, index) in validInfrastructuresLayers" :key='index' :geojson="layer.data"
+          :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name"
+          layer-type="overlay" @ready="infrastructureLayersReady = true" />
+      </template>
+      <template v-if="infrastructureLayersReady">
+        <l-geo-json v-for="(layer, index) in validOperatedInfrastructuresLayers" :key='index' :geojson="layer.data"
+          :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name"
+          layer-type="overlay" />
+      </template>
+      <l-geo-json v-for="(layer, index) in validOtherNetworksLayers" :key='index' :geojson="layer.data"
+        :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name" layer-type='overlay'
+        @ready="otherNetworksLayersReady = true" />
+      <!--
+      <l-geo-json v-if="isValidFeatureCollection(operatedLineStringData)" name="Lignes neutralisées"
+        layer-type="overlay" :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
+      <l-geo-json v-if="isValidFeatureCollection(operatedPointData)" name="Supports neutralisés" layer-type="overlay"
+        :geojson="operatedPointData" :options="operatedInfrastructureGeoJsonOptions" />
+      <l-geo-json v-if="isValidFeatureCollection(lineStringData)" name="Lignes" layer-type="overlay"
         :geojson="lineStringData" :options="infrastructureGeoJsonOptions" :options-style="infrastructureLineStyle" />
-      <l-geo-json v-if="isFeatureCollection(pointData)" name="Supports" layer-type="overlay" :geojson="pointData"
-        :options="infrastructureGeoJsonOptions" />
-      <l-geo-json v-if="isFeatureCollection(mortalityData)" name="Mortalité" layer-type="overlay"
+      <l-geo-json v-if="isValidFeatureCollection(pointData)" name="Supports" layer-type="overlay" :geojson="pointData"
+        :options="infrastructureGeoJsonOptions" />-->
+      <l-geo-json v-if="isValidFeatureCollection(mortalityData)" name="Mortalité" layer-type="overlay"
         :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
       <l-geo-json v-if="bufferedSelectedFeature" :geojson="bufferedSelectedFeature"
         :options-style="selectedFeatureGeoJsonStyle" />
       <l-geo-json v-if="bufferedMortalityInfrastructure" :geojson="bufferedMortalityInfrastructure"
         :options-style="bufferedMortalityInfrastructureGeoJsonStyle" />
-      <l-geo-json v-if="isFeatureCollection(operatedLineStringData)" name="Lignes neutralisées" layer-type="overlay"
-        :geojson="operatedLineStringData" :options-style="infrastructureOperatedLineStyle" />
-      <l-geo-json v-if="isFeatureCollection(operatedPointData)" name="Supports neutralisés" layer-type="overlay"
-        :geojson="operatedPointData" :options="operatedInfrastructureGeoJsonOptions" />
-      <l-geo-json v-if="isFeatureCollection(enedisInfrastructure)" name="Infra enedis" layer-type="overlay"
-        :geojson="enedisInfrastructure" :options="enedisInfrastructureGeoJsonOptions"
-        :options-style="enedisInfrastructureLineStyle" />
-
-      <l-geo-json v-if="isFeatureCollection(rteInfrastructure)" name="Infra RTE" layer-type="overlay"
-        :geojson="rteInfrastructure" :options="rteInfrastructureGeoJsonOptions"
-        :options-style="rteInfrastructureLineStyle" />
       <!-- <l-geo-json v-if="newGeoJSONObject" :geojson="newGeoJSONObject" /> -->
       <l-control-scale position="bottomright" />
       <l-control v-if="zoom < 10" class="leaflet-control" position="bottomright">
@@ -82,8 +86,10 @@ const cableStore : StoreGeneric  = useCablesStore()
 const mortalityStore: StoreGeneric = useMortalityStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
+const infrastructureLayersReady : Ref<boolean> = ref(false)
+const otherNetworksLayersReady : Ref<boolean> = ref(false)
 
-
+const layerReady=(ab, cd) => {console.log('ready', ab, cd), ab.bringToFront()}
 
 // Store values
 const {
@@ -99,6 +105,7 @@ const {
   infstrData,
   infstrDataLoadingStatus,
   pointData,
+  opData,
   operatedPointData,
   lineStringData,
   operatedLineStringData,
@@ -122,7 +129,72 @@ watch(mortalityInfrastructure, (newVal, _oldVal) => {
   bufferedMortalityInfrastructure.value = newVal  ? buffer(newVal, 50, {units: 'meters'}) : null
 })
 
+const infraStructureLayers = computed(() => [
+  {
+    data: pointData.value,
+    options: infrastructureGeoJsonOptions,
+    name: 'Supports',
+    optionsStyle: null
+  },
+  {
+    data: lineStringData.value,
+    options: infrastructureGeoJsonOptions,
+    name: 'Lignes',
+    optionsStyle: infrastructureGeoJsonOptionsStyle
+  },
+])
 
+
+
+const operatedInfraStructureLayers = computed(() => [
+  {
+    data: operatedPointData.value,
+    options: operatedInfrastructureGeoJsonOptions,
+    name: 'Supports neutralisés',
+  },
+  {
+    data: operatedLineStringData.value,
+    options: operatedInfrastructureGeoJsonOptions,
+    name: 'Lignes neutralisées',
+  }
+])
+
+const otherNetworksLayers = computed(() => [
+  {
+    data: enedisInfrastructure.value,
+    options: enedisInfrastructureGeoJsonOptions,
+    optionsStyle: enedisInfrastructureGeoJsonOptionsStyle,
+    name: 'Réseau ENEDIS',
+    layerType: 'base'
+  },
+  {
+    data: rteInfrastructure.value,
+    options: rteInfrastructureGeoJsonOptions,
+    optionsStyle: rteInfrastructureGeoJsonOptionsStyle,
+    name: 'Réseau RTE',
+  },
+])
+
+const validInfrastructuresLayers = computed(() => {
+  return infraStructureLayers.value.filter(layer => {
+    console.log('layer.data', layer.data, isValidFeatureCollection(layer.data))
+    return isValidFeatureCollection(layer.data)
+  });
+});
+
+const validOperatedInfrastructuresLayers = computed(() => {
+  return operatedInfraStructureLayers.value.filter(layer => {
+    console.log('layer.data', layer.data, isValidFeatureCollection(layer.data))
+    return isValidFeatureCollection(layer.data)
+  });
+});
+
+const validOtherNetworksLayers = computed(() => {
+  return otherNetworksLayers.value.filter(layer => {
+    console.log('layer.data', layer.data, isValidFeatureCollection(layer.data))
+    return isValidFeatureCollection(layer.data)
+  });
+});
 
 const infrastructurePopupContent = (feature) => `
   <div>
@@ -138,7 +210,7 @@ const infrastructurePopupContent = (feature) => `
 `
 
 
-const  isFeatureCollection = (obj: any): obj is FeatureCollection => {
+const  isValidFeatureCollection = (obj: any): obj is FeatureCollection => {
     return (
         obj &&
         obj.type === "FeatureCollection" &&
@@ -150,6 +222,7 @@ const  isFeatureCollection = (obj: any): obj is FeatureCollection => {
         )
     );
 }
+
 
 
 const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
@@ -201,22 +274,141 @@ const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
 }
 
 
-const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
-  onEachFeature : infrastructureOnEachFeature,
-})
+const infrastructureGeoJsonOptions = (data) => {
+  console.debug(data)
+  return {
+    onEachFeature : infrastructureOnEachFeature,
+    pointToLayer : (feature: Feature, latlng : LatLng | null ) => {
+      if (latlng) {
+        return leaflet.circleMarker(latlng, {
+          radius: 6,
+          fillColor: supportColor(feature),
+          color: '#000',
+          weight: 0.5,
+          opacity: 0.5,
+          fillOpacity: 0.8,
+          // draggable: true,
+        })
+      }
+    }
+  }
+}
 
-const enedisInfrastructureGeoJsonOptions : GeoJSONOptions = reactive({
-})
+const infrastructureGeoJsonOptionsStyle = (feature: Feature) => {
+      console.log('infrastructureGeoJsonOptions.style', feature)
+      return  {
+        color:  lineColor(feature),
+        weight: 5,
+        // draggable: true,
+      }
+    }
 
-const rteInfrastructureGeoJsonOptions : GeoJSONOptions = reactive({
-})
 
-const operatedInfrastructureGeoJsonOptions : GeoJSONOptions = reactive({
-  onEachFeature : infrastructureOnEachFeature,
-})
+const operatedInfrastructureGeoJsonOptions = (data) => {
+  console.debug(data)
+  return {
+    onEachFeature : infrastructureOnEachFeature,
+    pointToLayer : (_feature: Feature, latlng : LatLng | null ) => {
+    if (latlng) {
+    return leaflet.circleMarker(latlng, {
+      radius: 3,
+      fillColor: '#00ff00',
+      color: '#000',
+      weight: 0,
+      opacity: 1,
+      fillOpacity: 0.8,
+      // draggable: true,
+    })
+  }
+  }
+  }
+}
 
+const operatedinfrastructureGeoJsonOptionsstyle = (feature: Feature) => {
+      console.log('infrastructureGeoJsonOptions.style', feature)
+      return  {
+        color:  '#00ff00',
+        weight: 2,
+        // draggable: true,
+      }
+    }
 
-const selectedFeatureGeoJsonOptions: GeoJSONOptions = reactive({})
+const enedisInfrastructureGeoJsonOptions = () => {
+  return {
+    pointToLayer: (_feature: Feature, latlng : LatLng | null ) => {
+    if (latlng) {
+      return leaflet.circleMarker(latlng, {
+        radius: 3,
+        fillColor: "black",
+        color: 'black',
+        weight: 0.5,
+        opacity: 0.5,
+        fillOpacity: 0.8,
+        // draggable: true,
+      })
+    }
+  }
+}
+}
+
+const enedisInfrastructureGeoJsonOptionsStyle = () => {return {
+      color:  "black",
+      opacity: 0.8,
+      weight: 2,
+      // draggable: true,
+      dashArray: '7, 3, 3, 3'
+    }}
+
+const rteInfrastructureGeoJsonOptions = () => {
+  return {
+    pointToLayer: (_feature: Feature, latlng : LatLng | null ) => {
+    if (latlng) {
+      return leaflet.circleMarker(latlng, {
+        radius: 4,
+        fillColor: "black",
+        color: 'black',
+        weight: 0.5,
+        opacity: 0.5,
+        fillOpacity: 0.8,
+        // draggable: true,
+      })
+    }
+  }
+}}
+
+const rteInfrastructureGeoJsonOptionsStyle =  () => {return {
+      color:  "black",
+      opacity: 0.8,
+      weight: 2,
+      // draggable: true,
+      dashArray: '10, 10'
+    }}
+
+const selectedFeatureGeoJsonOptions = () => {
+  return {
+    pointToLayer: (feature: Feature, latlng : LatLng | null ) => {
+    if (feature.resourcetype === 'Point' && latlng) {
+    return leaflet.circleMarker(latlng, {
+      radius: 20,
+      fillColor: 'red',
+      color: 'red',
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.2,
+      // draggable: true,
+    })}
+    else {
+      return null
+    }
+  },
+  style:  {
+      color: '#03A9F4',
+      fillColor: '#03A9F4',
+      weight: 2,
+      opacity: 0.5,
+    }
+  }
+}
 
 
 // const selectedFeatureGeoJsonOptions : GeoJSONOptions = reactive({})
@@ -251,16 +443,6 @@ const getBbox = () => {
 }
 
 
-
-const selectedFeatureGeoJsonStyle = (_feature: Feature) => {
-  const color='#03A9F4' // blue-lighten
-    return {
-      color: color,
-      fillColor: color,
-      weight: 2,
-      opacity: 0.5,
-    }
-  }
 
   const bufferedMortalityInfrastructureGeoJsonStyle = (_feature: Feature) => {
   const color='red' // blue-lighten
@@ -455,12 +637,12 @@ watch(bbox, (newVal, _oldVal) => {
   mortalityStore.cancelRequest();
 
   if (zoom.value >= 10) {
-    cableStore.getInfstrData({in_bbox: newVal})
-    cableStore.getOpData({in_bbox: newVal})
+    cableStore.getAllInfrastructureData({in_bbox: newVal})
     mortalityStore.getMortalityData({in_bbox: newVal})
   } else {
     infstrDataLoadingStatus.value = false
     infstrData.value = {}
+    opData.value = {}
     mortalityData.value= {} as FeatureCollection
   }
   if (zoom.value >= externalSourceDataZoomTreshold) {
@@ -474,49 +656,6 @@ watch(bbox, (newVal, _oldVal) => {
 
 onBeforeMount(async () => {
   // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-  infrastructureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng | null ) => {
-    if (latlng) {
-      return leaflet.circleMarker(latlng, {
-        radius: 6,
-        fillColor: supportColor(feature),
-        color: '#000',
-        weight: 0.5,
-        opacity: 0.5,
-        fillOpacity: 0.8,
-        // draggable: true,
-      })
-    }
-  }
-
-  operatedInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : LatLng | null ) => {
-    if (latlng) {
-    return leaflet.circleMarker(latlng, {
-      radius: 3,
-      fillColor: '#00ff00',
-      color: '#000',
-      weight: 0,
-      opacity: 1,
-      fillOpacity: 0.8,
-      // draggable: true,
-    })
-  }
-  }
-
-  selectedFeatureGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng | null ) => {
-    if (feature.resourcetype === 'Point' && latlng) {
-    return leaflet.circleMarker(latlng, {
-      radius: 20,
-      fillColor: 'red',
-      color: 'red',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.2,
-      // draggable: true,
-    })}
-    else {
-      return null
-    }
-  }
 
   deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : LatLng ) => {
       if(latlng){
@@ -534,34 +673,6 @@ onBeforeMount(async () => {
         return leaflet.marker(latlng, {icon: deathCaseIcon});
       }
     }
-
-    enedisInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : LatLng | null ) => {
-    if (latlng) {
-      return leaflet.circleMarker(latlng, {
-        radius: 3,
-        fillColor: "black",
-        color: 'black',
-        weight: 0.5,
-        opacity: 0.5,
-        fillOpacity: 0.8,
-        // draggable: true,
-      })
-    }
-  }
-
-  rteInfrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : LatLng | null ) => {
-    if (latlng) {
-      return leaflet.circleMarker(latlng, {
-        radius: 4,
-        fillColor: "grey",
-        color: 'grey',
-        weight: 0.5,
-        opacity: 0.5,
-        fillOpacity: 0,
-        // draggable: true,
-      })
-    }
-  }
 })
 
 </script>
