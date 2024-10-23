@@ -4,7 +4,7 @@
 
 import { defineStore } from "pinia";
 import type { Point, LineString, Feature, GeoJSON } from "geojson";
-import type { PointTuple,LatLng } from "leaflet";
+import type { PointTuple, LatLng } from "leaflet";
 
 interface NewPointCoord {
   lat: number | null;
@@ -23,7 +23,7 @@ export const useCoordinatesStore = defineStore("coordinates", {
     newGeoJSONObject: {} as GeoJSON,
     bbox: null as string | null,
     mortalityGetInfrastructure: false,
-    mortalityInfrastructure:  {} as Feature | null,
+    mortalityInfrastructure: {} as Feature | null,
   }),
   getters: {
     /**

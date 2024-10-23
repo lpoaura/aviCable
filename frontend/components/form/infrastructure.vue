@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import {storeToRefs} from 'pinia';
+import { storeToRefs } from 'pinia';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
@@ -40,9 +40,9 @@ const nomenclaturesStore = useNomenclaturesStore()
 const cablesStore = useCablesStore()
 const errorStore = useErrorsStore()
 
-const {t} = useI18n()
+const { t } = useI18n()
 
-interface Props{
+interface Props {
   infrastructure?: object,
   infrastructureType: string
 }
@@ -51,12 +51,12 @@ const upc = ref(null)
 const form = ref(null) // used to get form ref from "<v-form ref="form">"
 const formValid = ref(true)
 
-const {infrastructure, infrastructureType} = defineProps<Props>()
+const { infrastructure, infrastructureType } = defineProps<Props>()
 
 // Adding operations
 
-const {newGeoJSONObject} = storeToRefs(coordinatesStore)
-const {ownerItems} = storeToRefs(nomenclaturesStore)
+const { newGeoJSONObject } = storeToRefs(coordinatesStore)
+const { ownerItems } = storeToRefs(nomenclaturesStore)
 
 const infrastructureData = reactive({
   geom: null,
@@ -83,14 +83,14 @@ const moveToNextStep = async () => {
 const createNewInfrastructure = async () => {
   try {
     infrastructureData.geom = newGeoJSONObject.value?.geometry
-    const {data : infrastructure} = await useHttp(`/api/v1/cables/${infrastructureType.toLowerCase()}s/`, {method: 'post', body: infrastructureData})
+    const { data: infrastructure } = await useHttp(`/api/v1/cables/${infrastructureType.toLowerCase()}s/`, { method: 'post', body: infrastructureData })
     cablesStore.setFormInfrastructureId(infrastructure.value.properties.id)
     return infrastructure?.value
   } catch (_err) {
     console.error(_err)
-    const error : ErrorInfo = {
-      code:errorCodes['create_point']['code'],
-      msg:t(`error.${errorCodes.create_point.msg}`)
+    const error: ErrorInfo = {
+      code: errorCodes['create_point']['code'],
+      msg: t(`error.${errorCodes.create_point.msg}`)
     }
     errorStore.setError(error)
   }

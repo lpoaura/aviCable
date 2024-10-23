@@ -36,9 +36,9 @@ const rules = reactive({
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
 
-const {index, equipment } = defineProps({
-  index: {type: Number, default: 0},
-  equipment: {type: Object ,required:true}
+const { index, equipment } = defineProps({
+  index: { type: Number, default: 0 },
+  equipment: { type: Object, required: true }
 });
 
 const equipmentData = ref(null)
@@ -52,28 +52,11 @@ const updateEquipmentData = () => {
 };
 
 
-// const updateType = (value: string) => {
-//   emit('update', { ...equipment, type_id: value });
-// };
-
-// const updateCount = (value: string) => {
-//   emit('update', { ...equipment, count: value });
-// };
-
-// const updateReference = (value: string) => {
-//   emit('update', { ...equipment, reference: value });
-// };
-
-
-// const updateRemark = (value: string) => {
-//   emit('update', { ...equipment, comment: value });
-// };
-
 const deleteItem = () => {
   emit('delete');
 };
 
 onMounted(() => {
-  equipmentData.value = {...equipment}
+  equipmentData.value = { ...equipment }
 })
 </script>

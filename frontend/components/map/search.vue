@@ -46,37 +46,36 @@ import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale } f
 import buffer from '@turf/buffer'
 import type { Feature, FeatureCollection } from "geojson"
 import type { StoreGeneric } from "pinia"
-import type {Layer, LatLng} from "leaflet";
+import type { Layer, LatLng } from "leaflet";
+import { computed, ref } from 'vue';
 
 await import("@geoman-io/leaflet-geoman-free");
 
 // Props
-const {editMode, mode} = defineProps({
+const { editMode, mode } = defineProps({
   editMode: Boolean,
   mode: { type: String, default: null },
 })
 
 
 // Stores
-const cableStore : StoreGeneric  = useCablesStore()
+const cableStore: StoreGeneric = useCablesStore()
 const mortalityStore: StoreGeneric = useMortalityStore()
-const mapLayersStore : StoreGeneric = useMapLayersStore()
-const coordinatesStore : StoreGeneric = useCoordinatesStore()
+const mapLayersStore: StoreGeneric = useMapLayersStore()
+const coordinatesStore: StoreGeneric = useCoordinatesStore()
 
 // Data
-const map : Ref<typeof LMap|null> = ref(null)
-const mapObject : Ref<typeof LMap|null> = ref(null)
-const createLayer: Ref<Layer |null> = ref(null)
-const mapReady : Ref<boolean> = ref(false)
+const map: Ref<typeof LMap | null> = ref(null)
+const mapObject: Ref<typeof LMap | null> = ref(null)
+const createLayer: Ref<Layer | null> = ref(null)
+const mapReady: Ref<boolean> = ref(false)
 const router = useRouter()
 const externalSourceDataZoomTreshold = 13
-const infrastructureLayersReady : Ref<boolean> = ref(false)
-const otherNetworksLayersReady : Ref<boolean> = ref(false)
-  const iconDict : {[key: string]: string} = {
-          COD_EL: 'lightning-bolt',
-          COD_IM : 'star',
-          COD_UNKNOWN: 'help',
-        }
+const infrastructureLayersReady: Ref<boolean> = ref(false)
+const otherNetworksLayersReady: Ref<boolean> = ref(false)
+const bufferedSelectedInfrastructure: Ref<Feature | null> = ref(null)
+const bufferedMortalityInfrastructure: Ref<Feature | null> = ref(null)
+
 const {
   zoom,
   center,
@@ -97,12 +96,16 @@ const {
   enedisInfrastructure,
   rteInfrastructure,
 } = storeToRefs(cableStore)
-const {mortalityData} = storeToRefs(mortalityStore)
-const {baseLayers} = storeToRefs(mapLayersStore)
-const bufferedSelectedInfrastructure : Ref<Feature|null> = ref(null)
-  const bufferedMortalityInfrastructure : Ref<Feature|null> = ref(null)
+const { mortalityData } = storeToRefs(mortalityStore)
+const { baseLayers } = storeToRefs(mapLayersStore)
 
-const levelNotes : {[key: string]: number} = {'RISK_L':1,'RISK_M':2,'RISK_H':3}
+const iconDict: { [key: string]: string } = {
+  COD_EL: 'lightning-bolt',
+  COD_IM: 'star',
+  COD_UNKNOWN: 'help',
+}
+const levelNotes: { [key: string]: number } = { 'RISK_L': 1, 'RISK_M': 2, 'RISK_H': 3 }
+
 
 const infraStructureLayers = computed(() => [
   {
@@ -123,13 +126,13 @@ const operatedInfraStructureLayers = computed(() => [
   {
     data: operatedPointData.value,
     options: operatedInfrastructureGeoJsonOptions,
-    optionsStyle:operatedInfrastructureGeoJsonOptionsStyle,
+    optionsStyle: operatedInfrastructureGeoJsonOptionsStyle,
     name: 'Supports neutralisés',
   },
   {
     data: operatedLineStringData.value,
     options: operatedInfrastructureGeoJsonOptions,
-    optionsStyle:operatedInfrastructureGeoJsonOptionsStyle,
+    optionsStyle: operatedInfrastructureGeoJsonOptionsStyle,
     name: 'Lignes neutralisées',
   }
 ])
@@ -171,8 +174,8 @@ const validOtherNetworksLayers = computed(() => {
 const infrastructurePopupContent = (feature) => `
   <div>
     <h2>
-      <span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower':'mdi-cable-data'}">
-        </span><span id="routerLink" style="cursor: pointer">${feature.geometry.type === 'Point' ? 'Poteau':'Tronçon'}
+      <span class="mdi ${feature.geometry.type === 'Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}">
+        </span><span id="routerLink" style="cursor: pointer">${feature.geometry.type === 'Point' ? 'Poteau' : 'Tronçon'}
           ${feature.properties?.owner?.label} ${feature.properties?.id}</span>
     </h2>
     <button class="v-btn v-btn--slim w-100 v-theme--light bg-success v-btn--density-default v-btn--size-default v-btn--variant-flat" type="button"  id="MapInfrstrPopupLink" data-route="/infrastructure/${feature.properties.id}">
@@ -193,35 +196,35 @@ const mortalityPopupContent = (feature) => `
   </div>
 `
 
-const  isValidFeatureCollection = (obj: any): obj is FeatureCollection => {
-    return (
-        obj &&
-        obj.type === "FeatureCollection" &&
-        Array.isArray(obj.features) &&
-        obj.features.every((feature: any) =>
-            feature.type === "Feature" &&
-            feature.geometry &&
-            typeof feature.properties === "object"
-        )
-    );
+const isValidFeatureCollection = (obj: any): obj is FeatureCollection => {
+  return (
+    obj &&
+    obj.type === "FeatureCollection" &&
+    Array.isArray(obj.features) &&
+    obj.features.every((feature: any) =>
+      feature.type === "Feature" &&
+      feature.geometry &&
+      typeof feature.properties === "object"
+    )
+  );
 }
 
-const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
+const infrastructureOnEachFeature = (feature: Feature, layer: Layer) => {
   if (!mortalityGetInfrastructure.value) {
     layer.bindPopup(infrastructurePopupContent(feature))
     layer.on('popupopen', () => {
-        const id = feature?.properties?.id
-        const link = document.getElementById('MapInfrstrPopupLink');
-        link?.addEventListener('click', (event) => {
-          event.preventDefault(); // Prevent the default anchor behavior
-          if (['Point','Line'].includes(feature?.resourcetype) && !!id) {
-            router.push(`/infrastructures/${id}`)
-          }
-        });
-        console.log('btn click', feature, link, (['Point','Line'].includes(feature?.resourcetype) && !!id))
+      const id = feature?.properties?.id
+      const link = document.getElementById('MapInfrstrPopupLink');
+      link?.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent the default anchor behavior
+        if (['Point', 'Line'].includes(feature?.resourcetype) && !!id) {
+          router.push(`/infrastructures/${id}`)
+        }
       });
+      console.log('btn click', feature, link, (['Point', 'Line'].includes(feature?.resourcetype) && !!id))
+    });
   }
-  layer.on('click', ()=> {
+  layer.on('click', () => {
     if (mortalityGetInfrastructure.value) {
       mortalityInfrastructure.value = feature
       mortalityGetInfrastructure.value = !mortalityGetInfrastructure.value
@@ -233,23 +236,23 @@ const infrastructureOnEachFeature = (feature : Feature, layer : Layer) => {
 
 }
 
-const mortalityOnEachFeature = (feature : Feature, layer : Layer) => {
+const mortalityOnEachFeature = (feature: Feature, layer: Layer) => {
   layer.bindPopup(mortalityPopupContent(feature))
-    layer.on('popupopen', () => {
-        const id = feature?.properties?.id
-        const link = document.getElementById('MapMortalityPopupLink');
-        link?.addEventListener('click', (event) => {
-          event.preventDefault(); // Prevent the default anchor behavior
-          router.push(`/mortality/${id}`)
-        });
-      });
+  layer.on('popupopen', () => {
+    const id = feature?.properties?.id
+    const link = document.getElementById('MapMortalityPopupLink');
+    link?.addEventListener('click', (event) => {
+      event.preventDefault(); // Prevent the default anchor behavior
+      router.push(`/mortality/${id}`)
+    });
+  });
 }
 
 
 const infrastructureGeoJsonOptions = () => {
   return {
-    onEachFeature : infrastructureOnEachFeature,
-    pointToLayer : (feature: Feature, latlng : LatLng | null ) => {
+    onEachFeature: infrastructureOnEachFeature,
+    pointToLayer: (feature: Feature, latlng: LatLng | null) => {
       if (latlng) {
         return leaflet.circleMarker(latlng, {
           radius: 6,
@@ -267,19 +270,19 @@ const infrastructureGeoJsonOptions = () => {
 
 const operatedInfrastructureGeoJsonOptions = () => {
   return {
-    onEachFeature : infrastructureOnEachFeature,
-    pointToLayer : (_feature: Feature, latlng : LatLng | null ) => {
-    if (latlng) {
-    return leaflet.circleMarker(latlng, {
-      radius: 3,
-      fillColor: '#00ff00',
-      color: '#000',
-      weight: 0,
-      opacity: 1,
-      fillOpacity: 0.8,
-    })
-  }
-  }
+    onEachFeature: infrastructureOnEachFeature,
+    pointToLayer: (_feature: Feature, latlng: LatLng | null) => {
+      if (latlng) {
+        return leaflet.circleMarker(latlng, {
+          radius: 3,
+          fillColor: '#00ff00',
+          color: '#000',
+          weight: 0,
+          opacity: 1,
+          fillOpacity: 0.8,
+        })
+      }
+    }
   }
 }
 
@@ -288,106 +291,113 @@ const operatedInfrastructureGeoJsonOptions = () => {
 const mortalityGeoJsonOptions = () => {
   return {
     onEachFeature: mortalityOnEachFeature,
-    pointToLayer: (feature: Feature, latlng : LatLng ) => {
-      if(latlng){
+    pointToLayer: (feature: Feature, latlng: LatLng) => {
+      if (latlng) {
         const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
         const deathCaseIcon = leaflet.divIcon({
           html: `<span class="mdi mdi-${icon}"></span>`,
           iconSize: [15, 15],
-          className: 'mapMarkerIcon'}
-          );
-        return leaflet.marker(latlng, {icon: deathCaseIcon});
+          className: 'mapMarkerIcon'
+        }
+        );
+        return leaflet.marker(latlng, { icon: deathCaseIcon });
       }
     }
-}}
+  }
+}
 
 
 const enedisInfrastructureGeoJsonOptions = () => {
   return {
-    pointToLayer: (_feature: Feature, latlng : LatLng | null ) => {
-    if (latlng) {
-      return leaflet.circleMarker(latlng, {
-        radius: 3,
-        fillColor: "black",
-        color: 'black',
-        weight: 0.5,
-        opacity: 0.5,
-        fillOpacity: 0.8,
-      })
+    pointToLayer: (_feature: Feature, latlng: LatLng | null) => {
+      if (latlng) {
+        return leaflet.circleMarker(latlng, {
+          radius: 3,
+          fillColor: "black",
+          color: 'black',
+          weight: 0.5,
+          opacity: 0.5,
+          fillOpacity: 0.8,
+        })
+      }
     }
   }
-}
 }
 
 
 
 const rteInfrastructureGeoJsonOptions = () => {
   return {
-    pointToLayer: (_feature: Feature, latlng : LatLng | null ) => {
-    if (latlng) {
-      return leaflet.circleMarker(latlng, {
-        radius: 4,
-        fillColor: "black",
-        color: 'black',
-        weight: 0.5,
-        opacity: 0.5,
-        fillOpacity: 0.8,
-      })
+    pointToLayer: (_feature: Feature, latlng: LatLng | null) => {
+      if (latlng) {
+        return leaflet.circleMarker(latlng, {
+          radius: 4,
+          fillColor: "black",
+          color: 'black',
+          weight: 0.5,
+          opacity: 0.5,
+          fillOpacity: 0.8,
+        })
+      }
     }
   }
-}}
+}
 
 // Layers OptionsStyles
 
 const infrastructureGeoJsonOptionsStyle = (feature: Feature) => {
-      return  {
-        color:  lineColor(feature),
-        weight: 5,
-      }
-    }
+  return {
+    color: lineColor(feature),
+    weight: 5,
+  }
+}
 
 
 const operatedInfrastructureGeoJsonOptionsStyle = (feature: Feature) => {
-      return  {
-        color:  '#00ff00',
-        weight: 2,
-      }
-    }
+  return {
+    color: '#00ff00',
+    weight: 2,
+  }
+}
 
 
-const enedisInfrastructureGeoJsonOptionsStyle = () => {return {
-      color:  "black",
-      opacity: 0.8,
-      weight: 2,
-      dashArray: '7, 3, 3, 3'
-    }}
+const enedisInfrastructureGeoJsonOptionsStyle = () => {
+  return {
+    color: "black",
+    opacity: 0.8,
+    weight: 2,
+    dashArray: '7, 3, 3, 3'
+  }
+}
 
 
 const bufferedMortalityInfrastructureGeoJsonOptionsStyle = (_feature: Feature) => {
-  const color='red'
-    return {
-      color: color,
-      fillColor: color,
-      weight: 2,
-      opacity: 0.5,
-    }
+  const color = 'red'
+  return {
+    color: color,
+    fillColor: color,
+    weight: 2,
+    opacity: 0.5,
   }
+}
 
-  const bufferedSelectedInfrastructureGeoJsonOptionsStyle = (_feature: Feature) => {
-    return   {
-      color: '#03A9F4',
-      fillColor: '#03A9F4',
-      weight: 2,
-      opacity: 0.5,
-    }
+const bufferedSelectedInfrastructureGeoJsonOptionsStyle = (_feature: Feature) => {
+  return {
+    color: '#03A9F4',
+    fillColor: '#03A9F4',
+    weight: 2,
+    opacity: 0.5,
   }
+}
 
-const rteInfrastructureGeoJsonOptionsStyle =  () => {return {
-      color:  "black",
-      opacity: 0.8,
-      weight: 2,
-      dashArray: '10, 10'
-    }}
+const rteInfrastructureGeoJsonOptionsStyle = () => {
+  return {
+    color: "black",
+    opacity: 0.8,
+    weight: 2,
+    dashArray: '10, 10'
+  }
+}
 
 // Watchers
 
@@ -407,11 +417,11 @@ watch(createLayer, (newLayer, _oldLayer) => {
 });
 
 watch(selectedFeature, (newVal, _oldVal) => {
-  bufferedSelectedInfrastructure.value = newVal  ? buffer(newVal, 150, {units: 'meters'}) : null
+  bufferedSelectedInfrastructure.value = newVal ? buffer(newVal, 150, { units: 'meters' }) : null
 })
 
 watch(mortalityInfrastructure, (newVal, _oldVal) => {
-  bufferedMortalityInfrastructure.value = newVal  ? buffer(newVal, 50, {units: 'meters'}) : null
+  bufferedMortalityInfrastructure.value = newVal ? buffer(newVal, 50, { units: 'meters' }) : null
 })
 
 
@@ -420,13 +430,13 @@ watch(bbox, (newVal, _oldVal) => {
   mortalityStore.cancelRequest();
 
   if (zoom.value >= 10) {
-    cableStore.getAllInfrastructureData({in_bbox: newVal})
-    mortalityStore.getMortalityData({in_bbox: newVal})
+    cableStore.getAllInfrastructureData({ in_bbox: newVal })
+    mortalityStore.getMortalityData({ in_bbox: newVal })
   } else {
     infstrDataLoadingStatus.value = false
     infstrData.value = {}
     opData.value = {}
-    mortalityData.value= {} as FeatureCollection
+    mortalityData.value = {} as FeatureCollection
   }
   if (zoom.value >= externalSourceDataZoomTreshold) {
     cableStore.getEnedisInfrastructure(reverseBBoxString(mapObject.value.getBounds()))
@@ -456,7 +466,7 @@ const hookUpDraw = async () => {
     mapReady.value = true;
 
     // GeoLocate plugin
-    leaflet.control.locate({icon: 'mdi mdi-crosshairs-gps'}).addTo(mapObject.value)
+    leaflet.control.locate({ icon: 'mdi mdi-crosshairs-gps' }).addTo(mapObject.value)
 
     // GeoSearch plugin
     const provider = new OpenStreetMapProvider()
@@ -467,62 +477,62 @@ const hookUpDraw = async () => {
     if (mapObject.value && editMode) {
       mapObject.value.pm.addControls({
         position: 'topleft',
-            drawMarker: mode === 'point',
-            drawCircleMarker: mode === 'circle-marker',
-            drawPolyline: mode === 'line',
-            drawPolygon: mode === 'polygon',
-            drawRectangle: mode === 'rectangle',
-            drawCircle: mode === 'circle',
-            drawText: false,
-            editMode: false,
-            dragMode: false,
-            removalMode: false,
-            cutPolygon: false,
-            rotateMode: false,
+        drawMarker: mode === 'point',
+        drawCircleMarker: mode === 'circle-marker',
+        drawPolyline: mode === 'line',
+        drawPolygon: mode === 'polygon',
+        drawRectangle: mode === 'rectangle',
+        drawCircle: mode === 'circle',
+        drawText: false,
+        editMode: false,
+        dragMode: false,
+        removalMode: false,
+        cutPolygon: false,
+        rotateMode: false,
       })
       mapObject.value.pm.setPathOptions({
-            color: '#ba02f2',
-            fillColor: '#ba02f2',
-            fillOpacity: 0.4,
-          })
+        color: '#ba02f2',
+        fillColor: '#ba02f2',
+        fillOpacity: 0.4,
+      })
       mapObject.value.on('pm:create', (e) => {
         if (createLayer.value) {
           mapObject.value.removeLayer(createLayer.value);
         }
-            createLayer.value = e.layer
-            if (createLayer.value){
-                mapObject.value?.pm.disableDraw()
-                mapObject.value?.pm.addControls({
-                  drawMarker: false,
-                  dragMode: mode==='point' ? true : false,
-                  drawPolyline:false,
-                  editMode: mode === 'line' ? true : false,
-                  removalMode: true,
-                })
-              }
-            }
-            )
+        createLayer.value = e.layer
+        if (createLayer.value) {
+          mapObject.value?.pm.disableDraw()
+          mapObject.value?.pm.addControls({
+            drawMarker: false,
+            dragMode: mode === 'point' ? true : false,
+            drawPolyline: false,
+            editMode: mode === 'line' ? true : false,
+            removalMode: true,
+          })
+        }
+      }
+      )
       mapObject.value.on('pm:remove', (e) => {
         if (createLayer.value === e.layer) {
           createLayer.value = null; // Clear the unique layer reference
         }
       })
       mapObject.value.on('pm:edit', (e) => {
-      // Trigger a change in the uniqueLayer reference
-      console.debug('edit', e)
-      createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
-    })
-    mapObject.value.on('pm:update', (e) => {
-      // Trigger a change in the uniqueLayer reference
-      console.debug('update', e)
-      createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
-    })
+        // Trigger a change in the uniqueLayer reference
+        console.debug('edit', e)
+        createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
+      })
+      mapObject.value.on('pm:update', (e) => {
+        // Trigger a change in the uniqueLayer reference
+        console.debug('update', e)
+        createLayer.value = mapObject.value.geoJSON(createLayer.value.toGeoJSON());
+      })
     }
   }
 };
 
-const lineColor=(feature:Feature) => {
-  const lastDiag=feature.properties?.diagnosis[0]
+const lineColor = (feature: Feature) => {
+  const lastDiag = feature.properties?.diagnosis[0]
   if (lastDiag) {
     const sgmt_moving_risk = lastDiag.sgmt_moving_risk?.code
     const sgmt_landscape_integr_risk = lastDiag.sgmt_landscape_integr_risk?.code
@@ -531,17 +541,16 @@ const lineColor=(feature:Feature) => {
     if (note < 4) {
       return 'blue'
     }
-    if (note >= 4 && note < 7)
-    {
+    if (note >= 4 && note < 7) {
       return 'orange'
     }
-    else {return 'red'}
+    else { return 'red' }
   }
   return 'grey'
 }
 
 const supportColor = (feature: Feature) => {
-  const lastDiag=feature.properties?.diagnosis[0]
+  const lastDiag = feature.properties?.diagnosis[0]
   if (lastDiag && lastDiag.pole_attractivity && lastDiag.pole_attractivity) {
     const attractivity = lastDiag.pole_attractivity.code
     const dangerousness = lastDiag.pole_attractivity.code
@@ -549,18 +558,17 @@ const supportColor = (feature: Feature) => {
     if (note == 2) {
       return 'blue'
     }
-    if (note > 2 && note < 5)
-    {
+    if (note > 2 && note < 5) {
       return 'orange'
     }
-    else {return 'red'}
+    else { return 'red' }
   }
   return 'grey'
 }
 
-const reverseBBoxString = (bounds) => {
+const reverseBBoxString = (bounds) => {
   console.log(typeof bounds)
-  const coords : Array<number> = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()]
+  const coords: Array<number> = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()]
   return coords.toString()
 }
 

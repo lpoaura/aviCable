@@ -26,18 +26,15 @@ import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
 const errorStore = useErrorsStore()
-
-const {diagId} = defineProps(['diagId'])
-const {t} = useI18n()
+const { t } = useI18n()
 
 const pictInput = ref()
 const newImg = ref()
 const pictDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-    .toISOString()
-    .substr(0, 10))
+  .toISOString()
+  .substr(0, 10))
 const imgFileContent = ref([])
 const imgFileObject = ref([])
-const showError = ref(false)
 // TODO test validate and display message in snackbar if issue
 const rules = reactive([
   (value: File[]) => {
@@ -47,7 +44,7 @@ const rules = reactive([
 
 const displayImage = () => {
   try {
-    if (newImg.value ) {
+    if (newImg.value) {
       const reader = new FileReader()
       reader.readAsDataURL(newImg.value)
       // event listener on successful loading,
@@ -59,7 +56,7 @@ const displayImage = () => {
     }
   } catch (_err) {
     console.error(_err)
-    const error : ErrorInfo = {
+    const error: ErrorInfo = {
       code: errorCodes.img_loading.code,
       msg: t(`error.${errorCodes.img_loading.msg}`)
     }

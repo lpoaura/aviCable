@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer v-if="!mobile || mobile" v-model="drawer" :rail="rail" class="bg-light-blue-darken-3"
-    @click="rail=false">
+    @click="rail = false">
     <v-list class="bg-orange-darken-2">
       <v-list-item
         :prepend-avatar="$auth.loggedIn ? 'https://randomuser.me/api/portraits/lego/7.jpg' : 'https://randomuser.me/api/portraits/lego/1.jpg'"
@@ -25,25 +25,12 @@
       </v-list>
     </template>
   </v-navigation-drawer>
-  <!-- <v-bottom-navigation v-if="mobile" :elevation="5" grow density="default" class="text-light-blue-darken-3"
-    theme="dark">
-    <v-btn v-for="[icon, text, url, loggedIn] in links" v-if="$auth.loggedIn" :to="url">
-      <v-icon>{{icon}}</v-icon>
-      <span>{{text}}</span>
-    </v-btn>
-    <v-btn v-if="$auth.loggedIn" class="bg-orange-darken-2" to="/account">
-      <v-icon>mdi-account-circle</v-icon>
-      <span>{{$auth.user?.username}}</span>
-    </v-btn>
-  </v-bottom-navigation> -->
 </template>
 <script setup>
 import { useDisplay } from 'vuetify'
 const $auth = useAuth()
 const { t } = useI18n()
-const { mobile} = useDisplay()
-// const drawer=ref(true)
-// const rail=ref(true)
+const { mobile } = useDisplay()
 
 useRouter()
 const links = ref([
@@ -51,8 +38,8 @@ const links = ref([
   ['mdi-information', t('nav.about'), '/about', true]
 ]);
 
-const rail=ref(true)
+const rail = ref(true)
 const globalStore = useGlobalStore()
-const {drawer} = storeToRefs(globalStore)
+const { drawer } = storeToRefs(globalStore)
 
 </script>

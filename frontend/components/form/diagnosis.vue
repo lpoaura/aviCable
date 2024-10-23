@@ -8,7 +8,7 @@
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
                 density="compact" :rules="[rules.required]" :max="new Date()" />
             </v-col>
-            <template v-if="infrastructureType==='point'">
+            <template v-if="infrastructureType === 'point'">
               <v-col cols="12">
                 <v-autocomplete v-model="diagData.pole_type_id" chips :items="poleTypes" item-title="label"
                   item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
@@ -24,7 +24,7 @@
                   density="compact" />
               </v-col>
             </template>
-            <template v-if="infrastructureType==='line'">
+            <template v-if="infrastructureType === 'line'">
               <v-col cols="12" md="4">
                 <v-select v-model="diagData.sgmt_moving_risk_id" :items="riskLevels" item-title="label" item-value="id"
                   :rules="[rules.required]" :label="$t('line.movingRisk')" variant="solo" density="compact" />
@@ -42,7 +42,7 @@
             </template>
             <v-divider />
             <v-col cols="12" class="text-left">
-              <strong>{{$t('diagnosis.actions')}}</strong>
+              <strong>{{ $t('diagnosis.actions') }}</strong>
             </v-col>
 
 
@@ -84,14 +84,14 @@
 </template>
 
 <script lang="ts" setup>
-import { VDateInput} from 'vuetify/labs/VDateInput'
-import type {DiagData, Diagnosis} from '~/types/diagnosis';
+import { VDateInput } from 'vuetify/labs/VDateInput'
+import type { DiagData, Diagnosis } from '~/types/diagnosis';
 import type { NomenclatureItem } from '~/types/nomenclature';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
 const emit = defineEmits();
-const {t} = useI18n()
+const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
@@ -99,14 +99,14 @@ const route = useRoute()
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
-const formValid=ref(false)
+const formValid = ref(false)
 const infrastructureId = computed(() => cablesStore.formInfrastructureId)
 const infrastructureType = computed(() => (route.query.type).toLowerCase())
-const diagnosisReady=ref(false)
+const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 
-const diagData : DiagData = reactive({
+const diagData: DiagData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
   remark: '',
   technical_proposal: '',
@@ -114,7 +114,7 @@ const diagData : DiagData = reactive({
   pole_type_id: [],
   neutralized: false,
   condition_id: null,
-  attraction_advice:false,
+  attraction_advice: false,
   dissuasion_advice: false,
   isolation_advice: false,
   media_id: [],
@@ -135,33 +135,33 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 
 const initData = async () => {
   if (diagnosisId.value && infrastructureType) {
-    const {data:diagnosis} = await useHttp(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, {method: 'get'})
+    const { data: diagnosis } = await useHttp(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, { method: 'get' })
     formDate.value = new Date(diagnosis.value.date)
     const diagdata: DiagData = {
-      id : diagnosis.value.id,
+      id: diagnosis.value.id,
       date: diagnosis.value.date,
       remark: diagnosis.value.remark,
       technical_proposal: diagnosis.value.technicalProposal,
       infrastructure: diagnosis.value.infrastructure,
-      pole_type_id: diagnosis.value.pole_type?.map((item:NomenclatureItem) => item.id),
+      pole_type_id: diagnosis.value.pole_type?.map((item: NomenclatureItem) => item.id),
       neutralized: diagnosis.value.neutralized,
       condition_id: diagnosis.value.condition?.id,
-      attraction_advice:diagnosis.value.attraction_advice,
+      attraction_advice: diagnosis.value.attraction_advice,
       dissuasion_advice: diagnosis.value.dissuasion_advice,
       isolation_advice: diagnosis.value.isolation_advice,
       media_id: [],
     }
-    if (infrastructureType.value==='point') {
+    if (infrastructureType.value === 'point') {
       diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
       diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
     }
-    if (infrastructureType.value==="line"){
-      diagdata.sgmt_moving_risk_id= diagnosis.value.sgmt_moving_risk?.id
-      diagdata.sgmt_topo_integr_risk_id= diagnosis.value.sgmt_topo_integr_risk?.id
-      diagdata.sgmt_landscape_integr_risk_id= diagnosis.value.sgmt_landscape_integr_risk?.id
+    if (infrastructureType.value === "line") {
+      diagdata.sgmt_moving_risk_id = diagnosis.value.sgmt_moving_risk?.id
+      diagdata.sgmt_topo_integr_risk_id = diagnosis.value.sgmt_topo_integr_risk?.id
+      diagdata.sgmt_landscape_integr_risk_id = diagnosis.value.sgmt_landscape_integr_risk?.id
     }
     Object.assign(diagData, diagdata)
-    diagnosisReady.value=true
+    diagnosisReady.value = true
   }
   // const diagData = null
 }
@@ -176,7 +176,7 @@ const initData = async () => {
  * Related Media will also be deleted in this case.
  * Finally, error message is displayed in snackBar through error handling process.
  */
- const createDiagnosis = async () => {
+const createDiagnosis = async () => {
   // Create Media as selected in component form and get list of Ids of created Media
   // const mediaIdList = await createNewMedia()
   try {
@@ -184,15 +184,15 @@ const initData = async () => {
     diagData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const {data : diagnosis }= await useHttp('/api/v1/cables/diagnosis/', {method:'post', body: diagData})
+    const { data: diagnosis } = await useHttp('/api/v1/cables/diagnosis/', { method: 'post', body: diagData })
     console.debug('newDiagData', diagnosis)
     return diagnosis
   } catch (_err) {
 
-    console.error ('error',_err)
-    const error : ErrorInfo = {
-      code:errorCodes['create_point']['code'],
-      msg:t(`error.${errorCodes.create_point.msg}`)
+    console.error('error', _err)
+    const error: ErrorInfo = {
+      code: errorCodes['create_point']['code'],
+      msg: t(`error.${errorCodes.create_point.msg}`)
     }
     errorStore.setError(error)
   }
@@ -213,7 +213,7 @@ const updateDiagnosis = async () => {
     diagData.date = formDate.value.toISOString().substring(0, 10)
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const {data }= await useHttp(`/api/v1/cables/diagnosis/${diagData.id}/`, {method:'put', body: diagData})
+    const { data } = await useHttp(`/api/v1/cables/diagnosis/${diagData.id}/`, { method: 'put', body: diagData })
     return data
   } catch (_err) {
     // If Diagnosis creation fails, related Media created are deleted
@@ -223,17 +223,17 @@ const updateDiagnosis = async () => {
     //   )
     // }
     // Error display
-    console.error ('error',_err)
-    const error : ErrorInfo = {
+    console.error('error', _err)
+    const error: ErrorInfo = {
       code: errorCodes['update_pole_diagnosis']['code'],
-      msg:t(`error.${errorCodes['update_pole_diagnosis']['msg']}`)
+      msg: t(`error.${errorCodes['update_pole_diagnosis']['msg']}`)
     }
     errorStore.setError(error)
   }
 }
 
 const moveToNextStep = async () => {
-  const diagnosis = diagnosisId.value ?  await updateDiagnosis() : await createDiagnosis()
+  const diagnosis = diagnosisId.value ? await updateDiagnosis() : await createDiagnosis()
   if (diagnosis) {
     router.push(`/infrastructures/${infrastructureId.value}`)
   }
@@ -241,7 +241,7 @@ const moveToNextStep = async () => {
 
 // watch(infrastructureType,(newVal, _oldVal) => initData())
 
-onMounted(()=> {
+onMounted(() => {
   initData()
 })
 </script>

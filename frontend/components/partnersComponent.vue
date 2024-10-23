@@ -6,8 +6,7 @@
           <template v-slot:activator="{ props }">
             <a :href="i.url" target="_blank" v-bind="props">
               <!-- TODO: Retirer le string.replace  -->
-              <v-img max-height="100" contain :src="i.logo.replace(':3000',':8000')" :alt="i.name"
-                :title="i.name" />
+              <v-img max-height="100" contain :src="i.logo.replace(':3000', ':8000')" :alt="i.name" :title="i.name" />
             </a>
           </template>
           <span>{{ i.name }}</span>
@@ -19,8 +18,8 @@
 
 <script setup lang="ts">
 import { useDisplay } from 'vuetify'
-const {mobile} = useDisplay()
-const {data: partners} = await useHttp('/api/v1/custom-content/partners/')
+const { mobile } = useDisplay()
+const { data: partners } = await useHttp('/api/v1/custom-content/partners/')
 </script>
 
 <style scoped></style>

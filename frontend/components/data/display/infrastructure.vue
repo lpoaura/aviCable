@@ -11,7 +11,7 @@ Dans un modal
         <v-row>
           <v-col cols="12" md="6">
             <v-select v-model="display" label="Type d'infrastructure"
-              :items="[{state:$t('display.all') ,value:'both'}, {state:$t('support.supports'),value:'poles'},{state:$t('display.lines'),value:'segments'}]"
+              :items="[{ state: $t('display.all'), value: 'both' }, { state: $t('support.supports'), value: 'poles' }, { state: $t('display.lines'), value: 'segments' }]"
               item-title="state" item-value="value" variant="outlined" density="compact" />
           </v-col>
           <v-col cols="12" md="6">
@@ -37,9 +37,9 @@ Dans un modal
         </template>
         <template #item.resourcetype="{ value }">
           <v-chip>
-            <v-icon :color="value =='Point' ? 'green' : 'blue'">
-              {{ value =='Point' ? 'mdi-transmission-tower' : 'mdi-cable-data'}}
-            </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line')}}
+            <v-icon :color="value == 'Point' ? 'green' : 'blue'">
+              {{ value == 'Point' ? 'mdi-transmission-tower' : 'mdi-cable-data' }}
+            </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line') }}
           </v-chip>
         </template>
         <template #item.properties.operations="{ _value, item }">
@@ -52,14 +52,14 @@ Dans un modal
 
 <script setup lang="ts">
 
-import {storeToRefs} from 'pinia';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter()
 const { t } = useI18n()
 
 const display = ref('both')
 const search = ref('')
-const selected= ref([])
+const selected = ref([])
 const tableHeaders = reactive([
   {
     title: t('app.id'),
@@ -86,8 +86,8 @@ const cableStore = useCablesStore()
 
 
 
-const {infstrDatafeatures,pointData,lineStringData} = storeToRefs(cableStore)
-const {selectedFeature} = storeToRefs(coordinatesStore)
+const { infstrDatafeatures, pointData, lineStringData } = storeToRefs(cableStore)
+const { selectedFeature } = storeToRefs(coordinatesStore)
 
 const dataSource = computed(() => {
   return {
@@ -115,7 +115,7 @@ const colorRowItem = (item) => {
   if (item.item.properties.id === selectedFeature.value?.properties.id) {
     return { class: 'bg-light-blue-lighten-5' };
   }
-  return {class: "success"}
+  return { class: "success" }
 }
 
 </script>

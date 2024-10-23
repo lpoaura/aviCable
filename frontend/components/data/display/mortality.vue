@@ -22,14 +22,14 @@
           {{ value }}
         </v-chip>
       </template>
-      <template #item.properties.death_cause.label="{ value , item}">
+      <template #item.properties.death_cause.label="{ value, item }">
         <v-chip>
           <v-icon :color="'red'">
-            {{deathCauseIcons[item.properties?.death_cause.code] || 'mdi-help' }}
+            {{ deathCauseIcons[item.properties?.death_cause.code] || 'mdi-help' }}
           </v-icon> {{ value }}
         </v-chip>
       </template>
-      <template #item.properties.species.scientific_name="{ value , _item}">
+      <template #item.properties.species.scientific_name="{ value, _item }">
         <i>
           {{ value }}
         </i>
@@ -40,23 +40,23 @@
 
 <script setup lang="ts">
 
-import type {GeoJSON} from 'geojson'
+import type { GeoJSON } from 'geojson'
 // import { FeatureCollection } from 'geojson'
-const router =useRouter()
+const router = useRouter()
 const search = ref('')
-const selected= ref([])
+const selected = ref([])
 const specie = ref(null)
 const deathCauseIcons = ref({
   COD_EL: 'mdi-lightning-bolt',
-  COD_IM:'mdi-star',
+  COD_IM: 'mdi-star',
   COD_UNKNOWN: 'mdi-help'
 })
 const headers = reactive([
-  {title: 'ID', align: 'start',sortable:true, key: 'id'},
-  {title: 'Nom vernaculaire', align: 'start',sortable:true, key: 'properties.species.vernacular_name'},
-  {title: 'Nom scientifique', align: 'start',sortable:true, key: 'properties.species.scientific_name'},
-  {title: 'Date', align: 'center',sortable:true, key: 'properties.date'},
-  {title: 'Cause', align: 'center',sortable:true, key: 'properties.death_cause.label'},
+  { title: 'ID', align: 'start', sortable: true, key: 'id' },
+  { title: 'Nom vernaculaire', align: 'start', sortable: true, key: 'properties.species.vernacular_name' },
+  { title: 'Nom scientifique', align: 'start', sortable: true, key: 'properties.species.scientific_name' },
+  { title: 'Date', align: 'center', sortable: true, key: 'properties.date' },
+  { title: 'Cause', align: 'center', sortable: true, key: 'properties.death_cause.label' },
 ])
 
 
@@ -64,7 +64,7 @@ const headers = reactive([
 const mortalityStore = useMortalityStore()
 const coordinatesStore = useCoordinatesStore()
 
-const speciesList = computed(() => mortalityStore.getMortalitySpecies.map(i => {return {state: i.vernacular_name, value: i.id}}))
+const speciesList = computed(() => mortalityStore.getMortalitySpecies.map(i => { return { state: i.vernacular_name, value: i.id } }))
 const observationList = computed(() => {
   return specie.value !== null ? mortalityStore.getMortalityFeatures.filter(i => i.properties?.species.id == specie.value) : mortalityStore.getMortalityFeatures
 })

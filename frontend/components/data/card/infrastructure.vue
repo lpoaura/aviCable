@@ -31,37 +31,37 @@
     <v-card-actions>
 
       <v-btn color="green" prepend-icon="mdi-plus-circle"
-        @click="router.push({ path: `/infrastructures/${data?.properties.id}/diagnosis`, query: {type:data.resourcetype}})">Diagnostic</v-btn>
+        @click="router.push({ path: `/infrastructures/${data?.properties.id}/diagnosis`, query: { type: data.resourcetype } })">Diagnostic</v-btn>
       <v-btn color="green" prepend-icon="mdi-plus-circle"
-        @click="router.push({ path: `/infrastructures/${data?.properties.id}/operation`, query: {type:data.resourcetype}})">Neutralisation</v-btn>
+        @click="router.push({ path: `/infrastructures/${data?.properties.id}/operation`, query: { type: data.resourcetype } })">Neutralisation</v-btn>
       <v-spacer />
       <v-btn color="orange"
-        @click="router.push({path:`/infrastructures/${data.properties.id}/infrastructure`, query: {type:data.resourcetype}})"><v-icon>mdi-pencil-circle</v-icon>
+        @click="router.push({ path: `/infrastructures/${data.properties.id}/infrastructure`, query: { type: data.resourcetype } })"><v-icon>mdi-pencil-circle</v-icon>
         Modifier</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts" setup>
-const {data} = defineProps(['data'])
+const { data } = defineProps(['data'])
 
 const router = useRouter()
 
-const lastOp : boolean = computed(() => {
+const lastOp: boolean = computed(() => {
   return data?.properties.operations?.length > 0 ? data?.properties.operations[0] : null
 })
 
-const neutralized : boolean = computed(() => {
-  return data?.properties.operations.length>0
+const neutralized: boolean = computed(() => {
+  return data?.properties.operations.length > 0
 })
 
 
 
 const lastDiag = computed(() => {
   return data?.properties.diagnosis.find(
-        (action: { last: boolean }) =>
-           action.last
-      )
+    (action: { last: boolean }) =>
+      action.last
+  )
 })
 
 </script>

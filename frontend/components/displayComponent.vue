@@ -6,10 +6,6 @@
           <v-badge color="info" :content="countInfstr || '-'" floating>{{
             $t('display.infrastructures') }}</v-badge>
         </v-tab>
-        <!-- <v-tab value="#support"> {{ $t('support.supports-eqmt') }} </v-tab>
-        <v-tab value="#sensitivearea">
-          {{ $t('display.sensitiveAreas') }}
-        </v-tab> -->
         <v-tab value="#mortality" bg-color="red">
           <v-badge color="error" :content="countMortality || '-'" floating>{{ $t('display.mortalityCases') }}
           </v-badge>
@@ -20,13 +16,6 @@
         <v-window-item value="#infra" class="fill-height">
           <data-display-infrastructure />
         </v-window-item>
-        <!-- <v-window-item value="#support">
-          <data-equipment-display />
-        </v-window-item>
-
-        <v-window-item value="#sensitivearea">
-          <data-sens-area-display />
-        </v-window-item> -->
         <v-window-item value="#mortality" class="fill-height">
           <data-display-mortality />
         </v-window-item>
@@ -35,7 +24,7 @@
   </v-layout>
 </template>
 <script setup>
-import {storeToRefs} from 'pinia';
+import { storeToRefs } from 'pinia';
 import { ref } from 'vue'
 const tab = ref('#infra')
 
@@ -44,10 +33,10 @@ const router = useRouter()
 const cableStore = useCablesStore()
 const mortalityStore = useMortalityStore()
 
-const {countInfstr} = storeToRefs(cableStore)
-const {countMortality} = storeToRefs(mortalityStore)
+const { countInfstr } = storeToRefs(cableStore)
+const { countMortality } = storeToRefs(mortalityStore)
 
-watch(tab, (value) =>{
+watch(tab, (value) => {
   router.push(`${route.path}${value}`)
 })
 
