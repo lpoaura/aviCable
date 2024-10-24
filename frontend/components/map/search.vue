@@ -14,9 +14,9 @@
           :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name"
           layer-type="overlay" />
       </template>
-      <l-geo-json v-for="(layer, index) in validOtherNetworksLayers" :key='index' :geojson="layer.data"
+      <l-geo-json v-for="(layer, index) in validOtherNetworksLayers" :key='index' :geojson="layer.data" :ref="layer.ref"
         :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name" layer-type='overlay'
-        @ready="otherNetworksLayersReady = true" :visible="false" />
+        @ready="otherNetworksLayersReady = true" :visible="layer.visible" />
       <l-geo-json v-if="isValidFeatureCollection(mortalityData)" name="Mortalité" layer-type="overlay"
         :geojson="mortalityData" :options="mortalityGeoJsonOptions()" />
       <l-geo-json v-if="bufferedSelectedInfrastructure" :geojson="bufferedSelectedInfrastructure"
@@ -75,6 +75,8 @@ const infrastructureLayersReady: Ref<boolean> = ref(false)
 const otherNetworksLayersReady: Ref<boolean> = ref(false)
 const bufferedSelectedInfrastructure: Ref<Feature | null> = ref(null)
 const bufferedMortalityInfrastructure: Ref<Feature | null> = ref(null)
+const enedisIsVisible = ref(false)
+const rteIsVisible = ref(false)
 
 const {
   zoom,
@@ -140,12 +142,14 @@ const operatedInfraStructureLayers = computed(() => [
 
 const otherNetworksLayers = computed(() => [
   {
+    visible: enedisIsVisible.value,
     data: enedisInfrastructure.value,
     options: enedisInfrastructureGeoJsonOptions,
     optionsStyle: enedisInfrastructureGeoJsonOptionsStyle,
     name: 'Réseau ENEDIS',
   },
   {
+    visible: rteIsVisible.value,
     data: rteInfrastructure.value,
     options: rteInfrastructureGeoJsonOptions,
     optionsStyle: rteInfrastructureGeoJsonOptionsStyle,
@@ -430,14 +434,22 @@ watch(mortalityInfrastructure, (newVal, _oldVal) => {
   bufferedMortalityInfrastructure.value = newVal ? buffer(newVal, 50, { units: 'meters' }) : null
 })
 
+const debounce = (func, delay) => {
+  let timeout;
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), delay);
+  };
+}
 
-watch(bbox, (newVal, _oldVal) => {
+const handleBBox = debounce((bbox) => {
   cableStore.cancelRequest();
   mortalityStore.cancelRequest();
 
   if (zoom.value >= 10) {
-    cableStore.getAllInfrastructureData({ in_bbox: newVal })
-    mortalityStore.getMortalityData({ in_bbox: newVal })
+    cableStore.getAllInfrastructureData({ in_bbox: bbox })
+    mortalityStore.getMortalityData({ in_bbox: bbox })
   } else {
     infstrDataLoadingStatus.value = false
     infstrData.value = {}
@@ -451,6 +463,11 @@ watch(bbox, (newVal, _oldVal) => {
     enedisInfrastructure.value = {} as FeatureCollection
     rteInfrastructure.value = {} as FeatureCollection
   }
+}, 1000); // Adjust the delay as needed
+
+
+watch(bbox, (newVal, _oldVal) => {
+  handleBBox(newVal)
 })
 
 

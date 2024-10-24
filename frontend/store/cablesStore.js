@@ -72,13 +72,14 @@ export const useCablesStore = defineStore('cables', {
   },
   actions: {
     async getInfstrData (params) {
-      this.controller = new AbortController();
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
       const { signal } = this.controller;
-      console.debug('getInfstrData', signal)
       try {
         this.infstrDataLoadingStatus = true
         console.debug("getInfstrData signal", signal)
-        await $http.$get(
+        await $http.get(
           '/api/v1/cables/infrastructures', {signal, params}
         ).then(data => {
           this.infstrData = data
@@ -98,7 +99,9 @@ export const useCablesStore = defineStore('cables', {
 
     },
     async getOpData (params) {
-      this.controller = new AbortController();
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
       const { signal } = this.controller;
       console.debug('getOpData', signal)
       try {
@@ -121,7 +124,9 @@ export const useCablesStore = defineStore('cables', {
 
     },
     async getAllInfrastructureData(params) {
-      this.controller = new AbortController();
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
       const { signal } = this.controller;
       console.debug('getAllInfrastructureData', signal)
       try {
@@ -157,9 +162,12 @@ export const useCablesStore = defineStore('cables', {
           use_labels: "false",
           epsg: "4326"
       }
-      this.controller = new AbortController();
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
       const { signal } = this.controller;
       console.debug('getEnedisInfrastructure', signal)
+      console.log('query params', {signal, params})
       try{
         const [ reseauBt, reseauHta, poteaux] = await Promise.all([
           $http.$get(
@@ -199,15 +207,18 @@ export const useCablesStore = defineStore('cables', {
       }
       const paramsPylones = {...paramsLines}
       paramsPylones.where =  `in_bbox(geo_point_pylone,${bbox})`
-      this.controller = new AbortController();
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
       const { signal } = this.controller;
-      console.debug('getRteInfrastructure', signal)
+      console.debug('getRteInfrastructure signal', signal)
+      console.log('query params', {signal, params: paramsPylones})
       try{
         const [ Lines, Pylones] = await Promise.all([
-          $http.$get(
+          $fetch(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', {signal, params: paramsLines}
           ),
-          $http.$get(
+          $fetch(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', {signal, params: paramsPylones}
           ),
         ]);
@@ -228,15 +239,9 @@ export const useCablesStore = defineStore('cables', {
     }
     },
     cancelRequest() {
-      console.debug('cancelRequest aborting getInfstrData check',this.controller)
-      if (this.controller) {
-        console.debug('cancelRequest aborting getInfstrData',this.controller)
-        this.controller.abort();
-        this.controller = null; // Reset the controller after aborting
-        console.debug('cancelRequest aborted getInfstrData', this.controller)
-      } else {
-        console.debug('cancelRequest No request to abort');
-      }
+      console.log('getInfstrData abort request')
+      this.controller?.abort()
+      this.controller = null;
     },
     setFormSupportId(supportId) {
       this.formSupportId = supportId
