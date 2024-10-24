@@ -134,3 +134,12 @@ export type Infrastructure = {
   ownerId: any;
   sensitiveArea: SensitiveArea[];
 };
+
+export interface CablesFeature extends Feature {
+  properties?: {
+      resourcetype?: string; // Optional key for resource type
+      [key: string]: any; // Allow other properties
+  };
+}
+
+export type CablesFeatureCollection = FeatureCollection<CablesFeature>;

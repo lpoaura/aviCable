@@ -154,7 +154,6 @@ const { newGeoJSONObject, mortalityInfrastructure, mortalityGetInfrastructure } 
 
 watch(mortalityInfrastructure, (val) => {
   if (val) {
-    console.log('watch(selectedFeature)', val)
     mortalityData.infrstr_id = mortalityInfrastructure.value.properties.id
   }
 })

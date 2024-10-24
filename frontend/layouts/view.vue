@@ -22,8 +22,5 @@ const route = useRoute()
 
 const isSearchPage: Computed<boolean> = computed(() => route.path == '/search')
 
-watch(route, (val) => {
-  console.log('route', val)
-})
 
 </script>

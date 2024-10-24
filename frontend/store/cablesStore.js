@@ -211,7 +211,6 @@ export const useCablesStore = defineStore('cables', {
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', {signal, params: paramsPylones}
           ),
         ]);
-        console.log('Pylones', Pylones)
         this.rteInfrastructure = {
           type: 'FeatureCollection',
           features : [...Lines.features,...Pylones.features]

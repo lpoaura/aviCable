@@ -105,21 +105,21 @@ const iconDict: { [key: string]: string } = {
   COD_UNKNOWN: 'help',
 }
 const levelNotes: { [key: string]: number } = { 'RISK_L': 1, 'RISK_M': 2, 'RISK_H': 3 }
-const rteColor : string = '#00838F' // Vuetify cyan-darken-3
-const enedisColor : string = '#2E7D32' // Vuetify green-darken-3
+const rteColor: string = '#00838F' // Vuetify cyan-darken-3
+const enedisColor: string = '#2E7D32' // Vuetify green-darken-3
 
 const infraStructureLayers = computed(() => [
-  {
-    data: pointData.value,
-    options: infrastructureGeoJsonOptions,
-    name: 'Supports',
-    optionsStyle: null
-  },
   {
     data: lineStringData.value,
     options: infrastructureGeoJsonOptions,
     name: 'Lignes',
     optionsStyle: infrastructureGeoJsonOptionsStyle
+  },
+  {
+    data: pointData.value,
+    options: infrastructureGeoJsonOptions,
+    name: 'Supports',
+    optionsStyle: null
   },
 ])
 
@@ -210,8 +210,12 @@ const isValidFeatureCollection = (obj: any): obj is FeatureCollection => {
   );
 }
 
-const infrastructureOnEachFeature = (feature: Feature, layer: Layer) => {
+const infrastructureOnEachFeature = (feature: CablesFeature, layer: Layer) => {
   if (!mortalityGetInfrastructure.value) {
+    if (feature.resourcetype?.endsWith('Operation')) {
+      console.log('prepare popup')
+      feature = infstrData.value.features.find(item => item.id = feature.properties?.infrastructure)
+    }
     layer.bindPopup(infrastructurePopupContent(feature))
     layer.on('popupopen', () => {
       const id = feature?.properties?.id
@@ -222,7 +226,6 @@ const infrastructureOnEachFeature = (feature: Feature, layer: Layer) => {
           router.push(`/infrastructures/${id}`)
         }
       });
-      console.log('btn click', feature, link, (['Point', 'Line'].includes(feature?.resourcetype) && !!id))
     });
   }
   layer.on('click', () => {
@@ -333,7 +336,6 @@ const rteInfrastructureGeoJsonOptions = () => {
   return {
     pointToLayer: (_feature: Feature, latlng: LatLng | null) => {
       if (latlng) {
-        console.log('rteInfrastructureGeoJsonOptions.type', _feature.geometry.type)
         return leaflet.circleMarker(latlng, {
           radius: 3,
           fillColor: rteColor,
@@ -463,7 +465,6 @@ const getBbox = () => {
 
 
 const hookUpDraw = async () => {
-  console.log(map.value)
   mapObject.value = map.value?.leafletObject;
 
   if (mapObject.value) {
@@ -571,7 +572,6 @@ const supportColor = (feature: Feature) => {
 }
 
 const reverseBBoxString = (bounds) => {
-  console.log(typeof bounds)
   const coords: Array<number> = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()]
   return coords.toString()
 }

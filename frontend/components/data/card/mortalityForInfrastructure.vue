@@ -57,8 +57,5 @@ const dataDetail = (data) => {
   router.push(`mortality/${data.id}`)
 }
 
-onMounted(() => {
-  console.log('DATA  DEATD', data)
-})
 
 </script>
