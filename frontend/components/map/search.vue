@@ -411,12 +411,12 @@ const rteInfrastructureGeoJsonOptionsStyle = () => {
 
 // Watchers
 
-watch(selectedFeature, (newVal, oldVal) => {
-  if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-    const newObj = leaflet.geoJSON(newVal)
-    mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
-  }
-})
+// watch(selectedFeature, (newVal, oldVal) => {
+//   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+//     const newObj = leaflet.geoJSON(newVal)
+//     mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
+//   }
+// })
 
 watch(createLayer, (newLayer, _oldLayer) => {
   if (newLayer && newLayer.toGeoJSON()) {
