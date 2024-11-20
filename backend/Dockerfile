@@ -1,39 +1,54 @@
-# For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.9-slim
+FROM python:3.12-slim AS base
+
+ARG USERNAME=avicable
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+ENV  POETRY_VERSION="^1" \
+  PYTHONUNBUFFERED=1 \
+  PYTHONDONTWRITEBYTECODE=1 \
+  PIP_NO_CACHE_DIR=off \
+  PIP_DISABLE_PIP_VERSION_CHECK=on \
+  PIP_DEFAULT_TIMEOUT=100 \
+  POETRY_HOME="/opt/poetry" \
+  POETRY_VIRTUALENVS_IN_PROJECT=true \
+  POETRY_NO_INTERACTION=1 \
+  PYSETUP_PATH="/opt/pysetup" \
+  VENV_PATH="/opt/pysetup/.venv"
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+RUN apt-get update -y \
+    && apt-get install --no-install-recommends -y \
+    libpq-dev gcc libgraphviz-dev \
+    binutils libproj-dev gdal-bin postgresql-client \
+    &&  apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+
+
+FROM base AS builder
+RUN --mount=type=cache,target=/root/.cache \
+  pip install "poetry"
+WORKDIR $PYSETUP_PATH
+COPY ./poetry.lock ./pyproject.toml ./
+RUN --mount=type=cache,target=$POETRY_HOME/pypoetry/cache \
+    poetry install --without dev --no-root
+
+
+FROM base AS production
+COPY --from=builder $VENV_PATH $VENV_PATH
+COPY . /app
+WORKDIR /app
+
+COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+
+RUN chown -R $USERNAME:$USERNAME /app
+
+USER $USERNAME
+
+VOLUME ["/app/uploads"]
 
 EXPOSE 8000
 
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
-
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
-
-RUN apt-get update -y \
-    && apt-get install --no-install-recommends -y \
-    postgresql-client libpq-dev gcc \
-    libproj-dev gdal-bin \
-    &&  apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
-    && pip install --upgrade pip
-
-
-# Install pip requirements
-COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
-RUN python -m pip install gunicorn
-
-WORKDIR /app
-COPY docker-entrypoint.sh  docker-entrypoint.sh
-COPY . .
-
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
-RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
-USER appuser
-
-VOLUME /app/uploads
-
-# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-# CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi"]
-
-ENTRYPOINT [ "./docker-entrypoint.sh" ]
+ENTRYPOINT ["bash", "/usr/bin/docker-entrypoint.sh"]
