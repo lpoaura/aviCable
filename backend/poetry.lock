@@ -569,13 +569,13 @@ files = [
 
 [[package]]
 name = "dj-sinp-nomenclatures"
-version = "1.2.2"
+version = "1.3.0"
 description = "Django app to manage french SINP nomenclatures standards"
 optional = false
 python-versions = "<4.0,>=3.8.1"
 files = [
-    {file = "dj_sinp_nomenclatures-1.2.2-py3-none-any.whl", hash = "sha256:9a7dabc4bb95eef339aa42e84ca3776abc49501b87662f4eff2ffde6c5392d58"},
-    {file = "dj_sinp_nomenclatures-1.2.2.tar.gz", hash = "sha256:cb1c3961d87d81ba0a49119db729b251c6722dbae70fc7eedfccb8286590a01f"},
+    {file = "dj_sinp_nomenclatures-1.3.0-py3-none-any.whl", hash = "sha256:2b1715d0ef33b2ec14d52fedf4382e4ac9f46e5ff85cce2ea8800e8b7244021a"},
+    {file = "dj_sinp_nomenclatures-1.3.0.tar.gz", hash = "sha256:2d5b3c2f31c714147e38ad28e0949d4d1fd8f9f24d16b293cd240f601b3ec79f"},
 ]
 
 [package.dependencies]
@@ -1904,4 +1904,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.0,<4.0.0"
-content-hash = "08b7145d8d0b36f3299768de987d4a6832763ae7309061574bffdff65ddd72ca"
+content-hash = "d1118ff94f73defa76019cb1cb2bb91a50fe3940d369b7a2bbac3eb20179a720"
