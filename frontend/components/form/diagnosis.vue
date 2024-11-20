@@ -8,12 +8,12 @@
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
                 density="compact" :rules="[rules.required]" :max="new Date()" />
             </v-col>
-            <template v-if="infrastructureType === 'point'">
-              <v-col cols="12">
-                <v-autocomplete v-model="diagData.pole_type_id" chips :items="poleTypes" item-title="label"
-                  item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
+            <v-col cols="12">
+                <v-autocomplete v-model="diagData.pole_type_id" chips :items="armingItems" item-title="label"
+                  item-value="id" :rules="[rules.required]" hide-selected :label="$t('armings')" multiple
                   deletable-chips variant="solo" density="compact" />
               </v-col>
+            <template v-if="infrastructureType === 'point'">
               <v-col cols="12" md="6">
                 <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
                   :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo" density="compact" />
@@ -105,6 +105,7 @@ const infrastructureType = computed(() => (route.query.type).toLowerCase())
 const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
+const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value))
 
 const diagData: DiagData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
@@ -129,7 +130,7 @@ const rules = reactive({
 
 
 // Menu items
-const poleTypes = computed(() => nomenclaturesStore.poleTypeItems)
+const armings = computed(() => nomenclaturesStore.armingItems)
 const conditions = computed(() => nomenclaturesStore.conditionItems)
 const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 

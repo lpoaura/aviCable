@@ -3,7 +3,7 @@
     <v-card-text>
       <v-row>
         <v-col lg="4" md="12">
-          <v-autocomplete v-model="equipmentData.type_id" :items="equipmentType" item-title="label" item-value="id"
+          <v-autocomplete v-model="equipmentData.type_id" :items="equipmentItems" item-title="label" item-value="id"
             :rules="[rules.required]" hide-selected :label="$t('support.support-type')" variant="solo" density="compact"
             @input="updateEquipmentData" />
         </v-col>
@@ -27,9 +27,12 @@
 <script lang="ts" setup>
 
 const { t } = useI18n()
+const route = useRoute()
 const nomenclaturesStore = useNomenclaturesStore()
 
-const equipmentType = computed(() => nomenclaturesStore.equipmentTypeItems)
+
+const infrastructureType = computed(() => (route.query.type).toLowerCase())
+const equipmentItems = computed(() => nomenclaturesStore.getEquipmentItems(infrastructureType.value))
 
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),

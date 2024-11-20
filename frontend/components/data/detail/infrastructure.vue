@@ -17,7 +17,7 @@
     <v-main scrollable>
       <v-container>
         <data-card-infrastructure :data="data" />
-        <data-card-mortality-for-infrastructure :data="data.properties.mortality" />
+        <data-card-mortality-for-infrastructure v-if="data.properties?.mortality?.length > 0" :data="data.properties?.mortality" />
         <data-card-diagnosis v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type" />
         <data-card-operation v-if="lastOp" :operation="lastOp" :support-id="data.properties.id"
           @delete="$emit('update')" />

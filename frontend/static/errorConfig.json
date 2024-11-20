@@ -23,9 +23,9 @@
     "code": 704,
     "msg": "loading-owners-issue"
   },
-  "get_infrstr_poletypes": {
+  "get_infrstr_armings": {
     "code": 705,
-    "msg": "loading-poletypes-issue"
+    "msg": "loading-armings-issue"
   },
   "get_infrstr_risklevels": {
     "code": 706,

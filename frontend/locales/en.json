@@ -85,7 +85,7 @@
     "loading-conditions-issue": "Issue with loading \"Infrastructure Condition\" options occured. You were disconnected",
     "loading-img-issue": "Loading issue. File is not loaded",
     "loading-ownerss-issue": "Issue with loading \"Owner\" options occured. You were disconnected",
-    "loading-poletypes-issue": "Issue with loading \"PoleType\" options occured. You were disconnected",
+    "loading-armings-issue": "Issue with loading \"PoleType\" options occured. You were disconnected",
     "loading-risklevels-issue": "Issue with loading \"Risk Level\" options occured. You were disconnected",
     "nomenclature_not_found_resource": "Server Data loading issue. You were disconnected",
     "sending-img-issue": "An error occured. Some pictures may have not been saved in database. Please, check it"

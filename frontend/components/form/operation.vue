@@ -27,9 +27,9 @@
           prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
       </v-card-actions>
     </v-form>
-    <div>
+    <!-- <div>
       <pre><code>{{ opData }}</code></pre>
-    </div>
+    </div> -->
   </v-card>
 </template>
 
@@ -47,7 +47,7 @@ const route = useRoute()
 
 const coordinatesStore = useCoordinatesStore()
 const cablesStore = useCablesStore()
-// const nomenclaturesStore = useNomenclaturesStore()
+const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 const formValid = ref(false)
 
@@ -72,6 +72,7 @@ const opData = reactive({
   media: [],
   geom: null,
 })
+
 
 const updateEquipmentData = (index, updatedEquipment) => {
   opData.equipments[index] = updatedEquipment;
