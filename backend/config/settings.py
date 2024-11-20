@@ -36,7 +36,7 @@ ALLOWED_HOSTS = config(
 # Application definition
 
 INSTALLED_APPS = [
-    "daphne",
+    # "daphne",
     "corsheaders",
     "rest_framework_simplejwt.token_blacklist",
     "django.contrib.admin",
@@ -79,7 +79,7 @@ if DEBUG:
         "debug_toolbar",
     ]
 
-ASGI_APPLICATION = "config.asgi.application"
+# ASGI_APPLICATION = "config.asgi.application"
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

@@ -20,7 +20,7 @@ RUN apt-get update -y \
 # Install pip requirements
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
-RUN python -m pip install gunicorn uvicorn
+RUN python -m pip install gunicorn
 
 WORKDIR /app
 COPY docker-entrypoint.sh  docker-entrypoint.sh
