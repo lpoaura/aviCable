@@ -31,12 +31,8 @@ DEV = config("DEV", default=False, cast=bool)
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS", default="localhost, 127.0.0.1, backend", cast=Csv()
 )
-# DEFAULT_C
-
-# Application definition
 
 INSTALLED_APPS = [
-    # "daphne",
     "corsheaders",
     "rest_framework_simplejwt.token_blacklist",
     "django.contrib.admin",

@@ -10,7 +10,7 @@ graph-models:
 
 docs: build-docs graph-models
 
-backend-requirements:
-	cd backend && \
-	poetry export --without-hashes --format requirements.txt -o requirements.txt && \
-	poetry export --without-hashes --with=dev --format requirements.txt -o requirements-dev.txt
+# backend-requirements:
+# 	cd backend && \
+# 	poetry export --without-hashes --format requirements.txt -o requirements.txt && \
+# 	poetry export --without-hashes --with=dev --format requirements.txt -o requirements-dev.txt
