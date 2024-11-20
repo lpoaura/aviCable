@@ -6,7 +6,6 @@
 -- TRUNCATE cables_app.cables_infrastructure RESTART IDENTITY CASCADE;
 -- TRUNCATE cables_app.mortality_mortality RESTART IDENTITY CASCADE;
 
-rollback;
 
 begin;
 
@@ -75,7 +74,7 @@ from
    ,
 	cables_app.django_content_type
 where
-	code like 'IO_ENEDIS'
+	code like 'IO-ENEDIS'
 	and (django_content_type.app_label,
 	django_content_type.model) = ('cables',
 	'point');
@@ -121,7 +120,7 @@ from
    ,
 	cables_app.django_content_type
 where
-	code like 'IO_ENEDIS'
+	code like 'IO-ENEDIS'
 	and (django_content_type.app_label,
 	django_content_type.model) = ('cables',
 	'line');
@@ -173,21 +172,18 @@ insert
 	date,
 	remark,
 	last,
-	neutralized,
 	isolation_advice,
 	dissuasion_advice,
 	attraction_advice,
 	change_advice,
 	technical_proposal,
-	condition_id,
 	created_by_id,
 	infrastructure_id,
 	pole_attractivity_id,
 	pole_dangerousness_id,
-	sgmt_build_integr_risk_id,
 	sgmt_moving_risk_id,
 	sgmt_topo_integr_risk_id,
-	sgmt_veget_integr_risk_id,
+	sgmt_landscape_integr_risk_id,
 	updated_by_id)
 select
 	coalesce(date_inventaire,
@@ -198,8 +194,6 @@ select
 	'2000-01-01'::DATE) as date,
 	remarques as remark,
 	true as last,
-	coalesce(deja_neutralise,
-	false) as neutralized,
 	coalesce(neutralisation_prevue_isolation,
 	false) as isolation_advice,
 	coalesce(neutralisation_prevue_dissuasion,
@@ -208,15 +202,13 @@ select
 	false) as attraction_advice,
 	false as change_advice,
 	null as technical_proposal,
-	6 as condition_id,
 	1 as created_by_id,
 	cables_infrastructure.id,
 	pole_attractivity.id,
 	pole_dangerosity.id,
-	null as sgmt_build_integr_risk_id,
 	null as sgmt_moving_risk_id,
 	null as sgmt_topo_integr_risk_id,
-	null as sgmt_veget_integr_risk_id,
+	null as sgmt_landscape_integr_risk_id,
 	1 as updated_by_id
 from
 	${schema_name}.t_inventaire_poteaux_erdf
@@ -593,5 +585,13 @@ join cables_app.species_species on
 	data.cd_nom = species_species.code
 order by
 	date desc;
+
+
+UPDATE cables_app.mortality_mortality
+SET infrstr_id = cables_infrastructure.id
+FROM cables_app.cables_infrastructure
+         JOIN cables_app.cables_point ON cables_infrastructure.id = cables_point.infrastructure_ptr_id
+WHERE st_within(st_transform(mortality_mortality.geom,2154), st_buffer(st_transform(cables_point.geom,2154),10));
+
 
 commit;
