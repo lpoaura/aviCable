@@ -12,7 +12,7 @@ services:
     image: backend
     build:
       context: backend
-      dockerfile: ./Dockerfile.dev
+      dockerfile: ./Dockerfile
     env_file:
       - .env
     ports:
@@ -42,7 +42,7 @@ services:
       - 3000:3000
     volumes:
       - ./frontend:/app
-    command: [ "npm", "run", "dev" ]
+    # command: [ "npm", "run", "dev" ]
 
 # Volumes used for persistent data
 volumes:

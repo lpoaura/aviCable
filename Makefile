@@ -1,5 +1,9 @@
+run:
+	docker compose -f docker-compose.yml -f docker-compose.debug.yml up --build
+
+
 docker_graphviz:
-	docker compose -f docker-compose.yml -f docker-compose.production.yml alpha viz --networks --ports | dot -Tsvg > docker_model.svg
+	docker compose -f docker-compose.yml -f docker-compose.debug.yml up --build alpha viz --networks --ports | dot -Tsvg > docker_model.svg
 
 
 build-docs:

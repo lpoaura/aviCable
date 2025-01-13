@@ -1,24 +1,26 @@
 services:
-  db:
-    image: postgis/postgis:17-master
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    env_file:
-      - .env
-    networks:
-      - cablesv2_net
+  # db:
+  #   image: postgis/postgis:17-master
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - cablesv2_net
 
   backend:
+    image: ghcr.io/lpoaura/avicable-backend:latest
     volumes:
       - backend_media:/app/uploads
       - backend_static:/app/static
     networks:
       - cablesv2_net
-    depends_on:
-      db:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
 
   frontend:
+    image: ghcr.io/lpoaura/avicable-frontend:latest
     ports:
       - 80:80
     volumes:

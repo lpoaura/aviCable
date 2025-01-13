@@ -30,8 +30,8 @@ RUN --mount=type=cache,target=/root/.cache \
 WORKDIR $PYSETUP_PATH
 COPY ./poetry.lock ./pyproject.toml ./
 RUN --mount=type=cache,target=$POETRY_HOME/pypoetry/cache \
-    poetry install --without dev --no-root
-
+    # poetry install --without dev --no-root
+    poetry install --no-root
 
 FROM base AS production
 COPY --from=builder $VENV_PATH $VENV_PATH
