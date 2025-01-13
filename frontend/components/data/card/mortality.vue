@@ -15,33 +15,33 @@
         </v-col>
         <v-col cols="12">
           <p><span class="font-weight-bold">Espèce&nbsp;:</span> {{ item.properties.species.vernacular_name }}
-            (<i>{{item.properties.species.scientific_name }} </i>)</p>
+            (<i>{{ item.properties.species.scientific_name }} </i>)</p>
           <p>
-            <span class="font-weight-bold">Nombre&nbsp;:</span> {{ item.properties.nb_death ? item.properties.nb_death:
-            'x'
+            <span class="font-weight-bold">Nombre&nbsp;:</span> {{ item.properties.nb_death ? item.properties.nb_death :
+              'x'
             }}
           </p>
           <p>
             <span class="font-weight-bold">Date&nbsp;:</span>
-            {{item.properties.date }}
+            {{ item.properties.date }}
           </p>
           <p>
             <span class="font-weight-bold">Observateur&nbsp;:</span>
-            {{item.properties.author }}
+            {{ item.properties.author }}
           </p>
           <p>
             <span class="font-weight-bold">Cause de mortalité&nbsp;:</span>
             <v-icon :color="'red'">
-              {{deathCauseIcons[item.properties?.death_cause.code] || 'mdi-help' }}
-            </v-icon> {{ value }} {{item.properties.death_cause.label }}
+              {{ deathCauseIcons[item.properties?.death_cause.code] || 'mdi-help' }}
+            </v-icon> {{ value }} {{ item.properties.death_cause.label }}
           </p>
           <p>
             <span class="font-weight-bold">Infrastructure associée&nbsp;:</span>
-            {{item.properties.infrstr ? item.properties.infrstr : '-' }}
+            {{ item.properties.infrstr ? item.properties.infrstr : '-' }}
           </p>
           <p>
             <span class="font-weight-bold">Source de la donnée&nbsp;:</span>
-            {{item.properties.data_source ? item.properties.data_source : '-' }}
+            {{ item.properties.data_source ? item.properties.data_source : '-' }}
           </p>
         </v-col>
       </v-row>
@@ -77,13 +77,13 @@
 
 <script setup lang="ts">
 
-const {itemId, item} = defineProps(['itemId','item'])
+const { itemId, item } = defineProps(['itemId', 'item'])
 
 const router = useRouter()
 const emit = defineEmits()
 const deathCauseIcons = ref({
   COD_EL: 'mdi-lightning-bolt',
-  COD_IM:'mdi-star',
+  COD_IM: 'mdi-star',
   COD_UNKNOWN: 'mdi-help'
 })
 const updateDiag = () => {
@@ -94,7 +94,7 @@ const updateDiag = () => {
 }
 
 const deleteItem = async () => {
-  await useHttp(`/api/v1/cables/mortality/${operation.id}/`, {method: 'delete'})
+  await useHttp(`/api/v1/cables/mortality/${operation.id}/`, { method: 'delete' })
   emit('delete')
 }
 </script>

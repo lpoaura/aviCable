@@ -14,6 +14,8 @@ export const useCablesStore = defineStore('cables', {
     formInfrastructureId: null,
     formInfrastructure: null,
     controller: null,
+    enedisInfrastructure: null,
+    rteInfrastructure: null,
   }),
   getters: {
     infstrDatafeatures (state) {
@@ -69,14 +71,15 @@ export const useCablesStore = defineStore('cables', {
     },
   },
   actions: {
-    async getInfstrData (params, _) {
-      this.controller = new AbortController();
+    async getInfstrData (params) {
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
       const { signal } = this.controller;
-      console.debug('getInfstrData', signal)
       try {
         this.infstrDataLoadingStatus = true
         console.debug("getInfstrData signal", signal)
-        await $http.$get(
+        await $http.get(
           '/api/v1/cables/infrastructures', {signal, params}
         ).then(data => {
           this.infstrData = data
@@ -95,8 +98,10 @@ export const useCablesStore = defineStore('cables', {
       }
 
     },
-    async getOpData (params, _) {
-      this.controller = new AbortController();
+    async getOpData (params) {
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
       const { signal } = this.controller;
       console.debug('getOpData', signal)
       try {
@@ -118,17 +123,125 @@ export const useCablesStore = defineStore('cables', {
       }
 
     },
-
-    cancelRequest() {
-      console.debug('cancelRequest aborting getInfstrData check',this.controller)
-      if (this.controller) {
-        console.debug('cancelRequest aborting getInfstrData',this.controller)
-        this.controller.abort();
-        this.controller = null; // Reset the controller after aborting
-        console.debug('cancelRequest aborted getInfstrData', this.controller)
-      } else {
-        console.debug('cancelRequest No request to abort');
+    async getAllInfrastructureData(params) {
+      if (this.controller === null) {
+        this.controller = new AbortController();
       }
+      const { signal } = this.controller;
+      console.debug('getAllInfrastructureData', signal)
+      try {
+        console.debug("getAllInfrastructureData signal", signal)
+        const [ infstrData, opData] = await Promise.all([
+          $http.$get(
+            '/api/v1/cables/infrastructures', {signal, params}
+          ),
+          $http.$get(
+            '/api/v1/cables/operations/', {signal, params}
+          ),
+        ]);
+        this.opData = opData
+        this.infstrData = infstrData
+        this.infstrDataLoadingStatus = false
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          console.debug('getAllInfrastructureData Requête annulée');
+        } else {
+          console.error(err)
+        }
+      }  finally {
+        // Reset loading status and controller
+        this.controller = null; // Reset the controller after the request
+      }
+    },
+    async getEnedisInfrastructure (bbox) {
+      const params =         {
+          where: `in_bbox(geo_shape,${bbox})` ,
+          limit: "10000",
+          lang: "fr",
+          timezone: "Europe/Paris",
+          use_labels: "false",
+          epsg: "4326"
+      }
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
+      const { signal } = this.controller;
+      console.debug('getEnedisInfrastructure', signal)
+      console.log('query params', {signal, params})
+      try{
+        const [ reseauBt, reseauHta, poteaux] = await Promise.all([
+          $http.$get(
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-bt/exports/geojson', {signal, params}
+          ),
+          $http.$get(
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-hta/exports/geojson', {signal, params}
+          ),
+          $http.$get(
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/position-geographique-des-poteaux-hta-et-bt/exports/geojson', {signal, params}
+          )
+        ]);
+        this.enedisInfrastructure = {
+          type: 'FeatureCollection',
+          features : [...reseauBt.features,...reseauHta.features,...poteaux.features,]
+        }
+
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.debug('getEnedisInfrastructure Requête annulée');
+      } else {
+        console.error(err)
+      }
+    }  finally {
+      // Reset loading status and controller
+      this.controller = null; // Reset the controller after the request
+    }
+    },
+    async getRteInfrastructure (bbox) {
+      const paramsLines =         {
+          where: `in_bbox(geo_shape,${bbox})` ,
+          limit: "10000",
+          lang: "fr",
+          timezone: "Europe/Paris",
+          use_labels: "false",
+          epsg: "4326"
+      }
+      const paramsPylones = {...paramsLines}
+      paramsPylones.where =  `in_bbox(geo_point_pylone,${bbox})`
+      if (this.controller === null) {
+        this.controller = new AbortController();
+      }
+      const { signal } = this.controller;
+      console.debug('getRteInfrastructure signal', signal)
+      console.log('query params', {signal, params: paramsPylones})
+      try{
+        const [ Lines, Pylones] = await Promise.all([
+          $fetch(
+            'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', {signal, params: paramsLines}
+          ),
+          $fetch(
+            'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', {signal, params: paramsPylones}
+          ),
+        ]);
+        this.rteInfrastructure = {
+          type: 'FeatureCollection',
+          features : [...Lines.features,...Pylones.features]
+        }
+
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.debug('getRteInfrastructure Requête annulée');
+      } else {
+        console.error(err)
+      }
+    }  finally {
+      // Reset loading status and controller
+      this.controller = null; // Reset the controller after the request
+    }
+    },
+    cancelRequest() {
+      console.log('getInfstrData abort request')
+      this.controller?.abort()
+      this.controller = null;
     },
     setFormSupportId(supportId) {
       this.formSupportId = supportId

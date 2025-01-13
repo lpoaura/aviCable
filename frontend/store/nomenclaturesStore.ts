@@ -9,7 +9,7 @@
  *
  * conditionItems: list of Items related to Infrastructure Condition
  * ownerItems: list of Items related to Infrastructure Owners
- * poleTypeItems: list of Items related to Type of Point Infrastructure (Pole/Pylones)
+ * armingItems: list of Items related to Type of Point Infrastructure (Pole/Pylones)
  * riskLevelItems: list of Items related to Risk Level assessment
  */
 import { defineStore } from "pinia";
@@ -18,185 +18,63 @@ import type { ErrorInfo } from "~/store/errorStore";
 
 export const useNomenclaturesStore = defineStore("nomenclatures", {
   state: () => ({
-    conditionItems: [] as NomenclatureItem[],
-    ownerItems: [] as NomenclatureItem[],
-    poleTypeItems: [] as NomenclatureItem[],
-    riskLevelItems: [] as NomenclatureItem[],
-    deathCauseItems: [] as NomenclatureItem[],
-    equipmentTypeItems: [] as NomenclatureItem[],
+    nomenclatureTypes: [] as NomenclatureType[],
   }),
   getters: {
-    /**
-     * Getter for infrastructure condition nomenclature items.
-     *
-     * @param {state} state of this store module
-     * @return {JSON object} returns the list of nomenclature items for infrastucture conditions
-     */
-    getConditions(state) {
-      return state.conditionItems;
+    armingItems(state) {
+      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "ARMING")?.nomenclatures;
     },
-    /**
-     * Getter for owner nomenclature items.
-     *
-     * @param {state} state of this store module
-     * @return {JSON object} returns the list of nomenclature items for owners
-     */
-    getOwners(state) {
-      return state.ownerItems;
+    ownerItems(state) {
+      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "OWNER")?.nomenclatures;
     },
-    /**
-     * Getter for pole type nomenclature items.
-     *
-     * @param {state} state of this store module
-     * @return {JSON object} returns the list of nomenclature items for pole types
-     */
-    getPoleTypes(state) {
-      return state.poleTypeItems;
+    riskLevelItems(state) {
+      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "RISK_LEV")?.nomenclatures;
     },
-    /**
-     * Getter for risk level nomenclature items.
-     *
-     * @param {state} state of this store module
-     * @return {JSON object} returns the list of nomenclature items for risk levels
-     */
-    getRiskLevels(state) {
-      return state.riskLevelItems;
+    deathCauseItems(state) {
+      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "CAUSE_OF_DEATH")?.nomenclatures;
     },
-    /**
-     * Getter for death cause nomenclature items.
-     *
-     * @param {state} state of this store module
-     * @return {JSON object} returns the list of nomenclature items for risk levels
-     */
-    getDeathCause(state) {
-      return state.deathCauseItems;
+    equipmentTypeItems(state) {
+      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "EQMT_TYPE")?.nomenclatures;
     },
+    conditionItems(state) {
+      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "IFR_COND")?.nomenclatures;
+    },
+    infrastructureType(state) {
+      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "IFR_TYPE")?.nomenclatures;
+    },
+    getInfrastructureTypeId() {
+      return (geomType: string) => {
+        console.log('geomType', geomType)
+        const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
+        return this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
+      }
+    },
+    getArmingItems() {
+      return (geomType: string ,owner: string) => {
+        console.log('geomType', geomType)
+        const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
+        const infraTypeId: number | undefined  = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
+        return infraTypeId? this.armingItems?.filter(item => item.parents?.includes(infraTypeId)):[]
+      }
+    },
+    getEquipmentItems() {
+      return (geomType: string , owner: string) => {
+        console.log('geomType', geomType)
+        const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
+        const infraTypeId: number | undefined  = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
+        return infraTypeId? this.equipmentTypeItems?.filter(item => item.parents?.includes(infraTypeId)):[]
+      }
+    }
   },
-  // mutations: {
-  //   addSpecies(state, data) {
-  //     state.species = data;
-  //   },
-  // },
   actions: {
-    /**
-     * Store method to gather nomenclatures data in store (nomenclaturesStore)
-     * Create a dictionnary with all Types, and each Type contains an array of Items.
-     *
-     * @param {context} context object set as destructured form { commit }
-     */
     async loadNomenclatures() {
       try {
         const params = { with_nomenclatures: true };
-        const types = await $http.$get("/api/v1/nomenclatures/types", {params}); // get Types list
-        // gather Infrastructure Condition Items from all Items
-        const conditions = types.find(
-          (elem: NomenclatureItem) => elem.code === "IFR_COND"
-        );
-        // If no Items is gathered, an Error is thrown
-        if (conditions === undefined) {
-          throw new Error("conditions");
-        }
-        // set "conds" to state value "conditionItems"
-        this.conditionItems = conditions.nomenclatures;
-        // gather Owner Items from all Items
-        const owners = types.find(
-          (elem: NomenclatureItem) => elem.code === "OWNER"
-        );
-        // If no Items is gathered, an Error is thrown
-        if (owners === undefined) {
-          throw new Error("owners");
-        }
-        // set "owners" to state value "ownerItems"
-        this.ownerItems = owners.nomenclatures;
-        // gather Pole type Items from all Items
-        const poleTypes = types.find(
-          (elem: NomenclatureItem) => elem.code === "POLE_TYP"
-        );
-        // If no Items is gathered, an Error is thrown
-        if (poleTypes === undefined) {
-          throw new Error("poleTypes");
-        }
-        // set "poletypes" to state value "poletypeItems"
-        this.poleTypeItems = poleTypes.nomenclatures;
-        // // gather Risk Level Items from all Items
-        const riskLevels = types.find(
-          (elem: NomenclatureItem) => elem.code === "RISK_LEV"
-        );
-        // If no Items is gathered, an Error is thrown
-        if (riskLevels === undefined) {
-          throw new Error("riskLevels");
-        }
-        // set "riskLevels" to state value "riskLevelItems"
-        this.riskLevelItems = riskLevels.nomenclatures;
-        // // gather Death cause Items from all Items
-        const deathCause = types.find(
-          (elem: NomenclatureItem) => elem.code === "CAUSE_OF_DEATH"
-        );
-        // If no Items is gathered, an Error is thrown
-        if (deathCause === undefined) {
-          throw new Error("deathCause");
-        }
-        // set "riskLevels" to state value "riskLevelItems"
-        this.deathCauseItems = deathCause.nomenclatures;
-
-
-        const equipmentType = types.find(
-          (elem: NomenclatureItem) => elem.code === "EQMT_TYPE"
-        );
-        // If no Items is gathered, an Error is thrown
-        if (equipmentType === undefined) {
-          throw new Error("equipmentType");
-        }
-        // set "riskLevels" to state value "riskLevelItems"
-        this.equipmentTypeItems = equipmentType.nomenclatures;
-        // error handling
+        this.nomenclatureTypes = await $http.$get("/api/v1/nomenclatures/types", { params }); // get Types list
       } catch (err: unknown) {
-        const error: ErrorInfo = {} as ErrorInfo;
-        // if nuxt error message contains substring '404'
-        if (err.toString().includes("404")) {
-          error.code = errorCodes.nomenclature_not_found.code;
-          error.msg = useNuxtApp().$i18n.t(
-            `error.${errorCodes.nomenclature_not_found.msg}`
-          );
-          // if nuxt error message contains substring 'conditions'
-        } else if (err.toString().includes("conditions")) {
-          error.code = errorCodes.get_infrstr_conditions.code;
-          error.msg = useNuxtApp().$i18n.t(
-            `error.${errorCodes.get_infrstr_conditions.msg}`
-          );
-          // if nuxt error message contains substring 'owners'
-        } else if (err.toString().includes("owners")) {
-          error.code = errorCodes.get_infrstr_owners.code;
-          error.msg = useNuxtApp().$i18n.t(
-            `error.${errorCodes.get_infrstr_owners.msg}`
-          );
-          // if nuxt error message contains substring 'poleTypes'
-        } else if (err.toString().includes("poleTypes")) {
-          error.code = errorCodes.get_infrstr_poletypes.code;
-          error.msg = useNuxtApp().$i18n.t(
-            `error.${errorCodes.get_infrstr_poletypes.msg}`
-          );
-          // if nuxt error message contains substring 'riskLevels'
-        } else if (err.toString().includes("riskLevels")) {
-          error.code = errorCodes.get_infrstr_risklevels.code;
-          error.msg = useNuxtApp().$i18n.t(
-            `error.${errorCodes.get_infrstr_risklevels.msg}`
-          );
-          // Default error if not capture above
-        } else {
-          error.code = errorCodes.loading_whole_nomenclatures.code;
-          error.msg = useNuxtApp().$i18n.t(
-            `error.${errorCodes.loading_whole_nomenclatures.msg}`
-          );
-        }
-        // set error message to errorStore and triggers message display through "err" watcher in
-        // error-snackbar component
-
-        // commit('errorStore/setError', error, { root: true })
-        // log out user as application may not be reliable as is
-        // $nuxt.$auth.logout();
+        console.error(err)
       }
-    },
+    }
   },
 });
 
@@ -206,4 +84,13 @@ interface NomenclatureItem {
   label: string;
   mnemonic: string;
   type: number;
+  parents?: number[];
+}
+
+interface NomenclatureType {
+  id: number;
+  code: string;
+  mnemonic: string;
+  label: string;
+  nomenclatures: NomenclatureItem[];
 }

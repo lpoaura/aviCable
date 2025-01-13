@@ -3,7 +3,7 @@
     <v-app-bar density="compact" color="blue-grey-lighten-5">
       <v-app-bar-title>
         <v-chip :prepend-icon="deathCauseIcons[data.properties?.death_cause.code] || 'mdi-help'" color="red">{{ data.id
-          }}</v-chip>&nbsp;{{ $t('display.mortalityCases')}}<strong>&nbsp;: {{ data.properties.species.vernacular_name
+          }}</v-chip>&nbsp;{{ $t('display.mortalityCases') }}<strong>&nbsp;: {{ data.properties.species.vernacular_name
           }}</strong>
       </v-app-bar-title>
       <v-spacer />
@@ -21,10 +21,10 @@
 
 <script setup lang="ts">
 // const router = useRouter()
-const {data} = defineProps(['data'])
+const { data } = defineProps(['data'])
 const deathCauseIcons = ref({
   COD_EL: 'mdi-lightning-bolt',
-  COD_IM:'mdi-star',
+  COD_IM: 'mdi-star',
   COD_UNKNOWN: 'mdi-help'
 })
 </script>

@@ -3,26 +3,26 @@
     <template #subtitle>{{ $t("realizedOn") }} <strong>{{ diagnosis.date }}</strong></template>
     <template #text>
       <span class="font-weight-bold">Recommandations&nbsp;: </span><br>
-      <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation': ''"
+      <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation' : ''"
         :color="diagnosis.isolation_advice ? 'warning' : ''" class="ma-2">
         {{ diagnosis.isolation_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.isolate') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation': ''"
+      <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation' : ''"
         :color="diagnosis.dissuasion_advice ? 'warning' : ''" class="ma-2">
         {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.makeDissuasive') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation': ''"
+      <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation' : ''"
         :color="diagnosis.attraction_advice ? 'warning' : ''" class="ma-2">
         {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.makeAttractive') }}
       </v-chip>
-      <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation': ''"
+      <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation' : ''"
         :color="diagnosis.change_advice == true ? 'warning' : ''" class="ma-2">
         {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.changeAdvice') }}
       </v-chip>
       <template v-if="isPoint">
         <p>
           <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
-          <v-chip v-for="pt in diagnosis.pole_type" v-if="diagnosis.pole_type.length>0" :key="pt.id" color="info"
+          <v-chip v-for="pt in diagnosis.pole_type" v-if="diagnosis.pole_type.length > 0" :key="pt.id" color="info"
             class="ma-2">
             {{ pt.label }}
           </v-chip>
@@ -31,8 +31,8 @@
         <p>
           <span class="font-weight-bold">{{ $t('support.attractiveness') }}&nbsp;:</span>
           <v-icon icon="mdi-circle"
-            :color="diagnosis?.pole_attractivity ? riskColors[diagnosis?.pole_attractivity.code]:'grey'" class="mx-2" />
-          <span>{{ diagnosis?.pole_attractivity.label}}</span>
+            :color="diagnosis?.pole_attractivity ? riskColors[diagnosis?.pole_attractivity.code] : 'grey'" class="mx-2" />
+          <span>{{ diagnosis?.pole_attractivity.label }}</span>
         </p>
         <p>
           <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
@@ -125,7 +125,7 @@ interface Props {
   diagnosis: object,
 }
 
-const {infrastructureType, diagnosis} = defineProps<Props>()
+const { infrastructureType, diagnosis } = defineProps<Props>()
 const router = useRouter()
 const deletedDiagConfirm = ref(true)
 
@@ -140,22 +140,22 @@ const stateColors = reactive({
   POOR: 'yellow',
 })
 
-const isPoint= computed(() => infrastructureType==='Point')
-const isLine = computed(() => infrastructureType==='Line')
+const isPoint = computed(() => infrastructureType === 'Point')
+const isLine = computed(() => infrastructureType === 'Line')
 
 const updateDiag = () => {
   router.push({
     path: `/infrastructures/${diagnosis.infrastructure}/diagnosis`,
-    query: {id_diagnosis: diagnosis.id, type:infrastructureType.toLowerCase() }
+    query: { id_diagnosis: diagnosis.id, type: infrastructureType.toLowerCase() }
   })
 }
 
 const deleteDiag = async () => {
-  await useHttp(`/api/v1/cables/diagnosis/${diagnosis.id}/`, {method: 'delete'})
+  await useHttp(`/api/v1/cables/diagnosis/${diagnosis.id}/`, { method: 'delete' })
 }
 
-onMounted(()=>{
-  console.debug('diagnosis',diagnosis)
+onMounted(() => {
+  console.debug('diagnosis', diagnosis)
 })
 
 </script>

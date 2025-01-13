@@ -15,6 +15,7 @@
   "lowRisk": "Risque faible",
   "midRisk": "Risque modéré",
   "highRisk": "Risque élevé",
+  "armings": "Armements",
   "app": {
     "appShortName": "aviCable",
     "appName": "Avifaune & câbles aériens",
@@ -127,7 +128,7 @@
     "loading-conditions-issue": "un problème de chargement des options \"Etat des Infrastructures\" est survenu. Vous avez été déconnecté",
     "loading-img-issue": "Erreur de chargement. Fichier non chargée",
     "loading-owners-issue": "un problème de chargement des options \"Propriétaire\" est survenu. Vous avez été déconnecté",
-    "loading-poletypes-issue": "un problème de chargement des options \"type de Poteaux\" est survenu. Vous avez été déconnecté",
+    "loading-armings-issue": "un problème de chargement des options \"type de Poteaux\" est survenu. Vous avez été déconnecté",
     "loading-risklevels-issue": "un problème de chargement des options \"Niveau de Risque\" est survenu. Vous avez été déconnecté",
     "nomenclature_not_found_resource": "Problème Serveur de chargement des données. vous avez été déconnecté",
     "sending-img-issue": "Une erreur est survenu. Des images peuvent ne pas avoir été sauvegardée dans la base de données. Veuillez vérifier",

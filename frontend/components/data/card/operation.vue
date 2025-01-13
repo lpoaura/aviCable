@@ -4,20 +4,20 @@
     <template #text>
       <div>
         <span class="font-weight-bold">
-          {{ $t("operation.equipment", operation.equipments.length, {count: operation.equipments.length} )}}
+          {{ $t("operation.equipment", operation.equipments.length, { count: operation.equipments.length }) }}
         </span>
         <v-list lines="two">
           <v-list-item v-for="(equipment, index) in operation.equipments" :key="index">
             <template #title><v-chip>{{ equipment.type.code }} </v-chip> {{ equipment.type.label }} <strong>x{{
-                equipment.count }}</strong>
+              equipment.count }}</strong>
             </template>
-            <div v-if="equipment.reference"><strong>{{$t("reference")}}</strong>&nbsp;: {{ equipment.reference }}
+            <div v-if="equipment.reference"><strong>{{ $t("reference") }}</strong>&nbsp;: {{ equipment.reference }}
             </div>
-            <div v-if="equipment.comment"><strong>{{$t("app.remark")}}</strong>&nbsp;: {{ equipment.comment }}</div>
+            <div v-if="equipment.comment"><strong>{{ $t("app.remark") }}</strong>&nbsp;: {{ equipment.comment }}</div>
           </v-list-item>
         </v-list>
       </div>
-      <div v-if="operation.remark"><strong>{{$t("app.remark")}}</strong>&nbsp;: {{ operation.remark }}
+      <div v-if="operation.remark"><strong>{{ $t("app.remark") }}</strong>&nbsp;: {{ operation.remark }}
       </div>
     </template>
     <v-card-actions>
@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 
-const {supportId, operation} = defineProps(['operation','supportId'])
+const { supportId, operation } = defineProps(['operation', 'supportId'])
 
 const router = useRouter()
 const emit = defineEmits()
@@ -65,7 +65,7 @@ const updateDiag = () => {
 }
 
 const deleteOperation = async () => {
-  await useHttp(`/api/v1/cables/operations/${operation.id}/`, {method: 'delete'})
+  await useHttp(`/api/v1/cables/operations/${operation.id}/`, { method: 'delete' })
   emit('delete')
 }
 </script>

@@ -3,7 +3,7 @@
     <v-card-text>
       <v-row>
         <v-col lg="4" md="12">
-          <v-autocomplete v-model="equipmentData.type_id" :items="equipmentType" item-title="label" item-value="id"
+          <v-autocomplete v-model="equipmentData.type_id" :items="equipmentItems" item-title="label" item-value="id"
             :rules="[rules.required]" hide-selected :label="$t('support.support-type')" variant="solo" density="compact"
             @input="updateEquipmentData" />
         </v-col>
@@ -27,18 +27,21 @@
 <script lang="ts" setup>
 
 const { t } = useI18n()
+const route = useRoute()
 const nomenclaturesStore = useNomenclaturesStore()
 
-const equipmentType = computed(() => nomenclaturesStore.equipmentTypeItems)
+
+const infrastructureType = computed(() => (route.query.type).toLowerCase())
+const equipmentItems = computed(() => nomenclaturesStore.getEquipmentItems(infrastructureType.value))
 
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
 
-const {index, equipment } = defineProps({
-  index: {type: Number, default: 0},
-  equipment: {type: Object ,required:true}
+const { index, equipment } = defineProps({
+  index: { type: Number, default: 0 },
+  equipment: { type: Object, required: true }
 });
 
 const equipmentData = ref(null)
@@ -52,28 +55,11 @@ const updateEquipmentData = () => {
 };
 
 
-// const updateType = (value: string) => {
-//   emit('update', { ...equipment, type_id: value });
-// };
-
-// const updateCount = (value: string) => {
-//   emit('update', { ...equipment, count: value });
-// };
-
-// const updateReference = (value: string) => {
-//   emit('update', { ...equipment, reference: value });
-// };
-
-
-// const updateRemark = (value: string) => {
-//   emit('update', { ...equipment, comment: value });
-// };
-
 const deleteItem = () => {
   emit('delete');
 };
 
 onMounted(() => {
-  equipmentData.value = {...equipment}
+  equipmentData.value = { ...equipment }
 })
 </script>

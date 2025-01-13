@@ -5,7 +5,7 @@
         <p> {{ index }} <v-tooltip :text="mortality.death_cause.label">
             <template #activator="{ props }">
               <v-icon :color="'red'">
-                {{deathCauseIcons[mortality.death_cause.code] || 'mdi-help' }}
+                {{ deathCauseIcons[mortality.death_cause.code] || 'mdi-help' }}
               </v-icon>
             </template>
           </v-tooltip> <strong>{{ mortality.species.vernacular_name }}</strong> (<i>{{ mortality.species.scientific_name
@@ -40,7 +40,7 @@ interface Props {
 }
 const router = useRouter()
 
-const {data} = defineProps<Props>()
+const { data } = defineProps<Props>()
 
 const deathCauseIcons = ref({
   COD_EL: 'mdi-lightning-bolt',
@@ -49,7 +49,7 @@ const deathCauseIcons = ref({
 })
 
 const deleteItem = async () => {
-  await useHttp(`/api/v1/cables/mortality/${data.id}/`, {method: 'delete'})
+  await useHttp(`/api/v1/cables/mortality/${data.id}/`, { method: 'delete' })
   emit('delete')
 }
 
@@ -57,8 +57,5 @@ const dataDetail = (data) => {
   router.push(`mortality/${data.id}`)
 }
 
-onMounted(() => {
-  console.log('DATA  DEATD', data)
-})
 
 </script>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
-  <object model="sinp_nomenclatures.source">
+  <object model="sinp_nomenclatures.source" pk="1">
     <field name="timestamp_create" type="DateTimeField">2022-01-26T10:41:30.941171+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-26T10:41:30.941188+00:00</field>
     <field name="name" type="CharField">Appli_Cable</field>
@@ -9,7 +9,7 @@
     <field name="create_date" type="DateField">2022-01-26</field>
     <field name="update_date" type="DateField">2022-01-26</field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="1">
     <field name="timestamp_create" type="DateTimeField">2022-01-26T10:41:33.506149+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-26T10:41:33.506162+00:00</field>
     <field name="code" type="CharField">OWNER</field>
@@ -20,7 +20,7 @@
     <field name="update_date" type="DateField">2022-01-26</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="2">
     <field name="timestamp_create" type="DateTimeField">2022-01-26T10:44:53.699124+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-26T10:44:53.699141+00:00</field>
     <field name="code" type="CharField">GAN</field>
@@ -31,7 +31,7 @@
     <field name="update_date" type="DateField">2022-01-26</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="3">
     <field name="timestamp_create" type="DateTimeField">2022-01-28T14:39:47.528314+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-28T14:39:47.528331+00:00</field>
     <field name="code" type="CharField">IFR_COND</field>
@@ -42,7 +42,7 @@
     <field name="update_date" type="DateField">2022-01-28</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="4">
     <field name="timestamp_create" type="DateTimeField">2022-01-28T14:40:46.799666+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-28T14:40:46.799683+00:00</field>
     <field name="code" type="CharField">ARMING</field>
@@ -53,7 +53,7 @@
     <field name="update_date" type="DateField">2022-01-28</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="5">
     <field name="timestamp_create" type="DateTimeField">2022-01-28T14:41:29.505465+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-28T14:41:29.505528+00:00</field>
     <field name="code" type="CharField">RISK_LEV</field>
@@ -64,7 +64,7 @@
     <field name="update_date" type="DateField">2022-01-28</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="6">
     <field name="timestamp_create" type="DateTimeField">2022-02-01T07:59:37.475680+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-01T07:59:37.475695+00:00</field>
     <field name="code" type="CharField">OP_TYPE</field>
@@ -75,7 +75,7 @@
     <field name="update_date" type="DateField">2022-02-01</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="7">
     <field name="timestamp_create" type="DateTimeField">2022-02-01T08:00:04.904341+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-01T08:00:04.904369+00:00</field>
     <field name="code" type="CharField">EQMT_TYPE</field>
@@ -86,7 +86,7 @@
     <field name="update_date" type="DateField">2022-02-01</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="8">
     <field name="timestamp_create" type="DateTimeField">2022-02-02T09:05:20.599393+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-02T09:05:20.599409+00:00</field>
     <field name="code" type="CharField">ACT_STATUS</field>
@@ -97,7 +97,7 @@
     <field name="update_date" type="DateField">2022-02-02</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="9">
     <field name="timestamp_create" type="DateTimeField">2022-02-02T09:19:12.655130+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-02T09:19:12.655144+00:00</field>
     <field name="code" type="CharField">CAUSE_OF_DEATH</field>
@@ -108,7 +108,7 @@
     <field name="update_date" type="DateField">2022-02-02</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="10">
     <field name="timestamp_create" type="DateTimeField">2022-02-03T08:45:29.406445+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-03T08:45:29.406459+00:00</field>
     <field name="code" type="CharField">COD_SRC</field>
@@ -119,7 +119,7 @@
     <field name="update_date" type="DateField">2022-02-03</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="11">
     <field name="timestamp_create" type="DateTimeField">2024-11-19T20:17:23.991104+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-19T20:17:23.991115+00:00</field>
     <field name="code" type="CharField">IFR_TYPE</field>
@@ -130,7 +130,7 @@
     <field name="update_date" type="DateField">2024-11-19</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.type">
+  <object model="sinp_nomenclatures.type" pk="12">
     <field name="timestamp_create" type="DateTimeField">2024-11-19T23:06:16.783477+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-19T23:06:28.140391+00:00</field>
     <field name="code" type="CharField">NETW_TYP</field>
@@ -141,7 +141,7 @@
     <field name="update_date" type="DateField">2024-11-20</field>
     <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>Appli_Cable</natural><natural>v1</natural></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="1">
     <field name="timestamp_create" type="DateTimeField">2022-01-26T10:46:11.201658+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-26T10:46:11.201671+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>OWNER</natural></field>
@@ -151,7 +151,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="2">
     <field name="timestamp_create" type="DateTimeField">2022-01-26T10:46:53.277527+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-26T10:46:53.277554+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>OWNER</natural></field>
@@ -161,7 +161,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="3">
     <field name="timestamp_create" type="DateTimeField">2022-01-26T10:48:22.431947+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-26T10:48:22.431989+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>GAN</natural></field>
@@ -171,7 +171,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="4">
     <field name="timestamp_create" type="DateTimeField">2022-01-26T10:49:57.701062+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-26T10:49:57.701130+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>GAN</natural></field>
@@ -181,7 +181,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="5">
     <field name="timestamp_create" type="DateTimeField">2022-01-26T10:50:51.201831+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-26T10:50:51.201864+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>GAN</natural></field>
@@ -191,7 +191,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="6">
     <field name="timestamp_create" type="DateTimeField">2022-01-28T14:44:19.928738+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-28T14:44:19.928754+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>IFR_COND</natural></field>
@@ -201,7 +201,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="7">
     <field name="timestamp_create" type="DateTimeField">2022-01-28T14:45:52.265056+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-28T14:45:52.265070+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>IFR_COND</natural></field>
@@ -211,7 +211,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="8">
     <field name="timestamp_create" type="DateTimeField">2022-01-28T14:52:47.202208+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-28T14:52:47.202228+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>RISK_LEV</natural></field>
@@ -221,7 +221,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="9">
     <field name="timestamp_create" type="DateTimeField">2022-01-28T14:53:16.865298+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-28T14:53:16.865343+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>RISK_LEV</natural></field>
@@ -231,7 +231,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="10">
     <field name="timestamp_create" type="DateTimeField">2022-01-28T14:54:00.526120+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-01-28T14:54:00.526138+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>RISK_LEV</natural></field>
@@ -241,7 +241,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="13">
     <field name="timestamp_create" type="DateTimeField">2022-02-01T08:01:11.429631+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-01T08:01:11.429647+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>OP_TYPE</natural></field>
@@ -251,7 +251,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="14">
     <field name="timestamp_create" type="DateTimeField">2022-02-01T08:01:37.445880+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-01T08:01:37.445911+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>OP_TYPE</natural></field>
@@ -261,7 +261,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="18">
     <field name="timestamp_create" type="DateTimeField">2022-02-02T09:06:10.182232+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-02T09:06:10.182251+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ACT_STATUS</natural></field>
@@ -271,7 +271,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="19">
     <field name="timestamp_create" type="DateTimeField">2022-02-02T09:06:50.207450+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-02T09:06:50.207462+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ACT_STATUS</natural></field>
@@ -281,7 +281,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="20">
     <field name="timestamp_create" type="DateTimeField">2022-02-02T09:20:16.206484+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-02T09:20:16.206497+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>CAUSE_OF_DEATH</natural></field>
@@ -291,7 +291,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="21">
     <field name="timestamp_create" type="DateTimeField">2022-02-02T09:20:52.531843+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-02T09:20:52.531864+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>CAUSE_OF_DEATH</natural></field>
@@ -301,7 +301,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="22">
     <field name="timestamp_create" type="DateTimeField">2022-02-02T09:21:39.192465+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-02T09:21:39.192477+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>CAUSE_OF_DEATH</natural></field>
@@ -311,7 +311,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="23">
     <field name="timestamp_create" type="DateTimeField">2022-02-03T08:46:05.062701+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-03T08:46:05.062739+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>COD_SRC</natural></field>
@@ -321,7 +321,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="24">
     <field name="timestamp_create" type="DateTimeField">2022-02-03T08:46:28.680213+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2022-02-03T08:46:28.680233+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>COD_SRC</natural></field>
@@ -331,7 +331,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="34">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -341,7 +341,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="35">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -351,7 +351,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="36">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -361,7 +361,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="37">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -371,7 +371,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="38">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -381,7 +381,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="39">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -391,7 +391,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="40">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -401,7 +401,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="41">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -411,7 +411,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="42">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -421,7 +421,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="43">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -431,7 +431,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="45">
     <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -441,7 +441,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="52">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -451,7 +451,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="53">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -461,7 +461,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="55">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -471,7 +471,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="56">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -481,7 +481,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="57">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -491,7 +491,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="58">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -501,7 +501,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="59">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -511,7 +511,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="60">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -521,7 +521,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="61">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -531,7 +531,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="63">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -541,7 +541,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="64">
     <field name="timestamp_create" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-06T13:13:36.372725+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -551,7 +551,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="66">
     <field name="timestamp_create" type="DateTimeField">2023-12-13T14:28:58.081623+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2023-12-13T14:28:58.081623+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -561,7 +561,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="67">
     <field name="timestamp_create" type="DateTimeField">2023-12-13T14:28:58.081623+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-19T23:01:37.112329+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -571,7 +571,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="68">
     <field name="timestamp_create" type="DateTimeField">2024-11-19T20:18:07.902399+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-19T20:18:07.902438+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>IFR_TYPE</natural></field>
@@ -581,7 +581,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="69">
     <field name="timestamp_create" type="DateTimeField">2024-11-19T20:18:24.763261+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-19T20:18:24.763274+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>IFR_TYPE</natural></field>
@@ -591,7 +591,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="71">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -601,7 +601,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="72">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -611,7 +611,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="73">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -621,7 +621,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="74">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -631,7 +631,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="75">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -641,7 +641,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="76">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -651,7 +651,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="77">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -661,7 +661,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="78">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -671,7 +671,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>BT</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="79">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -681,7 +681,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>BT</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="80">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -691,7 +691,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="81">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -701,7 +701,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="82">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -711,7 +711,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="83">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -721,7 +721,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="84">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -731,7 +731,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="85">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -741,7 +741,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="86">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -751,7 +751,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="87">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -761,7 +761,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="88">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
@@ -771,7 +771,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="89">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>NETW_TYP</natural></field>
@@ -781,7 +781,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="90">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>NETW_TYP</natural></field>
@@ -791,7 +791,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="91">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>NETW_TYP</natural></field>
@@ -801,7 +801,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="115">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -811,7 +811,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="125">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -821,7 +821,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="126">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -831,7 +831,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="127">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -841,7 +841,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="128">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -851,7 +851,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>LINE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="129">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -861,7 +861,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="130">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -871,7 +871,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="131">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>
@@ -881,7 +881,7 @@
     <field name="status" type="CharField">ENABLED</field>
     <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
   </object>
-  <object model="sinp_nomenclatures.nomenclature">
+  <object model="sinp_nomenclatures.nomenclature" pk="133">
     <field name="timestamp_create" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="timestamp_update" type="DateTimeField">2024-11-20T10:48:40.890047+00:00</field>
     <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>EQMT_TYPE</natural></field>

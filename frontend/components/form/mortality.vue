@@ -50,12 +50,12 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field ref="infrstr"
-                  :value="mortalityInfrastructure?.properties ? `#${mortalityInfrastructure?.properties.id} ${mortalityInfrastructure?.resourcetype} ${mortalityInfrastructure?.properties.owner.label}`: ''"
+                  :value="mortalityInfrastructure?.properties ? `#${mortalityInfrastructure?.properties.id} ${mortalityInfrastructure?.resourcetype} ${mortalityInfrastructure?.properties.owner.label}` : ''"
                   label="support/ligne concerné" type="string" placeholder="support/ligne concerné" hide-spin-buttons
                   variant="solo" density="compact" readonly focused :messages="t('Cliquez sur la carte')">
                   <template #append>
                     <v-btn color="info" :disabled="mortalityGetInfrastructure"
-                      @click="mortalityGetInfrastructure = !mortalityGetInfrastructure">{{t('attachInfrastructure')}}</v-btn>
+                      @click="mortalityGetInfrastructure = !mortalityGetInfrastructure">{{ t('attachInfrastructure') }}</v-btn>
                   </template>
                 </v-text-field>
               </v-col>
@@ -94,7 +94,7 @@
               }}</v-btn>
             <v-btn color="green" :disabled="!(formValid && !!mortalityData.geom)" variant="elevated"
               prepend-icon="mdi-check" @click="submit">{{
-              $t('app.valid')
+                $t('app.valid')
               }}</v-btn>
           </v-row>
         </v-card-actions>
@@ -109,9 +109,9 @@ import { storeToRefs } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
-const {mortality} = defineProps(['mortality'])
-const {t} = useI18n()
-const router =useRouter()
+const { mortality } = defineProps(['mortality'])
+const { t } = useI18n()
+const router = useRouter()
 const errorStore = useErrorsStore()
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
@@ -127,20 +127,20 @@ const formValid = ref(true)
 
 const mortalityData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
-        author: null,
-        species_id: null, // null,
-        infrstr_id: null,
-        nb_death: 1,
-        death_cause_id: null,
-        data_source: null,
-        data_source_url: null,
-        comment: null,
-        geom: null,
-      })
+    .toISOString()
+    .substr(0, 10),
+  author: null,
+  species_id: null, // null,
+  infrstr_id: null,
+  nb_death: 1,
+  death_cause_id: null,
+  data_source: null,
+  data_source_url: null,
+  comment: null,
+  geom: null,
+})
 
-      // rules for form validation
+// rules for form validation
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),
   requiredOrNotValid: (v: string | number) => v === 0 || !!v || t('valid.required_or_not_valid'),
@@ -150,14 +150,13 @@ const rules = reactive({
   urlRules: (v: string) => !v || /^(ftp|http|https):\/\/[^ "]+$/.test(v) || 'Must be a valid URL (http://, https://, ftp://)',
 })
 
-const {newGeoJSONObject, mortalityInfrastructure, mortalityGetInfrastructure} = storeToRefs(coordinatesStore)
+const { newGeoJSONObject, mortalityInfrastructure, mortalityGetInfrastructure } = storeToRefs(coordinatesStore)
 
 watch(mortalityInfrastructure, (val) => {
-      if (val) {
-        console.log('watch(selectedFeature)',val)
-        mortalityData.infrstr_id = mortalityInfrastructure.value.properties.id
-      }
-    })
+  if (val) {
+    mortalityData.infrstr_id = mortalityInfrastructure.value.properties.id
+  }
+})
 
 watch(newGeoJSONObject, (val) => {
   if (val) {
@@ -165,112 +164,94 @@ watch(newGeoJSONObject, (val) => {
   }
 })
 
-watch(speciesSearch , async (val) => {
-    val && val !== mortalityData.species_id && speciesSelection(val)
-    //   // Items have already been loaded
-    //   // if (speciesItems.value.length > 0) return
-
-    //   // // Items have already been requested
-    //   // if (isLoading.value) return
-
-    //   // isLoading.value = true
-
-    //   // // Lazily load input items
-    //   // await useHttp(`species/?search=${value}`)
-    //   //   .then((data) => {
-    //   //     specieSearchEntries.value = data
-    //   //   })
-    //   // // TODO Manage error
-    //   //   .catch((err) => {
-    //   //     console.error(err)
-    //   //   })
-    //   //   .finally(() => (isLoading.value = false))
-    })
+watch(speciesSearch, async (val) => {
+  val && val !== mortalityData.species_id && speciesSelection(val)
+})
 
 const speciesSelection = async (value: string) => {
-        isLoading.value = true
-        const {data} = await useHttp(`/api/v1/species/?search=${value}`)
-        specieSearchEntries.value = data.value
-        isLoading.value = false
-      }
+  isLoading.value = true
+  const { data } = await useHttp(`/api/v1/species/?search=${value}`)
+  specieSearchEntries.value = data.value
+  isLoading.value = false
+}
 
 const back = () => {
-      router.back()
+  router.back()
+}
+
+
+
+const submit = async () => {
+  if (formValid.value) {
+    // Case of creation of new Point and associated Diagnosis
+    if (!mortality) {
+      await createNewData()
+      // new Point is successfully created
+    }
+    router.push('/search#morality')
   }
+}
 
 
-
-   const submit =  async () => {
-      if (formValid.value) {
-        // Case of creation of new Point and associated Diagnosis
-        if (!mortality) {
-          await createNewData()
-          // new Point is successfully created
-        }
-        router.push('/search#morality')
-      }
+const createNewData = async () => {
+  try {
+    mortalityData.geom = newGeoJSONObject.value?.geometry
+    const { data } = await useHttp('/api/v1/mortality/', { method: 'post', body: mortalityData })
+    // await createNewMedia(data.value.id)
+    console.debug(data.value)
+    mortalityInfrastructure.value = {}
+    mortalityGetInfrastructure.value = false
+  } catch (_err) {
+    console.error(_err)
+    const error: ErrorInfo = {
+      code: errorCodes.create_point.code,
+      msg: t(`error.${errorCodes.create_point.msg}`)
     }
+    errorStore.setError(error)
+    back()
+  }
+}
 
 
-    const createNewData= async () => {
+const createNewMedia = async (id) => {
+  const mediaIdList = []
+  // await all Promises be resolved before returning result
+  await Promise.all(
+    // upc for "util-picture-component": task on each img file of the map
+    loadedImages.value.map(async (img) => {
       try {
-        mortalityData.geom = newGeoJSONObject.value?.geometry
-        const {data} = await useHttp('/api/v1/mortality/', {method: 'post', body: mortalityData})
-        // await createNewMedia(data.value.id)
-        console.debug(data.value)
-        mortalityInfrastructure.value = {}
-        mortalityGetInfrastructure.value = false
+        const formData = new FormData()
+        console.log('img', img)
+        formData.append('storage', img) // fill-in FormData with img file
+        // TODO get true date and other form fields below
+        formData.append('date', '2022-01-01')
+        formData.append('author', 'Bob')
+        formData.append('source', 'LPO')
+        formData.append('remark', 'Nothing to report')
+        console.log('formData', formData)
+        // create Media
+        const { data: newImg } = await useHttp("/api/v1/media/", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          body: formData
+        })
+        console.log('newImg', newImg)
+        mediaIdList.push(newImg.value.id) // set Media id to mediaIdList
       } catch (_err) {
-        console.error(_err)
-        const error: ErrorInfo = {
-          code : errorCodes.create_point.code,
-          msg : t(`error.${errorCodes.create_point.msg}`)
-        }
-        errorStore.setError(error)
-        back()
-      }
-    }
-
-
-   const createNewMedia =   async (id) => {
-      const mediaIdList = []
-      // await all Promises be resolved before returning result
-      await Promise.all(
-        // upc for "util-picture-component": task on each img file of the map
-        loadedImages.value.map(async (img) => {
-          try {
-            const formData = new FormData()
-            console.log('img',img)
-            formData.append('storage', img) // fill-in FormData with img file
-            // TODO get true date and other form fields below
-            formData.append('date', '2022-01-01')
-            formData.append('author', 'Bob')
-            formData.append('source', 'LPO')
-            formData.append('remark', 'Nothing to report')
-            console.log('formData',formData)
-            // create Media
-            const {data: newImg} = await useHttp("/api/v1/media/", {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              },
-              body: formData
-            })
-            console.log('newImg',newImg)
-            mediaIdList.push(newImg.value.id) // set Media id to mediaIdList
-          } catch (_err) {
         console.debug(_err)
         const error: ErrorInfo = {
-          code : errorCodes.create_point.code,
-          msg : t(`error.${errorCodes.create_point.msg}`)
+          code: errorCodes.create_point.code,
+          msg: t(`error.${errorCodes.create_point.msg}`)
         }
         errorStore.setError(error)
         back()
-          }
-        })
-      )
-      console.log('mediaList', mediaIdList)
-      await useHttp(`/api/v1/mortality/${id}`, {method: 'put', body: {media: mediaIdList}})
-    }
+      }
+    })
+  )
+  console.log('mediaList', mediaIdList)
+  await useHttp(`/api/v1/mortality/${id}`, { method: 'put', body: { media: mediaIdList } })
+}
 
 </script>

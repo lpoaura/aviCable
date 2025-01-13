@@ -60,7 +60,7 @@ const userLogin = async () => {
   try {
     if (formValid.value) {
       await auth.loginWith('local', {
-            body: login
+        body: login
       })
       nomenclaturesStore.loadNomenclatures()
       router.push('/search')

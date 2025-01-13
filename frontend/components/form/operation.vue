@@ -27,31 +27,31 @@
           prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
       </v-card-actions>
     </v-form>
-    <div>
-      <pre><code>{{opData}}</code></pre>
-    </div>
+    <!-- <div>
+      <pre><code>{{ opData }}</code></pre>
+    </div> -->
   </v-card>
 </template>
 
 <script lang="ts" setup>
-import {storeToRefs} from 'pinia';
-import { VDateInput} from 'vuetify/labs/VDateInput'
+import { storeToRefs } from 'pinia';
+import { VDateInput } from 'vuetify/labs/VDateInput'
 // import type {DiagData, Diagnosis} from '~/types/diagnosis';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 
 const emit = defineEmits();
-const {t, locales} = useI18n()
+const { t, locales } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
 const coordinatesStore = useCoordinatesStore()
 const cablesStore = useCablesStore()
-// const nomenclaturesStore = useNomenclaturesStore()
+const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
-const formValid=ref(false)
+const formValid = ref(false)
 
-const {newGeoJSONObject} = storeToRefs(coordinatesStore)
+const { newGeoJSONObject } = storeToRefs(coordinatesStore)
 
 const infrastructureId = computed(() => route.params.id)
 const infrastructure = computed(() => cablesStore.formInfrastructure)
@@ -59,13 +59,13 @@ const operationId = computed(() => route.query.id_operation)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const equipmentsReady = ref(false)
 const opData = reactive({
-  date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0,10),
+  date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0, 10),
   remark: '',
   infrastructure: infrastructureId.value,
   equipments: [{
     id: null,
     type_id: null,
-    count:null,
+    count: null,
     reference: null,
     comment: null,
   }],
@@ -73,19 +73,20 @@ const opData = reactive({
   geom: null,
 })
 
+
 const updateEquipmentData = (index, updatedEquipment) => {
   opData.equipments[index] = updatedEquipment;
 };
 
-const deleteEquipment=(index) => {
-  opData.equipments.splice(index,1)
+const deleteEquipment = (index) => {
+  opData.equipments.splice(index, 1)
 }
 
 const newEquipment = () => {
   const eq = {
     id: null,
     type: null,
-    count:1,
+    count: 1,
     reference: null,
     comment: null,
   }
@@ -110,18 +111,18 @@ const rules = reactive({
 
 const initData = async () => {
   if (infrastructureId.value && !operationId.value) {
-    opData.resourcetype = infrastructure.value?.resourcetype === 'Point' ? 'PointOperation':'LineOperation'
+    opData.resourcetype = infrastructure.value?.resourcetype === 'Point' ? 'PointOperation' : 'LineOperation'
     equipmentsReady.value = true
   }
   if (operationId.value) {
-    const {data:operation} = await useHttp(`/api/v1/cables/operations/${operationId.value}/`, {method: 'get'})
+    const { data: operation } = await useHttp(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
     formDate.value = new Date(operation.value.properties.date)
     const opdata = {
-      id : operation.value.properties.id,
+      id: operation.value.properties.id,
       remark: operation.value.properties.remark,
       infrastructure: operation.value.properties.infrastructure,
       equipments: operation.value.properties.equipments.map(item => {
-        item.type_id=item.type.id
+        item.type_id = item.type.id
         delete item['type']
         return item
       }),
@@ -132,7 +133,7 @@ const initData = async () => {
     }
     Object.assign(opData, opdata)
     coordinatesStore.setSelectedFeature(operation.value)
-    equipmentsReady.value=true
+    equipmentsReady.value = true
   }
   // const opData = null
 }
@@ -147,7 +148,7 @@ const initData = async () => {
  * Related Media will also be deleted in this case.
  * Finally, error message is displayed in snackBar through error handling process.
  */
- const createOperation = async () => {
+const createOperation = async () => {
   // Create Media as selected in component form and get list of Ids of created Media
   // const mediaIdList = await createNewMedia()
   try {
@@ -156,15 +157,15 @@ const initData = async () => {
     opData.geom = newGeoJSONObject.value?.geometry || infrastructure.value?.geometry
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const {data : operation }= await useHttp('/api/v1/cables/operations/', {method:'post', body: opData})
+    const { data: operation } = await useHttp('/api/v1/cables/operations/', { method: 'post', body: opData })
     console.debug('newDiagData', operation)
     return operation
   } catch (_err) {
 
-    console.error ('error',_err)
-    const error : ErrorInfo = {
-      code:errorCodes['create_point']['code'],
-      msg:t(`error.${errorCodes.create_point.msg}`)
+    console.error('error', _err)
+    const error: ErrorInfo = {
+      code: errorCodes['create_point']['code'],
+      msg: t(`error.${errorCodes.create_point.msg}`)
     }
     errorStore.setError(error)
   }
@@ -177,40 +178,32 @@ const initData = async () => {
  * Finally, error message is displayed in snackBar through error handling process.
  */
 const updateOperation = async () => {
-  // Create new Media as selected in component form and get list of Ids of created Media
-  // const mediaIdList = await createNewMedia()
+
   try {
     opData.date = formDate.value.toISOString().substring(0, 10)
-    // opData.media_id = mediaIdList // set Media id list
-    // Create Diagnosis
-    const {data}= await useHttp(`/api/v1/cables/operations/${operationId.value}/`, {method:'put', body: opData})
+
+    const { data } = await useHttp(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
     return data
   } catch (_err) {
-    // If Diagnosis creation fails, related Media created are deleted
-    // if (mediaIdList) {
-    //   mediaIdList.forEach(
-    //       async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
-    //   )
-    // }
-    // Error display
-    console.error ('error',_err)
-    const error : ErrorInfo = {
+
+    console.error('error', _err)
+    const error: ErrorInfo = {
       code: errorCodes['update_pole_diagnosis']['code'],
-      msg:t(`error.${errorCodes['update_pole_diagnosis']['msg']}`)
+      msg: t(`error.${errorCodes['update_pole_diagnosis']['msg']}`)
     }
     errorStore.setError(error)
   }
 }
 
 const submit = async () => {
-  const operation = operationId.value ?  await updateOperation() : await createOperation()
+  const operation = operationId.value ? await updateOperation() : await createOperation()
   if (operation) {
     router.push(`/infrastructures/${infrastructureId.value}`)
   }
 };
 
 
-onMounted(async ()=> {
+onMounted(async () => {
   await initData()
 })
 </script>

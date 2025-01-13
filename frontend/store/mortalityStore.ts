@@ -83,13 +83,9 @@ export const useMortalityStore = defineStore("mortality", {
       }
     },
     cancelRequest() {
-      console.debug('aborting getMortalityData check',this.controller)
-      if (this.controller) {
-        console.debug('aborting getMortalityData',this.controller)
-        this.controller.abort();
-        this.controller = null; // Reset the controller after aborting
-        console.debug('aborted getMortalityData', this.controller)
-      }
+      console.log('mortality abort request')
+      this.controller?.abort()
+      this.controller = null;
     },
     setMortalityItem(data: Feature) {
       this.mortalityItem = data;

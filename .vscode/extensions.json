@@ -3,18 +3,13 @@
     "njpwerner.autodocstring",
     "batisteo.vscode-django",
     "ryanluker.vscode-coverage-gutters",
-    "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
     "mikestead.dotenv",
     "oouo-diogo-perdigao.docthis",
-    "prograhammer.tslint-vue",
-    "ms-python.python",
-    "donjayamanne.python-extension-pack",
-    "ms-azuretools.vscode-docker",
-    "ms-vscode.vscode-typescript-next",
-    "esbenp.prettier-vscode",
-    "rvest.vs-code-prettier-eslint",
-    "visualstudioexptteam.vscodeintellicode",
-    "vue.volar"
+
+    "ms-python.black-formatter",
+    "wholroyd.jinja",
+    "vue.volar",
+    "ms-python.python"
   ]
 }
