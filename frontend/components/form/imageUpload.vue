@@ -1,64 +1,68 @@
 <template>
   <v-container>
-    <v-file-input v-model="files" label="Upload Images" multiple accept="image/*" outlined @change="onFileChange" />
-
-    <v-row>
-      <v-col v-for="(image, index) in imagePreviews" :key="index" cols="4">
-        <v-img :src="image" aspect-ratio="1" />
-      </v-col>
-    </v-row>
+    <v-file-upload clearable v-model="loadedImages" accept="image/*" density="compact"
+      title="Glisser/déposer votre fichier" variant="solo"></v-file-upload>
+    <v-date-input v-model="date" :locale="currentLocale?.iso" label="Date de visite" inner-prepend-icon="mdi-calendar"
+      variant="solo" density="compact" :rules="[rules.required]" :max="new Date()" required />
+    <v-text-field v-model="author" :counter="100" label="Autheur" required variant="solo"
+      density="compact"></v-text-field>
+    <v-text-field v-model="source" :counter="100" label="Source" required variant="solo"
+      density="compact"></v-text-field>
+    <v-textarea v-model="remark" label="Source" required variant="solo" density="compact"></v-textarea>
+    <v-btn color="success" @click="createNewMedia()">load images</v-btn>
   </v-container>
 </template>
+<script setup lang="ts">
 
-<script lang="ts" setup>
-import { ref, watch, defineProps, defineEmits } from 'vue';
+const { t, locales } = useI18n()
 
-// Define props to receive data from the parent component
-const props = defineProps<{
-  modelValue: string[];
-}>();
+const loadedImages = ref([])
+const date = ref<Date | null>(null)
+const author = ref<string | null>(null)
+const source = ref<string | null>(null)
+const remark = ref<string | null>(null)
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string[]): void;
-}>();
+const locale = useLocale()
+const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
 
-const files = ref<File[]>([]);
-const imagePreviews = ref<string[]>([]);
+const rules = reactive({
+  required: (v: string | number) => !!v || t('valid.required'),
+  textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
+})
 
-// Watch for changes in the modelValue prop and update local state
-watch(() => props.modelValue, (newValue) => {
-  imagePreviews.value = newValue;
-});
-
-// Function to handle file changes
-const onFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const selectedFiles = target.files;
-
-  if (selectedFiles) {
-    const newImagePreviews: string[] = []; // Array to hold new previews
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          newImagePreviews.push(e.target.result as string);
-          // Emit the updated images to the parent
-          emit('update:modelValue', [...imagePreviews.value, ...newImagePreviews]);
-        }
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
-};
-</script>
-
-<style scoped>
-.v-img {
-  max-height: 200px;
-  object-fit: cover;
+const createNewMedia = async () => {
+  const mediaIdList: number[] = []
+  // await all Promises be resolved before returning result
+  await Promise.all(
+    // upc for "util-picture-component": task on each img file of the map
+    loadedImages.value.map(async (img) => {
+      console.log('img', img)
+      try {
+        const formData = new FormData()
+        formData.append('storage', img) // fill-in FormData with img file
+        // TODO get true date and other form fields below
+        formData.append('date', date.value.toISOString().substring(0, 10))
+        formData.append('author', author.value)
+        formData.append('source', source.value)
+        formData.append('remark', remark.value)
+        console.log('formData', formData)
+        // create Media
+        const { data: newImg } = await useHttp("/api/v1/media/", {
+          method: 'POST',
+          body: formData
+        })
+        console.log('newImg', newImg)
+        mediaIdList.push(newImg.value.id) // set Media id to mediaIdList
+      } catch (_err) {
+        console.error(_err)
+      }
+    })
+  )
+  console.log('mediaList', mediaIdList)
 }
-</style>
+
+onMounted(() => {
+  if (!date.value) { date.value = new Date() }
+})
+
+</script>
