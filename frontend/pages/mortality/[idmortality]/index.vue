@@ -16,7 +16,7 @@ const zoomTo = () => {
   coordinateStore.setZoom(14)
 }
 
-const { data: item } = await useHttp(`/api/v1/mortality/${route.params.idmortality}`)
+const { data: item } = await useApi(`/api/v1/mortality/${route.params.idmortality}`)
 
 
 onMounted(() => {zoomTo()})

@@ -9,7 +9,7 @@
               :max="new Date()" />
           </v-col>
           <v-col cols="12">
-            <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
+            <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
               :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
           </v-col>
           <v-col v-if="equipmentsReady" cols="12">
@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
-import { VDateInput } from 'vuetify/labs/VDateInput'
+// import { VDateInput } from 'vuetify/labs/VDateInput'
 // import type {DiagData, Diagnosis} from '~/types/diagnosis';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
@@ -115,7 +115,7 @@ const initData = async () => {
     equipmentsReady.value = true
   }
   if (operationId.value) {
-    const { data: operation } = await useHttp(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
+    const { data: operation } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
     formDate.value = new Date(operation.value.properties.date)
     const opdata = {
       id: operation.value.properties.id,
@@ -157,7 +157,7 @@ const createOperation = async () => {
     opData.geom = newGeoJSONObject.value?.geometry || infrastructure.value?.geometry
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const { data: operation } = await useHttp('/api/v1/cables/operations/', { method: 'post', body: opData })
+    const { data: operation } = await useApi('/api/v1/cables/operations/', { method: 'post', body: opData })
     console.debug('newDiagData', operation)
     return operation
   } catch (_err) {
@@ -182,7 +182,7 @@ const updateOperation = async () => {
   try {
     opData.date = formDate.value.toISOString().substring(0, 10)
 
-    const { data } = await useHttp(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
+    const { data } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
     return data
   } catch (_err) {
 

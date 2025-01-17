@@ -13,7 +13,7 @@
           le {{ mortality.date }}
         </p>
         <p v-if="mortality.comment">
-          <span class="font-weight-bold">{{ $t('app.remark') }}</span>
+          <span class="font-weight-bold">{{ $t('remark') }}</span>
         </p>
         <p>
           {{ mortality.comment }}
@@ -49,7 +49,7 @@ const deathCauseIcons = ref({
 })
 
 const deleteItem = async () => {
-  await useHttp(`/api/v1/cables/mortality/${data.id}/`, { method: 'delete' })
+  await useApi(`/api/v1/cables/mortality/${data.id}/`, { method: 'delete' })
   emit('delete')
 }
 

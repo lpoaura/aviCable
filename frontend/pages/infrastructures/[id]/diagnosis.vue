@@ -35,12 +35,12 @@ const infrastructureId = computed(() => route.params.id)
 const infrastructureType = ref(null)
 
 const getData = async () =>{
-  const {data: resInfrastructure} = await useHttp(`/api/v1/cables/infrastructures/${route.params.id}`);
+  const {data: resInfrastructure} = await useApi(`/api/v1/cables/infrastructures/${route.params.id}`);
   infrastructure.value = resInfrastructure;
   coordinatesStore.setSelectedFeature(infrastructure)
   if (route.query.id_diagnosis) {
    console.debug(`load Diag AdminPageComponentdata ${route.query.id_diagnosis}`)
-   await useHttp(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
+   await useApi(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
    console.debug('DIAG VALUES', diagnosis.value)
   }
 }

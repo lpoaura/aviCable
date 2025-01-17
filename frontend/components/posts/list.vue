@@ -26,7 +26,7 @@
 <script setup lang="ts">
 const router = useRouter()
 
-const { data: posts } = await useHttp('/api/v1/custom-content/news/')
+const { data: posts } = await useApi('/api/v1/custom-content/news/')
 </script>
 
 

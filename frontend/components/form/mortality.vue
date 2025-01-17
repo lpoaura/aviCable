@@ -65,7 +65,7 @@
               </v-col>
               <v-col cols="12">
                 <v-textarea v-model="mortalityData.comment" clearable clear-icon="mdi-close-circle"
-                  :label="$t('app.remark')" :rules="[rules.textLength]" rows="2" counter="300" variant="solo"
+                  :label="$t('remark')" :rules="[rules.textLength]" rows="2" counter="300" variant="solo"
                   density="compact" />
               </v-col>
             </v-row>
@@ -170,7 +170,7 @@ watch(speciesSearch, async (val) => {
 
 const speciesSelection = async (value: string) => {
   isLoading.value = true
-  const { data } = await useHttp(`/api/v1/species/?search=${value}`)
+  const { data } = await useApi(`/api/v1/species/?search=${value}`)
   specieSearchEntries.value = data.value
   isLoading.value = false
 }
@@ -196,7 +196,7 @@ const submit = async () => {
 const createNewData = async () => {
   try {
     mortalityData.geom = newGeoJSONObject.value?.geometry
-    const { data } = await useHttp('/api/v1/mortality/', { method: 'post', body: mortalityData })
+    const { data } = await useApi('/api/v1/mortality/', { method: 'post', body: mortalityData })
     // await createNewMedia(data.value.id)
     console.debug(data.value)
     mortalityInfrastructure.value = {}
@@ -230,7 +230,7 @@ const createNewMedia = async (id) => {
         formData.append('remark', 'Nothing to report')
         console.log('formData', formData)
         // create Media
-        const { data: newImg } = await useHttp("/api/v1/media/", {
+        const { data: newImg } = await useApi("/api/v1/media/", {
           method: 'POST',
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -251,7 +251,7 @@ const createNewMedia = async (id) => {
     })
   )
   console.log('mediaList', mediaIdList)
-  await useHttp(`/api/v1/mortality/${id}`, { method: 'put', body: { media: mediaIdList } })
+  await useApi(`/api/v1/mortality/${id}`, { method: 'put', body: { media: mediaIdList } })
 }
 
 </script>

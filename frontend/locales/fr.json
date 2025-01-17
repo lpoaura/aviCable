@@ -16,6 +16,10 @@
   "midRisk": "Risque modéré",
   "highRisk": "Risque élevé",
   "armings": "Armements",
+  "author": "Auteur·ice",
+  "source": "Source",
+  "date": "Date",
+  "remark": "Commentaire",
   "app": {
     "appShortName": "aviCable",
     "appName": "Avifaune & câbles aériens",
@@ -24,7 +28,6 @@
     "signin": "Se connecter",
     "id": "Identifiant",
     "map": "Cartographie",
-    "remark": "Commentaire",
     "type": "Type",
     "valid": "Valider",
     "technicalProposal": "Proposition technique"
@@ -118,7 +121,8 @@
   },
   "picture": {
     "add_file": "Ajouter des Images",
-    "pictures": "Images"
+    "pictures": "Images",
+    "dragAndDrop": "Glissez / Déposez votre fichier"
   },
   "error": {
     "id-pwd-issue": "Erreur de nom d'utilisateur ou de mot de passe",

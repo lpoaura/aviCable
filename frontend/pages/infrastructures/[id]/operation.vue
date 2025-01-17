@@ -36,7 +36,7 @@ const router = useRouter()
 const infrastructureId = computed(() => route.params.id)
 
 onMounted(async ()=> {
-  const {data: infrastructure} = await useHttp(`/api/v1/cables/infrastructures/${infrastructureId.value}/`)
+  const {data: infrastructure} = await useApi(`/api/v1/cables/infrastructures/${infrastructureId.value}/`)
   cablesStore.setFormInfrastructureId(infrastructureId.value)
   cablesStore.setFormInfrastructure(infrastructure.value)
   coordinatesStore.setSelectedFeature(infrastructure.value)

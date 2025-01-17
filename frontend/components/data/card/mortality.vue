@@ -94,7 +94,7 @@ const updateDiag = () => {
 }
 
 const deleteItem = async () => {
-  await useHttp(`/api/v1/cables/mortality/${operation.id}/`, { method: 'delete' })
+  await useApi(`/api/v1/cables/mortality/${operation.id}/`, { method: 'delete' })
   emit('delete')
 }
 </script>

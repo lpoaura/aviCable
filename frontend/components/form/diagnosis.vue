@@ -67,7 +67,7 @@
             </v-col>
             <v-divider />
             <v-col cols="12">
-              <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
+              <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
                 :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
             </v-col>
           </v-row>
@@ -136,7 +136,7 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 
 const initData = async () => {
   if (diagnosisId.value && infrastructureType) {
-    const { data: diagnosis } = await useHttp(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, { method: 'get' })
+    const { data: diagnosis } = await useApi(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, { method: 'get' })
     formDate.value = new Date(diagnosis.value.date)
     const diagdata: DiagData = {
       id: diagnosis.value.id,
@@ -185,7 +185,7 @@ const createDiagnosis = async () => {
     diagData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const { data: diagnosis } = await useHttp('/api/v1/cables/diagnosis/', { method: 'post', body: diagData })
+    const { data: diagnosis } = await useApi('/api/v1/cables/diagnosis/', { method: 'post', body: diagData })
     console.debug('newDiagData', diagnosis)
     return diagnosis
   } catch (_err) {
@@ -214,7 +214,7 @@ const updateDiagnosis = async () => {
     diagData.date = formDate.value.toISOString().substring(0, 10)
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const { data } = await useHttp(`/api/v1/cables/diagnosis/${diagData.id}/`, { method: 'put', body: diagData })
+    const { data } = await useApi(`/api/v1/cables/diagnosis/${diagData.id}/`, { method: 'put', body: diagData })
     return data
   } catch (_err) {
     // If Diagnosis creation fails, related Media created are deleted

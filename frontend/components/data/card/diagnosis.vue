@@ -65,7 +65,7 @@
         {{ diagnosis.technicalProposal }}
       </p>
       <p v-if="diagnosis.remark">
-        <span class="font-weight-bold">{{ $t('app.remark') }}</span>
+        <span class="font-weight-bold">{{ $t('remark') }}</span>
       </p>
       <p>
         {{ diagnosis.remark }}
@@ -151,7 +151,7 @@ const updateDiag = () => {
 }
 
 const deleteDiag = async () => {
-  await useHttp(`/api/v1/cables/diagnosis/${diagnosis.id}/`, { method: 'delete' })
+  await useApi(`/api/v1/cables/diagnosis/${diagnosis.id}/`, { method: 'delete' })
 }
 
 onMounted(() => {

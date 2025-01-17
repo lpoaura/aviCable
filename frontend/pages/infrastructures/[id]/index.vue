@@ -12,7 +12,7 @@ const route = useRoute()
 
 const coordinateStore = useCoordinatesStore()
 
-const { data: infrastructure } = await useHttp(`/api/v1/cables/infrastructures/${route.params.id}/`)
+const { data: infrastructure } = await useApi(`/api/v1/cables/infrastructures/${route.params.id}/`)
 
 const {selectedFeature,center,zoom} = storeToRefs(coordinateStore)
 

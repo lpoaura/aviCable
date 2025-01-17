@@ -58,7 +58,7 @@ const userResetPassword = async () => {
   try {
     // check theform is validated
     if (valid) {
-      successMessage.value = await useHttp('/api/v1/auth/users/reset_password/', { method: 'post', body: reset })
+      successMessage.value = await useApi('/api/v1/auth/users/reset_password/', { method: 'post', body: reset })
 
       // router.push('/')
     }

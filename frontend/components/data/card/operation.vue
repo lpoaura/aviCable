@@ -13,11 +13,11 @@
             </template>
             <div v-if="equipment.reference"><strong>{{ $t("reference") }}</strong>&nbsp;: {{ equipment.reference }}
             </div>
-            <div v-if="equipment.comment"><strong>{{ $t("app.remark") }}</strong>&nbsp;: {{ equipment.comment }}</div>
+            <div v-if="equipment.comment"><strong>{{ $t("remark") }}</strong>&nbsp;: {{ equipment.comment }}</div>
           </v-list-item>
         </v-list>
       </div>
-      <div v-if="operation.remark"><strong>{{ $t("app.remark") }}</strong>&nbsp;: {{ operation.remark }}
+      <div v-if="operation.remark"><strong>{{ $t("remark") }}</strong>&nbsp;: {{ operation.remark }}
       </div>
     </template>
     <v-card-actions>
@@ -65,7 +65,7 @@ const updateDiag = () => {
 }
 
 const deleteOperation = async () => {
-  await useHttp(`/api/v1/cables/operations/${operation.id}/`, { method: 'delete' })
+  await useApi(`/api/v1/cables/operations/${operation.id}/`, { method: 'delete' })
   emit('delete')
 }
 </script>

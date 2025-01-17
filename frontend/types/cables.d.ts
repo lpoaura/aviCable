@@ -143,3 +143,27 @@ export interface CablesFeature extends Feature {
 }
 
 export type CablesFeatureCollection = FeatureCollection<CablesFeature>;
+
+export interface DiagData {
+  id?: number|null;
+  date: string|Date;
+  remark: string | null;
+  technical_proposal: string|null;
+  infrastructure: number | null;
+  pole_type_id: Array<number>;
+  neutralized: boolean;
+  condition_id: number | null;
+  attraction_advice: boolean;
+  dissuasion_advice: boolean;
+  isolation_advice: boolean;
+  pole_attractivity_id: number | null;
+  pole_dangerousness_id: number | null;
+  media_id: Array<number>;
+}
+
+
+export interface Risk {
+  note: number;
+  label: string;
+  color: string;
+}

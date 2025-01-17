@@ -79,10 +79,10 @@ export const useCablesStore = defineStore('cables', {
       try {
         this.infstrDataLoadingStatus = true
         console.debug("getInfstrData signal", signal)
-        await $http.get(
+        await useApi(
           '/api/v1/cables/infrastructures', {signal, params}
         ).then(data => {
-          this.infstrData = data
+          this.infstrData = data.value
           this.infstrDataLoadingStatus = false
         })
       } catch (err) {
@@ -106,10 +106,10 @@ export const useCablesStore = defineStore('cables', {
       console.debug('getOpData', signal)
       try {
         console.debug("getOpData signal", signal)
-        await $http.$get(
+        await useApi(
           '/api/v1/cables/operations/', {signal, params}
         ).then(data => {
-          this.opData = data
+          this.opData = data.value
         })
       } catch (err) {
         if (err.name === 'AbortError') {
@@ -131,16 +131,16 @@ export const useCablesStore = defineStore('cables', {
       console.debug('getAllInfrastructureData', signal)
       try {
         console.debug("getAllInfrastructureData signal", signal)
-        const [ infstrData, opData] = await Promise.all([
-          $http.$get(
+        const [ {data: infstrData}, {data: opData} ] = await Promise.all([
+          useApi(
             '/api/v1/cables/infrastructures', {signal, params}
           ),
-          $http.$get(
+          useApi(
             '/api/v1/cables/operations/', {signal, params}
           ),
         ]);
-        this.opData = opData
-        this.infstrData = infstrData
+        this.opData = opData.value
+        this.infstrData = infstrData.value
         this.infstrDataLoadingStatus = false
       } catch (err) {
         if (err.name === 'AbortError') {
@@ -169,20 +169,20 @@ export const useCablesStore = defineStore('cables', {
       console.debug('getEnedisInfrastructure', signal)
       console.log('query params', {signal, params})
       try{
-        const [ reseauBt, reseauHta, poteaux] = await Promise.all([
-          $http.$get(
+        const [ {data: reseauBt }, {data: reseauHta}, {data: poteaux}] = await Promise.all([
+          useApi(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-bt/exports/geojson', {signal, params}
           ),
-          $http.$get(
+          useApi(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-hta/exports/geojson', {signal, params}
           ),
-          $http.$get(
+          useApi(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/position-geographique-des-poteaux-hta-et-bt/exports/geojson', {signal, params}
           )
         ]);
         this.enedisInfrastructure = {
           type: 'FeatureCollection',
-          features : [...reseauBt.features,...reseauHta.features,...poteaux.features,]
+          features : [...reseauBt.value.features,...reseauHta.value.features,...poteaux.value.features,]
         }
 
     } catch (err) {
@@ -214,17 +214,17 @@ export const useCablesStore = defineStore('cables', {
       console.debug('getRteInfrastructure signal', signal)
       console.log('query params', {signal, params: paramsPylones})
       try{
-        const [ Lines, Pylones] = await Promise.all([
-          $fetch(
+        const [ {data: Lines}, {data: Pylones}] = await Promise.all([
+          useApi(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', {signal, params: paramsLines}
           ),
-          $fetch(
+          useApi(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', {signal, params: paramsPylones}
           ),
         ]);
         this.rteInfrastructure = {
           type: 'FeatureCollection',
-          features : [...Lines.features,...Pylones.features]
+          features : [...Lines.value.features,...Pylones.value.features]
         }
 
     } catch (err) {

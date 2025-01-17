@@ -21,7 +21,7 @@ const rules = {
   required: (v: any) => !!v || 'File is required',
 };
 
-// const { $http } = useHttp();
+// const { $http } = useApi();
 
 // const onFileChange = (event: Event) => {
 //   const target = event.target as HTMLInputElement;

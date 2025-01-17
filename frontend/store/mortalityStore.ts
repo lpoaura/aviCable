@@ -70,15 +70,15 @@ export const useMortalityStore = defineStore("mortality", {
     async getMortalityData(params: { [key: string]: string | null }) {
       this.controller = new AbortController();
       const { signal } = this.controller;
-      console.debug("getMortalityData",this.controller, signal);
+      console.debug("getMortalityData", this.controller, signal);
       try {
-        const data = await $http.$get("/api/v1/mortality/", { signal, params });
-        this.mortalityData = data;
-      } catch (err: unknown) {
-        if (err.name === "AbortError") {
+        const { data: data } = await useApi<FeatureCollection>("/api/v1/mortality/", { signal, params });
+        if (data.value) { this.mortalityData = data.value };
+      } catch (error: any) {
+        if (error instanceof Error && error.name === "AbortError") {
           console.debug("Requête annulée");
         } else {
-          console.error(err);
+          console.error(error);
         }
       }
     },
