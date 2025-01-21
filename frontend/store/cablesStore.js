@@ -76,6 +76,7 @@ export const useCablesStore = defineStore('cables', {
         this.controller = new AbortController();
       }
       const { signal } = this.controller;
+      console.log('<getInfstrData> this.controller', this.controller)
       try {
         this.infstrDataLoadingStatus = true
         console.debug("getInfstrData signal", signal)
@@ -128,7 +129,7 @@ export const useCablesStore = defineStore('cables', {
         this.controller = new AbortController();
       }
       const { signal } = this.controller;
-      console.debug('getAllInfrastructureData', signal)
+      console.debug('getAllInfrastructureData', {signal: this.controller.signal , params}, {signal , params})
       try {
         console.debug("getAllInfrastructureData signal", signal)
         const [ {data: infstrData}, {data: opData} ] = await Promise.all([
@@ -239,9 +240,11 @@ export const useCablesStore = defineStore('cables', {
     }
     },
     cancelRequest() {
-      console.log('getInfstrData abort request')
+      console.log('cancelRequest abort request - 1', this.controller)
       this.controller?.abort()
+      console.log('cancelRequest abort request - 2', this.controller)
       this.controller = null;
+      console.log('cancelRequest abort request - 3', this.controller)
     },
     setFormSupportId(supportId) {
       this.formSupportId = supportId

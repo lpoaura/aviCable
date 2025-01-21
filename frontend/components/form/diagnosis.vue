@@ -3,16 +3,16 @@
     <v-form ref="form" v-model="formValid">
       <v-card-text>
         <v-container>
-          <v-row>
+          <v-row v-if="!formImage">
             <v-col cols="12">
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
                 density="compact" :rules="[rules.required]" :max="new Date()" />
             </v-col>
             <v-col cols="12">
-                <v-autocomplete v-model="diagData.pole_type_id" chips :items="armingItems" item-title="label"
-                  item-value="id" :rules="[rules.required]" hide-selected :label="$t('armings')" multiple
-                  deletable-chips variant="solo" density="compact" />
-              </v-col>
+              <v-autocomplete v-model="diagData.pole_type_id" chips :items="armingItems" item-title="label"
+                item-value="id" :rules="[rules.required]" hide-selected :label="$t('armings')" multiple deletable-chips
+                variant="solo" density="compact" />
+            </v-col>
             <template v-if="infrastructureType === 'point'">
               <v-col cols="12" md="6">
                 <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
@@ -71,6 +71,9 @@
                 :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
             </v-col>
           </v-row>
+          <v-row>
+            <form-images :medias="diagData.media" @update="getFormMedias($event)"></form-images>
+          </v-row>
         </v-container>
         <!-- <pre>{{diagData }}</pre> -->
       </v-card-text>
@@ -81,11 +84,11 @@
       </v-card-actions>
     </v-form>
   </v-card>
-</template>
+</template>mediaIdList
 
 <script lang="ts" setup>
 import { VDateInput } from 'vuetify/labs/VDateInput'
-import type { DiagData, Diagnosis } from '~/types/diagnosis';
+import type { DiagData, Diagnosis, Media } from '~/types/cables';
 import type { NomenclatureItem } from '~/types/nomenclature';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
@@ -105,7 +108,8 @@ const infrastructureType = computed(() => (route.query.type).toLowerCase())
 const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
-const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value))
+const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value, ''))
+const mediaList = ref([])
 
 const diagData: DiagData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
@@ -121,6 +125,7 @@ const diagData: DiagData = reactive({
   media_id: [],
 })
 
+const medias = ref<Array<Media>>([])
 
 //       // rules for form validation
 const rules = reactive({
@@ -136,33 +141,35 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 
 const initData = async () => {
   if (diagnosisId.value && infrastructureType) {
-    const { data: diagnosis } = await useApi(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, { method: 'get' })
-    formDate.value = new Date(diagnosis.value.date)
-    const diagdata: DiagData = {
-      id: diagnosis.value.id,
-      date: diagnosis.value.date,
-      remark: diagnosis.value.remark,
-      technical_proposal: diagnosis.value.technicalProposal,
-      infrastructure: diagnosis.value.infrastructure,
-      pole_type_id: diagnosis.value.pole_type?.map((item: NomenclatureItem) => item.id),
-      neutralized: diagnosis.value.neutralized,
-      condition_id: diagnosis.value.condition?.id,
-      attraction_advice: diagnosis.value.attraction_advice,
-      dissuasion_advice: diagnosis.value.dissuasion_advice,
-      isolation_advice: diagnosis.value.isolation_advice,
-      media_id: [],
+    const { data: diagnosis } = await useApi<Diagnosis>(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, { method: 'get' })
+    if (diagnosis.value) {
+      formDate.value = new Date(diagnosis.value.date)
+      const diagdata: DiagData = {
+        id: diagnosis.value.id,
+        date: diagnosis.value.date,
+        remark: diagnosis.value.remark,
+        technical_proposal: diagnosis.value.technical_proposal,
+        infrastructure: diagnosis.value.infrastructure,
+        pole_type_id: diagnosis.value.pole_type?.map((item: NomenclatureItem) => item.id),
+        neutralized: diagnosis.value.neutralized,
+        condition_id: diagnosis.value.condition?.id,
+        attraction_advice: diagnosis.value.attraction_advice,
+        dissuasion_advice: diagnosis.value.dissuasion_advice,
+        isolation_advice: diagnosis.value.isolation_advice,
+        media_id: [],
+      }
+      if (infrastructureType.value === 'point') {
+        diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
+        diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
+      }
+      if (infrastructureType.value === "line") {
+        diagdata.sgmt_moving_risk_id = diagnosis.value.sgmt_moving_risk?.id
+        diagdata.sgmt_topo_integr_risk_id = diagnosis.value.sgmt_topo_integr_risk?.id
+        diagdata.sgmt_landscape_integr_risk_id = diagnosis.value.sgmt_landscape_integr_risk?.id
+      }
+      Object.assign(diagData, diagdata)
+      diagnosisReady.value = true
     }
-    if (infrastructureType.value === 'point') {
-      diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
-      diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
-    }
-    if (infrastructureType.value === "line") {
-      diagdata.sgmt_moving_risk_id = diagnosis.value.sgmt_moving_risk?.id
-      diagdata.sgmt_topo_integr_risk_id = diagnosis.value.sgmt_topo_integr_risk?.id
-      diagdata.sgmt_landscape_integr_risk_id = diagnosis.value.sgmt_landscape_integr_risk?.id
-    }
-    Object.assign(diagData, diagdata)
-    diagnosisReady.value = true
   }
   // const diagData = null
 }
@@ -239,6 +246,10 @@ const moveToNextStep = async () => {
     router.push(`/infrastructures/${infrastructureId.value}`)
   }
 };
+
+const getFormMedias = (eventMedias) => {
+  medias.value = eventMedias
+}
 
 // watch(infrastructureType,(newVal, _oldVal) => initData())
 

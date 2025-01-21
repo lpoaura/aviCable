@@ -22,25 +22,25 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
   }),
   getters: {
     armingItems(state) {
-      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "ARMING")?.nomenclatures;
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "ARMING")?.nomenclatures;
     },
     ownerItems(state) {
-      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "OWNER")?.nomenclatures;
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "OWNER")?.nomenclatures;
     },
     riskLevelItems(state) {
-      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "RISK_LEV")?.nomenclatures;
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "RISK_LEV")?.nomenclatures;
     },
     deathCauseItems(state) {
-      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "CAUSE_OF_DEATH")?.nomenclatures;
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "CAUSE_OF_DEATH")?.nomenclatures;
     },
     equipmentTypeItems(state) {
-      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "EQMT_TYPE")?.nomenclatures;
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "EQMT_TYPE")?.nomenclatures;
     },
     conditionItems(state) {
-      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "IFR_COND")?.nomenclatures;
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "IFR_COND")?.nomenclatures;
     },
     infrastructureType(state) {
-      return state.nomenclatureTypes.find((elem: NomenclatureType) => elem.code === "IFR_TYPE")?.nomenclatures;
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "IFR_TYPE")?.nomenclatures;
     },
     getInfrastructureTypeId() {
       return (geomType: string) => {
@@ -50,7 +50,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
       }
     },
     getArmingItems() {
-      return (geomType: string ,owner: string) => {
+      return (geomType: string , owner: string) => {
         console.log('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined  = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
@@ -70,7 +70,16 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
     async loadNomenclatures() {
       try {
         const params = { with_nomenclatures: true };
-        this.nomenclatureTypes = await $http.$get("/api/v1/nomenclatures/types", { params }); // get Types list
+        try {
+          const {data: nomenclatureTypes } = await useApi("/api/v1/nomenclatures/types", {params});
+          if (nomenclatureTypes && Array.isArray(nomenclatureTypes.value)) {
+            this.nomenclatureTypes = nomenclatureTypes.value as NomenclatureType[]; // Type assertion
+          } else {
+            console.error("Unexpected data format:", nomenclatureTypes, Array.isArray(nomenclatureTypes.value));
+          }
+        } catch (error) {
+          console.error(error);
+        }
       } catch (err: unknown) {
         console.error(err)
       }

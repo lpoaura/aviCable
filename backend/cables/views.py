@@ -104,6 +104,26 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
     serializer_class = DiagnosisSerializer
     permission_classes = [DjangoModelPermissions]
     queryset = Diagnosis.objects.all()
+    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        media = request.data.get('media', None)
+
+        if media is not None:
+            # Check if we are adding or removing an author
+            if isinstance(media, dict):
+                if 'add' in media:
+                    # Add a single author
+                    media_id = media['add']
+                    instance.media.add(media_id)
+                elif 'remove' in media:
+                    # Remove a single author
+                    media_id = media['remove']
+                    instance.media.remove(media_id)
+
+        # Serialize the updated instance
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class OperationViewSet(viewsets.ModelViewSet):
