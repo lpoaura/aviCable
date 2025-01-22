@@ -25,14 +25,16 @@
 </template>
 
 <script lang="ts" setup>
+import type { Equipment } from '~/types/cables'
+
 
 const { t } = useI18n()
 const route = useRoute()
 const nomenclaturesStore = useNomenclaturesStore()
 
 
-const infrastructureType = computed(() => (route.query.type).toLowerCase())
-const equipmentItems = computed(() => nomenclaturesStore.getEquipmentItems(infrastructureType.value))
+const infrastructureType = computed(() => (!!route.query.type && typeof route.query.type === 'string') && (route.query.type).toLowerCase() || '')
+const equipmentItems = computed(() => nomenclaturesStore.getEquipmentItems(infrastructureType.value, ''))
 
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),
@@ -41,10 +43,10 @@ const rules = reactive({
 
 const { index, equipment } = defineProps({
   index: { type: Number, default: 0 },
-  equipment: { type: Object, required: true }
+  equipment: { type: Object as PropType<Equipment>, required: true }
 });
 
-const equipmentData = ref(null)
+const equipmentData = ref<Equipment>({} as Equipment)
 
 
 const emit = defineEmits();

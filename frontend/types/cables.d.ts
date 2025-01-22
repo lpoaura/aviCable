@@ -1,14 +1,18 @@
 import type { Geometry } from "geojson";
 import type { Nomenclature } from "./nomenclature";
 
-export interface Media {
+export interface MediaData {
   author?: string | null;
   date: string | Date ;
-  id?: number;
   remark?: string | null;
   source?: string | null;
-  storage: string | null;
+  storage: string | File | null;
 }
+
+export interface Media extends MediaData{
+  id: number;
+}
+
 
 export interface DiagData {
   id?: number | null;
@@ -27,7 +31,7 @@ export interface DiagData {
   sgmt_moving_risk_id?: number | null;
   sgmt_topo_integr_risk_id?: number | null;
   sgmt_landscape_integr_risk_id?: number | null;
-  media_id: Array<number>;
+  media_id?: Array<number>;
 }
 
 export type Diagnosis = DiagData & {
@@ -145,6 +149,7 @@ export interface CablesFeature extends Feature {
     resource_type?: string; // Optional key for resource type
     [key: string]: any; // Allow other properties
   };
+  resourcetype?: string;
 }
 
 export type CablesFeatureCollection = FeatureCollection<CablesFeature>;

@@ -72,7 +72,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <form-images :medias="diagData.media" @update="getFormMedias($event)"></form-images>
+            <form-images :medias="diagData.media" @update="getFormMedias"></form-images>
           </v-row>
         </v-container>
         <!-- <pre>{{diagData }}</pre> -->
@@ -84,7 +84,7 @@
       </v-card-actions>
     </v-form>
   </v-card>
-</template>mediaIdList
+</template>
 
 <script lang="ts" setup>
 import { VDateInput } from 'vuetify/labs/VDateInput'
@@ -109,7 +109,7 @@ const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value, ''))
-const mediaList = ref([])
+const mediaList = ref<Array<number>>([])
 
 const diagData: DiagData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
@@ -135,8 +135,8 @@ const rules = reactive({
 
 
 // Menu items
-const armings = computed(() => nomenclaturesStore.armingItems)
-const conditions = computed(() => nomenclaturesStore.conditionItems)
+// const armings = computed(() => nomenclaturesStore.armingItems)
+// const conditions = computed(() => nomenclaturesStore.conditionItems)
 const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 
 const initData = async () => {
@@ -184,16 +184,35 @@ const initData = async () => {
  * Related Media will also be deleted in this case.
  * Finally, error message is displayed in snackBar through error handling process.
  */
+
+ const createMedias = async () => {
+  console.log('medias.value', medias.value[0])
+  const list = await Promise.all(
+    medias.value.map(async (media) => {
+      console.log(media)
+      const { data: newImg } = await useApi<Media>("/api/v1/media/", {
+        method: 'post',
+        body: media
+      });
+      return newImg.value ? newImg.value.id : null; // Return null if newImg.value is null
+    })
+  );
+  // Filter out null values
+  return list.filter((id): id is number => id !== null);
+}
+
 const createDiagnosis = async () => {
   // Create Media as selected in component form and get list of Ids of created Media
   // const mediaIdList = await createNewMedia()
   try {
     diagData.infrastructure = infrastructureId.value
     diagData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
+    diagData.media_id = await createMedias()
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const { data: diagnosis } = await useApi('/api/v1/cables/diagnosis/', { method: 'post', body: diagData })
     console.debug('newDiagData', diagnosis)
+
     return diagnosis
   } catch (_err) {
 
@@ -219,6 +238,7 @@ const updateDiagnosis = async () => {
 
     diagData.infrastructure = infrastructureId.value
     diagData.date = formDate.value.toISOString().substring(0, 10)
+    diagData.media_id = await createMedias()
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const { data } = await useApi(`/api/v1/cables/diagnosis/${diagData.id}/`, { method: 'put', body: diagData })
@@ -247,8 +267,9 @@ const moveToNextStep = async () => {
   }
 };
 
-const getFormMedias = (eventMedias) => {
-  medias.value = eventMedias
+const getFormMedias = (value) => {
+  console.log('<getFormMedias>', value)
+  medias.value = value
 }
 
 // watch(infrastructureType,(newVal, _oldVal) => initData())

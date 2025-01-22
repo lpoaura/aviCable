@@ -119,10 +119,12 @@
 </template>
 
 <script setup lang="ts">
+import type { Diagnosis } from '~/types/cables';
+
 
 interface Props {
   infrastructureType: string,
-  diagnosis: object,
+  diagnosis: Diagnosis,
 }
 
 const { infrastructureType, diagnosis } = defineProps<Props>()

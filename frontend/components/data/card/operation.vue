@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 
-const { supportId, operation } = defineProps(['operation', 'supportId'])
+const { supportId, operation, infrastructureType } = defineProps(['operation', 'supportId','infrastructureType'])
 
 const router = useRouter()
 const emit = defineEmits()
@@ -60,7 +60,7 @@ const emit = defineEmits()
 const updateDiag = () => {
   router.push({
     path: `/infrastructures/${supportId}/operation`,
-    query: { id_operation: operation.id }
+    query: { id_operation: operation.id, type: infrastructureType }
   })
 }
 

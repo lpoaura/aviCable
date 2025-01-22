@@ -129,7 +129,6 @@ export const useCablesStore = defineStore('cables', {
         this.controller = new AbortController();
       }
       const { signal } = this.controller;
-      console.debug('getAllInfrastructureData', {signal: this.controller.signal , params}, {signal , params})
       try {
         console.debug("getAllInfrastructureData signal", signal)
         const [ {data: infstrData}, {data: opData} ] = await Promise.all([

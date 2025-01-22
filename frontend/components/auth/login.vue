@@ -13,8 +13,6 @@
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
           Password
 
-          <a class="text-caption text-decoration-none text-blue" :href="'/account/reset'" rel="noopener noreferrer">
-            Forgot login password?</a>
         </div>
 
         <v-text-field v-model="login.password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -26,6 +24,10 @@
           @click="userLogin()">
           {{ $t('login.sign-in') }}
         </v-btn>
+        <div>
+        <a class="text-caption text-decoration-none text-blue" :href="'/account/reset'" rel="noopener noreferrer">
+            Forgot login password?</a>
+          </div>
         <!-- <v-card-text class="text-center">
           <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" target="_blank">
             Sign up now <v-icon icon="mdi-chevron-right"></v-icon>

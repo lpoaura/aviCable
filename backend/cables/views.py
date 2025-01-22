@@ -107,7 +107,7 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
     
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        media = request.data.get('media', None)
+        media = request.data.get('media_id', None)
 
         if media is not None:
             # Check if we are adding or removing an author

@@ -4,14 +4,14 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-file-upload clearable accept="image/*" density="compact" :title="t('picture.dragAndDrop')" variant="solo"
+            <v-file-upload ref="fileInput" clearable accept="image/*" density="compact" :title="t('picture.dragAndDrop')" variant="solo"
               :rules="[rules.filesize]" @change="selectedFile($event)"></v-file-upload>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" md="4">
-            <v-date-input v-model="data.date" :locale="currentLocale?.iso" :label="t('date')"
-              inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
+            <v-date-input v-model="data.date" :locale="currentLocale?.code" :label="t('date')"
+              prepend-inner-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
               :max="new Date()" required />
           </v-col>
           <v-col cols="12" md="4">
@@ -29,30 +29,27 @@
           </v-col>
         </v-row>
 
-        <v-btn :disabled="!valid" color="success" @click="createNewMedia()">load images {{ valid ? 'OK' : 'NOK'
-          }}</v-btn>
+        <v-btn :disabled="!valid" color="success" @click="createNewMedia()">{{ t('forms.newImage')}}</v-btn>
       </v-container>
     </v-form>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import type { Media } from '~/types/cables'
+import type { Media, MediaData } from '~/types/cables'
 const { t, locales } = useI18n()
 
-const files = ref([])
+const files = ref<FileList|null>([] as unknown as FileList)
+const fileInput = ref()
 const valid = ref(false)
-const data = reactive<Media>({
+const data = reactive<MediaData>({
   date: (new Date()).toISOString(),
   author: null,
   source: null,
   remark: null,
   storage: null
 })
-// const date = ref<Date | null>(null)
-// const author = ref<string | null>(null)
-// const source = ref<string | null>(null)
-// const remark = ref<string | null>(null)
+
 
 const {media} = defineProps<{
   media?: number
@@ -76,20 +73,20 @@ const rules = reactive({
 
 const selectedFile = (event: Event) => {
   console.log(event)
-  files.value = event?.target?.files
+  files.value = (<HTMLInputElement>event?.target).files
   console.log(typeof files.value)
 }
 
 
 const createNewMedia = async () => {
-  const mediaIdList: number[] = []
-  if (files.value.length > 0) {
+  if (!!files.value && files.value.length > 0) {
     const file = files.value[0]
     try {
       const formData = new FormData()
       formData.append('storage', file) // fill-in FormData with img file
       // TODO get true date and other form fields below
-      !!data.date && formData.append('date', data.date instanceof Date && data.date.toISOString().substring(0, 10) || data.date)
+      const date = (new Date(data.date)).toISOString().substring(0,10)
+      !!data.date && formData.append('date', date)
       !!data.author && formData.append('author', data.author)
       !!data.source && formData.append('source', data.source)
       !!data.remark && formData.append('remark', data.remark)
@@ -104,10 +101,12 @@ const createNewMedia = async () => {
     } catch (_err) {
       console.error(_err)
     }
+    data.remark = null
+    data.storage= null
+    fileInput.value.fileupload = null
   }
 
-  console.log('mediaList', mediaIdList)
-
+  // console.log('mediaList', mediaIdList)
 }
 
 onMounted(() => {

@@ -19,7 +19,7 @@
         <data-card-infrastructure :data="data" />
         <data-card-mortality-for-infrastructure v-if="data.properties?.mortality?.length > 0" :data="data.properties?.mortality" />
         <data-card-diagnosis v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type" />
-        <data-card-operation v-if="lastOp" :operation="lastOp" :support-id="data.properties.id"
+        <data-card-operation v-if="lastOp" :operation="lastOp" :support-id="data.properties?.id" :infrastructure-type="type"
           @delete="$emit('update')" />
         <v-card class="my-2">
           <v-layout>
@@ -31,8 +31,8 @@
             </v-app-bar>
             <v-main :class="expandHistory ? 'ma-2' : ''">
               <div v-if="expandHistory">
-                <data-card-diagnosis v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" :type="type" />
-                <data-card-operation v-for="ops in otherOps" :key="ops.id" :operation="ops" />
+                <data-card-diagnosis v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" :infrastructure-type="type" />
+                <data-card-operation v-for="ops in otherOps" :key="ops.id" :operation="ops" :infrastructure-type="type" />
               </div>
             </v-main>
           </v-layout>
@@ -44,11 +44,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Feature } from 'geojson'
+import type { CablesFeature } from '~/types/cables';
 
 interface Props {
-  // type: string,
-  data: Feature
+  data: CablesFeature
 }
 
 const { data } = defineProps<Props>()
@@ -56,36 +55,32 @@ const { data } = defineProps<Props>()
 const expandHistory = ref(false)
 
 const lastDiag = computed(() => {
-  return data?.properties.diagnosis.find(
+  return data?.properties?.diagnosis.find(
     (action: { last: boolean }) =>
       action.last
   )
 })
 
 const otherDiags = computed(() => {
-  return data?.properties.diagnosis.filter(
+  return data?.properties?.diagnosis.filter(
     (action: { last: boolean }) =>
       !action.last
   )
 })
 
-const neutralized: boolean = computed(() => {
-  return data?.properties.operations.length > 0
-})
-
 const lastOp = computed(() => {
-  return data?.properties.operations.find(
+  return data?.properties?.operations.find(
     (action: { last: boolean }) =>
       action.last
   )
 })
 
 const type = computed(() => {
-  return data?.resourcetype
+  return data?.resourcetype || 'point'
 })
 
 const otherOps = computed(() => {
-  return data?.properties.operations.filter(
+  return data.properties?.operations.filter(
     (action: { last: boolean }) =>
       !action.last
   )
