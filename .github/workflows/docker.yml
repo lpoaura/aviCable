@@ -33,8 +33,11 @@ jobs:
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v2
+        env:
+          NUXT_PUBLIC_API_BASE: https://cables.dev.lpo-aura.org
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
+          options: "--env NUXT_"
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/avicable-frontend:latest
