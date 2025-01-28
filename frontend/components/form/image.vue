@@ -4,60 +4,51 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-file-upload ref="fileInput" clearable accept="image/*" density="compact" :title="t('picture.dragAndDrop')" variant="solo"
-              :rules="[rules.filesize]" @change="selectedFile($event)"></v-file-upload>
+            <v-file-upload ref="fileInput" v-model="files" clearable accept="image/*" density="compact"
+              :title="t('picture.dragAndDrop')" variant="solo" :rules="[rules.filesize]"
+              @change="selectedFile($event)"></v-file-upload>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" md="4">
-            <v-date-input v-model="data.date" :locale="currentLocale?.code" :label="t('date')"
+            <v-date-input v-model="selectedMedia.date" :locale="currentLocale?.code" :label="t('date')" prepend-icon=""
               prepend-inner-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
               :max="new Date()" required />
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field v-model="data.author" :counter="100" :label="t('author')" required variant="solo"
+            <v-text-field v-model="selectedMedia.author" :counter="100" :label="t('author')" required variant="solo"
               density="compact"></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field v-model="data.source" :counter="100" :label="t('source')" required variant="solo"
+            <v-text-field v-model="selectedMedia.source" :counter="100" :label="t('source')" required variant="solo"
               density="compact"></v-text-field>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-textarea v-model="data.remark" :label="t('remark')" required variant="solo" density="compact"></v-textarea>
+            <v-textarea v-model="selectedMedia.remark" :label="t('remark')" required variant="solo"
+              density="compact"></v-textarea>
           </v-col>
         </v-row>
-
-        <v-btn :disabled="!valid" color="success" @click="createNewMedia()">{{ t('forms.newImage')}}</v-btn>
+        <v-btn :disabled="!valid" color="success" @click="addMedia">{{ t('forms.newImage') }}</v-btn>
       </v-container>
     </v-form>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import type { Media, MediaData } from '~/types/cables'
+import type { StoreGeneric } from 'pinia'
+
 const { t, locales } = useI18n()
 
-const files = ref<FileList|null>([] as unknown as FileList)
+//const files = ref<FileList | null>([] as unknown as FileList)
+const files = ref()
 const fileInput = ref()
 const valid = ref(false)
-const data = reactive<MediaData>({
-  date: (new Date()).toISOString(),
-  author: null,
-  source: null,
-  remark: null,
-  storage: null
-})
+// const date = ref(new Date())
 
-
-const {media} = defineProps<{
-  media?: number
-}>()
-
-const emit = defineEmits<{
-  update: [value: FormData]
-}>()
+const mediaStore: StoreGeneric = useMediaStore()
+const { selectedMedia } = storeToRefs(mediaStore)
 
 const locale = useLocale()
 const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
@@ -73,44 +64,31 @@ const rules = reactive({
 
 const selectedFile = (event: Event) => {
   console.log(event)
-  files.value = (<HTMLInputElement>event?.target).files
-  console.log(typeof files.value)
-}
-
-
-const createNewMedia = async () => {
-  if (!!files.value && files.value.length > 0) {
-    const file = files.value[0]
-    try {
-      const formData = new FormData()
-      formData.append('storage', file) // fill-in FormData with img file
-      // TODO get true date and other form fields below
-      const date = (new Date(data.date)).toISOString().substring(0,10)
-      !!data.date && formData.append('date', date)
-      !!data.author && formData.append('author', data.author)
-      !!data.source && formData.append('source', data.source)
-      !!data.remark && formData.append('remark', data.remark)
-      console.log('formData', formData)
-      emit('update', formData)
-      // create Media
-      // const { data: newImg } = await useApi<Media>("/api/v1/media/", {
-      //   method: 'post',
-      //   body: formData
-      // })
-      // !!newImg.value && mediaIdList.push(newImg.value.id) // set Media id to mediaIdList
-    } catch (_err) {
-      console.error(_err)
-    }
-    data.remark = null
-    data.storage= null
-    fileInput.value.fileupload = null
+  const uploadedFiles = (<HTMLInputElement>event?.target).files
+  if (!!uploadedFiles && uploadedFiles.length > 0) {
+    selectedMedia.value.storage = uploadedFiles[0]
+  } else {
+    selectedMedia.value.storage = null
   }
-
-  // console.log('mediaList', mediaIdList)
 }
 
-onMounted(() => {
-  // if (!date.value) { date.value = new Date() }
-})
+const addMedia = () => {
+  console.log('mediaStore', mediaStore)
+  mediaStore.addSelectedToMedias()
+  mediaStore.resetSelectedMedia()
+  files.value = []
+}
+
+// watch(date, (newVal: Date, _oldVal) => {
+//   selectedMedia.value.date = newVal.toISOString().substring(0, 10)
+//   console.log('watch date', selectedMedia.value.date)
+// })
+
+watch(files,
+  (newVal: Date, _oldVal) => {
+    console.log('watch files', newVal)
+  },
+  { deep: true }
+)
 
 </script>

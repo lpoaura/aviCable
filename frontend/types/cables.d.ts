@@ -1,17 +1,7 @@
 import type { Geometry } from "geojson";
 import type { Nomenclature } from "./nomenclature";
+import type { Medias } from "./media"
 
-export interface MediaData {
-  author?: string | null;
-  date: string | Date ;
-  remark?: string | null;
-  source?: string | null;
-  storage: string | File | null;
-}
-
-export interface Media extends MediaData{
-  id: number;
-}
 
 
 export interface DiagData {
@@ -38,7 +28,7 @@ export type Diagnosis = DiagData & {
   change_advice?: boolean;
   infrastructure?: number;
   last?: boolean;
-  media: Media[];
+  media: Medias;
   condition: Nomenclature;
   pole_attractivity: Nomenclature;
   pole_dangerousness: Nomenclature;
@@ -84,7 +74,7 @@ export type Operation = {
   id: number;
   infrastructure: number;
   last?: boolean;
-  media: Media[];
+  media: Medias;
   media_id?: number[];
   remark?: string | null;
 };
