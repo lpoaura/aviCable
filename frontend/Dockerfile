@@ -1,5 +1,6 @@
 ## Build
 FROM node:lts AS builder
+ARG NUXT_PUBLIC_API_BASE=http://localhost:8000
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
