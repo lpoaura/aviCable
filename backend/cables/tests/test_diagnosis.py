@@ -167,7 +167,7 @@ class CreatePointDiagnosisTestCase(TestCase):
             type__mnemonic="risk_level"
         )[0].id
         self.poleTypeList = Nomenclature.objects.filter(
-            type__mnemonic="pole_type"
+            type__mnemonic="arming"
         )
         self.poletypeIdList = [
             poleType.id for poleType in self.poleTypeList
@@ -247,7 +247,7 @@ class CreatePointDiagnosisTestCase(TestCase):
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
             "sgmt_landscape_integr_risk": self.risk_id,
-            "pole_type_id": self.poletypeIdList,
+            "arming_id": self.poletypeIdList,
             "media_id": self.mediaIdList,
         }
         resp = self.authentified_client.post(
@@ -259,7 +259,7 @@ class CreatePointDiagnosisTestCase(TestCase):
         first_id = first["id"]
         self.assertTrue(first["last"])
         # Gather id of pole type list from created diagnosis and compare to self.poletypeIdList
-        poleType_check = [poleType["id"] for poleType in first["pole_type"]]
+        poleType_check = [poleType["id"] for poleType in first["arming"]]
         self.assertListEqual(self.poletypeIdList, poleType_check)
         # Gather id of media list from created diagnosis and compare to self.mediaIdList
         media_check = [media["id"] for media in first["media"]]

@@ -36,8 +36,8 @@ Dans un modal
           <widgets-risk-level-status :display-mortality="true" :data="item" :detail="false" />
         </template>
         <template #item.resourcetype="{ value }">
-          <v-chip>
-            <v-icon :color="value == 'Point' ? 'green' : 'blue'">
+          <v-chip :color="value == 'Point' ? 'green' : 'blue'"   variant="flat">
+            <v-icon >
               {{ value == 'Point' ? 'mdi-transmission-tower' : 'mdi-cable-data' }}
             </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line') }}
           </v-chip>

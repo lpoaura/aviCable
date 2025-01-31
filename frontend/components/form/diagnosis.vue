@@ -3,13 +3,13 @@
     <v-form ref="form" v-model="formValid">
       <v-card-text>
         <v-container>
-          <v-row v-if="!formImage">
+          <v-row>
             <v-col cols="12">
               <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
                 density="compact" :rules="[rules.required]" :max="new Date()" />
             </v-col>
             <v-col cols="12">
-              <v-autocomplete v-model="diagData.pole_type_id" chips :items="armingItems" item-title="label"
+              <v-autocomplete v-model="diagData.arming_id" chips :items="armingItems" item-title="label"
                 item-value="id" :rules="[rules.required]" hide-selected :label="$t('armings')" multiple deletable-chips
                 variant="solo" density="compact" />
             </v-col>
@@ -73,6 +73,7 @@
           </v-row>
           <v-row>
             <form-images :medias="diagData.media" @update="getFormMedias"></form-images>
+            <v-btn @click="createMedias">test</v-btn>
           </v-row>
         </v-container>
         <!-- <pre>{{diagData }}</pre> -->
@@ -102,6 +103,8 @@ const route = useRoute()
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
+const mediaStore = useMediaStore()
+
 const formValid = ref(false)
 const infrastructureId = computed(() => cablesStore.formInfrastructureId)
 const infrastructureType = computed(() => (route.query.type).toLowerCase())
@@ -116,13 +119,13 @@ const diagData: DiagData = reactive({
   remark: '',
   technical_proposal: '',
   infrastructure: infrastructureId.value,
-  pole_type_id: [],
+  arming_id: [],
   neutralized: false,
   condition_id: null,
   attraction_advice: false,
   dissuasion_advice: false,
   isolation_advice: false,
-  media_id: [],
+  media_id: [] as number[],
 })
 
 const medias = ref<Array<Media>>([])
@@ -144,13 +147,14 @@ const initData = async () => {
     const { data: diagnosis } = await useApi<Diagnosis>(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, { method: 'get' })
     if (diagnosis.value) {
       formDate.value = new Date(diagnosis.value.date)
+      mediaStore.date = formDate.value
       const diagdata: DiagData = {
         id: diagnosis.value.id,
         date: diagnosis.value.date,
         remark: diagnosis.value.remark,
         technical_proposal: diagnosis.value.technical_proposal,
         infrastructure: diagnosis.value.infrastructure,
-        pole_type_id: diagnosis.value.pole_type?.map((item: NomenclatureItem) => item.id),
+        arming_id: diagnosis.value.arming?.map((item: NomenclatureItem) => item.id),
         neutralized: diagnosis.value.neutralized,
         condition_id: diagnosis.value.condition?.id,
         attraction_advice: diagnosis.value.attraction_advice,
@@ -186,19 +190,9 @@ const initData = async () => {
  */
 
  const createMedias = async () => {
-  console.log('medias.value', medias.value[0])
-  const list = await Promise.all(
-    medias.value.map(async (media) => {
-      console.log(media)
-      const { data: newImg } = await useApi<Media>("/api/v1/media/", {
-        method: 'post',
-        body: media
-      });
-      return newImg.value ? newImg.value.id : null; // Return null if newImg.value is null
-    })
-  );
-  // Filter out null values
-  return list.filter((id): id is number => id !== null);
+  return mediaStore.postMedias()
+  // const images = mediaStore.postMedias()
+  // return images
 }
 
 const createDiagnosis = async () => {
@@ -212,7 +206,7 @@ const createDiagnosis = async () => {
     // Create Diagnosis
     const { data: diagnosis } = await useApi('/api/v1/cables/diagnosis/', { method: 'post', body: diagData })
     console.debug('newDiagData', diagnosis)
-
+    mediaStore.resetMedias()
     return diagnosis
   } catch (_err) {
 
@@ -242,6 +236,7 @@ const updateDiagnosis = async () => {
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const { data } = await useApi(`/api/v1/cables/diagnosis/${diagData.id}/`, { method: 'put', body: diagData })
+    mediaStore.resetMedias()
     return data
   } catch (_err) {
     // If Diagnosis creation fails, related Media created are deleted
@@ -267,12 +262,11 @@ const moveToNextStep = async () => {
   }
 };
 
-const getFormMedias = (value) => {
-  console.log('<getFormMedias>', value)
+const getFormMedias = (value: Media[]) => {
   medias.value = value
 }
 
-// watch(infrastructureType,(newVal, _oldVal) => initData())
+watch(formDate.value,(newVal, _oldVal) => mediaStore.date = newVal)
 
 onMounted(() => {
   initData()

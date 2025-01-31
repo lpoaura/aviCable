@@ -1,7 +1,7 @@
 <template>
   <v-card class="my-2" :title="$t('display.operation')">
     <template #subtitle>{{ $t("realizedOn") }} <strong>{{ operation.date }}</strong></template>
-    <template #text>
+    <v-card-text>
       <div>
         <span class="font-weight-bold">
           {{ $t("operation.equipment", operation.equipments.length, { count: operation.equipments.length }) }}
@@ -19,7 +19,8 @@
       </div>
       <div v-if="operation.remark"><strong>{{ $t("remark") }}</strong>&nbsp;: {{ operation.remark }}
       </div>
-    </template>
+    </v-card-text>
+    <data-display-images v-if="operation.media.length > 0" :medias="operation.media" :edit="false" />
     <v-card-actions>
       <v-spacer />
       <v-dialog max-width="500">

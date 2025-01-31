@@ -20,6 +20,9 @@
             </div>
           </v-col>
         </v-row>
+        <v-row>
+          <form-images :medias="opData.media" @update="getFormMedias"></form-images>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-spacer /><v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
@@ -39,6 +42,8 @@ import { storeToRefs } from 'pinia';
 // import type {DiagData, Diagnosis} from '~/types/diagnosis';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
+import type { GeoJsonOperation, Operation } from '~/types/cables';
+import type {Feature} from 'geojson';
 
 const emit = defineEmits();
 const { t, locales } = useI18n()
@@ -50,22 +55,31 @@ const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
 const formValid = ref(false)
+const medias = ref<Array<Media>>([])
 
 const { newGeoJSONObject } = storeToRefs(coordinatesStore)
 
-const infrastructureId = computed(() => route.params.id)
+const infrastructureId = computed(() => {
+    const id = route.params.id;
+    if (typeof id === 'string') {
+        return parseInt(id);
+    } else if (Array.isArray(id)) {
+        return parseInt(id[0]);
+    }
+    return NaN;
+});
 const infrastructure = computed(() => cablesStore.formInfrastructure)
 const operationId = computed(() => route.query.id_operation)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const equipmentsReady = ref(false)
-const opData = reactive({
+const opData = reactive<Operation>({
   date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0, 10),
   remark: '',
   infrastructure: infrastructureId.value,
   equipments: [{
     id: null,
     type_id: null,
-    count: null,
+    count: 1,
     reference: null,
     comment: null,
   }],
@@ -96,7 +110,7 @@ const newEquipment = () => {
 const locale = useLocale()
 const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
 
-watch(newGeoJSONObject, (value) => {
+watch(newGeoJSONObject, (value:Feature) => {
   if (value) {
     opData.geom = value.geometry
   }
@@ -115,25 +129,27 @@ const initData = async () => {
     equipmentsReady.value = true
   }
   if (operationId.value) {
-    const { data: operation } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
-    formDate.value = new Date(operation.value.properties.date)
-    const opdata = {
-      id: operation.value.properties.id,
-      remark: operation.value.properties.remark,
-      infrastructure: operation.value.properties.infrastructure,
-      equipments: operation.value.properties.equipments.map(item => {
-        item.type_id = item.type.id
-        delete item['type']
-        return item
-      }),
-      // equipments: operation.value.properties.equipments,
-      media: operation.value.properties.media.map(item => item.id),
-      resourcetype: operation.value.resourcetype,
-      geom: operation.value.geometry,
+    const { data: operation } = await useApi<GeoJsonOperation>(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
+    if (operation.value) {
+      formDate.value = new Date(operation.value.properties.date)
+      const opdata = {
+        id: operation.value.properties.id,
+        remark: operation.value.properties.remark,
+        infrastructure: operation.value.properties.infrastructure,
+        equipments: operation.value.properties.equipments.map(item => {
+          item.type_id = item.type.id
+          delete item['type']
+          return item
+        }),
+        // equipments: operation.value.properties.equipments,
+        media: operation.value.properties.media.map(item => item.id),
+        resourcetype: operation.value.resourcetype,
+        geom: operation.value.geometry,
+      }
+      Object.assign(opData, opdata)
+      coordinatesStore.setSelectedFeature(operation.value)
+      equipmentsReady.value = true
     }
-    Object.assign(opData, opdata)
-    coordinatesStore.setSelectedFeature(operation.value)
-    equipmentsReady.value = true
   }
   // const opData = null
 }
@@ -193,6 +209,11 @@ const updateOperation = async () => {
     }
     errorStore.setError(error)
   }
+}
+
+const getFormMedias = (value) => {
+  console.log('<getFormMedias>', value)
+  medias.value = value
 }
 
 const submit = async () => {

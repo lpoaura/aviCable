@@ -1,4 +1,4 @@
-import type { Geometry } from "geojson";
+import type { Geometry, Feature, GeoJsonProperties } from "geojson";
 import type { Nomenclature } from "./nomenclature";
 import type { Medias } from "./media"
 
@@ -10,7 +10,7 @@ export interface DiagData {
   remark: string | null;
   technical_proposal: string | null;
   infrastructure: number | null;
-  pole_type_id: Array<number>;
+  arming_id: Array<number>;
   neutralized: boolean;
   condition_id: number | null;
   attraction_advice: boolean;
@@ -21,7 +21,7 @@ export interface DiagData {
   sgmt_moving_risk_id?: number | null;
   sgmt_topo_integr_risk_id?: number | null;
   sgmt_landscape_integr_risk_id?: number | null;
-  media_id?: Array<number>;
+  media_id?: Array<Number>;
 }
 
 export type Diagnosis = DiagData & {
@@ -32,7 +32,7 @@ export type Diagnosis = DiagData & {
   condition: Nomenclature;
   pole_attractivity: Nomenclature;
   pole_dangerousness: Nomenclature;
-  pole_type: Nomenclature[];
+  arming: Nomenclature[];
   sgmt_build_integr_risk: Nomenclature;
   sgmt_moving_risk: Nomenclature;
   sgmt_topo_integr_risk: Nomenclature;
@@ -61,14 +61,15 @@ export type GeoArea = {
 };
 
 export interface Equipment {
+  id?: number;
   comment: string | null;
   count: number;
   reference: string | null;
   type?: Nomenclature[];
-  type_id?: number;
+  type_id?: number | null;
 }
 
-export type Operation = {
+export interface Operation extends GeoJsonProperties  {
   date?: string;
   equipments: Equipment[];
   id: number;
@@ -77,7 +78,14 @@ export type Operation = {
   media: Medias;
   media_id?: number[];
   remark?: string | null;
+  geom?: Geometry | null;
 };
+
+
+
+interface GeoJsonOperation extends Feature<Geometry, Operation> {
+  resourcetype:string;
+}
 
 export type SensitiveArea = {
   code: string;

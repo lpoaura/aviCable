@@ -73,7 +73,9 @@
     "risk_assessment": "Evaluation des Risques",
     "too_big_file": "La taille du fichier ne doit pas exéder",
     "not_img_file": "Le fichier sélectionné doit-être une image",
-    "newImage": "Ajouter une image"
+    "newImage": "Nouvelle photo",
+    "valid": "Valider",
+    "add": "Ajouter"
   },
   "support": {
     "advice": "Recommandations",

@@ -1,7 +1,7 @@
 export interface MediaData {
   id?: number;
   author?: string | null;
-  date: string | Date ;
+  date: string | Date | null;
   remark?: string | null;
   source?: string | null;
   storage: string | File | null;

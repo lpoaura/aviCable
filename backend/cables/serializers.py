@@ -39,7 +39,7 @@ class DiagnosisSerializer(ModelSerializer):
     """
 
     # Allow to display nested data
-    pole_type = NomenclatureSerializer(many=True, read_only=True)
+    arming = NomenclatureSerializer(many=True, read_only=True)
     pole_attractivity = NomenclatureSerializer(read_only=True)
     pole_dangerousness = NomenclatureSerializer(read_only=True)
     sgmt_moving_risk = NomenclatureSerializer(read_only=True)
@@ -59,8 +59,8 @@ class DiagnosisSerializer(ModelSerializer):
             "attraction_advice",
             "change_advice",
             "technical_proposal",
-            "pole_type",
-            "pole_type_id",
+            "arming",
+            "arming_id",
             "pole_attractivity",
             "pole_attractivity_id",
             "pole_dangerousness",
@@ -77,7 +77,7 @@ class DiagnosisSerializer(ModelSerializer):
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
-            "pole_type_id": {"source": "pole_type", "write_only": True},
+            "arming_id": {"source": "arming", "write_only": True},
             "pole_attractivity_id": {
                 "source": "pole_attractivity",
                 "write_only": True,
@@ -135,8 +135,8 @@ class DiagnosisSerializer(ModelSerializer):
             # gather data for ManyToMany fields (and removing related data from validated_data)
             poleType_data = None
             media_data = None
-            if "pole_type" in validated_data:
-                poleType_data = validated_data.pop("pole_type")
+            if "arming" in validated_data:
+                poleType_data = validated_data.pop("arming")
             if "media" in validated_data:
                 media_data = validated_data.pop("media")
 
@@ -151,7 +151,7 @@ class DiagnosisSerializer(ModelSerializer):
 
                 # set data to ManyToMany fields old newDiag
                 if poleType_data is not None:
-                    newDiag.pole_type.set(poleType_data)
+                    newDiag.arming.set(poleType_data)
                 if media_data is not None:
                     newDiag.media.set(media_data)
 

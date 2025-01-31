@@ -17,11 +17,11 @@
             </v-chip>
           </v-chip-group>
         </v-col>
-        <v-col v-if="lastDiag?.pole_type.length" cols="12">
+        <v-col v-if="lastDiag?.arming.length" cols="12">
           <p>Type de support</p>
           <!-- <pre>{{ lastDiag }}</pre> -->
           <v-chip-group>
-            <v-chip v-for="pt in lastDiag?.pole_type" :key="pt.id">
+            <v-chip v-for="pt in lastDiag?.arming" :key="pt.id">
               <pre>{{ pt.label }}</pre>
             </v-chip>
           </v-chip-group>

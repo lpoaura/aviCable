@@ -30,7 +30,8 @@
               density="compact"></v-textarea>
           </v-col>
         </v-row>
-        <v-btn :disabled="!valid" color="success" @click="addMedia">{{ t('forms.newImage') }}</v-btn>
+        <v-btn :disabled="!globalFormValid" :prepend-icon="globalFormValid ? 'mdi-check' : 'mdi-alert'" color="success"
+          @click="addMedia">{{ t('forms.add') }}</v-btn>
       </v-container>
     </v-form>
   </v-container>
@@ -62,6 +63,8 @@ const rules = reactive({
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
 
+const globalFormValid = computed(() => valid && !!files.value)
+
 const selectedFile = (event: Event) => {
   console.log(event)
   const uploadedFiles = (<HTMLInputElement>event?.target).files
@@ -90,5 +93,9 @@ watch(files,
   },
   { deep: true }
 )
+onMounted(() => {
+  console.log('selectedMedia.value.date', selectedMedia.value.date, mediaStore.date)
+  if (!selectedMedia.value.date) selectedMedia.value.date = mediaStore.date
+})
 
 </script>

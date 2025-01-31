@@ -42,8 +42,9 @@ services:
       - 3000:3000
     volumes:
       - ./frontend:/app
-    # command: [ "npm", "run", "dev" ]
+    command: [ "npm", "run", "dev" ]
 
 # Volumes used for persistent data
 volumes:
   ocb_db_data:
+

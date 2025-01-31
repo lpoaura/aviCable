@@ -38,7 +38,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
         .prefetch_related("sensitive_area")
         .prefetch_related("diagnosis")
         .prefetch_related("diagnosis__media")
-        .prefetch_related("diagnosis__pole_type")
+        .prefetch_related("diagnosis__arming")
         .prefetch_related("diagnosis__pole_attractivity")
         .prefetch_related("diagnosis__pole_dangerousness")
         .prefetch_related("diagnosis__sgmt_moving_risk")

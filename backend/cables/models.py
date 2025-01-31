@@ -155,13 +155,13 @@ class Diagnosis(Action):
     technical_proposal = models.TextField(
         _("Technical proposal"), blank=True, null=True
     )
-    pole_type = models.ManyToManyField(
+    arming = models.ManyToManyField(
         Nomenclature,
         blank=True,
-        limit_choices_to={"type__mnemonic": "pole_type"},
-        related_name="diagnosis_pole_type",
-        verbose_name=_("Type of pole"),
-        help_text=_("Type of pole"),
+        limit_choices_to={"type__mnemonic": "arming"},
+        related_name="diagnosis_arming",
+        verbose_name=_("Armings"),
+        help_text=_("Armings"),
     )
     pole_attractivity = models.ForeignKey(
         Nomenclature,

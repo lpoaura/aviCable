@@ -1,7 +1,7 @@
 <template>
   <v-card class="my-2" :title="$t('display.diagnosis')">
     <template #subtitle>{{ $t("realizedOn") }} <strong>{{ diagnosis.date }}</strong></template>
-    <template #text>
+    <v-card-text>
       <span class="font-weight-bold">Recommandations&nbsp;: </span><br>
       <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation' : ''"
         :color="diagnosis.isolation_advice ? 'warning' : ''" class="ma-2">
@@ -22,7 +22,7 @@
       <template v-if="isPoint">
         <p>
           <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
-          <v-chip v-for="pt in diagnosis.pole_type" v-if="diagnosis.pole_type.length > 0" :key="pt.id" color="info"
+          <v-chip v-for="pt in diagnosis.arming" v-if="diagnosis.arming.length > 0" :key="pt.id" color="info"
             class="ma-2">
             {{ pt.label }}
           </v-chip>
@@ -70,23 +70,8 @@
       <p>
         {{ diagnosis.remark }}
       </p>
-      <v-list>
-        <v-list-item v-for="img in diagnosis.media" :key="img.id">
-          <v-row>
-            <v-col>
-              <v-img :src="img.storage" max-height="100" max-width="166" class="ma-2" />
-            </v-col>
-            <!-- <v-col>date: {{ pictDate }}</v-col>   -->
-            <v-col />
-            <v-col cols="1">
-              <v-icon size="small" color="red">
-                mdi-trash-can
-              </v-icon>
-            </v-col>
-          </v-row>
-        </v-list-item>
-      </v-list>
-    </template>
+    </v-card-text>
+    <data-display-images v-if="diagnosis.media.length > 0" :medias="diagnosis.media" :edit="false" />
     <v-card-actions>
       <v-spacer />
       <v-dialog max-width="500">
