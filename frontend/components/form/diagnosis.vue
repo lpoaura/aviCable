@@ -73,7 +73,6 @@
           </v-row>
           <v-row>
             <form-images :medias="diagData.media" @update="getFormMedias"></form-images>
-            <v-btn @click="createMedias">test</v-btn>
           </v-row>
         </v-container>
         <!-- <pre>{{diagData }}</pre> -->
