@@ -2,6 +2,7 @@
   <v-card elevation="0" class="fill-height">
     <v-form ref="form" v-model="formValid">
       <v-card-text>
+        <v-container>
         <v-row>
           <v-col cols="12">
             <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
@@ -15,18 +16,21 @@
           <v-col v-if="equipmentsReady" cols="12">
             <p><strong>Equipements</strong></p>
             <div v-for="(equipment, index) in opData.equipments" :key="index">
-              <form-equipment :equipment="equipment" :index="index" @update="updateEquipmentData(index, $event)"
+              <form-equipments :equipments="equipments" :index="index" @update="updateEquipmentData(index, $event)"
                 @delete="deleteEquipment(index)" />
             </div>
+            <v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
+            @click="newEquipment">équipement</v-btn>
           </v-col>
         </v-row>
         <v-row>
-          <form-images :medias="opData.media" @update="getFormMedias"></form-images>
-        </v-row>
+            <form-images :medias="opData.media" @update="getFormMedias"></form-images>
+          </v-row>
+        </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-spacer /><v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
-          @click="newEquipment">équipement</v-btn> <v-btn color="success" :disabled="!formValid" variant="flat"
+        <v-spacer />
+        <v-btn color="success" :disabled="!formValid" variant="flat"
           prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
       </v-card-actions>
     </v-form>
@@ -54,6 +58,7 @@ const coordinatesStore = useCoordinatesStore()
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const errorStore = useErrorsStore()
+const mediaStore = useMediaStore()
 const formValid = ref(false)
 const medias = ref<Array<Media>>([])
 
@@ -132,12 +137,14 @@ const initData = async () => {
     const { data: operation } = await useApi<GeoJsonOperation>(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
     if (operation.value) {
       formDate.value = new Date(operation.value.properties.date)
+      mediaStore.date = formDate.value
+      mediaStore.medias = operation.value.properties.media
       const opdata = {
         id: operation.value.properties.id,
         remark: operation.value.properties.remark,
         infrastructure: operation.value.properties.infrastructure,
         equipments: operation.value.properties.equipments.map(item => {
-          item.type_id = item.type.id
+          item.type_id = item.type?.id
           delete item['type']
           return item
         }),
@@ -154,7 +161,11 @@ const initData = async () => {
   // const opData = null
 }
 
-
+const createMedias = async () => {
+  return mediaStore.postMedias()
+  // const images = mediaStore.postMedias()
+  // return images
+}
 /**
  * addNewDiagnosis(): Method that create new Diagnosis based on forms data (cf.this.opData)
  * on an existing Support
@@ -171,10 +182,12 @@ const createOperation = async () => {
     opData.infrastructure = infrastructureId.value
     opData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     opData.geom = newGeoJSONObject.value?.geometry || infrastructure.value?.geometry
+    opData.media = await createMedias()
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const { data: operation } = await useApi('/api/v1/cables/operations/', { method: 'post', body: opData })
     console.debug('newDiagData', operation)
+    mediaStore.resetMedias()
     return operation
   } catch (_err) {
 
@@ -197,7 +210,7 @@ const updateOperation = async () => {
 
   try {
     opData.date = formDate.value.toISOString().substring(0, 10)
-
+    opData.media = await createMedias()
     const { data } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
     return data
   } catch (_err) {
@@ -212,10 +225,17 @@ const updateOperation = async () => {
 }
 
 const getFormMedias = (value) => {
-  console.log('<getFormMedias>', value)
   medias.value = value
 }
 
+watch(formDate.value,(newVal, _oldVal) => mediaStore.date = newVal)
+
+const moveToNextStep = async () => {
+  const diagnosis = diagnosisId.value ? await updateDiagnosis() : await createDiagnosis()
+  if (diagnosis) {
+    router.push(`/infrastructures/${infrastructureId.value}`)
+  }
+};
 const submit = async () => {
   const operation = operationId.value ? await updateOperation() : await createOperation()
   if (operation) {
@@ -226,5 +246,9 @@ const submit = async () => {
 
 onMounted(async () => {
   await initData()
+})
+
+onUnmounted(()=> {
+  mediaStore.resetMedias()
 })
 </script>

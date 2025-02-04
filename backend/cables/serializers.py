@@ -376,6 +376,7 @@ class BaseOperationSerializer(GeoFeatureModelSerializer):
 class PointOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
     geom = GeometryField(required=False, allow_null=True)
+    media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = PointOperation
@@ -468,6 +469,7 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
 
 class LineOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
+    media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = LineOperation

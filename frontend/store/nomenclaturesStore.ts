@@ -50,28 +50,28 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
       }
     },
     getArmingItems() {
-      return (geomType: string , owner: string) => {
+      return (geomType: string, owner: string) => {
         console.log('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
-        const infraTypeId: number | undefined  = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
-        return infraTypeId? this.armingItems?.filter(item => item.parents?.includes(infraTypeId)):[]
+        const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
+        return infraTypeId ? this.armingItems?.filter(item => item.parents?.includes(infraTypeId)) : []
       }
     },
     getEquipmentItems() {
-      return (geomType: string , owner: string) => {
+      return (geomType: string, owner: string) => {
         console.log('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
-        const infraTypeId: number | undefined  = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
-        return infraTypeId? this.equipmentTypeItems?.filter(item => item.parents?.includes(infraTypeId)):[]
+        const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
+        return infraTypeId ? this.equipmentTypeItems?.filter(item => item.parents?.includes(infraTypeId)) : []
       }
     }
   },
   actions: {
     async loadNomenclatures() {
       try {
-        const params = { with_nomenclatures: true };
+        const params = { with_nomenclatures: true, with_parents: true };
         try {
-          const {data: nomenclatureTypes } = await useApi("/api/v1/nomenclatures/types", {params});
+          const { data: nomenclatureTypes } = await useApi("/api/v1/nomenclatures/types", { params });
           if (nomenclatureTypes && Array.isArray(nomenclatureTypes.value)) {
             this.nomenclatureTypes = nomenclatureTypes.value as NomenclatureType[]; // Type assertion
           } else {

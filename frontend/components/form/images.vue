@@ -4,11 +4,12 @@
       <v-card title="Photos" prepend-icon="mdi-camera">
         <data-display-images :medias="medias" :edit="true" />
         <v-divider></v-divider>
-        <form-image v-if="editMedia" @update="updateImage($event)" />
+        <form-image v-if="editMedia" />
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn prepend-icon="mdi-camera-plus-outline" @click="editMedia = !editMedia" color="info">{{ t('forms.newImage') }}</v-btn>
+          <v-btn prepend-icon="mdi-camera-plus-outline" @click="editMedia = !editMedia" color="info">{{
+            t('forms.newImage') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-container>
@@ -24,34 +25,37 @@ const { t } = useI18n()
 
 // const medias = ref<FormData[]>([])
 const mediaStore = useMediaStore()
-const { medias } = storeToRefs(mediaStore)
+const { medias, selectedMedia } = storeToRefs(mediaStore)
 
-const emit = defineEmits()
+// const emit = defineEmits()
 
-const updateImage = (data: MediaData) => {
-  console.log('<updateImage> data type', data, typeof data, data instanceof FormData)
-  medias.value.push(data)
-}
+// const updateImage = (data: MediaData) => {
+//   console.log('<updateImage> data type', data, typeof data, data instanceof FormData)
+//   // if (data.id) {
+//   //   medias.value[medias.value.findIndex(item => item.id === data.id)] = data
+//   // } else {
+//   //   medias.value.push(data)
+//   // }
+// }
 
 const editMedia = ref(false)
 
-const items = computed(() => medias.value.map((media: MediaData) => {
-  return {
-    prependAvatar: URL.createObjectURL(media.storage),
-    title: `${media.date} (${media.author || '-'} / ${media.source || '-'})`,
-    subtitle: media.remark
-  }
-}))
+// const items = computed(() => medias.value.map((media: MediaData) => {
+//   return {
+//     prependAvatar: URL.createObjectURL(media.storage),
+//     title: `${media.date} (${media.author || '-'} / ${media.source || '-'})`,
+//     subtitle: media.remark
+//   }
+// }))
 
 // watch(items, async (newQuestion, oldQuestion) => {
 //   console.log('watch items', newQuestion, oldQuestion)
 // })
 
 watch(
-  () => medias,
+  () => selectedMedia.value,
   (newValue, _oldValue) => {
-    emit('update', newValue.value)
+    editMedia.value = !!Object.keys(newValue).length
   },
-  { deep: true }
 )
 </script>

@@ -8,8 +8,13 @@
 <script setup>
 import {centroid} from '@turf/centroid';
 import {storeToRefs} from 'pinia';
-const route = useRoute()
+useHead({
+  titleTemplate : (titleChunk) => {
+    return titleChunk ? `${titleChunk} - Infrastructure ${route.params.id}` : 'Infrastructure';
+  }
+})
 
+const route = useRoute()
 const coordinateStore = useCoordinatesStore()
 
 const { data: infrastructure } = await useApi(`/api/v1/cables/infrastructures/${route.params.id}/`)
@@ -18,6 +23,7 @@ const {selectedFeature,center,zoom} = storeToRefs(coordinateStore)
 
 const updateData = async () => {
   zoomTo()
+  title.value = `aviCable - Infrastructure #${route.query.id}`
 }
 
 const zoomTo = () => {
@@ -28,6 +34,8 @@ const zoomTo = () => {
   zoom.value = 14
 }
 
-onMounted(() => {zoomTo()})
+onMounted(() => {
+  zoomTo()
+})
 
 </script>

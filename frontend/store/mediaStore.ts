@@ -20,13 +20,15 @@ export const useMediaStore = defineStore("media", {
       const date = !!media.date && (new Date(media.date)).toISOString().substring(0, 10);
 
       !!date && formData.append('date', date);
-      !!media.storage && formData.append('storage', media.storage); // fill-in FormData with img file
+      console.log('media.storage', media.storage, media.storage instanceof File, typeof media.storage)
+      !!media.storage && media.storage instanceof File && formData.append('storage', media.storage); // fill-in FormData with img file
       !!media.author && formData.append('author', media.author);
       !!media.source && formData.append('source', media.source);
       !!media.remark && formData.append('remark', media.remark);
-      // const httpCall =  !!media.id ? $fetch.put : $fetch.post
-      const newImg : FetchResponse<Media> = await $fetch(config.public.baseURL + "/api/v1/media/", {
-        method: !!media.id ? 'put' : 'post',
+      // const httpCall = !!media.id ? $fetch.put : $fetch.post
+      const url = config.public.baseURL + `/api/v1/media/${media.id ? `${media.id}/` : ''}`
+      const newImg: Media = await $fetch<Media>(url, {
+        method: !!media.id ? 'patch' : 'post',
         body: formData
       });
 
@@ -43,14 +45,22 @@ export const useMediaStore = defineStore("media", {
     },
     addSelectedToMedias() {
       console.log('addSelectedToMedias')
-      this.medias.push({ ...this.selectedMedia })
+      if (this.selectedMedia.id) {
+        this.medias[this.medias.findIndex(item => item.id === this.selectedMedia.id)] = this.selectedMedia
+      } else {
+        this.medias.push(this.selectedMedia)
+      }
       // this.resetSelectedMedia()
+    },
+    purgeSelectedMedia() {
+      this.selectedMedia = {} as MediaData
     },
     resetSelectedMedia() {
       this.selectedMedia = {
         date: this.date,
         author: this.medias[0]?.author,
-        source: this.medias[0]?.source
+        source: this.medias[0]?.source,
+        storage: null,
       }
     },
     resetMedias() {
@@ -59,10 +69,10 @@ export const useMediaStore = defineStore("media", {
     },
     async deleteMedia(index: number | null) {
       console.log('deleteMedia', index)
+      if (index) {this.mediaToDelete = this.medias[index]}
       const file = { ...this.mediaToDelete }
       if (this.mediaToDelete && this.mediaToDelete.id) {
         const { data: resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
-
       }
       (index !== null) && this.medias.slice(index, 1)
       errorStore.err = {

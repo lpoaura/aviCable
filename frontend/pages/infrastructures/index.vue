@@ -8,5 +8,11 @@
 <script lang="ts" setup>
 const route=useRoute()
 
+useHead({
+  title: `aviCable - Edit`,
+  meta: [
+    { name: 'description', content: 'Edit infrastructure' }
+  ],
+})
 const infrastructureType = computed(()=> route.query.type || '')
 </script>

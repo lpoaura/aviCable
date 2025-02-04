@@ -20,6 +20,8 @@
   "source": "Source",
   "date": "Date",
   "remark": "Commentaire",
+  "Search": "Rechercher",
+  "About": "A propos",
   "app": {
     "appShortName": "aviCable",
     "appName": "Avifaune & câbles aériens",

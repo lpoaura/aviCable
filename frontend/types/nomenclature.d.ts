@@ -5,6 +5,7 @@ export interface NomenclatureItem {
   label: string;
   type: number;
 }
+
 export type Nomenclature = {
   code: string
   id: number

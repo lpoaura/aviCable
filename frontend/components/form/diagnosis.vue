@@ -147,6 +147,7 @@ const initData = async () => {
     if (diagnosis.value) {
       formDate.value = new Date(diagnosis.value.date)
       mediaStore.date = formDate.value
+      mediaStore.medias = diagnosis.value.media
       const diagdata: DiagData = {
         id: diagnosis.value.id,
         date: diagnosis.value.date,
@@ -270,4 +271,9 @@ watch(formDate.value,(newVal, _oldVal) => mediaStore.date = newVal)
 onMounted(() => {
   initData()
 })
+
+onUnmounted(()=> {
+  mediaStore.resetMedias()
+})
+
 </script>

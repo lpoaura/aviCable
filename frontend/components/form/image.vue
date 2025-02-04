@@ -4,9 +4,12 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-file-upload ref="fileInput" v-model="files" clearable accept="image/*" density="compact"
+            <v-file-upload v-if="!selectedMedia.id" ref="fileInput" v-model="files" clearable accept="image/*" density="compact"
               :title="t('picture.dragAndDrop')" variant="solo" :rules="[rules.filesize]"
               @change="selectedFile($event)"></v-file-upload>
+              <v-else>
+                <v-img :src="selectedMedia.storage" max-height="200"></v-img>
+              </v-else>
           </v-col>
         </v-row>
         <v-row>
@@ -39,7 +42,6 @@
 
 <script setup lang="ts">
 import type { StoreGeneric } from 'pinia'
-
 const { t, locales } = useI18n()
 
 //const files = ref<FileList | null>([] as unknown as FileList)
@@ -57,13 +59,13 @@ const currentLocale = computed(() => locales.value.find(item => item.code == loc
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),
   filesize: (v: any) => {
-    console.log('rules.filesize', v[0], typeof v, Object.keys(v))
-    !v[0] || v[0].size < 20000000 || 'Avatar size should be less than 20 MB!'
+    // console.log('rules.filesize',!!selectedMedia.value.id, v[0], typeof v, Object.keys(v))
+    (!v[0] || v[0].size < 20000000) || 'Avatar size should be less than 20 MB!'
   },
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
 
-const globalFormValid = computed(() => valid && !!files.value)
+const globalFormValid = computed(() => valid && (selectedMedia.value.id || !!files.value))
 
 const selectedFile = (event: Event) => {
   console.log(event)
@@ -78,7 +80,8 @@ const selectedFile = (event: Event) => {
 const addMedia = () => {
   console.log('mediaStore', mediaStore)
   mediaStore.addSelectedToMedias()
-  mediaStore.resetSelectedMedia()
+  // mediaStore.resetSelectedMedia()
+  mediaStore.purgeSelectedMedia()
   files.value = []
 }
 
@@ -94,7 +97,6 @@ watch(files,
   { deep: true }
 )
 onMounted(() => {
-  console.log('selectedMedia.value.date', selectedMedia.value.date, mediaStore.date)
   if (!selectedMedia.value.date) selectedMedia.value.date = mediaStore.date
 })
 

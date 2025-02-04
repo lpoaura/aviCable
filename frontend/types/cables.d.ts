@@ -65,17 +65,17 @@ export interface Equipment {
   comment: string | null;
   count: number;
   reference: string | null;
-  type?: Nomenclature[];
+  type?: Nomenclature;
   type_id?: number | null;
 }
 
 export interface Operation extends GeoJsonProperties  {
-  date?: string;
+  date?: string | Date;
   equipments: Equipment[];
   id: number;
   infrastructure: number;
   last?: boolean;
-  media: Medias;
+  media: Medias | number[];
   media_id?: number[];
   remark?: string | null;
   geom?: Geometry | null;
@@ -85,6 +85,7 @@ export interface Operation extends GeoJsonProperties  {
 
 interface GeoJsonOperation extends Feature<Geometry, Operation> {
   resourcetype:string;
+  properties: Operation;
 }
 
 export type SensitiveArea = {

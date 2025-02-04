@@ -71,7 +71,7 @@
         {{ diagnosis.remark }}
       </p>
     </v-card-text>
-    <data-display-images v-if="diagnosis.media.length > 0" :medias="diagnosis.media" :edit="false" />
+    <data-display-images  v-if="diagnosis.media.length > 0" :edit="false" :medias="diagnosis.media" />
     <v-card-actions>
       <v-spacer />
       <v-dialog max-width="500">
@@ -115,6 +115,9 @@ interface Props {
 const { infrastructureType, diagnosis } = defineProps<Props>()
 const router = useRouter()
 const deletedDiagConfirm = ref(true)
+const mediaStore = useMediaStore()
+
+const {medias} = storeToRefs(mediaStore)
 
 const riskColors = reactive({
   RISK_L: 'blue lighten-1',
@@ -143,6 +146,7 @@ const deleteDiag = async () => {
 
 onMounted(() => {
   console.debug('diagnosis', diagnosis)
+  medias.value = diagnosis.media
 })
 
 </script>

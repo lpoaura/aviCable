@@ -1,54 +1,68 @@
 <template>
   <v-list lines="three">
-    <v-list-item v-for="(item, index) in items" :title="item.title" :subtitle="item.remark" @click="modal = true">
+    <v-list-item v-for="(item, index) in items" :title="item.title" :subtitle="item.remark">
       <template v-slot:prepend>
-        <v-avatar color="grey-lighten-1" :rounded="false" :flat="true">
+        <v-avatar color="grey-lighten-1" :rounded="false" :flat="true" @click="showModal(item)">
           <v-img :src="item.prependAvatar"></v-img>
         </v-avatar>
       </template>
       <template v-slot:append v-if="edit">
-        <v-btn color="blue-lighten-1" icon="mdi-pencil" variant="text" size="small"></v-btn>
+        <v-btn color="blue-lighten-1" icon="mdi-pencil" @click="selectMedia(index)" variant="text" size="small"></v-btn>
         <v-btn color="red-lighten-1" icon="mdi-trash-can" variant="text" size="small"
           @click="mediaStore.deleteMedia(index)"></v-btn>
       </template>
-      <v-dialog v-if="!edit" :max-width="mobile ? '100%' : '70%'" v-model="modal">
-        <template v-slot:default="{ isActive }">
-          <v-card :title="item.id ? `#${item.id} ${item.date}` : item.date"
-            :subtitle="([item.author, item.source]).join(', ')">
-            <template v-slot:append>
-              <v-icon color="primary" icon="mdi-close" @click="isActive.value = false"></v-icon>
-            </template>
-            <v-img :src="item.storage"></v-img>
-            <v-card-text v-if="item.remark">
-              {{ item.remark }}
-            </v-card-text>
-          </v-card>
-        </template>
-      </v-dialog>
+
     </v-list-item>
+    <v-dialog v-if="!edit" :max-width="mobile ? '100%' : '70%'" v-model="modal">
+      <template v-slot:default="{ isActive }">
+        <v-card prepend-icon="mdi-camera" :title="modalItem.id ? `#${modalItem.id} ${modalItem.date}` : modalItem.date"
+          :subtitle="([modalItem.author, modalItem.source]).join(', ')">
+          <template v-slot:append>
+            <v-icon color="primary" icon="mdi-close" @click="isActive.value = false"></v-icon>
+          </template>
+          <v-img :src="modalItem.storage"></v-img>
+          <v-card-text v-if="modalItem.remark">
+            {{ modalItem.remark }}
+          </v-card-text>
+        </v-card>
+      </template>
+    </v-dialog>
   </v-list>
 </template>
 
 <script lang="ts" setup>
 import { useDisplay } from "vuetify";
-import type { MediaData } from "~/types/media";
+import type { MediaData, Media } from "~/types/media";
 
 const { mobile } = useDisplay()
 
-const { medias } = defineProps<{
+const { medias, edit } = defineProps<{
   medias: MediaData[]; // Replace 'any' with the actual type of data if known
   edit: boolean;
 }>();
 const mediaStore = useMediaStore()
 const modal = ref<boolean>(false)
+const modalItem = ref<MediaData | null>(null)
+
+const { selectedMedia } = storeToRefs(mediaStore)
 
 const items = computed(() => medias.map((media: MediaData) => {
   return {
     prependAvatar: media.storage instanceof File ? URL.createObjectURL(media.storage) : media.storage,
-    title: `${media.date} (${media.author || '-'} / ${media.source || '-'})`,
+    title: `#${media.id} ${media.date} (${media.author || '-'} / ${media.source || '-'})`,
     subtitle: media.remark,
     ...media
   }
 }))
+
+const selectMedia = (index: number) => {
+  console.log('selectMedia event', index)
+  selectedMedia.value = medias[index]
+}
+
+const showModal = (item: MediaData) => {
+  modal.value = true
+  modalItem.value = item
+}
 
 </script>

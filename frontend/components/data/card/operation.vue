@@ -20,7 +20,7 @@
       <div v-if="operation.remark"><strong>{{ $t("remark") }}</strong>&nbsp;: {{ operation.remark }}
       </div>
     </v-card-text>
-    <data-display-images v-if="operation.media.length > 0" :medias="operation.media" :edit="false" />
+    <data-display-images v-if="operation.media.length > 0" :edit="false" :medias="operation.media" />
     <v-card-actions>
       <v-spacer />
       <v-dialog max-width="500">

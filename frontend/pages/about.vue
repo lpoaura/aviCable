@@ -12,3 +12,14 @@
     </v-col>
   </v-row>
 </template>
+
+
+<script setup lang="ts">
+const {t} = useI18n()
+useHead({
+  title: `aviCable - ${t('About')}`,
+  meta: [
+    { name: 'description', content: 'Home page' }
+  ],
+})
+</script>

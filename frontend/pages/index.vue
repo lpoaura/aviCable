@@ -18,8 +18,12 @@
   </v-row>
 </template>
 
-<script>
-export default {
-  name: 'IndexPage'
-}
+<script setup lang="ts">
+useHead({
+  title: 'aviCable - Home',
+  meta: [
+    { name: 'description', content: 'Home page' }
+  ],
+})
 </script>
+
