@@ -1,27 +1,28 @@
 <template>
-  <v-card v-if="equipmentData" class="my-2">
-    <v-card-text>
-      <v-row>
-        <v-col lg="4" md="12">
-          <v-autocomplete v-model="equipmentData.type_id" :items="equipmentItems" item-title="label" item-value="id"
-            :rules="[rules.required]" hide-selected :label="$t('support.support-type')" variant="solo" density="compact"
-            @input="updateEquipmentData" />
-        </v-col>
-        <v-col lg="4" md="12">
-          <v-text-field v-model="equipmentData.count" type="number" placeholder="Nombre" variant="solo"
-            density="compact" :rules="[rules.required]" min="0" max="100" @input="updateEquipmentData" /></v-col>
-        <v-col lg="4" md="12">
-          <v-text-field v-model="equipmentData.reference" placeholder="Reference" variant="solo" density="compact"
-            counter="50" @input="updateEquipmentData" />
-        </v-col>
-        <v-col lg="12"><v-textarea v-model="equipmentData.comment" :rules="[rules.textLength]" placeholder="Commentaire"
-            variant="solo" density="compact" rows="2" counter="300" @input="updateEquipmentData" /></v-col>
-      </v-row>
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer /> <v-btn prepend-icon="mdi-delete-circle" color="red" @click="deleteItem()">Supprimer</v-btn>
-    </v-card-actions>
-  </v-card>
+  <v-container>
+    <v-form v-model="valid" lazy-validation>
+      <v-container>
+        <v-row>
+          <v-col lg="4" md="12">
+            <v-autocomplete v-model="equipmentData.type_id" :items="equipmentItems" item-title="label" item-value="id"
+              :rules="[rules.required]" hide-selected :label="$t('support.support-type')" variant="solo"
+              density="compact" @input="updateEquipmentData" />
+          </v-col>
+          <v-col lg="4" md="12">
+            <v-text-field v-model="equipmentData.count" type="number" placeholder="Nombre" variant="solo"
+              density="compact" :rules="[rules.required]" min="0" max="100" @input="updateEquipmentData" /></v-col>
+          <v-col lg="4" md="12">
+            <v-text-field v-model="equipmentData.reference" placeholder="Reference" variant="solo" density="compact"
+              counter="50" @input="updateEquipmentData" />
+          </v-col>
+          <v-col lg="12"><v-textarea v-model="equipmentData.comment" :rules="[rules.textLength]"
+              placeholder="Commentaire" variant="solo" density="compact" rows="2" counter="300"
+              @input="updateEquipmentData" /></v-col>
+        </v-row>
+        <v-btn prepend-icon="mdi-delete-circle" color="red" @click="deleteItem()">Supprimer</v-btn>
+      </v-container>
+    </v-form>
+  </v-container>
 </template>
 
 <script lang="ts" setup>

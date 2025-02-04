@@ -17,12 +17,13 @@
 </template>
 
 <script lang="ts" setup>
-import type {Equipment} from '~/types/cables'
+
+import type { Equipment } from '~/types/cables'
 
 
 const { t } = useI18n()
 
-const {equipments} = defineProps<{
+const { equipments } = defineProps<{
   equipments: Equipment[],
 }>()
 

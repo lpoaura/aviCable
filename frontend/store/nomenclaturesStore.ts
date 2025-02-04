@@ -62,7 +62,10 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         console.log('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
-        return infraTypeId ? this.equipmentTypeItems?.filter(item => item.parents?.includes(infraTypeId)) : []
+        return infraTypeId ? this.equipmentTypeItems?.filter(item => {
+          console.log('getEquipmentItems item', infraTypeId, item.parents, item)
+          return item.parents?.includes(infraTypeId)
+        }) : []
       }
     }
   },

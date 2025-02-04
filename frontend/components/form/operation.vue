@@ -2,36 +2,36 @@
   <v-card elevation="0" class="fill-height">
     <v-form ref="form" v-model="formValid">
       <v-card-text>
-        <v-container>
         <v-row>
-          <v-col cols="12">
-            <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
-              inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
-              :max="new Date()" />
-          </v-col>
-          <v-col cols="12">
-            <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
-              :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
-          </v-col>
-          <v-col v-if="equipmentsReady" cols="12">
+          <v-container>
+            <v-card title="infos" prepend-icon="mdi-information">
+              <v-container>
+                <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
+                  inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
+                  :max="new Date()" />
+
+                <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
+                  :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
+              </v-container>
+              <!-- <v-col v-if="equipmentsReady" cols="12">
             <p><strong>Equipements</strong></p>
             <div v-for="(equipment, index) in opData.equipments" :key="index">
-              <form-equipments :equipments="equipments" :index="index" @update="updateEquipmentData(index, $event)"
+              <form-equipment :equipment="equipment" :index="index" @update="updateEquipmentData(index, $event)"
                 @delete="deleteEquipment(index)" />
             </div>
             <v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
             @click="newEquipment">équipement</v-btn>
-          </v-col>
+          </v-col> -->
+            </v-card>
+          </v-container>
         </v-row>
-        <v-row>
-            <form-images :medias="opData.media" @update="getFormMedias"></form-images>
-          </v-row>
-        </v-container>
+        <form-equipments v-if="equipmentsReady" :equipments="opData.equipments"></form-equipments>
+        <form-images :medias="opData.media" @update="getFormMedias"></form-images>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="success" :disabled="!formValid" variant="flat"
-          prepend-icon="mdi-content-save-all" @click="submit">Sauvegarder</v-btn>
+        <v-btn color="success" :disabled="!formValid" variant="flat" prepend-icon="mdi-content-save-all"
+          @click="submit">Sauvegarder</v-btn>
       </v-card-actions>
     </v-form>
     <!-- <div>
@@ -47,7 +47,7 @@ import { storeToRefs } from 'pinia';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
 import type { GeoJsonOperation, Operation } from '~/types/cables';
-import type {Feature} from 'geojson';
+import type { Feature } from 'geojson';
 
 const emit = defineEmits();
 const { t, locales } = useI18n()
@@ -65,13 +65,13 @@ const medias = ref<Array<Media>>([])
 const { newGeoJSONObject } = storeToRefs(coordinatesStore)
 
 const infrastructureId = computed(() => {
-    const id = route.params.id;
-    if (typeof id === 'string') {
-        return parseInt(id);
-    } else if (Array.isArray(id)) {
-        return parseInt(id[0]);
-    }
-    return NaN;
+  const id = route.params.id;
+  if (typeof id === 'string') {
+    return parseInt(id);
+  } else if (Array.isArray(id)) {
+    return parseInt(id[0]);
+  }
+  return NaN;
 });
 const infrastructure = computed(() => cablesStore.formInfrastructure)
 const operationId = computed(() => route.query.id_operation)
@@ -115,7 +115,7 @@ const newEquipment = () => {
 const locale = useLocale()
 const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
 
-watch(newGeoJSONObject, (value:Feature) => {
+watch(newGeoJSONObject, (value: Feature) => {
   if (value) {
     opData.geom = value.geometry
   }
@@ -145,7 +145,7 @@ const initData = async () => {
         infrastructure: operation.value.properties.infrastructure,
         equipments: operation.value.properties.equipments.map(item => {
           item.type_id = item.type?.id
-          delete item['type']
+          // delete item['type']
           return item
         }),
         // equipments: operation.value.properties.equipments,
@@ -228,7 +228,7 @@ const getFormMedias = (value) => {
   medias.value = value
 }
 
-watch(formDate.value,(newVal, _oldVal) => mediaStore.date = newVal)
+watch(formDate.value, (newVal, _oldVal) => mediaStore.date = newVal)
 
 const moveToNextStep = async () => {
   const diagnosis = diagnosisId.value ? await updateDiagnosis() : await createDiagnosis()
@@ -248,7 +248,7 @@ onMounted(async () => {
   await initData()
 })
 
-onUnmounted(()=> {
+onUnmounted(() => {
   mediaStore.resetMedias()
 })
 </script>

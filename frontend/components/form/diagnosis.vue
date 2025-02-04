@@ -2,80 +2,91 @@
   <v-card elevation="0" class="fill-height">
     <v-form ref="form" v-model="formValid">
       <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar" variant="solo"
-                density="compact" :rules="[rules.required]" :max="new Date()" />
-            </v-col>
-            <v-col cols="12">
-              <v-autocomplete v-model="diagData.arming_id" chips :items="armingItems" item-title="label"
-                item-value="id" :rules="[rules.required]" hide-selected :label="$t('armings')" multiple deletable-chips
-                variant="solo" density="compact" />
-            </v-col>
-            <template v-if="infrastructureType === 'point'">
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
-                  :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo" density="compact" />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
-                  item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
-                  density="compact" />
-              </v-col>
-            </template>
-            <template v-if="infrastructureType === 'line'">
-              <v-col cols="12" md="4">
-                <v-select v-model="diagData.sgmt_moving_risk_id" :items="riskLevels" item-title="label" item-value="id"
-                  :rules="[rules.required]" :label="$t('line.movingRisk')" variant="solo" density="compact" />
-              </v-col>
-              <v-col cols="12" md="4">
-                <v-select v-model="diagData.sgmt_topo_integr_risk_id" :items="riskLevels" item-title="label"
-                  item-value="id" :rules="[rules.required]" :label="$t('line.topoIntegRisk')" variant="solo"
-                  density="compact" />
-              </v-col>
-              <v-col cols="12" md="4">
-                <v-select v-model="diagData.sgmt_landscape_integr_risk_id" :items="riskLevels" item-title="label"
-                  item-value="id" :rules="[rules.required]" :label="$t('line.vegetIntegRisk')" variant="solo"
-                  density="compact" />
-              </v-col>
-            </template>
-            <v-divider />
-            <v-col cols="12" class="text-left">
-              <strong>{{ $t('diagnosis.actions') }}</strong>
-            </v-col>
+        <v-row>
+          <v-container>
+            <v-card title="Infos" prepend-icon="mdi-information">
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar"
+                      variant="solo" density="compact" :rules="[rules.required]" :max="new Date()" />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-autocomplete v-model="diagData.arming_id" chips :items="armingItems" item-title="label"
+                      item-value="id" :rules="[rules.required]" hide-selected :label="$t('armings')" multiple
+                      deletable-chips variant="solo" density="compact" />
+                  </v-col>
+                  <template v-if="infrastructureType === 'point'">
+                    <v-col cols="12" md="6">
+                      <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label"
+                        item-value="id" :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
+                        density="compact" />
+                    </v-col>
+                    <v-col cols="12" md="6">
+                      <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
+                        item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
+                        density="compact" />
+                    </v-col>
+                  </template>
+                  <template v-if="infrastructureType === 'line'">
+                    <v-col cols="12" md="4">
+                      <v-select v-model="diagData.sgmt_moving_risk_id" :items="riskLevels" item-title="label"
+                        item-value="id" :rules="[rules.required]" :label="$t('line.movingRisk')" variant="solo"
+                        density="compact" />
+                    </v-col>
+                    <v-col cols="12" md="4">
+                      <v-select v-model="diagData.sgmt_topo_integr_risk_id" :items="riskLevels" item-title="label"
+                        item-value="id" :rules="[rules.required]" :label="$t('line.topoIntegRisk')" variant="solo"
+                        density="compact" />
+                    </v-col>
+                    <v-col cols="12" md="4">
+                      <v-select v-model="diagData.sgmt_landscape_integr_risk_id" :items="riskLevels" item-title="label"
+                        item-value="id" :rules="[rules.required]" :label="$t('line.vegetIntegRisk')" variant="solo"
+                        density="compact" />
+                    </v-col>
+                  </template>
+                </v-row>
+              </v-container>
+              <v-divider />
+              <v-container>
+                <v-row>
+                  <v-col cols="12" class="text-left">
+                    <strong>{{ $t('diagnosis.actions') }}</strong>
+                  </v-col>
+                  <v-col cols="12" md="3">
+                    <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.toInsulate')"
+                      density="compact" />
+                  </v-col>
+                  <v-col cols="12" md="3">
+                    <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.discourage')"
+                      density="compact" />
+                  </v-col>
 
-
-            <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.toInsulate')" density="compact" />
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.discourage')" density="compact" />
-            </v-col>
-
-            <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.providingIncentives')"
-                density="compact" />
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-checkbox v-model="diagData.change_advice" :label="$t('diagnosis.changeAdvice')" density="compact" />
-            </v-col>
-            <v-col cols="12" class="text-left">
-              <v-textarea v-model="diagData.technicalProposal" clearable clear-icon="mdi-close-circle"
-                :label="$t('diagnosis.technicalProposal')" :rules="[rules.textLength]" rows="2" counter="300"
-                variant="solo" density="compact" />
-            </v-col>
-            <v-divider />
-            <v-col cols="12">
-              <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
-                :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
-            </v-col>
-          </v-row>
-          <v-row>
-            <form-images :medias="diagData.media" @update="getFormMedias"></form-images>
-          </v-row>
-        </v-container>
-        <!-- <pre>{{diagData }}</pre> -->
+                  <v-col cols="12" md="3">
+                    <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.providingIncentives')"
+                      density="compact" />
+                  </v-col>
+                  <v-col cols="12" md="3">
+                    <v-checkbox v-model="diagData.change_advice" :label="$t('diagnosis.changeAdvice')"
+                      density="compact" />
+                  </v-col>
+                  <v-col cols="12" class="text-left">
+                    <v-textarea v-model="diagData.technicalProposal" clearable clear-icon="mdi-close-circle"
+                      :label="$t('diagnosis.technicalProposal')" :rules="[rules.textLength]" rows="2" counter="300"
+                      variant="solo" density="compact" />
+                  </v-col>
+                  <v-divider />
+                  <v-col cols="12">
+                    <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
+                      :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+            <!-- <pre>{{diagData }}</pre> -->
+          </v-container>
+        </v-row>
+        <form-images :medias="diagData.media" @update="getFormMedias"></form-images>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -189,7 +200,7 @@ const initData = async () => {
  * Finally, error message is displayed in snackBar through error handling process.
  */
 
- const createMedias = async () => {
+const createMedias = async () => {
   return mediaStore.postMedias()
   // const images = mediaStore.postMedias()
   // return images
@@ -266,13 +277,13 @@ const getFormMedias = (value: Media[]) => {
   medias.value = value
 }
 
-watch(formDate.value,(newVal, _oldVal) => mediaStore.date = newVal)
+watch(formDate.value, (newVal, _oldVal) => mediaStore.date = newVal)
 
 onMounted(() => {
   initData()
 })
 
-onUnmounted(()=> {
+onUnmounted(() => {
   mediaStore.resetMedias()
 })
 
