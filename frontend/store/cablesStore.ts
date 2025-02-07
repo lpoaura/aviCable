@@ -1,34 +1,37 @@
 // Nuxt Store module: cablesStore for Cables module
 import { defineStore } from 'pinia'
+import type { CablesFeatureCollection, OperationFeatureCollection, Line, Point, CablesFeature, Equipment } from '~/types/cables'
 
 export const useCablesStore = defineStore('cables', {
   state: () => ({
-    infstrData: {}, // Infrastructure data
+    infstrData: {} as CablesFeatureCollection, // Infrastructure data
     infstrDataLoadingStatus: false,
     // pointData: {}, // Pole and Pylon data
     // lineData: {}, // Cable lines data
-    opData: [],
-    pointOpData: [],
-    lineOpData: [],
+    opData: {} as OperationFeatureCollection,
+    pointOpData: [] as Line[],
+    lineOpData: [] as Point[],
     formSupportId: null,
     formInfrastructureId: null,
     formInfrastructure: null,
-    controller: null,
+    controller: null as AbortController | null,
     enedisInfrastructure: null,
     rteInfrastructure: null,
+    formEquipments: [] as Equipment[],
+    selectedEquipment: null as Equipment | null,
   }),
   getters: {
-    infstrDatafeatures (state) {
+    infstrDatafeatures(state): CablesFeature[] {
       return state.infstrData.features
     },
-    countInfstr(state) {
-      return state.infstrDatafeatures?.length
+    countInfstr(): number | undefined {
+      return this.infstrDatafeatures?.length
     },
-    countOperatedInfstr(state) {
-      return state.infstrDatafeatures?.length
+    countOperatedInfstr() : number | undefined {
+      return this.infstrDatafeatures?.length
     },
-    pointData (state) {
-      const filteredFeatures=state.infstrData.features?.filter(
+    pointData(state) {
+      const filteredFeatures = state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Point'
       )
       return {
@@ -36,14 +39,14 @@ export const useCablesStore = defineStore('cables', {
         features: filteredFeatures || []
       }
     },
-    operatedInfstr (state) {
+    operatedInfstr(state) {
       return {
         type: "FeatureCollection",
         features: state.opData?.features || []
       }
     },
-    operatedPointData (state) {
-      const filteredFeatures=state.opData.features?.filter(
+    operatedPointData(state) {
+      const filteredFeatures = state.opData.features?.filter(
         elem => elem.geometry.type === 'Point'
       )
       return {
@@ -51,8 +54,8 @@ export const useCablesStore = defineStore('cables', {
         features: filteredFeatures || []
       }
     },
-    operatedLineStringData (state) {
-      const filteredFeatures=state.opData.features?.filter(
+    operatedLineStringData(state) {
+      const filteredFeatures = state.opData.features?.filter(
         elem => elem.geometry.type === 'LineString'
       )
       return {
@@ -60,8 +63,8 @@ export const useCablesStore = defineStore('cables', {
         features: filteredFeatures || []
       }
     },
-    lineStringData (state) {
-      const filteredFeatures=state.infstrData.features?.filter(
+    lineStringData(state) {
+      const filteredFeatures = state.infstrData.features?.filter(
         elem => elem.resourcetype === 'Line'
       )
       return {
@@ -71,7 +74,7 @@ export const useCablesStore = defineStore('cables', {
     },
   },
   actions: {
-    async getInfstrData (params) {
+    async getInfstrData(params) {
       if (this.controller === null) {
         this.controller = new AbortController();
       }
@@ -81,7 +84,7 @@ export const useCablesStore = defineStore('cables', {
         this.infstrDataLoadingStatus = true
         console.debug("getInfstrData signal", signal)
         await useApi(
-          '/api/v1/cables/infrastructures', {signal, params}
+          '/api/v1/cables/infrastructures', { signal, params }
         ).then(data => {
           this.infstrData = data.value
           this.infstrDataLoadingStatus = false
@@ -92,14 +95,14 @@ export const useCablesStore = defineStore('cables', {
         } else {
           console.error(err)
         }
-      }  finally {
+      } finally {
         // Reset loading status and controller
         this.infstrDataLoadingStatus = false;
         this.controller = null; // Reset the controller after the request
       }
 
     },
-    async getOpData (params) {
+    async getOpData(params) {
       if (this.controller === null) {
         this.controller = new AbortController();
       }
@@ -108,7 +111,7 @@ export const useCablesStore = defineStore('cables', {
       try {
         console.debug("getOpData signal", signal)
         await useApi(
-          '/api/v1/cables/operations/', {signal, params}
+          '/api/v1/cables/operations/', { signal, params }
         ).then(data => {
           this.opData = data.value
         })
@@ -118,7 +121,7 @@ export const useCablesStore = defineStore('cables', {
         } else {
           console.error(err)
         }
-      }  finally {
+      } finally {
         // Reset loading status and controller
         this.controller = null; // Reset the controller after the request
       }
@@ -131,12 +134,12 @@ export const useCablesStore = defineStore('cables', {
       const { signal } = this.controller;
       try {
         console.debug("getAllInfrastructureData signal", signal)
-        const [ {data: infstrData}, {data: opData} ] = await Promise.all([
+        const [{ data: infstrData }, { data: opData }] = await Promise.all([
           useApi(
-            '/api/v1/cables/infrastructures', {signal, params}
+            '/api/v1/cables/infrastructures', { signal, params }
           ),
           useApi(
-            '/api/v1/cables/operations/', {signal, params}
+            '/api/v1/cables/operations/', { signal, params }
           ),
         ]);
         this.opData = opData.value
@@ -148,95 +151,95 @@ export const useCablesStore = defineStore('cables', {
         } else {
           console.error(err)
         }
-      }  finally {
+      } finally {
         // Reset loading status and controller
         this.controller = null; // Reset the controller after the request
       }
     },
-    async getEnedisInfrastructure (bbox) {
-      const params =         {
-          where: `in_bbox(geo_shape,${bbox})` ,
-          limit: "10000",
-          lang: "fr",
-          timezone: "Europe/Paris",
-          use_labels: "false",
-          epsg: "4326"
+    async getEnedisInfrastructure(bbox) {
+      const params = {
+        where: `in_bbox(geo_shape,${bbox})`,
+        limit: "10000",
+        lang: "fr",
+        timezone: "Europe/Paris",
+        use_labels: "false",
+        epsg: "4326"
       }
       if (this.controller === null) {
         this.controller = new AbortController();
       }
       const { signal } = this.controller;
       console.debug('getEnedisInfrastructure', signal)
-      console.log('query params', {signal, params})
-      try{
-        const [ {data: reseauBt }, {data: reseauHta}, {data: poteaux}] = await Promise.all([
+      console.log('query params', { signal, params })
+      try {
+        const [{ data: reseauBt }, { data: reseauHta }, { data: poteaux }] = await Promise.all([
           useApi(
-            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-bt/exports/geojson', {signal, params}
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-bt/exports/geojson', { signal, params }
           ),
           useApi(
-            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-hta/exports/geojson', {signal, params}
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-hta/exports/geojson', { signal, params }
           ),
           useApi(
-            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/position-geographique-des-poteaux-hta-et-bt/exports/geojson', {signal, params}
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/position-geographique-des-poteaux-hta-et-bt/exports/geojson', { signal, params }
           )
         ]);
         this.enedisInfrastructure = {
           type: 'FeatureCollection',
-          features : [...reseauBt.value.features,...reseauHta.value.features,...poteaux.value.features,]
+          features: [...reseauBt.value.features, ...reseauHta.value.features, ...poteaux.value.features,]
         }
 
-    } catch (err) {
-      if (err.name === 'AbortError') {
-        console.debug('getEnedisInfrastructure Requête annulée');
-      } else {
-        console.error(err)
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          console.debug('getEnedisInfrastructure Requête annulée');
+        } else {
+          console.error(err)
+        }
+      } finally {
+        // Reset loading status and controller
+        this.controller = null; // Reset the controller after the request
       }
-    }  finally {
-      // Reset loading status and controller
-      this.controller = null; // Reset the controller after the request
-    }
     },
-    async getRteInfrastructure (bbox) {
-      const paramsLines =         {
-          where: `in_bbox(geo_shape,${bbox})` ,
-          limit: "10000",
-          lang: "fr",
-          timezone: "Europe/Paris",
-          use_labels: "false",
-          epsg: "4326"
+    async getRteInfrastructure(bbox) {
+      const paramsLines = {
+        where: `in_bbox(geo_shape,${bbox})`,
+        limit: "10000",
+        lang: "fr",
+        timezone: "Europe/Paris",
+        use_labels: "false",
+        epsg: "4326"
       }
-      const paramsPylones = {...paramsLines}
-      paramsPylones.where =  `in_bbox(geo_point_pylone,${bbox})`
+      const paramsPylones = { ...paramsLines }
+      paramsPylones.where = `in_bbox(geo_point_pylone,${bbox})`
       if (this.controller === null) {
         this.controller = new AbortController();
       }
       const { signal } = this.controller;
       console.debug('getRteInfrastructure signal', signal)
-      console.log('query params', {signal, params: paramsPylones})
-      try{
-        const [ {data: Lines}, {data: Pylones}] = await Promise.all([
+      console.log('query params', { signal, params: paramsPylones })
+      try {
+        const [{ data: Lines }, { data: Pylones }] = await Promise.all([
           useApi(
-            'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', {signal, params: paramsLines}
+            'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', { signal, params: paramsLines }
           ),
           useApi(
-            'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', {signal, params: paramsPylones}
+            'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', { signal, params: paramsPylones }
           ),
         ]);
         this.rteInfrastructure = {
           type: 'FeatureCollection',
-          features : [...Lines.value.features,...Pylones.value.features]
+          features: [...Lines.value.features, ...Pylones.value.features]
         }
 
-    } catch (err) {
-      if (err.name === 'AbortError') {
-        console.debug('getRteInfrastructure Requête annulée');
-      } else {
-        console.error(err)
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          console.debug('getRteInfrastructure Requête annulée');
+        } else {
+          console.error(err)
+        }
+      } finally {
+        // Reset loading status and controller
+        this.controller = null; // Reset the controller after the request
       }
-    }  finally {
-      // Reset loading status and controller
-      this.controller = null; // Reset the controller after the request
-    }
     },
     cancelRequest() {
       console.log('cancelRequest abort request - 1', this.controller)
@@ -245,25 +248,24 @@ export const useCablesStore = defineStore('cables', {
       this.controller = null;
       console.log('cancelRequest abort request - 3', this.controller)
     },
-    setFormSupportId(supportId) {
-      this.formSupportId = supportId
-    },
     setFormInfrastructureId(id) {
       this.formInfrastructureId = id
     },
     setFormInfrastructure(infrastructure) {
       this.formInfrastructure = infrastructure
     },
-    setInfstrDataLoadingStatus(status) {
-      this.infstrDataLoadingStatus = status
+    addSelectedToEquipments() {
+      console.log('addSelectedToMedias')
+      if (this.selectedEquipment?.id) {
+        this.formEquipments[this.formEquipments.findIndex(item => item.id === this.selectedEquipment?.id)] = this.selectedEquipment
+      } else {
+        !!this.selectedEquipment && this.formEquipments.push(this.selectedEquipment)
+      }
+      this.selectedEquipment = {} as Equipment
     },
-    setInfstrData (data) {
-      this.infstrData = data
-    },
-    addOperation (data) {
-      this.opData = data.all
-      this.pointOpData = data.point
-      this.lineOpData = data.line
-    }
+    // setEquipments(data: Equipment[]) {
+    //   this.formEquipments = data
+    // }
+
   }
 })

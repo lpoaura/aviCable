@@ -23,6 +23,11 @@
 
 
 <script setup>
+useHead({
+  titleTemplate : (titleChunk) => {
+    return titleChunk ? `${titleChunk} - Operation edit on Infrastructure ${route.params.id}` : 'Operation edit';
+  }
+})
 
 const cablesStore = useCablesStore()
 const coordinatesStore = useCoordinatesStore()

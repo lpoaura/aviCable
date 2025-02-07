@@ -1,4 +1,4 @@
-import type { Geometry, Feature, GeoJsonProperties } from "geojson";
+import type { Geometry, Feature, GeoJsonProperties, FeatureCollection } from "geojson";
 import type { Nomenclature } from "./nomenclature";
 import type { Medias } from "./media"
 
@@ -69,7 +69,7 @@ export interface Equipment {
   type_id?: number | null;
 }
 
-export interface Operation extends GeoJsonProperties  {
+export interface Operation extends GeoJsonProperties {
   date?: string | Date;
   equipments: Equipment[];
   id: number;
@@ -83,9 +83,13 @@ export interface Operation extends GeoJsonProperties  {
 
 
 
-interface GeoJsonOperation extends Feature<Geometry, Operation> {
-  resourcetype:string;
+interface OperationFeature extends Feature<Geometry, Operation> {
+  resourcetype: string;
   properties: Operation;
+}
+
+interface OperationFeatureCollection extends FeatureCollection {
+  features: OperationFeature[];
 }
 
 export type SensitiveArea = {

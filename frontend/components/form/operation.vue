@@ -7,25 +7,15 @@
             <v-card title="infos" prepend-icon="mdi-information">
               <v-container>
                 <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
-                  inner-prepend-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
+                prepend-icon="" prepend-inner-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
                   :max="new Date()" />
-
                 <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
                   :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
               </v-container>
-              <!-- <v-col v-if="equipmentsReady" cols="12">
-            <p><strong>Equipements</strong></p>
-            <div v-for="(equipment, index) in opData.equipments" :key="index">
-              <form-equipment :equipment="equipment" :index="index" @update="updateEquipmentData(index, $event)"
-                @delete="deleteEquipment(index)" />
-            </div>
-            <v-btn color="info" variant="flat" prepend-icon="mdi-plus-circle"
-            @click="newEquipment">équipement</v-btn>
-          </v-col> -->
             </v-card>
           </v-container>
         </v-row>
-        <form-equipments v-if="equipmentsReady" :equipments="opData.equipments"></form-equipments>
+        <form-equipments></form-equipments>
         <form-images :medias="opData.media" @update="getFormMedias"></form-images>
       </v-card-text>
       <v-card-actions>
@@ -34,9 +24,6 @@
           @click="submit">Sauvegarder</v-btn>
       </v-card-actions>
     </v-form>
-    <!-- <div>
-      <pre><code>{{ opData }}</code></pre>
-    </div> -->
   </v-card>
 </template>
 
@@ -46,7 +33,7 @@ import { storeToRefs } from 'pinia';
 // import type {DiagData, Diagnosis} from '~/types/diagnosis';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
-import type { GeoJsonOperation, Operation } from '~/types/cables';
+import type { OperationFeature, Operation } from '~/types/cables';
 import type { Feature } from 'geojson';
 
 const emit = defineEmits();
@@ -62,7 +49,8 @@ const mediaStore = useMediaStore()
 const formValid = ref(false)
 const medias = ref<Array<Media>>([])
 
-const { newGeoJSONObject } = storeToRefs(coordinatesStore)
+const { newGeoJSONObject, selectedFeature } = storeToRefs(coordinatesStore)
+const { formInfrastructure } = storeToRefs(cablesStore)
 
 const infrastructureId = computed(() => {
   const id = route.params.id;
@@ -73,7 +61,7 @@ const infrastructureId = computed(() => {
   }
   return NaN;
 });
-const infrastructure = computed(() => cablesStore.formInfrastructure)
+const infrastructure = computed(() => formInfrastructure.value)
 const operationId = computed(() => route.query.id_operation)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const equipmentsReady = ref(false)
@@ -97,20 +85,20 @@ const updateEquipmentData = (index, updatedEquipment) => {
   opData.equipments[index] = updatedEquipment;
 };
 
-const deleteEquipment = (index) => {
-  opData.equipments.splice(index, 1)
-}
+//const deleteEquipment = (index) => {
+//  opData.equipments.splice(index, 1)
+// }
 
-const newEquipment = () => {
-  const eq = {
-    id: null,
-    type: null,
-    count: 1,
-    reference: null,
-    comment: null,
-  }
-  opData.equipments.push(eq)
-}
+// const newEquipment = () => {
+//   const eq = {
+//     id: null,
+//     type: null,
+//     count: 1,
+//     reference: null,
+//     comment: null,
+//   }
+//   opData.equipments.push(eq)
+// }
 
 const locale = useLocale()
 const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
@@ -134,7 +122,7 @@ const initData = async () => {
     equipmentsReady.value = true
   }
   if (operationId.value) {
-    const { data: operation } = await useApi<GeoJsonOperation>(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
+    const { data: operation } = await useApi<OperationFeature>(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
     if (operation.value) {
       formDate.value = new Date(operation.value.properties.date)
       mediaStore.date = formDate.value
@@ -153,8 +141,9 @@ const initData = async () => {
         resourcetype: operation.value.resourcetype,
         geom: operation.value.geometry,
       }
+      cablesStore.formEquipments = operation.value.properties.equipments
       Object.assign(opData, opdata)
-      coordinatesStore.setSelectedFeature(operation.value)
+      selectedFeature.value = operation.value
       equipmentsReady.value = true
     }
   }
@@ -183,6 +172,7 @@ const createOperation = async () => {
     opData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     opData.geom = newGeoJSONObject.value?.geometry || infrastructure.value?.geometry
     opData.media = await createMedias()
+    opData.equipments = cablesStore.formEquipments
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const { data: operation } = await useApi('/api/v1/cables/operations/', { method: 'post', body: opData })

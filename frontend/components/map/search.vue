@@ -44,7 +44,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch"
 import "leaflet-geosearch/assets/css/leaflet.css"
 import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale } from "@vue-leaflet/vue-leaflet";
 import buffer from '@turf/buffer'
-import type { Feature, FeatureCollection } from "geojson"
+import type { BBox, Feature, FeatureCollection, GeometryObject } from "geojson"
 import type { StoreGeneric } from "pinia"
 import type { Layer, LatLng } from "leaflet";
 import { computed, ref } from 'vue';
@@ -73,8 +73,8 @@ const router = useRouter()
 const externalSourceDataZoomTreshold = 13
 const infrastructureLayersReady: Ref<boolean> = ref(false)
 const otherNetworksLayersReady: Ref<boolean> = ref(false)
-const bufferedSelectedInfrastructure: Ref<Feature | null> = ref(null)
-const bufferedMortalityInfrastructure: Ref<Feature | null> = ref(null)
+const bufferedSelectedInfrastructure: Ref<Feature<GeometryObject> | undefined> = ref(undefined)
+const bufferedMortalityInfrastructure: Ref<Feature<GeometryObject> | undefined> = ref(undefined)
 const enedisIsVisible = ref(false)
 const rteIsVisible = ref(false)
 
@@ -411,12 +411,12 @@ const rteInfrastructureGeoJsonOptionsStyle = () => {
 
 // Watchers
 
-// watch(selectedFeature, (newVal, oldVal) => {
-//   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-//     const newObj = leaflet.geoJSON(newVal)
-//     mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
-//   }
-// })
+watch(selectedFeature, (newVal, oldVal) => {
+  if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+    const newObj = leaflet.geoJSON(newVal)
+    mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
+  }
+})
 
 watch(createLayer, (newLayer, _oldLayer) => {
   if (newLayer && newLayer.toGeoJSON()) {
@@ -427,14 +427,18 @@ watch(createLayer, (newLayer, _oldLayer) => {
 });
 
 watch(selectedFeature, (newVal, _oldVal) => {
-  bufferedSelectedInfrastructure.value = newVal ? buffer(newVal, 150, { units: 'meters' }) : null
+  if (newVal) {
+    bufferedSelectedInfrastructure.value = buffer(newVal, 150, { units: 'meters' })
+  }
 })
 
 watch(mortalityInfrastructure, (newVal, _oldVal) => {
-  bufferedMortalityInfrastructure.value = newVal ? buffer(newVal, 50, { units: 'meters' }) : null
+  if (newVal) {
+    bufferedMortalityInfrastructure.value = buffer(newVal, 50, { units: 'meters' })
+  }
 })
 
-const debounce = (func, delay) => {
+const debounce = (func: Function, delay: number) => {
   let timeout;
   return function (...args) {
     const context = this;
@@ -443,7 +447,7 @@ const debounce = (func, delay) => {
   };
 }
 
-const handleBBox = debounce((bbox) => {
+const handleBBox = debounce((bbox: BBox) => {
   cableStore.cancelRequest();
   mortalityStore.cancelRequest();
 

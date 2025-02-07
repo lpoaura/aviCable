@@ -2,14 +2,15 @@
   <v-row>
     <v-container>
       <v-card :title="t('Equipments')" prepend-icon="mdi-camera">
-        <data-display-equipments :equipments="equipments" :edit="true" />
+        <data-display-equipments :equipments="formEquipments" :edit="true" />
         <v-divider></v-divider>
         <form-equipment v-if="edit" />
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn prepend-icon="mdi-camera-plus-outline" @click="edit = !edit" color="info">{{
-            t('forms.Equipment') }}</v-btn>
+          <v-btn prepend-icon="mdi-camera-plus-outline" @click="addEquipment()" color="info">
+            {{ t('forms.Equipment') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-container>
@@ -17,16 +18,29 @@
 </template>
 
 <script lang="ts" setup>
-
 import type { Equipment } from '~/types/cables'
-
 
 const { t } = useI18n()
 
-const { equipments } = defineProps<{
-  equipments: Equipment[],
-}>()
+const cablesStore = useCablesStore()
+const { formEquipments, selectedEquipment } = storeToRefs(cablesStore)
+
+// const emit = defineEmits()
+const addEquipment = () => {
+  // cablesStore.addSelectedToEquipments()
+  // mediaStore.resetSelectedMedia()
+  if (selectedEquipment) {
+    selectedEquipment.value = {} as Equipment
+  }
+}
 
 const edit = ref(false)
+
+watch(
+  () => selectedEquipment.value,
+  (newValue, _oldValue) => {
+    edit.value = !!newValue
+  },
+)
 
 </script>

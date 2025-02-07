@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form ref="loginForm" v-model="valid" lazy-validation>
+    <v-form v-model="valid" lazy-validation>
       <v-container>
         <v-row>
           <v-col cols="12">

@@ -62,8 +62,8 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         console.log('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
+        console.log('<getEquipmentItems> infraTypeId', infraTypeId, this.equipmentTypeItems)
         return infraTypeId ? this.equipmentTypeItems?.filter(item => {
-          console.log('getEquipmentItems item', infraTypeId, item.parents, item)
           return item.parents?.includes(infraTypeId)
         }) : []
       }
@@ -72,7 +72,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
   actions: {
     async loadNomenclatures() {
       try {
-        const params = { with_nomenclatures: true, with_parents: true };
+        const params = { with_nomenclatures: true };
         try {
           const { data: nomenclatureTypes } = await useApi("/api/v1/nomenclatures/types", { params });
           if (nomenclatureTypes && Array.isArray(nomenclatureTypes.value)) {

@@ -26,6 +26,7 @@
     "appShortName": "aviCable",
     "appName": "Avifaune & câbles aériens",
     "cancel": "Annuler",
+    "delete": "Supprimer",
     "data": "Données",
     "signin": "Se connecter",
     "id": "Identifiant",
@@ -77,7 +78,8 @@
     "not_img_file": "Le fichier sélectionné doit-être une image",
     "newImage": "Nouvelle photo",
     "valid": "Valider",
-    "add": "Ajouter"
+    "add": "Ajouter",
+    "newEquipment":"Nouvel équipement"
   },
   "support": {
     "advice": "Recommandations",
