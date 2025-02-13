@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, acceptHMRUpdate } from "pinia";
 import type { Medias, Media, MediaData } from "~/types/media";
 import { errorStore } from ".";
 import { useRuntimeConfig } from "#app";
@@ -67,20 +67,31 @@ export const useMediaStore = defineStore("media", {
       this.medias = [] as Medias
       this.date = null
     },
-    async deleteMedia(index: number | null) {
-      // console.log('deleteMedia', index, this.medias, this.medias[index])
-      if (index) {this.mediaToDelete = this.medias[index]}
-      const file = { ...this.mediaToDelete }
-      // console.log('this.mediaToDelete', index && this.medias[index], this.mediaToDelete, this.mediaToDelete.id)
-      if (this.mediaToDelete && this.mediaToDelete.id) {
-        const { data: resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
-        // console.log('deleteMedia resp', resp)
-      }
-      (index !== null) && this.medias.slice(index, 1)
-      errorStore.err = {
-        code: 123,
-        msg: `Photo ${file.storage} - ${file.date} successfully deleted`
+    async deleteMedia(index: number) {
+      console.log('deleteMedia', index, this.medias, this.medias[index])
+      try {
+        this.mediaToDelete = this.medias[index]
+        const file = { ...this.mediaToDelete }
+        console.log('this.mediaToDelete test', (index !== null), this.mediaToDelete, this.mediaToDelete.id)
+        if (this.mediaToDelete && this.mediaToDelete.id) {
+          const { data: _resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
+        }
+        this.medias.splice(index, 1)
+        errorStore.err = {
+          code: 123,
+          msg: `Photo ${file.storage} - ${file.date} successfully deleted`
+        }
+      } catch (error) {
+        errorStore.err = {
+          code: 123,
+          msg: `Delete photo failed : ${error}`
+        }
       }
     }
   },
 });
+
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useMediaStore, import.meta.hot))
+}

@@ -9,7 +9,7 @@
       <template v-slot:append v-if="edit">
         <v-btn color="blue-lighten-1" icon="mdi-pencil" @click="selectMedia(index)" variant="text" size="small"></v-btn>
         <v-btn color="red-lighten-1" icon="mdi-trash-can" variant="text" size="small"
-          @click="mediaStore.deleteMedia(index)"></v-btn>
+          @click="mediaStore.deleteMedia(index)">{{ index }}</v-btn>
       </template>
 
     </v-list-item>
