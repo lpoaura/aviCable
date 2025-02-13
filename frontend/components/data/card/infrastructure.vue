@@ -38,6 +38,29 @@
       <v-btn color="orange"
         @click="router.push({ path: `/infrastructures/${data.properties.id}/infrastructure`, query: { type: data.resourcetype } })"><v-icon>mdi-pencil-circle</v-icon>
         Modifier</v-btn>
+      <v-dialog max-width="500" v-model="deleteModal">
+        <template #activator="{ props: activatorProps }">
+          <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle" />
+        </template>
+
+        <template #default="{ isActive }">
+          <v-card title="Suppression d'un diagnostic" color="red" prepend-icon="mdi-alert">
+            <v-card-text>
+              <div class="my-4">
+                Vous êtes sur le point de supprimer une infrastructure, en êtes vous bien certain&nbsp;? {{
+                  `/cables/${data.resourcetype.toLowerCase()}s/${data.properties.id}/` }}
+              </div>
+              <v-btn color="white" block text="Oui, Supprimer" prepend-icon="mdi-delete-circle"
+                @click="deleteInfrastructure()" />
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer />
+              <v-btn text="Annuler" prepend-icon="mdi-close-circle" @click="isActive.value = false" />
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
     </v-card-actions>
   </v-card>
 </template>
@@ -47,14 +70,7 @@ const { data } = defineProps(['data'])
 
 const router = useRouter()
 
-const lastOp: boolean = computed(() => {
-  return data?.properties.operations?.length > 0 ? data?.properties.operations[0] : null
-})
-
-const neutralized: boolean = computed(() => {
-  return data?.properties.operations.length > 0
-})
-
+const deleteModal = ref(false)
 
 
 const lastDiag = computed(() => {
@@ -63,5 +79,11 @@ const lastDiag = computed(() => {
       action.last
   )
 })
+
+const deleteInfrastructure = async () => {
+  await useApi(`/api/v1/cables/${data.resourcetype.toLowerCase()}s/${data.properties.id}/`, { method: 'DELETE' })
+  deleteModal.value = false
+  router.push('/search')
+}
 
 </script>

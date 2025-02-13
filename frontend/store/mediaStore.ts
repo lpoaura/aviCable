@@ -68,11 +68,13 @@ export const useMediaStore = defineStore("media", {
       this.date = null
     },
     async deleteMedia(index: number | null) {
-      console.log('deleteMedia', index)
+      // console.log('deleteMedia', index, this.medias, this.medias[index])
       if (index) {this.mediaToDelete = this.medias[index]}
       const file = { ...this.mediaToDelete }
+      // console.log('this.mediaToDelete', index && this.medias[index], this.mediaToDelete, this.mediaToDelete.id)
       if (this.mediaToDelete && this.mediaToDelete.id) {
         const { data: resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
+        // console.log('deleteMedia resp', resp)
       }
       (index !== null) && this.medias.slice(index, 1)
       errorStore.err = {

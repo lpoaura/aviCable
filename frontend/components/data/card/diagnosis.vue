@@ -74,6 +74,7 @@
     <data-display-images  v-if="diagnosis.media.length > 0" :edit="false" :medias="diagnosis.media" />
     <v-card-actions>
       <v-spacer />
+      <v-btn color="orange" prepend-icon="mdi-pencil-circle" @click="updateDiag">Modifier</v-btn>
       <v-dialog max-width="500">
         <template #activator="{ props: activatorProps }">
           <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle" />
@@ -95,7 +96,6 @@
           </v-card>
         </template>
       </v-dialog>
-      <v-btn color="orange" prepend-icon="mdi-pencil-circle" @click="updateDiag">Modifier</v-btn>
     </v-card-actions>
     <!-- <pre><code>{{ diagnosis }}</code></pre> -->
   </v-card>
