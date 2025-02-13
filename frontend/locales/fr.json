@@ -54,7 +54,8 @@
     "lines": "Lignes",
     "lines-eqmt": "Equipements Lignes",
     "operation": "Opération",
-    "sensitiveAreas": "Zones Sensibles"
+    "sensitiveAreas": "Zones Sensibles",
+    "neutralization": "Neutralization"
   },
   "diagnosis": {
     "lastOne": "Dernier diagnostic le ",

@@ -71,6 +71,7 @@ export interface Equipment {
 
 export interface Operation extends GeoJsonProperties {
   date?: string | Date;
+  neutralization_level: string;
   equipments: Equipment[];
   id: number;
   infrastructure: number;

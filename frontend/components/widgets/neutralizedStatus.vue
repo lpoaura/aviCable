@@ -1,6 +1,5 @@
 <template>
-  <v-chip :prepend-icon="lastOp ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'"
-    :color="lastOp ? 'green' : 'red'">
+  <v-chip :prepend-icon="prependIcon" :color="color">
     {{ lastOp ? (detail ? `${t('neutralizedOn')} ${lastOp.date}` : lastOp.date) : detail ? t('notNeutralized') :
       t('no') }}
   </v-chip>
@@ -22,4 +21,23 @@ const props = withDefaults(defineProps<{
 const lastOp = computed<Operation | null>(() => {
   return props.data?.properties.operations?.length > 0 ? props.data.properties.operations[0] : null;
 });
+
+const prependIcon = computed<string>(() => {
+  if (lastOp.value) {
+    return (
+      lastOp.value.neutralization_level == 'full' ?
+        'mdi-check-circle' : lastOp.value.neutralization_level == 'partial' ?
+          'mdi-check' : 'mdi-checkbox-blank-circle-outline')
+  }
+  return 'mdi-checkbox-blank-circle-outline'
+})
+
+const color = computed<string>(() => {
+  if (lastOp.value && lastOp.value.neutralization_level) {
+    return (
+      lastOp.value.neutralization_level == 'full' ?
+        'green' : 'yellow')
+  }
+  return 'red'
+})
 </script>

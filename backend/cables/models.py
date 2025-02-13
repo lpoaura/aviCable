@@ -17,6 +17,8 @@ from polymorphic.models import PolymorphicModel
 from sensitive_area.models import SensitiveArea
 from sinp_nomenclatures.models import Nomenclature
 
+NEUTRALIZATION = (("partial", _("Partial")), ("full", _("Full")))
+
 
 class Infrastructure(BaseModel, PolymorphicModel):
     """Common shared infrastructure model with metadata fields, inheriting from BaseModel and PolymorphicModel
@@ -253,6 +255,9 @@ class Operation(Action, PolymorphicModel):
         related_name="operations",
         verbose_name=_("Infrastructure attached with this Action"),
         help_text=_("Infrastructure attached with this Action"),
+    )
+    neutralization_level = models.CharField(
+        max_length=20, choices=NEUTRALIZATION, default="full"
     )
     media = models.ManyToManyField(
         Media,

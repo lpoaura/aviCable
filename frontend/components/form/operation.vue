@@ -6,11 +6,21 @@
           <v-container>
             <v-card title="infos" prepend-icon="mdi-information">
               <v-container>
-                <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite"
-                prepend-icon="" prepend-inner-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
-                  :max="new Date()" />
-                <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
-                  :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
+                <v-row>
+                  <v-col lg="6" md="12">
+                    <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite" prepend-icon=""
+                      prepend-inner-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
+                      :max="new Date()" />
+                  </v-col>
+                  <v-col lg="6" md="12">
+                    <v-select v-model="opData.neutralization_level" :items="neutralizationLevelItems" label="Niveau de neutralisation" prepend-icon=""
+                      prepend-inner-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]" />
+                  </v-col>
+                  <v-col lg="12">
+                    <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
+                      :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact" />
+                  </v-col>
+                </v-row>
               </v-container>
             </v-card>
           </v-container>
@@ -43,10 +53,21 @@ const route = useRoute()
 
 const coordinatesStore = useCoordinatesStore()
 const cablesStore = useCablesStore()
-const nomenclaturesStore = useNomenclaturesStore()
+// const nomenclaturesStore = useNomenclaturesStore():
 const errorStore = useErrorsStore()
 const mediaStore = useMediaStore()
 const formValid = ref(false)
+const neutralizationLevelItems = [
+  {
+    title: 'Totale',
+    value: 'full',
+  },
+  {
+    title: 'Partielle',
+    value: 'partial',
+  },
+]
+
 const medias = ref<Array<Media>>([])
 
 const { newGeoJSONObject, selectedFeature } = storeToRefs(coordinatesStore)
@@ -69,6 +90,7 @@ const opData = reactive<Operation>({
   date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0, 10),
   remark: '',
   infrastructure: infrastructureId.value,
+  neutralization_level: 'full',
   equipments: [{
     id: null,
     type_id: null,
@@ -131,6 +153,7 @@ const initData = async () => {
         id: operation.value.properties.id,
         remark: operation.value.properties.remark,
         infrastructure: operation.value.properties.infrastructure,
+        neutralization_level: operation.value.properties.neutralization_level,
         equipments: operation.value.properties.equipments.map(item => {
           item.type_id = item.type?.id
           // delete item['type']

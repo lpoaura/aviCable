@@ -1,7 +1,10 @@
 <template>
-  <v-card class="my-2" :title="$t('display.operation')">
+  <v-card class="my-2" :title="$t('display.neutralization')">
     <template #subtitle>{{ $t("realizedOn") }} <strong>{{ operation.date }}</strong></template>
     <v-card-text>
+      <div>
+        <span class="font-weight-bold">Niveau de neutralisation</span>&nbsp;: {{operation.neutralization_level === 'full' ? 'Totale': 'Partielle'}}
+      </div>
       <div>
         <span class="font-weight-bold">
           {{ $t("operation.equipment", operation.equipments.length, { count: operation.equipments.length }) }}
@@ -23,6 +26,8 @@
     <data-display-images v-if="operation.media.length > 0" :edit="false" :medias="operation.media" />
     <v-card-actions>
       <v-spacer />
+      <v-btn color="orange" prepend-icon="mdi-pencil-circle" @click="updateDiag()">
+        Modifier</v-btn>
       <v-dialog max-width="500">
         <template #activator="{ props: activatorProps }">
           <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle" />
@@ -45,8 +50,7 @@
           </v-card>
         </template>
       </v-dialog>
-      <v-btn color="orange" prepend-icon="mdi-pencil-circle" @click="updateDiag()">
-        Modifier</v-btn>
+
     </v-card-actions>
   </v-card>
 </template>
