@@ -13,8 +13,9 @@
                       :max="new Date()" />
                   </v-col>
                   <v-col lg="6" md="12">
-                    <v-select v-model="opData.neutralization_level" :items="neutralizationLevelItems" label="Niveau de neutralisation" prepend-icon=""
-                      prepend-inner-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]" />
+                    <v-select v-model="opData.neutralization_level" :items="neutralizationLevelItems"
+                      label="Niveau de neutralisation" prepend-icon="" prepend-inner-icon="mdi-calendar" variant="solo"
+                      density="compact" :rules="[rules.required]" />
                   </v-col>
                   <v-col lg="12">
                     <v-textarea v-model="opData.remark" clearable clear-icon="mdi-close-circle" :label="$t('remark')"
@@ -43,7 +44,8 @@ import { storeToRefs } from 'pinia';
 // import type {DiagData, Diagnosis} from '~/types/diagnosis';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { ErrorInfo } from '~/store/errorStore';
-import type { OperationFeature, Operation } from '~/types/cables';
+import type { OperationFeature, Operation, CablesFeature } from '~/types/cables';
+import type { Media } from '~/types/media';
 import type { Feature } from 'geojson';
 
 const emit = defineEmits();
@@ -82,7 +84,7 @@ const infrastructureId = computed(() => {
   }
   return NaN;
 });
-const infrastructure = computed(() => formInfrastructure.value)
+const infrastructure = computed<CablesFeature>(() => formInfrastructure.value)
 const operationId = computed(() => route.query.id_operation)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const equipmentsReady = ref(false)
@@ -92,7 +94,6 @@ const opData = reactive<Operation>({
   infrastructure: infrastructureId.value,
   neutralization_level: 'full',
   equipments: [{
-    id: null,
     type_id: null,
     count: 1,
     reference: null,
@@ -100,12 +101,13 @@ const opData = reactive<Operation>({
   }],
   media: [],
   geom: null,
+  resourcetype: null
 })
 
 
-const updateEquipmentData = (index, updatedEquipment) => {
-  opData.equipments[index] = updatedEquipment;
-};
+// const updateEquipmentData = (index, updatedEquipment) => {
+//   opData.equipments[index] = updatedEquipment;
+// };
 
 //const deleteEquipment = (index) => {
 //  opData.equipments.splice(index, 1)
@@ -137,10 +139,18 @@ const rules = reactive({
 })
 
 
+// watch(infrastructure.value,
+//   (value: CablesFeature, _oldVal) => {
+//     opData.resourcetype = `${value.resourcetype}Operation`
+//     console.log('resourceType', infrastructure.value.resourcetype, opData.resourcetype)
+//   },
+//   { deep: true }
+// )
 
 const initData = async () => {
   if (infrastructureId.value && !operationId.value) {
-    opData.resourcetype = infrastructure.value?.resourcetype === 'Point' ? 'PointOperation' : 'LineOperation'
+    // opData.resourcetype = infrastructure.value?.resourcetype?.toLowerCase() === 'point' ? 'PointOperation' : 'LineOperation'
+    // console.log('resourceType', infrastructure.value.resourcetype, opData.resourcetype)
     equipmentsReady.value = true
   }
   if (operationId.value) {
@@ -196,6 +206,7 @@ const createOperation = async () => {
     opData.geom = newGeoJSONObject.value?.geometry || infrastructure.value?.geometry
     opData.media = await createMedias()
     opData.equipments = cablesStore.formEquipments
+    opData.resourcetype = `${infrastructure.value.resourcetype}Operation`
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const { data: operation } = await useApi('/api/v1/cables/operations/', { method: 'post', body: opData })

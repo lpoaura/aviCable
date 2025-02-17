@@ -73,13 +73,14 @@ export interface Operation extends GeoJsonProperties {
   date?: string | Date;
   neutralization_level: string;
   equipments: Equipment[];
-  id: number;
+  id?: number;
   infrastructure: number;
   last?: boolean;
   media: Medias | number[];
   media_id?: number[];
   remark?: string | null;
   geom?: Geometry | null;
+  resourcetype?: string | null;
 };
 
 

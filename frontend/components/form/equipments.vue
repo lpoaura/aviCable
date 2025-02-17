@@ -9,7 +9,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn prepend-icon="mdi-camera-plus-outline" @click="addEquipment()" color="info">
-            {{ t('forms.Equipment') }}
+            {{ t('forms.newEquipment') }}
           </v-btn>
         </v-card-actions>
       </v-card>

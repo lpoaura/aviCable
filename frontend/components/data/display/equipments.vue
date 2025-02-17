@@ -12,7 +12,7 @@
         <v-btn color="blue-lighten-1" icon="mdi-pencil" variant="text" size="small"
           @click="selectedEquipment = formEquipments[index]"></v-btn>
         <v-btn color="red-lighten-1" icon="mdi-trash-can" variant="text" size="small"
-          @click="formEquipments.slice(index, 1)"></v-btn>
+          @click="formEquipments.splice(index, 1)"></v-btn>
       </template>
     </v-list-item>
   </v-list>

@@ -5,9 +5,11 @@
   </NuxtLayout>
 </template>
 
-<script setup>
+<script setup lang=ts>
 import {centroid} from '@turf/centroid';
-import {storeToRefs} from 'pinia';
+import { storeToRefs } from 'pinia';
+
+
 useHead({
   titleTemplate : (titleChunk) => {
     return titleChunk ? `${titleChunk} - Infrastructure ${route.params.id}` : 'Infrastructure';
@@ -22,6 +24,8 @@ const { data: infrastructure } = await useApi(`/api/v1/cables/infrastructures/${
 const {selectedFeature,center,zoom} = storeToRefs(coordinateStore)
 
 const updateData = async () => {
+  const { data: resp } = await useApi(`/api/v1/cables/infrastructures/${route.params.id}/`)
+  infrastructure.value = resp
   zoomTo()
   title.value = `aviCable - Infrastructure #${route.query.id}`
 }

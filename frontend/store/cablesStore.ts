@@ -13,12 +13,13 @@ export const useCablesStore = defineStore('cables', {
     lineOpData: [] as Point[],
     formSupportId: null,
     formInfrastructureId: null,
-    formInfrastructure: null,
+    formInfrastructure: {} as CablesFeature,
     controller: null as AbortController | null,
     enedisInfrastructure: null,
     rteInfrastructure: null,
     formEquipments: [] as Equipment[],
     selectedEquipment: null as Equipment | null,
+    equipmentToDelete: null as Equipment | null,
   }),
   getters: {
     infstrDatafeatures(state): CablesFeature[] {
@@ -266,6 +267,27 @@ export const useCablesStore = defineStore('cables', {
     // setEquipments(data: Equipment[]) {
     //   this.formEquipments = data
     // }
+    async deleteEquipment(index: number) {
+      console.log('<deleteEquipment>', index, this.formEquipments, this.formEquipments[index])
+      try {
+        this.equipmentToDelete = this.formEquipments[index]
+        const file = { ...this.mediaToDelete }
+        console.log('this.mediaToDelete test', (index !== null), this.mediaToDelete, this.mediaToDelete.id)
+        if (this.mediaToDelete && this.mediaToDelete.id) {
+          const { data: _resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
+        }
+        this.formEquipments.splice(index, 1)
+        errorStore.err = {
+          code: 123,
+          msg: `Photo ${file.storage} - ${file.date} successfully deleted`
+        }
+      } catch (error) {
+        errorStore.err = {
+          code: 123,
+          msg: `Delete photo failed : ${error}`
+        }
+      }
+    }
 
   }
 })

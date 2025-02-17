@@ -4,7 +4,7 @@
     <v-layout full-height>
       <v-app-bar density="compact" color="blue-grey-lighten-5">
         <v-app-bar-title>
-          Edition d'une opération
+          Edition d'une opération de neutralisation
         </v-app-bar-title>
         <v-app-bar-nav-icon>
           <v-btn density="compact" icon="mdi-close" @click="router.push(`/infrastructures/${infrastructureId}`)" />
@@ -47,4 +47,4 @@ onMounted(async ()=> {
   coordinatesStore.setSelectedFeature(infrastructure.value)
 })
 
-</script>UT
+</script>

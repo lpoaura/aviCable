@@ -80,7 +80,8 @@
     "newImage": "Nouvelle photo",
     "valid": "Valider",
     "add": "Ajouter",
-    "newEquipment":"Nouvel équipement"
+    "newEquipment":"Nouvel équipement",
+    "equipment": "Equipement" 
   },
   "support": {
     "advice": "Recommandations",
