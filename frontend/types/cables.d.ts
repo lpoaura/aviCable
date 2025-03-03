@@ -69,6 +69,19 @@ export interface Equipment {
   type_id?: number | null;
 }
 
+export interface OperationData {
+    id?: number | null;
+    date?: string | Date;
+    neutralization_level: string;
+    equipments: Equipment[];
+    infrastructure: number;
+    last?: boolean;
+    media_id?: number[];
+    remark?: string | null;
+    geom?: Geometry | null;
+    resourcetype?: string | null;
+}
+
 export interface Operation extends GeoJsonProperties {
   date?: string | Date;
   neutralization_level: string;

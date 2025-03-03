@@ -21,7 +21,7 @@
         <data-card-diagnosis v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type" />
         <data-card-operation v-if="lastOp" :operation="lastOp" :support-id="data.properties?.id" :infrastructure-type="type"
           @delete="$emit('update')" />
-        <v-card class="my-2">
+        <v-card  v-if="otherDiags.length || otherOps.length" class="my-2">
           <v-layout>
             <v-app-bar density="compact" color="blue-lighten-2" @click="expandHistory = !expandHistory">
               <v-app-bar-title> {{ $t('support.history') }} </v-app-bar-title><v-spacer />

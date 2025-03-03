@@ -88,7 +88,7 @@ const infrastructure = computed<CablesFeature>(() => formInfrastructure.value)
 const operationId = computed(() => route.query.id_operation)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const equipmentsReady = ref(false)
-const opData = reactive<Operation>({
+const opData = reactive<OperationData>({
   date: (new Date(Date.now() - new Date().getTimezoneOffset() * 60000)).toISOString().substring(0, 10),
   remark: '',
   infrastructure: infrastructureId.value,
@@ -99,30 +99,11 @@ const opData = reactive<Operation>({
     reference: null,
     comment: null,
   }],
-  media: [],
+  media_id: [] as number[],
   geom: null,
   resourcetype: null
 })
 
-
-// const updateEquipmentData = (index, updatedEquipment) => {
-//   opData.equipments[index] = updatedEquipment;
-// };
-
-//const deleteEquipment = (index) => {
-//  opData.equipments.splice(index, 1)
-// }
-
-// const newEquipment = () => {
-//   const eq = {
-//     id: null,
-//     type: null,
-//     count: 1,
-//     reference: null,
-//     comment: null,
-//   }
-//   opData.equipments.push(eq)
-// }
 
 const locale = useLocale()
 const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
@@ -138,14 +119,6 @@ const rules = reactive({
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
 
-
-// watch(infrastructure.value,
-//   (value: CablesFeature, _oldVal) => {
-//     opData.resourcetype = `${value.resourcetype}Operation`
-//     console.log('resourceType', infrastructure.value.resourcetype, opData.resourcetype)
-//   },
-//   { deep: true }
-// )
 
 const initData = async () => {
   if (infrastructureId.value && !operationId.value) {
@@ -170,7 +143,7 @@ const initData = async () => {
           return item
         }),
         // equipments: operation.value.properties.equipments,
-        media: operation.value.properties.media.map(item => item.id),
+        media_id: operation.value.properties.media.map(item => item.id),
         resourcetype: operation.value.resourcetype,
         geom: operation.value.geometry,
       }
@@ -204,7 +177,7 @@ const createOperation = async () => {
     opData.infrastructure = infrastructureId.value
     opData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     opData.geom = newGeoJSONObject.value?.geometry || infrastructure.value?.geometry
-    opData.media = await createMedias()
+    opData.media_id = await createMedias()
     opData.equipments = cablesStore.formEquipments
     opData.resourcetype = `${infrastructure.value.resourcetype}Operation`
     // opData.media_id = mediaIdList // set Media id list
@@ -234,7 +207,7 @@ const updateOperation = async () => {
 
   try {
     opData.date = formDate.value.toISOString().substring(0, 10)
-    opData.media = await createMedias()
+    opData.media_id = await createMedias()
     const { data } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
     return data
   } catch (_err) {

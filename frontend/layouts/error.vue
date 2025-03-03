@@ -15,33 +15,27 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts" setup>
 /**
  * Default Nuxt page. Not still modified
  */
-export default {
-  name: 'EmptyLayout',
-  layout: 'empty',
-  props: {
-    error: {
-      type: Object,
-      default: null
-    }
-  },
-  data() {
-    return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred'
-    }
-  },
-  head() {
-    const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
-    return {
-      title
-    }
-  }
+
+interface Props {
+  error: AppError
 }
+
+      const pageNotFound = ref('404 Not Found')
+      const otherError= ref('An error occurred')
+
+useHead({
+  title: error.code === 404 ? pageNotFound : otherError,
+  meta: [
+    { name: 'description', content: 'Error' }
+  ],
+})
+
+const { error } = defineProps<Props>()
+const props = useProps()
 </script>
 
 <style scoped>

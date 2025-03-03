@@ -49,7 +49,7 @@ const { selectedMedia } = storeToRefs(mediaStore)
 
 const items = computed(() => medias.map((media: MediaData) => {
   const titleValues= []
-  if(media.id) {titleValues.push(`#${media.id}`)}
+  if(!media.id) {titleValues.push(`[new]`)}
   if (media.date) {titleValues.push(format(media.date, 'yyyy-MM-dd'))}
   titleValues.push(`(${media.author || '-'} / ${media.source || '-'})`)
   return {

@@ -22,7 +22,6 @@
         <v-btn color="success" :disabled="!formValid" variant="flat" prepend-icon="mdi-content-save-all"
           @click="moveToNextStep">Sauvegarder</v-btn>
       </v-card-actions>
-      {{ infrastructureData }}
     </v-form>
   </v-card>
 
@@ -43,10 +42,9 @@ const errorStore = useErrorsStore()
 const { t } = useI18n()
 
 interface Props {
-  infrastructure?: object,
+  infrastructure?: Infrastructure,
   infrastructureType: string
 }
-const upc = ref(null)
 // data
 const form = ref(null) // used to get form ref from "<v-form ref="form">"
 const formValid = ref(true)

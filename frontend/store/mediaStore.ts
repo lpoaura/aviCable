@@ -11,7 +11,7 @@ export const useMediaStore = defineStore("media", {
     medias: [] as Medias,
     selectedMedia: {} as MediaData,
     mediaToDelete: {} as MediaData,
-    date: null,
+    date: null as Date|null,
   }),
   actions: {
     async postMedia(media: MediaData) {

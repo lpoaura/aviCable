@@ -3,8 +3,8 @@
  */
 
 import { defineStore } from "pinia";
-import type { Point, LineString, Feature, GeoJSON } from "geojson";
-import type { PointTuple, LatLng } from "leaflet";
+import type { LineString, Feature } from "geojson";
+import type { LatLng } from "leaflet";
 
 interface NewPointCoord {
   lat: number | null;
@@ -20,7 +20,7 @@ export const useCoordinatesStore = defineStore("coordinates", {
     newPointCoord: {} as NewPointCoord,
     newLineCoord: [],
     newGeoJSONLine: { coordinates: [], type: "LineString" } as LineString,
-    newGeoJSONObject: {} as GeoJSON,
+    newGeoJSONObject: {} as Feature,
     bbox: null as string | null,
     mortalityGetInfrastructure: false,
     mortalityInfrastructure: {} as Feature | null,
@@ -67,7 +67,7 @@ export const useCoordinatesStore = defineStore("coordinates", {
     setNewLineCoord(data: []) {
       this.newLineCoord = data;
     },
-    setNewGeoJSONObject(data) {
+    setNewGeoJSONObject(data: Feature) {
       this.newGeoJSONObject = data;
     },
     setNewGeoJSONLine(data: LineString) {

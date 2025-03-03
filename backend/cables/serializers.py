@@ -242,6 +242,9 @@ class OperationSerializer(ModelSerializer):
         """
 
     def create(self, validated_data):
+        logger.debug(
+            f"<OperationSerializer.create> validated_data {validated_data}"
+        )
         try:
             # define variables to be used in error handling if needed
             newOp = None
@@ -264,8 +267,12 @@ class OperationSerializer(ModelSerializer):
                 eqmtType_data = validated_data.pop("eqmt_type")
             if "media" in validated_data:
                 media_data = validated_data.pop("media")
+                logger.debug(f"OperationSerializer {media_data}")
 
             # create new Operation
+            logger.debug(
+                f"OperationSerializer validated_data {validated_data}"
+            )
             newOp = Operation.objects.create(**validated_data)
 
             if newOp is not None:
@@ -294,6 +301,7 @@ class OperationSerializer(ModelSerializer):
 
         return newOp  # returns new Diag if success
 
+
 class BaseOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
     media = MediaSerializer(many=True, read_only=True)
@@ -308,7 +316,6 @@ class BaseOperationSerializer(GeoFeatureModelSerializer):
             "remark",
             "equipments",
             "media",
-            # "media_id",
             "last",
             "geom",
         ]
@@ -318,7 +325,7 @@ class BaseOperationSerializer(GeoFeatureModelSerializer):
 
     def update(self, instance, validated_data):
         equipments_data = validated_data.pop("equipments")
-        print('validated_data', validated_data)
+        print("validated_data", validated_data)
         # equipments = instance.equipments.all()
         equipments = []
         for equipment_data in equipments_data:
@@ -374,7 +381,6 @@ class BaseOperationSerializer(GeoFeatureModelSerializer):
         return point_operation
 
 
-
 class PointOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
     geom = GeometryField(required=False, allow_null=True)
@@ -391,18 +397,22 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
             "remark",
             "equipments",
             "media",
-            # "media_id",
+            "media_id",
             "last",
             "geom",
         ]
         extra_kwargs = {
             "id": {"read_only": True},
+            "media_id": {"source": "media", "write_only": True},
         }
 
     def update(self, instance, validated_data):
+        logger.debug(
+            f"<PointOperationSerializer.update> validated_data {validated_data}"
+        )
         equipments_data = validated_data.pop("equipments")
-        if 'geom' not in validated_data or validated_data['geom'] is None:
-            validated_data['geom'] = validated_data.infrastructure.geom
+        if "geom" not in validated_data or validated_data["geom"] is None:
+            validated_data["geom"] = validated_data.infrastructure.geom
         # equipments = instance.equipments.all()
         equipments = []
         for equipment_data in equipments_data:
@@ -430,20 +440,21 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
+        logger.debug(
+            f"<PointOperationSerializer.create> validated_data {validated_data}"
+        )
         equipments_data = validated_data.pop("equipments", [])
         media = validated_data.pop("media", [])
-        if 'geom' not in validated_data or validated_data['geom'] is None:
-            infrastructure = validated_data.get('infrastructure')
+        if "geom" not in validated_data or validated_data["geom"] is None:
+            infrastructure = validated_data.get("infrastructure")
             print(f"INFRASTRUCTURE {infrastructure}")
-            validated_data['geom'] = infrastructure.geom
+            validated_data["geom"] = infrastructure.geom
 
         # Create the PointOperation instance
         operation = self.Meta.model.objects.create(**validated_data)
 
         equipments = []
-        print(
-            f"create operation {equipments_data}"
-        )
+        print(f"create operation {equipments_data}")
         for equipment_data in equipments_data:
             print(
                 f"PointOperationSerializer create equipement {equipment_data.keys()} {equipment_data.get('id')}"
@@ -468,7 +479,6 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
 
         return super().create(validated_data)
 
-        
 
 class LineOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
@@ -485,17 +495,21 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
             "remark",
             "equipments",
             "media",
-            # "media_id",
+            "media_id",
             "last",
             "geom",
         ]
         extra_kwargs = {
             "id": {"read_only": True},
+            "media_id": {"source": "media", "write_only": True},
         }
 
     def update(self, instance, validated_data):
+        logger.debug(
+            f"<LineOperationSerializer.update> validated_data {validated_data}"
+        )
         equipments_data = validated_data.pop("equipments")
-        print('validated_data', validated_data)
+        print("validated_data", validated_data)
         # equipments = instance.equipments.all()
         equipments = []
         for equipment_data in equipments_data:
@@ -523,19 +537,21 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
+        logger.debug(
+            f"<LineOperationSerializer.create> validated_data {validated_data}"
+        )
         print(f"LineOperationSerializer {validated_data}")
         equipments_data = validated_data.pop("equipments", [])
         media = validated_data.pop("media", [])
-        if 'geom' not in validated_data or validated_data['geom'] is None:
-            infrastructure = validated_data.get('infrastructure')
+        if "geom" not in validated_data or validated_data["geom"] is None:
+            infrastructure = validated_data.get("infrastructure")
             print(f"INFRASTRUCTURE {infrastructure}")
-            validated_data['geom'] = infrastructure.geom
+            validated_data["geom"] = infrastructure.geom
 
         # Create the PointOperation instance
         print(media)
         # Create the PointOperation instance
         operation = self.Meta.model.objects.create(**validated_data)
-        
 
         equipments = []
         print(
@@ -657,7 +673,7 @@ class PointSerializer(GeoFeatureModelSerializer):
             # "sensitive_area_id",
             "diagnosis",
             "operations",
-            "mortality"
+            "mortality",
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
@@ -737,7 +753,7 @@ class LineSerializer(GeoFeatureModelSerializer):
             # "sensitive_area_id",
             "diagnosis",
             "operations",
-            "mortality"
+            "mortality",
         ]
         # Allow to handle create/update/partial_updcreateate with nested data
         extra_kwargs = {
