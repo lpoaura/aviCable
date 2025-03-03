@@ -9,13 +9,14 @@
       <template v-slot:append v-if="edit">
         <v-btn color="blue-lighten-1" icon="mdi-pencil" @click="selectMedia(index)" variant="text" size="small"></v-btn>
         <v-btn color="red-lighten-1" icon="mdi-trash-can" variant="text" size="small"
-          @click="mediaStore.deleteMedia(index)">{{ index }}</v-btn>
+          @click="mediaStore.deleteMedia(index)"></v-btn>
       </template>
 
     </v-list-item>
-    <v-dialog v-if="!edit" :max-width="mobile ? '100%' : '70%'" v-model="modal">
-      <template v-slot:default="{ isActive }">
-        <v-card prepend-icon="mdi-camera" :title="modalItem.id ? `#${modalItem.id} ${modalItem.date}` : modalItem.date"
+    <v-dialog v-if="!edit && modalItem" :max-width="mobile ? '100%' : '70%'" v-model="modal">
+      <template #default="{ isActive }">
+        <v-card prepend-icon="mdi-camera"
+          :title="!!modalItem.id ? `#${modalItem.id} ${format(modalItem.date, 'yyyy-MM-dd')}` : format(modalItem.date, 'yyyy-MM-dd')"
           :subtitle="([modalItem.author, modalItem.source]).join(', ')">
           <template v-slot:append>
             <v-icon color="primary" icon="mdi-close" @click="isActive.value = false"></v-icon>
@@ -32,8 +33,8 @@
 
 <script lang="ts" setup>
 import { useDisplay } from "vuetify";
-import type { MediaData, Media } from "~/types/media";
-
+import type { MediaData } from "~/types/media";
+import { format } from 'date-fns'
 const { mobile } = useDisplay()
 
 const { medias, edit } = defineProps<{
@@ -47,9 +48,13 @@ const modalItem = ref<MediaData | null>(null)
 const { selectedMedia } = storeToRefs(mediaStore)
 
 const items = computed(() => medias.map((media: MediaData) => {
+  const titleValues= []
+  if(media.id) {titleValues.push(`#${media.id}`)}
+  if (media.date) {titleValues.push(format(media.date, 'yyyy-MM-dd'))}
+  titleValues.push(`(${media.author || '-'} / ${media.source || '-'})`)
   return {
     prependAvatar: media.storage instanceof File ? URL.createObjectURL(media.storage) : media.storage,
-    title: `#${media.id} ${media.date} (${media.author || '-'} / ${media.source || '-'})`,
+    title: titleValues.join(' '),
     subtitle: media.remark,
     ...media
   }

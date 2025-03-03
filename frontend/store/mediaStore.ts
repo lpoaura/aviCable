@@ -19,16 +19,30 @@ export const useMediaStore = defineStore("media", {
       const formData = new FormData();
       const date = !!media.date && (new Date(media.date)).toISOString().substring(0, 10);
 
-      !!date && formData.append('date', date);
-      console.log('media.storage', media.storage, media.storage instanceof File, typeof media.storage)
-      !!media.storage && media.storage instanceof File && formData.append('storage', media.storage); // fill-in FormData with img file
-      !!media.author && formData.append('author', media.author);
-      !!media.source && formData.append('source', media.source);
-      !!media.remark && formData.append('remark', media.remark);
-      // const httpCall = !!media.id ? $fetch.put : $fetch.post
+      if (date) {
+        formData.append('date', date);
+      }
+
+      console.log('media.storage', media.storage, media.storage instanceof File, typeof media.storage);
+
+      if (media.storage instanceof File) {
+        console.debug('<postMedia> media.storage', media.storage)
+        formData.append('storage', media.storage); // fill-in FormData with img file
+      }
+      if (media.author) {
+        formData.append('author', media.author);
+      }
+      if (media.source) {
+        formData.append('source', media.source);
+      }
+      if (media.remark) {
+        formData.append('remark', media.remark);
+      }
+      console.debug('<postMedia> media', media)
       const url = config.public.baseURL + `/api/v1/media/${media.id ? `${media.id}/` : ''}`
+      console.debug('<postMedia> API Urls', config.public.baseUrl, url)
       const newImg: Media = await $fetch<Media>(url, {
-        method: !!media.id ? 'patch' : 'post',
+        method: media.id ? 'patch' : 'post',
         body: formData
       });
 

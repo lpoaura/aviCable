@@ -5,12 +5,15 @@ import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import { VDateInput } from 'vuetify/labs/VDateInput'
 import DateFnsAdapter from '@date-io/date-fns'
 import enUS from 'date-fns/locale/en-US'
-import frFR from 'date-fns/locale/sv'
+import frFR from 'date-fns/locale/fr'
 import esES from 'date-fns/locale/es'
 import itIT from 'date-fns/locale/it'
 
 export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
+    locale: {
+      locale: 'fr'
+    },
     ssr: true,
     theme: {
       defaultTheme: 'light'

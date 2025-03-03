@@ -62,6 +62,9 @@ export default defineNuxtConfig({
     /* vuetify options */
     vuetifyOptions: {
       // @TODO: list all vuetify options
+      date: {
+        adapter: 'vuetify' // 'vuetify' | 'date-fns' | 'moment' | 'luxon' | 'dayjs' | 'js-joda' | 'date-fns-jalali' | 'jalaali' | 'hijri' | 'custom'
+      }
     },
     moduleOptions: {
       /* nuxt-vuetify module options */

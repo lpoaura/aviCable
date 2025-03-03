@@ -4,12 +4,12 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-file-upload v-if="!selectedMedia.id" ref="fileInput" v-model="files" clearable accept="image/*" density="compact"
-              :title="t('picture.dragAndDrop')" variant="solo" :rules="[rules.filesize]"
+            <v-file-upload v-if="!selectedMedia.id" ref="fileInput" v-model="files" clearable accept="image/*"
+              density="compact" :title="t('picture.dragAndDrop')" variant="solo" :rules="[rules.filesize]"
               @change="selectedFile($event)"></v-file-upload>
-              <v-else>
-                <v-img :src="selectedMedia.storage" max-height="200"></v-img>
-              </v-else>
+            <v-else>
+              <v-img :src="selectedMedia.storage" max-height="200"></v-img>
+            </v-else>
           </v-col>
         </v-row>
         <v-row>
@@ -78,9 +78,8 @@ const selectedFile = (event: Event) => {
 }
 
 const addMedia = () => {
-  console.log('mediaStore', mediaStore)
+  console.debug('mediaStore', mediaStore)
   mediaStore.addSelectedToMedias()
-  // mediaStore.resetSelectedMedia()
   mediaStore.purgeSelectedMedia()
   files.value = []
 }
@@ -96,8 +95,13 @@ watch(files,
   },
   { deep: true }
 )
+
 onMounted(() => {
   if (!selectedMedia.value.date) selectedMedia.value.date = mediaStore.date
+})
+
+onUnmounted(() => {
+  mediaStore.purgeSelectedMedia()
 })
 
 </script>
