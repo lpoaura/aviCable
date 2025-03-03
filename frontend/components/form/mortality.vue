@@ -81,7 +81,7 @@
             <v-row>
               <v-col cols="12">
                 <!-- <utils-picture-component ref="upc" :loaded-images="loadedImages" /> -->
-                <form-image-upload v-model="loadedImages" />
+                <form-images :medias="mortalityData.media" @update="getFormMedias"></form-images>
               </v-col>
               in parent
               <pre><code>{{ loadedImages }}</code></pre>

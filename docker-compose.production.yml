@@ -29,7 +29,7 @@ services:
       - avicable_net
 
   proxy:
-    image: ghcr.io/lpoaura/avicable-frontend:latest
+    image: nginx:1-alpine
     ports:
       - 80:80
     volumes:
