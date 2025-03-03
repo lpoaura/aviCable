@@ -14,4 +14,5 @@ RUN npm run build
 FROM node:lts-alpine
 COPY --from=builder /app/.output /app/
 RUN ls -alh /app/
+EXPOSE 3000
 ENTRYPOINT ["node", "/app/server/index.mjs"]
