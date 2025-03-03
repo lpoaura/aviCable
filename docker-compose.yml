@@ -8,12 +8,12 @@ services:
       - media:/app/uploads
     env_file:
       - .env
-    healthcheck:
-      test: curl --fail http://localhost:8000 || exit 1
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+    # healthcheck:
+    #   test: curl --fail http://localhost:8000 || exit 1
+    #   interval: 1m30s
+    #   timeout: 30s
+    #   retries: 5
+    #   start_period: 30s
 
   frontend:
     image: frontend
@@ -24,9 +24,25 @@ services:
       - .env
     environment:
       NODE_ENV: production
+    # depends_on:
+    #   backend:
+    #     condition: service_healthy
+    # healthcheck:
+    #   test: curl --fail http://localhost:3000 || exit 1
+    #   interval: 1m30s
+    #   timeout: 30s
+    #   retries: 5
+    #   start_period: 30s
+
+  proxy:
+    image: proxy
+    build:
+      context: docker/nginx
+      dockerfile: ./Dockerfile
     depends_on:
-      backend:
-        condition: service_healthy
+      - frontend
+      - backend
+    #     condition: service_healthy
 
 volumes:
   media:

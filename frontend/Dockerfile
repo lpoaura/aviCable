@@ -5,8 +5,13 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . ./
-RUN npm run generate
+RUN npm run build
 
-FROM nginx:mainline-alpine
-COPY --from=builder /app/.output/public /usr/share/nginx/html
-COPY default.conf /etc/nginx/conf.d/default.conf
+# FROM nginx:mainline-alpine
+# COPY --from=builder /app/.output/public /usr/share/nginx/html
+# COPY default.conf /etc/nginx/conf.d/default.conf
+
+FROM node:lts-alpine
+COPY --from=builder /app/.output /app/
+RUN ls -alh /app/
+ENTRYPOINT ["node", "/app/server/index.mjs"]

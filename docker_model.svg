@@ -15,7 +15,7 @@
 <ellipse fill="lightgrey" stroke="black" cx="67.18" cy="-287.67" rx="67.35" ry="65.52"/>
 <text text-anchor="start" x="41.18" y="-319.17" font-family="Times,serif" font-size="15.00">frontend</text>
 <text text-anchor="start" x="44.68" y="-298.17" font-family="Times,serif" font-weight="bold" font-size="10.00">Networks:</text>
-<text text-anchor="start" x="39.68" y="-288.17" font-family="Times,serif" font-size="10.00">cablesv2_net</text>
+<text text-anchor="start" x="39.68" y="-288.17" font-family="Times,serif" font-size="10.00">avicable_net</text>
 <text text-anchor="start" x="57.18" y="-278.17" font-family="Times,serif" font-size="10.00">front</text>
 <text text-anchor="start" x="54.18" y="-258.17" font-family="Times,serif" font-weight="bold" font-size="10.00">Ports:</text>
 <text text-anchor="start" x="27.68" y="-248.17" font-family="Times,serif" font-size="10.00">80:80 (tcp, ingress)</text>
@@ -26,7 +26,7 @@
 <ellipse fill="lightgrey" stroke="black" cx="67.18" cy="-148.43" rx="50.41" ry="37.45"/>
 <text text-anchor="start" x="41.68" y="-159.93" font-family="Times,serif" font-size="15.00">backend</text>
 <text text-anchor="start" x="44.68" y="-138.93" font-family="Times,serif" font-weight="bold" font-size="10.00">Networks:</text>
-<text text-anchor="start" x="39.68" y="-128.93" font-family="Times,serif" font-size="10.00">cablesv2_net</text>
+<text text-anchor="start" x="39.68" y="-128.93" font-family="Times,serif" font-size="10.00">avicable_net</text>
 </g>
 <!-- frontend&#45;&gt;backend -->
 <g id="edge1" class="edge">
@@ -40,7 +40,7 @@
 <ellipse fill="lightgrey" stroke="black" cx="67.18" cy="-37.48" rx="50.41" ry="37.45"/>
 <text text-anchor="start" x="59.18" y="-48.98" font-family="Times,serif" font-size="15.00">db</text>
 <text text-anchor="start" x="44.68" y="-27.98" font-family="Times,serif" font-weight="bold" font-size="10.00">Networks:</text>
-<text text-anchor="start" x="39.68" y="-17.98" font-family="Times,serif" font-size="10.00">cablesv2_net</text>
+<text text-anchor="start" x="39.68" y="-17.98" font-family="Times,serif" font-size="10.00">avicable_net</text>
 </g>
 <!-- backend&#45;&gt;db -->
 <g id="edge2" class="edge">
