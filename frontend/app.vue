@@ -1,4 +1,3 @@
-
 <template>
   <v-app id="inspire">
 
@@ -49,18 +48,24 @@
 
 <script setup lang="ts">
 
-import {  onMounted } from 'vue'
+import { onMounted } from 'vue'
 
+
+const auth = useAuth()
+
+const nomenclaturesStore = useNomenclaturesStore()
+const mapLayersStore = useMapLayersStore()
 
 
 const loadBaseMapLayers = () => {
-  const mapLayersStore = useMapLayersStore()
   mapLayersStore.getMapBaseLayers()
 }
 
 const loadNomenclatures = () => {
-  const nomenclaturesStore = useNomenclaturesStore()
-  nomenclaturesStore.loadNomenclatures()
+  console.log('auth.loggedIn()', auth.loggedIn)
+  if (auth.loggedIn) {
+    nomenclaturesStore.loadNomenclatures()
+  }
 }
 
 onMounted(() => {
