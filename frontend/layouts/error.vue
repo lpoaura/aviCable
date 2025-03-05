@@ -20,12 +20,10 @@
  * Default Nuxt page. Not still modified
  */
 
-interface Props {
-  error: AppError
-}
+import type { NotificationInfo } from '~/types/notifications'
 
-      const pageNotFound = ref('404 Not Found')
-      const otherError= ref('An error occurred')
+const pageNotFound = ref('404 Not Found')
+const otherError = ref('An error occurred')
 
 useHead({
   title: error.code === 404 ? pageNotFound : otherError,

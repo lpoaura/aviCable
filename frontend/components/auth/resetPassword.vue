@@ -30,16 +30,16 @@
 </template>
 
 <script setup lang="ts">
-import type { ErrorInfo } from '~/store/errorStore'
+import type { NotificationInfo } from '~/types/notifications'
 import * as errorCodes from '~/static/errorConfig.json'
 
-// import { useErrorsStore } from 'store/errorStore'
+// import { useNotificationStore } from 'store/notificationStore'
 
 const { t } = useI18n()
 const router = useRouter()
 
 
-const errorStore = useErrorsStore()
+const notificationStore = useNotificationStore()
 const auth = useAuth()
 const loginForm = ref(null)
 const successMessage = ref(null)
@@ -50,7 +50,7 @@ const reset = reactive({
 })
 const emailRules = reactive([v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || t('login.required_username_msg')])
 
-const error: Reactive<ErrorInfo> = reactive<ErrorInfo>(null)
+const error: Reactive<NotificationInfo> = reactive<NotificationInfo>(null)
 
 
 const userResetPassword = async () => {
@@ -64,12 +64,12 @@ const userResetPassword = async () => {
     }
   } catch (err) {
     console.error(err)
-    const error: ErrorInfo = {
-      code: 'err',
+    const error: NotificationInfo = {
+      type: 'error',
       msg: err.toString()
     }
     // if nuxt error message contains substring '401'
-    errorStore.setError(error)
+    notificationStore.setInfo(error)
   }
 }
 </script>

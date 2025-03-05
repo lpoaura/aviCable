@@ -101,8 +101,8 @@
 import { VDateInput } from 'vuetify/labs/VDateInput'
 import type { DiagData, Diagnosis, Media } from '~/types/cables';
 import type { NomenclatureItem } from '~/types/nomenclature';
+import type { NotificationInfo } from '~/types/notifications';
 import * as errorCodes from '~/static/errorConfig.json'
-import type { ErrorInfo } from '~/store/errorStore';
 
 const emit = defineEmits();
 const { t } = useI18n()
@@ -112,7 +112,7 @@ const route = useRoute()
 
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
-const errorStore = useErrorsStore()
+const notificationStore = useNotificationStore()
 const mediaStore = useMediaStore()
 
 const formValid = ref(false)
@@ -122,7 +122,7 @@ const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value, ''))
-const mediaList = ref<Array<number>>([])
+// const mediaList = ref<Array<number>>([])
 
 const diagData: DiagData = reactive({
   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
@@ -213,20 +213,29 @@ const createDiagnosis = async () => {
     diagData.infrastructure = infrastructureId.value
     diagData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     diagData.media_id = await createMedias()
-    // diagData.media_id = mediaIdList // set Media id list
-    // Create Diagnosis
-    const { data: diagnosis } = await useApi('/api/v1/cables/diagnosis/', { method: 'post', body: diagData })
+    const { data: diagnosis, error } = await useApi('/api/v1/cables/diagnosis/', { method: 'post', body: diagData })
+    if (error.value) {
+      notificationStore.setInfo({
+        type: 'error',
+        msg: error
+      })
+    } else {
+      notificationStore.setInfo({
+        type: 'success',
+        msg: 'Diagnostic créé'
+      })
+    }
     console.debug('newDiagData', diagnosis)
     mediaStore.resetMedias()
     return diagnosis
-  } catch (_err) {
+  } catch (err) {
 
-    console.error('error', _err)
-    const error: ErrorInfo = {
-      code: errorCodes['create_point']['code'],
-      msg: t(`error.${errorCodes.create_point.msg}`)
+    console.error('error', err)
+    const error: NotificationInfo = {
+      type: 'error',
+      msg: `${t(`error.${errorCodes.create_point.msg}`)} - ${err}`
     }
-    errorStore.setError(error)
+    notificationStore.setInfo(error)
   }
 }
 
@@ -246,23 +255,25 @@ const updateDiagnosis = async () => {
     diagData.media_id = await createMedias()
     // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const { data } = await useApi(`/api/v1/cables/diagnosis/${diagData.id}/`, { method: 'put', body: diagData })
+    const { data, error } = await useApi(`/api/v1/cables/diagnosis/${diagData.id}/`, { method: 'put', body: diagData })
+    if (error.value) {
+      notificationStore.setInfo({
+        type: 'error',
+        msg: error
+      })
+    } else {
+      notificationStore.setInfo({
+        type: 'success',
+        msg: 'Diagnostic mis à jour'
+      })
+    }
     mediaStore.resetMedias()
     return data
-  } catch (_err) {
-    // If Diagnosis creation fails, related Media created are deleted
-    // if (mediaIdList) {
-    //   mediaIdList.forEach(
-    //       async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
-    //   )
-    // }
-    // Error display
-    console.error('error', _err)
-    const error: ErrorInfo = {
-      code: errorCodes['update_pole_diagnosis']['code'],
-      msg: t(`error.${errorCodes['update_pole_diagnosis']['msg']}`)
-    }
-    errorStore.setError(error)
+  } catch (err) {
+    notificationStore.setInfo({
+      type: 'error',
+      msg: err
+    })
   }
 }
 

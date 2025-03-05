@@ -1,6 +1,7 @@
 <template>
-  <v-card class="my-2" :title="$t('display.neutralization')">
-    <template #subtitle>{{ $t("realizedOn") }} <strong>{{ operation.date }}</strong></template>
+  <v-card class="my-2">
+    <template #title><strong>{{ operation.date }}</strong> - {{$t('display.neutralization')}}</template>
+    <template #subtitle>{{ $t("filledIn") }} {{ new  Date(operation.timestamp_create).toLocaleString() }} par {{ operation.created_by?.username || '?' }}</template>
     <v-card-text>
       <div>
         <span class="font-weight-bold">Niveau de neutralisation</span>&nbsp;: {{operation.neutralization_level === 'full' ? 'Totale': 'Partielle'}}

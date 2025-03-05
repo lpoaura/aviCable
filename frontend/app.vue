@@ -56,13 +56,11 @@ const auth = useAuth()
 const nomenclaturesStore = useNomenclaturesStore()
 const mapLayersStore = useMapLayersStore()
 
-
 const loadBaseMapLayers = () => {
   mapLayersStore.getMapBaseLayers()
 }
 
 const loadNomenclatures = () => {
-  console.log('auth.loggedIn()', auth.loggedIn)
   if (auth.loggedIn) {
     nomenclaturesStore.loadNomenclatures()
   }
@@ -74,8 +72,6 @@ onMounted(() => {
 })
 
 </script>
-
-
 
 <style>
 .pwa-toast {

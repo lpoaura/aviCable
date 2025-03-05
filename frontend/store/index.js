@@ -1,10 +1,10 @@
 // DO NOT REMOVE THIS FILE even if empty !!!
 // Creating this file activate the store of the application
 import { createPinia } from 'pinia'
+import { useNotificationStore } from './notificationStore';
+
 const pinia = createPinia()
 
-import { useErrorsStore } from './errorStore';
+const notificationStore = useNotificationStore(pinia)
 
-const errorStore = useErrorsStore(pinia)
-
-export { pinia, errorStore }
+export { pinia, notificationStore }

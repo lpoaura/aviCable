@@ -23,9 +23,9 @@
 
 <script setup lang="ts">
 import * as errorCodes from '~/static/errorConfig.json'
-import type { ErrorInfo } from '~/store/errorStore';
+import type { NotificationInfo } from '~/types/notifications'
 
-const errorStore = useErrorsStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const pictInput = ref()
@@ -56,19 +56,14 @@ const displayImage = () => {
     }
   } catch (_err) {
     console.error(_err)
-    const error: ErrorInfo = {
-      code: errorCodes.img_loading.code,
+    const error: NotificationInfo = {
+      type: 'error',
       msg: t(`error.${errorCodes.img_loading.msg}`)
     }
-    errorStore.setError(error)
-    // set error message to errorStore and triggers message display through "err" watcher in
+    notificationStore.setInfo(error)
+    // set error message to notificationStore and triggers message display through "err" watcher in
     // error-snackbar component
-    // this.$store.commit('errorStore/setError', error)
+    // this.$store.commit('notificationStore/setInfo', error)
   }
-}
-
-interface Error {
-  code: string,
-  msg: string
 }
 </script>

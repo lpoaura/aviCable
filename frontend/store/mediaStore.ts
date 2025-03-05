@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 import type { Medias, Media, MediaData } from "~/types/media";
-import { errorStore } from ".";
+import { notificationStore } from ".";
 import { useRuntimeConfig } from "#app";
 
 const config = useRuntimeConfig()
@@ -11,7 +11,7 @@ export const useMediaStore = defineStore("media", {
     medias: [] as Medias,
     selectedMedia: {} as MediaData,
     mediaToDelete: {} as MediaData,
-    date: null as Date|null,
+    date: null as Date | null,
   }),
   actions: {
     async postMedia(media: MediaData) {
@@ -91,15 +91,15 @@ export const useMediaStore = defineStore("media", {
           const { data: _resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
         }
         this.medias.splice(index, 1)
-        errorStore.err = {
-          code: 123,
+        notificationStore.setInfo({
+          type: 'success',
           msg: `Photo ${file.storage} - ${file.date} successfully deleted`
-        }
+        })
       } catch (error) {
-        errorStore.err = {
-          code: 123,
+        notificationStore.setInfo({
+          type: 'error',
           msg: `Delete photo failed : ${error}`
-        }
+        })
       }
     }
   },

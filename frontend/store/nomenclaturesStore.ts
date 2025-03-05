@@ -14,7 +14,7 @@
  */
 import { defineStore } from "pinia";
 import * as errorCodes from "~/static/errorConfig.json";
-import type { ErrorInfo } from "~/store/errorStore";
+import type { NotificationInfo } from "~/store/notificationStore";
 
 export const useNomenclaturesStore = defineStore("nomenclatures", {
   state: () => ({

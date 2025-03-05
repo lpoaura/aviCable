@@ -1,7 +1,7 @@
 import type { Geometry, Feature, GeoJsonProperties, FeatureCollection } from "geojson";
 import type { Nomenclature } from "./nomenclature";
 import type { Medias } from "./media"
-
+import type { UserSimple } from "./user"
 
 
 export interface DiagData {
@@ -21,7 +21,7 @@ export interface DiagData {
   sgmt_moving_risk_id?: number | null;
   sgmt_topo_integr_risk_id?: number | null;
   sgmt_landscape_integr_risk_id?: number | null;
-  media_id?: Array<Number>;
+  media_id?: Array<number>;
 }
 
 export type Diagnosis = DiagData & {
@@ -38,6 +38,10 @@ export type Diagnosis = DiagData & {
   sgmt_topo_integr_risk: Nomenclature;
   sgmt_veget_integr_risk: Nomenclature;
   sgmt_landscape_integr_risk: Nomenclature;
+  created_by: UserSimple;
+  updated_by: UserSimple;
+  timestamp_create: string;
+  timestamp_update: string;
 };
 
 export type InfrastructurePolymorphic = {
@@ -70,16 +74,16 @@ export interface Equipment {
 }
 
 export interface OperationData {
-    id?: number | null;
-    date?: string | Date;
-    neutralization_level: string;
-    equipments: Equipment[];
-    infrastructure: number;
-    last?: boolean;
-    media_id?: number[];
-    remark?: string | null;
-    geom?: Geometry | null;
-    resourcetype?: string | null;
+  id?: number | null;
+  date?: string | Date;
+  neutralization_level: string;
+  equipments: Equipment[];
+  infrastructure: number;
+  last?: boolean;
+  media_id?: number[];
+  remark?: string | null;
+  geom?: Geometry | null;
+  resourcetype?: string | null;
 }
 
 export interface Operation extends GeoJsonProperties {

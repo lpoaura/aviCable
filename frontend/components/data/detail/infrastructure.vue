@@ -17,11 +17,13 @@
     <v-main scrollable>
       <v-container>
         <data-card-infrastructure :data="data" />
-        <data-card-mortality-for-infrastructure v-if="data.properties?.mortality?.length > 0" :data="data.properties?.mortality" />
-        <data-card-diagnosis v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type" />
-        <data-card-operation v-if="lastOp" :operation="lastOp" :support-id="data.properties?.id" :infrastructure-type="type"
+        <data-card-mortality-for-infrastructure v-if="data.properties?.mortality?.length > 0"
+          :data="data.properties?.mortality" />
+        <data-card-diagnosis v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type"
           @delete="$emit('update')" />
-        <v-card  v-if="otherDiags.length || otherOps.length" class="my-2">
+        <data-card-operation v-if="lastOp" :operation="lastOp" :support-id="data.properties?.id"
+          :infrastructure-type="type" @delete="$emit('update')" />
+        <v-card v-if="otherDiags.length || otherOps.length" class="my-2">
           <v-layout>
             <v-app-bar density="compact" color="blue-lighten-2" @click="expandHistory = !expandHistory">
               <v-app-bar-title> {{ $t('support.history') }} </v-app-bar-title><v-spacer />
@@ -31,8 +33,10 @@
             </v-app-bar>
             <v-main :class="expandHistory ? 'ma-2' : ''">
               <div v-if="expandHistory">
-                <data-card-diagnosis v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag" :infrastructure-type="type" />
-                <data-card-operation v-for="ops in otherOps" :key="ops.id" :operation="ops" :infrastructure-type="type" />
+                <data-card-diagnosis v-for="diag in otherDiags" :key="diag.id" :diagnosis="diag"
+                  :infrastructure-type="type" @delete="$emit('update')" />
+                <data-card-operation v-for="ops in otherOps" :key="ops.id" :operation="ops" :infrastructure-type="type"
+                  @delete="$emit('update')" />
               </div>
             </v-main>
           </v-layout>
@@ -85,6 +89,5 @@ const otherOps = computed(() => {
       !action.last
   )
 })
-
 
 </script>

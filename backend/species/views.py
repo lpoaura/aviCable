@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from .models import Species
 from .serializers import SpeciesSerializer
@@ -13,7 +14,7 @@ class SpeciesViewSet(viewsets.ModelViewSet):
     """ViewSet for Species items"""
 
     serializer_class = SpeciesSerializer
-    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     filter_backends = [
         SearchFilter,
     ]

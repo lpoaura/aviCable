@@ -28,7 +28,7 @@ export const useCablesStore = defineStore('cables', {
     countInfstr(): number | undefined {
       return this.infstrDatafeatures?.length
     },
-    countOperatedInfstr() : number | undefined {
+    countOperatedInfstr(): number | undefined {
       return this.infstrDatafeatures?.length
     },
     pointData(state) {
@@ -271,21 +271,21 @@ export const useCablesStore = defineStore('cables', {
       console.log('<deleteEquipment>', index, this.formEquipments, this.formEquipments[index])
       try {
         this.equipmentToDelete = this.formEquipments[index]
-        const file = { ...this.mediaToDelete }
-        console.log('this.mediaToDelete test', (index !== null), this.mediaToDelete, this.mediaToDelete.id)
-        if (this.mediaToDelete && this.mediaToDelete.id) {
-          const { data: _resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
-        }
+        const equipment = { ...this.equipmentToDelete }
+        console.log('this.mediaToDelete test', (index !== null), this.equipmentToDelete, this.equipmentToDelete.id)
+        // if (this.equipmentToDelete && this.equipmentToDelete.id) {
+        //   const { data: _resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
+        // }
         this.formEquipments.splice(index, 1)
-        errorStore.err = {
-          code: 123,
-          msg: `Photo ${file.storage} - ${file.date} successfully deleted`
-        }
+        notificationStore.setInfo({
+          type: 'success',
+          msg: `Equipment ${equipment.type?.code} - ${equipment.count} successfully deleted`
+        })
       } catch (error) {
-        errorStore.err = {
-          code: 123,
-          msg: `Delete photo failed : ${error}`
-        }
+        notificationStore.setInfo({
+          type: 'error',
+          msg: `Delete Equipment failed : ${error}`
+        })
       }
     }
 

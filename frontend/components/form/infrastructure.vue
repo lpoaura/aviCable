@@ -30,14 +30,14 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import * as errorCodes from '~/static/errorConfig.json'
-import type { ErrorInfo } from '~/store/errorStore';
+import type { NotificationInfo } from '~/types/notifications'
 
 const emit = defineEmits();
 
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const cablesStore = useCablesStore()
-const errorStore = useErrorsStore()
+const notificationStore = useNotificationStore()
 
 const { t } = useI18n()
 
@@ -86,11 +86,11 @@ const createNewInfrastructure = async () => {
     return infrastructure?.value
   } catch (_err) {
     console.error(_err)
-    const error: ErrorInfo = {
-      code: errorCodes['create_point']['code'],
+    const error: NotificationInfo = {
+      type: 'error',
       msg: t(`error.${errorCodes.create_point.msg}`)
     }
-    errorStore.setError(error)
+    notificationStore.setInfo(error)
   }
 }
 </script>

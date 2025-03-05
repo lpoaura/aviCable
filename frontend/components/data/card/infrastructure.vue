@@ -38,7 +38,7 @@
       <v-btn color="orange"
         @click="router.push({ path: `/infrastructures/${data.properties.id}/infrastructure`, query: { type: data.resourcetype } })"><v-icon>mdi-pencil-circle</v-icon>
         Modifier</v-btn>
-      <v-dialog max-width="500" v-model="deleteModal">
+      <v-dialog v-model="deleteModal" max-width="500">
         <template #activator="{ props: activatorProps }">
           <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle" />
         </template>

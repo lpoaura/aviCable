@@ -1,6 +1,7 @@
 <template>
-  <v-card class="my-2" :title="$t('display.diagnosis')">
-    <template #subtitle>{{ $t("realizedOn") }} <strong>{{ diagnosis.date }}</strong></template>
+  <v-card class="my-2">
+    <template #title><strong>{{ diagnosis.date }}</strong> - {{$t('display.diagnosis')}}</template>
+    <template #subtitle>{{ $t("filledIn") }} {{ new  Date(diagnosis.timestamp_create).toLocaleString() }} par {{ diagnosis.created_by?.username || '?' }}</template>
     <v-card-text>
       <span class="font-weight-bold">Recommandations&nbsp;: </span><br>
       <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation' : ''"
@@ -22,7 +23,7 @@
       <template v-if="isPoint">
         <p>
           <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
-          <v-chip v-for="pt in diagnosis.arming" v-if="diagnosis.arming.length > 0" :key="pt.id" color="info"
+          <v-chip v-if="diagnosis.arming.length > 0" v-for="pt in diagnosis.arming"  :key="pt.id" color="info"
             class="ma-2">
             {{ pt.label }}
           </v-chip>
@@ -31,7 +32,8 @@
         <p>
           <span class="font-weight-bold">{{ $t('support.attractiveness') }}&nbsp;:</span>
           <v-icon icon="mdi-circle"
-            :color="diagnosis?.pole_attractivity ? riskColors[diagnosis?.pole_attractivity.code] : 'grey'" class="mx-2" />
+            :color="diagnosis?.pole_attractivity ? riskColors[diagnosis?.pole_attractivity.code] : 'grey'"
+            class="mx-2" />
           <span>{{ diagnosis?.pole_attractivity.label }}</span>
         </p>
         <p>
@@ -71,11 +73,11 @@
         {{ diagnosis.remark }}
       </p>
     </v-card-text>
-    <data-display-images  v-if="diagnosis.media.length > 0" :edit="false" :medias="diagnosis.media" />
+    <data-display-images v-if="diagnosis.media.length > 0" :edit="false" :medias="diagnosis.media" />
     <v-card-actions>
       <v-spacer />
       <v-btn color="orange" prepend-icon="mdi-pencil-circle" @click="updateDiag">Modifier</v-btn>
-      <v-dialog max-width="500">
+      <v-dialog v-model="deletedDiagConfirm" max-width="500">
         <template #activator="{ props: activatorProps }">
           <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle" />
         </template>
@@ -111,13 +113,13 @@ interface Props {
   infrastructureType: string,
   diagnosis: Diagnosis,
 }
-
+const emit = defineEmits()
 const { infrastructureType, diagnosis } = defineProps<Props>()
 const router = useRouter()
-const deletedDiagConfirm = ref(true)
+const deletedDiagConfirm = ref(false)
 const mediaStore = useMediaStore()
 
-const {medias} = storeToRefs(mediaStore)
+const { medias } = storeToRefs(mediaStore)
 
 const riskColors = reactive({
   RISK_L: 'blue lighten-1',
@@ -125,10 +127,10 @@ const riskColors = reactive({
   RISK_H: 'red lighten-1 white--text'
 })
 
-const stateColors = reactive({
-  GOOD: 'light-green',
-  POOR: 'yellow',
-})
+// const stateColors = reactive({
+//   GOOD: 'light-green',
+//   POOR: 'yellow',
+// })
 
 const isPoint = computed(() => infrastructureType === 'Point')
 const isLine = computed(() => infrastructureType === 'Line')
@@ -142,6 +144,8 @@ const updateDiag = () => {
 
 const deleteDiag = async () => {
   await useApi(`/api/v1/cables/diagnosis/${diagnosis.id}/`, { method: 'delete' })
+  deletedDiagConfirm.value = false
+  emit('delete')
 }
 
 onMounted(() => {

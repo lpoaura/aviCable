@@ -107,12 +107,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
-import type { ErrorInfo } from '~/store/errorStore';
+import type { NotificationInfo } from '~/types/notifications'
 
 const { mortality } = defineProps(['mortality'])
 const { t } = useI18n()
 const router = useRouter()
-const errorStore = useErrorsStore()
+const notificationStore = useNotificationStore()
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 // Species Autocomplete data
@@ -203,11 +203,11 @@ const createNewData = async () => {
     mortalityGetInfrastructure.value = false
   } catch (_err) {
     console.error(_err)
-    const error: ErrorInfo = {
-      code: errorCodes.create_point.code,
+    const error: NotificationInfo = {
+      type: 'error',
       msg: t(`error.${errorCodes.create_point.msg}`)
     }
-    errorStore.setError(error)
+    notificationStore.setInfo(error)
     back()
   }
 }
@@ -241,11 +241,11 @@ const createNewMedia = async (id) => {
         mediaIdList.push(newImg.value.id) // set Media id to mediaIdList
       } catch (_err) {
         console.debug(_err)
-        const error: ErrorInfo = {
-          code: errorCodes.create_point.code,
+        const error: NotificationInfo = {
+          type: 'error',
           msg: t(`error.${errorCodes.create_point.msg}`)
         }
-        errorStore.setError(error)
+        notificationStore.setInfo(error)
         back()
       }
     })

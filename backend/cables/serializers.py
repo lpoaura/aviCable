@@ -12,6 +12,7 @@ from sensitive_area.models import SensitiveArea
 from sensitive_area.serializers import SensitiveAreaSerializer
 from sinp_nomenclatures.serializers import \
     NomenclatureSerializer as NomenclatureSerializer
+from users.serializers import UserSimpleSerializer
 
 from .models import (Action, Diagnosis, Equipment, Infrastructure, Line,
                      LineOperation, Operation, Point, PointOperation)
@@ -46,6 +47,8 @@ class DiagnosisSerializer(ModelSerializer):
     sgmt_topo_integr_risk = NomenclatureSerializer(read_only=True)
     sgmt_landscape_integr_risk = NomenclatureSerializer(read_only=True)
     media = MediaSerializer(many=True, read_only=True)
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
 
     class Meta:
         model = Diagnosis
@@ -74,6 +77,10 @@ class DiagnosisSerializer(ModelSerializer):
             "media",
             "media_id",
             "last",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
@@ -119,6 +126,9 @@ class DiagnosisSerializer(ModelSerializer):
         """
 
     def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
         try:
             # define variables to be used in error handling if needed
             newDiag = None
@@ -169,13 +179,25 @@ class DiagnosisSerializer(ModelSerializer):
 
         return newDiag  # returns new Diag if success
 
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        validated_data["updated_by"] = user
+        return super().update(instance, validated_data)
+
 
 class EquipmentSerializer(ModelSerializer):
     type = NomenclatureSerializer(read_only=True)
 
     class Meta:
         model = Equipment
-        fields = ["id", "type_id", "type", "count", "reference", "comment"]
+        fields = [
+            "id",
+            "type_id",
+            "type",
+            "count",
+            "reference",
+            "comment",
+        ]
         extra_kwargs = {
             "id": {"read_only": True},
             "type_id": {"source": "type", "write_only": True},
@@ -188,8 +210,16 @@ class EquipmentSerializer(ModelSerializer):
                 False  # Make id field not required for existing instances
             )
 
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
+        return super().create(validated_data)
+
     def update(self, instance, validated_data):
         # Prevent updating the id field
+        user = self.context["request"].user
+        validated_data["updated_by"] = user
         validated_data.pop("id", None)
         return super().update(instance, validated_data)
 
@@ -203,7 +233,9 @@ class OperationSerializer(ModelSerializer):
     # Allow to display nested data
     equipments = EquipmentSerializer(many=True, read_only=True)
     media = MediaSerializer(many=True, read_only=True)
-
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
+    
     class Meta:
         model = Operation
         # geo_field = "geom"
@@ -217,6 +249,10 @@ class OperationSerializer(ModelSerializer):
             "media",
             "media_id",
             "last",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
             # "geom",
         ]
         # Allow to handle create/update/partial_update with nested data
@@ -385,6 +421,8 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
     geom = GeometryField(required=False, allow_null=True)
     media = MediaSerializer(many=True, read_only=True)
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
 
     class Meta:
         model = PointOperation
@@ -400,6 +438,10 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
             "media_id",
             "last",
             "geom",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
         ]
         extra_kwargs = {
             "id": {"read_only": True},
@@ -407,6 +449,8 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
         }
 
     def update(self, instance, validated_data):
+        user = self.context["request"].user
+        validated_data["updated_by"] = user
         logger.debug(
             f"<PointOperationSerializer.update> validated_data {validated_data}"
         )
@@ -440,6 +484,9 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
         logger.debug(
             f"<PointOperationSerializer.create> validated_data {validated_data}"
         )
@@ -483,6 +530,8 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
 class LineOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
     media = MediaSerializer(many=True, read_only=True)
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
 
     class Meta:
         model = LineOperation
@@ -498,6 +547,10 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
             "media_id",
             "last",
             "geom",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
         ]
         extra_kwargs = {
             "id": {"read_only": True},
@@ -505,6 +558,10 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
         }
 
     def update(self, instance, validated_data):
+
+        user = self.context["request"].user
+        validated_data["updated_by"] = user
+
         logger.debug(
             f"<LineOperationSerializer.update> validated_data {validated_data}"
         )
@@ -537,19 +594,24 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
+
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
+
         logger.debug(
             f"<LineOperationSerializer.create> validated_data {validated_data}"
         )
         print(f"LineOperationSerializer {validated_data}")
         equipments_data = validated_data.pop("equipments", [])
-        media = validated_data.pop("media", [])
+        # media = validated_data.pop("media", [])
         if "geom" not in validated_data or validated_data["geom"] is None:
             infrastructure = validated_data.get("infrastructure")
             print(f"INFRASTRUCTURE {infrastructure}")
             validated_data["geom"] = infrastructure.geom
 
         # Create the PointOperation instance
-        print(media)
+        # print(media)
         # Create the PointOperation instance
         operation = self.Meta.model.objects.create(**validated_data)
 
@@ -658,6 +720,8 @@ class PointSerializer(GeoFeatureModelSerializer):
     diagnosis = DiagnosisSerializer(many=True, read_only=True)
     operations = OperationSerializer(many=True, read_only=True)
     mortality = MortalitySimpleSerializer(many=True, read_only=True)
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
 
     class Meta:
         model = Point
@@ -674,6 +738,10 @@ class PointSerializer(GeoFeatureModelSerializer):
             "diagnosis",
             "operations",
             "mortality",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
@@ -698,6 +766,9 @@ class PointSerializer(GeoFeatureModelSerializer):
         """
 
     def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
         # create Point object with given coordinates
         point = Point.objects.create(**validated_data)
 
@@ -723,6 +794,11 @@ class PointSerializer(GeoFeatureModelSerializer):
 
         return point
 
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        validated_data["updated_by"] = user
+        return super().update(instance, validated_data)
+
 
 class LineSerializer(GeoFeatureModelSerializer):
     """Serializer for Line
@@ -738,7 +814,9 @@ class LineSerializer(GeoFeatureModelSerializer):
     diagnosis = DiagnosisSerializer(many=True, read_only=True)
     operations = OperationSerializer(many=True, read_only=True)
     mortality = MortalitySimpleSerializer(many=True, read_only=True)
-
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
+    
     class Meta:
         model = Line
         geo_field = "geom"
@@ -754,6 +832,10 @@ class LineSerializer(GeoFeatureModelSerializer):
             "diagnosis",
             "operations",
             "mortality",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
         ]
         # Allow to handle create/update/partial_updcreateate with nested data
         extra_kwargs = {
@@ -779,6 +861,10 @@ class LineSerializer(GeoFeatureModelSerializer):
 
     def create(self, validated_data):
         # create Line object with given coordinates
+
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
         line = Line.objects.create(**validated_data)
 
         try:
@@ -800,6 +886,12 @@ class LineSerializer(GeoFeatureModelSerializer):
             raise APIException(msg)
 
         return line
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
+        return super().update(instance, validated_data)
 
 
 class InfrastructurePolymorphicSerializer(

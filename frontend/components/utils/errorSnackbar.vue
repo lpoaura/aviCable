@@ -1,22 +1,25 @@
 <template>
-  <v-snackbar v-model="snackbar">
-    ERR-{{ err.code }}: {{ err.msg }}
-
-    <template v-slot:actions>
-      <v-btn color="pink" prepend-icon="mdi-close" @click="snackbar = false">
-        Close
-      </v-btn>
-    </template>
-  </v-snackbar>
+  <div class="text-right">
+    <v-snackbar v-model="snackbar" :timeout="timeout" multi-line :color="notificationStore.info?.type || 'info'"
+      :icon="`$${notificationStore.info?.type || 'info'}`">
+      <v-icon>{{ `$${notificationStore.info?.type || 'info'}` }}</v-icon> 
+      {{ notificationStore.info?.msg || 'NO MESSAGE'}}
+      <template #actions>
+        <v-btn icon="mdi-close" color="white" variant="text" @click="snackbar = false" />
+      </template>
+    </v-snackbar>
+  </div>
 </template>
 
 <script setup lang="ts">
-const { err } = useErrorsStore()
+const notificationStore = useNotificationStore()
 
 const snackbar = ref(false)
+const timeout = ref(2000)
 
-watch(err, (val) => {
-  console.error('ERROR snackbar', val)
+watch(() => notificationStore.info, () => {
+  console.log('value changes detected')
   snackbar.value = true
 })
+
 </script>

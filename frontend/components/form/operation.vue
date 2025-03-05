@@ -43,7 +43,7 @@ import { storeToRefs } from 'pinia';
 // import { VDateInput } from 'vuetify/labs/VDateInput'
 // import type {DiagData, Diagnosis} from '~/types/diagnosis';
 import * as errorCodes from '~/static/errorConfig.json'
-import type { ErrorInfo } from '~/store/errorStore';
+import type { NotificationInfo } from '~/types/notifications'
 import type { OperationFeature, Operation, CablesFeature } from '~/types/cables';
 import type { Media } from '~/types/media';
 import type { Feature } from 'geojson';
@@ -56,7 +56,7 @@ const route = useRoute()
 const coordinatesStore = useCoordinatesStore()
 const cablesStore = useCablesStore()
 // const nomenclaturesStore = useNomenclaturesStore():
-const errorStore = useErrorsStore()
+const notificationStore = useNotificationStore()
 const mediaStore = useMediaStore()
 const formValid = ref(false)
 const neutralizationLevelItems = [
@@ -183,17 +183,15 @@ const createOperation = async () => {
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
     const { data: operation } = await useApi('/api/v1/cables/operations/', { method: 'post', body: opData })
-    console.debug('newDiagData', operation)
     mediaStore.resetMedias()
     return operation
   } catch (_err) {
-
     console.error('error', _err)
-    const error: ErrorInfo = {
-      code: errorCodes['create_point']['code'],
+    const error: NotificationInfo = {
+      type: 'error',
       msg: t(`error.${errorCodes.create_point.msg}`)
     }
-    errorStore.setError(error)
+    notificationStore.setInfo(error)
   }
 }
 
@@ -208,16 +206,18 @@ const updateOperation = async () => {
   try {
     opData.date = formDate.value.toISOString().substring(0, 10)
     opData.media_id = await createMedias()
+    opData.equipments = cablesStore.formEquipments
     const { data } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
+    mediaStore.resetMedias()
     return data
   } catch (_err) {
 
     console.error('error', _err)
-    const error: ErrorInfo = {
-      code: errorCodes['update_pole_diagnosis']['code'],
+    const error: NotificationInfo = {
+      type: 'error',
       msg: t(`error.${errorCodes['update_pole_diagnosis']['msg']}`)
     }
-    errorStore.setError(error)
+    notificationStore.setInfo(error)
   }
 }
 
@@ -227,12 +227,12 @@ const getFormMedias = (value) => {
 
 watch(formDate.value, (newVal, _oldVal) => mediaStore.date = newVal)
 
-const moveToNextStep = async () => {
-  const diagnosis = diagnosisId.value ? await updateDiagnosis() : await createDiagnosis()
-  if (diagnosis) {
-    router.push(`/infrastructures/${infrastructureId.value}`)
-  }
-};
+// const moveToNextStep = async () => {
+//   const diagnosis = diagnosisId.value ? await updateDiagnosis() : await createDiagnosis()
+//   if (diagnosis) {
+//     router.push(`/infrastructures/${infrastructureId.value}`)
+//   }
+// };
 const submit = async () => {
   const operation = operationId.value ? await updateOperation() : await createOperation()
   if (operation) {
