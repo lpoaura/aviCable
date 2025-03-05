@@ -7,7 +7,8 @@
           <map-search :edit-mode="false" />
         </slot>
       </v-col>
-      <v-col  v-if="!(mobile && isSearchPage)" :cols="mobile ? 12 : 6" class="pa-0" :class="mobile ? (isSearchPage ? 'fill-height' : 'h-50') : ''">
+      <v-col v-if="!(mobile && isSearchPage)" :cols="mobile ? 12 : 6" class="pa-0"
+        :class="mobile ? (isSearchPage ? 'fill-height' : 'h-50') : ''">
         <slot />
       </v-col>
     </v-row>
@@ -15,12 +16,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+//import { computed } from 'vue';
 import { useDisplay } from 'vuetify'
+
 const { mobile } = useDisplay()
 const route = useRoute()
 
 const isSearchPage: Computed<boolean> = computed(() => route.path == '/search')
-
-
 </script>

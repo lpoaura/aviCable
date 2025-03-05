@@ -4,9 +4,9 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-file-upload v-if="!selectedMedia.id" ref="fileInput" v-model="files" clearable accept="image/*"
+            <v-file-upload v-if="!selectedMedia.id" ref="fileInput" v-model="file" clearable accept="image/*"
               density="compact" :title="t('picture.dragAndDrop')" variant="solo" :rules="[rules.filesize]"
-              @change="selectedFile($event)"></v-file-upload>
+              ></v-file-upload>
             <v-else>
               <v-img :src="selectedMedia.storage" max-height="200"></v-img>
             </v-else>
@@ -44,11 +44,9 @@
 import type { StoreGeneric } from 'pinia'
 const { t, locales } = useI18n()
 
-//const files = ref<FileList | null>([] as unknown as FileList)
-const files = ref()
+const file = ref()
 const fileInput = ref()
 const valid = ref(false)
-// const date = ref(new Date())
 
 const mediaStore: StoreGeneric = useMediaStore()
 const { selectedMedia } = storeToRefs(mediaStore)
@@ -65,33 +63,23 @@ const rules = reactive({
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
 })
 
-const globalFormValid = computed(() => valid && (selectedMedia.value.id || !!files.value))
+const globalFormValid = computed(() => valid && (selectedMedia.value.id || !!file.value))
 
-const selectedFile = (event: Event) => {
-  console.log(event)
-  const uploadedFiles = (<HTMLInputElement>event?.target).files
-  if (!!uploadedFiles && uploadedFiles.length > 0) {
-    selectedMedia.value.storage = uploadedFiles[0]
-  } else {
-    selectedMedia.value.storage = null
-  }
-}
 
 const addMedia = () => {
   console.debug('mediaStore', mediaStore)
   mediaStore.addSelectedToMedias()
   mediaStore.purgeSelectedMedia()
-  files.value = []
+  file.value = null
 }
 
-// watch(date, (newVal: Date, _oldVal) => {
-//   selectedMedia.value.date = newVal.toISOString().substring(0, 10)
-//   console.log('watch date', selectedMedia.value.date)
-// })
-
-watch(files,
+watch(file,
   (newVal: Date, _oldVal) => {
-    console.log('watch files', newVal)
+    if (newVal) {
+      selectedMedia.value.storage = newVal
+    } else {
+      selectedMedia.value.storage = null
+    }
   },
   { deep: true }
 )
