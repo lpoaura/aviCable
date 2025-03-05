@@ -1,6 +1,6 @@
 <template>
   <v-card title="Information contextuelle">
-    <template #subtitle>{{ $t("filledIn") }} <strong>{{ new Date(item.properties.timestamp_create).toLocaleDateString() }}</strong> par {{ item.properties.created_by.username }}</template>
+    <template #subtitle>{{ $t("filledIn") }} <strong>{{ new Date(item.properties.timestamp_create).toLocaleDateString() }}</strong> par {{ item.properties.created_by?.username || '?' }}</template>
     <v-card-text>
       <v-row>
         <v-col cols="12">
