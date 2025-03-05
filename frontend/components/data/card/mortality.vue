@@ -13,7 +13,7 @@
             </v-chip>
           </v-chip-group>
         </v-col>
-        <v-col cols="12">
+        <v-col v-if="item.properties.infrstr" cols="12">
           <p class="text-strong">
             <strong>Infrastructure</strong>
           </p>
