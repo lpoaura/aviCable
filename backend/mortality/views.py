@@ -39,4 +39,4 @@ class MortalityViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return MortalityWithAreasSerializer
-        return MortalitySerializer
+        return super().get_serializer_class()

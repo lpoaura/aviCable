@@ -9,6 +9,7 @@ from cables.models import Infrastructure
 from geo_area.models import GeoArea
 from geo_area.serializers import GeoAreaSerializer
 from species.serializers import SpeciesSerializer
+from users.serializers import UserSimpleSerializer
 
 from .models import Mortality
 
@@ -35,6 +36,8 @@ class MortalitySimpleSerializer(ModelSerializer):
     # Allow to display nested data
     species = SpeciesSerializer(read_only=True)
     death_cause = NomenclatureSerializer(read_only=True)
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
 
     class Meta:
         model = Mortality
@@ -49,9 +52,12 @@ class MortalitySimpleSerializer(ModelSerializer):
             "author",
             "data_source",
             "data_source_url",
-            "created_by",
             "media",
             "comment",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
         ]
 
 
@@ -65,6 +71,8 @@ class MortalitySerializer(GeoFeatureModelSerializer):
     species = SpeciesSerializer(read_only=True)
     death_cause = NomenclatureSerializer(read_only=True)
     infrstr = MortalityInfrastructureSerializer(read_only=True)
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
 
     class Meta:
         model = Mortality
@@ -83,51 +91,12 @@ class MortalitySerializer(GeoFeatureModelSerializer):
             "author",
             "data_source",
             "data_source_url",
-            "created_by",
             "media",
             "comment",
-        ]
-        # Allow to handle create/update/partial_update with nested data
-        extra_kwargs = {
-            "species_id": {"source": "species", "write_only": True},
-            "death_cause_id": {"source": "death_cause", "write_only": True},
-            "infrstr_id": {"source": "infrstr", "write_only": True},
-        }
-
-
-class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
-    """Serializer for Mortality
-
-    Used to serialize all data from mortality cases.
-    """
-
-    # Allow to display nested data
-    species = SpeciesSerializer(read_only=True)
-    death_cause = NomenclatureSerializer(read_only=True)
-    areas = GeoAreaSerializer(many=True, read_only=True)
-    infrstr = MortalityInfrastructureSerializer(read_only=True)
-
-    class Meta:
-        model = Mortality
-        geo_field = "geom"
-        fields = [
-            "id",
-            "geom",
-            "date",
-            "species",
-            "species_id",
-            "death_cause",
-            "death_cause_id",
-            "infrstr",
-            "infrstr_id",
-            "nb_death",
-            "author",
-            "data_source",
-            "data_source_url",
             "created_by",
-            "media",
-            "comment",
-            "areas",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
@@ -138,6 +107,9 @@ class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
 
     def create(self, validated_data):
         # create Point object with given coordinates
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
         item = self.Meta.model.objects.create(**validated_data)
 
         try:
@@ -155,3 +127,50 @@ class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
             raise APIException(msg)
 
         return item
+
+
+class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
+    """Serializer for Mortality
+
+    Used to serialize all data from mortality cases.
+    """
+
+    # Allow to display nested data
+    species = SpeciesSerializer(read_only=True)
+    death_cause = NomenclatureSerializer(read_only=True)
+    areas = GeoAreaSerializer(many=True, read_only=True)
+    infrstr = MortalityInfrastructureSerializer(read_only=True)
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
+
+    class Meta:
+        model = Mortality
+        geo_field = "geom"
+        fields = [
+            "id",
+            "geom",
+            "date",
+            "species",
+            "species_id",
+            "death_cause",
+            "death_cause_id",
+            "infrstr",
+            "infrstr_id",
+            "nb_death",
+            "author",
+            "data_source",
+            "data_source_url",
+            "media",
+            "comment",
+            "areas",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
+        ]
+        # Allow to handle create/update/partial_update with nested data
+        extra_kwargs = {
+            "species_id": {"source": "species", "write_only": True},
+            "death_cause_id": {"source": "death_cause", "write_only": True},
+            "infrstr_id": {"source": "infrstr", "write_only": True},
+        }

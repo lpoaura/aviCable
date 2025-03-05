@@ -1,6 +1,6 @@
 <template>
   <v-card title="Information contextuelle">
-    <template #subtitle>{{ $t("observedOn") }} <strong>{{ item.properties.date }}</strong></template>
+    <template #subtitle>{{ $t("filledIn") }} <strong>{{ new Date(item.properties.timestamp_create).toLocaleDateString() }}</strong> par {{ item.properties.created_by.username }}</template>
     <v-card-text>
       <v-row>
         <v-col cols="12">
@@ -10,6 +10,16 @@
           <v-chip-group>
             <v-chip v-for="(ga, index) in item.properties.areas" :key="index">
               {{ ga.name }} ({{ ga.code }})
+            </v-chip>
+          </v-chip-group>
+        </v-col>
+        <v-col cols="12">
+          <p class="text-strong">
+            <strong>Infrastructure</strong>
+          </p>
+          <v-chip-group>
+            <v-chip :color="item.properties.infrstr.type== 1 ? 'success':'info'" :to="`/infrastructures/${item.properties.infrstr.id}`">
+`              {{ item.properties.infrstr.owner.label }} ({{ item.properties.infrstr.id }})
             </v-chip>
           </v-chip-group>
         </v-col>
