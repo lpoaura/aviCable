@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 import uuid
 
-from cables.models import Infrastructure
-from commons.models import BaseModel
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from sinp_nomenclatures.models import Nomenclature
+
+from cables.models import Infrastructure
+from commons.models import BaseModel
 from geo_area.models import GeoArea
 from media.models import Media
-from sinp_nomenclatures.models import Nomenclature
 from species.models import Species
 
 
@@ -95,4 +96,4 @@ class Mortality(BaseModel):
         verbose_name_plural = _("Mortality cases")
 
     def __str__(self):
-        return f"Mortality   : {self.species.vernacular_name} [ {self.date:%d/%m/%Y} ]"
+        return f"Mortality   : {self.species.vernacular_name} [{self.date:%d/%m/%Y}]"

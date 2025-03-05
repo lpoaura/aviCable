@@ -1,22 +1,22 @@
 import logging
 
-from cables.models import Infrastructure, Line, Point
-from geo_area.models import GeoArea
-from geo_area.serializers import GeoAreaSerializer
 from rest_framework.exceptions import APIException
 from rest_framework.serializers import ModelSerializer
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from rest_polymorphic.serializers import PolymorphicSerializer
 from sinp_nomenclatures.serializers import NomenclatureSerializer
+
+from cables.models import Infrastructure
+from geo_area.models import GeoArea
+from geo_area.serializers import GeoAreaSerializer
 from species.serializers import SpeciesSerializer
 
 from .models import Mortality
 
 logger = logging.getLogger(__name__)
 
+
 class MortalityInfrastructureSerializer(ModelSerializer):
     owner = NomenclatureSerializer(read_only=True)
-
 
     class Meta:
         model = Infrastructure
@@ -24,10 +24,8 @@ class MortalityInfrastructureSerializer(ModelSerializer):
             "id",
             "owner",
         ]
-        
-        
 
-    
+
 class MortalitySimpleSerializer(ModelSerializer):
     """Serializer for Mortality
 
@@ -55,6 +53,7 @@ class MortalitySimpleSerializer(ModelSerializer):
             "media",
             "comment",
         ]
+
 
 class MortalitySerializer(GeoFeatureModelSerializer):
     """Serializer for Mortality
@@ -107,7 +106,7 @@ class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
     death_cause = NomenclatureSerializer(read_only=True)
     areas = GeoAreaSerializer(many=True, read_only=True)
     infrstr = MortalityInfrastructureSerializer(read_only=True)
-    
+
     class Meta:
         model = Mortality
         geo_field = "geom"
@@ -137,16 +136,13 @@ class MortalityWithAreasSerializer(GeoFeatureModelSerializer):
             "infrstr_id": {"source": "infrstr", "write_only": True},
         }
 
-
     def create(self, validated_data):
         # create Point object with given coordinates
         item = self.Meta.model.objects.create(**validated_data)
 
         try:
             # get lists of GeoArea and Sensitive_Area that intersect with Point location
-            geoareas = GeoArea.objects.all().filter(
-                geom__intersects=point.geom
-            )
+            geoareas = GeoArea.objects.all().filter(geom__intersects=item.geom)
             # set the lists to point.geo_area and save it
             item.areas.set(geoareas)
             item.save()

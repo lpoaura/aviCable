@@ -7,15 +7,16 @@
 import datetime
 from uuid import uuid4
 
-from commons.models import BaseModel
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from polymorphic.models import PolymorphicModel
+from sinp_nomenclatures.models import Nomenclature
+
+from commons.models import BaseModel
 from geo_area.models import GeoArea
 from media.models import Media
-from polymorphic.models import PolymorphicModel
 from sensitive_area.models import SensitiveArea
-from sinp_nomenclatures.models import Nomenclature
 
 NEUTRALIZATION = (("partial", _("Partial")), ("full", _("Full")))
 

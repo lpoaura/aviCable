@@ -47,4 +47,3 @@ services:
 # Volumes used for persistent data
 volumes:
   ocb_db_data:
-

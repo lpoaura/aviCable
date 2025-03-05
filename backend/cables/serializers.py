@@ -1,21 +1,35 @@
 import logging
 
+from rest_framework.exceptions import APIException
+from rest_framework_gis.serializers import (
+    GeoFeatureModelSerializer,
+    GeometryField,
+    ModelSerializer,
+)
+from rest_polymorphic.serializers import PolymorphicSerializer
+from sinp_nomenclatures.serializers import (
+    NomenclatureSerializer as NomenclatureSerializer,
+)
+
 from geo_area.models import GeoArea
 from geo_area.serializers import GeoAreaSerializer
 from media.serializers import MediaSerializer
 from mortality.serializers import MortalitySimpleSerializer
-from rest_framework.exceptions import APIException
-from rest_framework_gis.serializers import (GeoFeatureModelSerializer,
-                                            GeometryField, ModelSerializer)
-from rest_polymorphic.serializers import PolymorphicSerializer
 from sensitive_area.models import SensitiveArea
 from sensitive_area.serializers import SensitiveAreaSerializer
-from sinp_nomenclatures.serializers import \
-    NomenclatureSerializer as NomenclatureSerializer
 from users.serializers import UserSimpleSerializer
 
-from .models import (Action, Diagnosis, Equipment, Infrastructure, Line,
-                     LineOperation, Operation, Point, PointOperation)
+from .models import (
+    Action,
+    Diagnosis,
+    Equipment,
+    Infrastructure,
+    Line,
+    LineOperation,
+    Operation,
+    Point,
+    PointOperation,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -206,7 +220,9 @@ class EquipmentSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(EquipmentSerializer, self).__init__(*args, **kwargs)
         if self.instance:
-            self.fields["id"].required = (
+            self.fields[
+                "id"
+            ].required = (
                 False  # Make id field not required for existing instances
             )
 
@@ -235,7 +251,7 @@ class OperationSerializer(ModelSerializer):
     media = MediaSerializer(many=True, read_only=True)
     created_by = UserSimpleSerializer(read_only=True)
     updated_by = UserSimpleSerializer(read_only=True)
-    
+
     class Meta:
         model = Operation
         # geo_field = "geom"
@@ -491,7 +507,6 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
             f"<PointOperationSerializer.create> validated_data {validated_data}"
         )
         equipments_data = validated_data.pop("equipments", [])
-        media = validated_data.pop("media", [])
         if "geom" not in validated_data or validated_data["geom"] is None:
             infrastructure = validated_data.get("infrastructure")
             print(f"INFRASTRUCTURE {infrastructure}")
@@ -558,7 +573,6 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
         }
 
     def update(self, instance, validated_data):
-
         user = self.context["request"].user
         validated_data["updated_by"] = user
 
@@ -594,7 +608,6 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
-
         user = self.context["request"].user
         validated_data["created_by"] = user
         validated_data["updated_by"] = user
@@ -816,7 +829,7 @@ class LineSerializer(GeoFeatureModelSerializer):
     mortality = MortalitySimpleSerializer(many=True, read_only=True)
     created_by = UserSimpleSerializer(read_only=True)
     updated_by = UserSimpleSerializer(read_only=True)
-    
+
     class Meta:
         model = Line
         geo_field = "geom"

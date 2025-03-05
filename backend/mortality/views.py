@@ -1,9 +1,7 @@
-from django.contrib.gis.db.models import OuterRef, Subquery
-from django.db.models import Prefetch
-from geo_area.models import GeoArea
 from rest_framework import viewsets
-from rest_framework.permissions import \
-    IsAuthenticated  # DjangoModelPermissions,
+from rest_framework.permissions import (  # DjangoModelPermissions,
+    IsAuthenticated,
+)
 from rest_framework_gis.filters import InBBOXFilter
 
 from .models import Mortality

@@ -1,7 +1,13 @@
-from commons.admin import GisModelAdmin
 from django.contrib import admin
 
-from .models import BaseLayers, VectorLayerConfig, VectorLayerData, VectorLayerTheming
+from commons.admin import GisModelAdmin
+
+from .models import (
+    BaseLayers,
+    VectorLayerConfig,
+    VectorLayerData,
+    VectorLayerTheming,
+)
 
 
 class VectorLayerDataAdmin(GisModelAdmin):
@@ -31,7 +37,7 @@ class VectorLayerConfigAdmin(admin.ModelAdmin):
 
 
 class BaseLayerAdmin(admin.ModelAdmin):
-    list_display = ("name", "url", "attribution", "default","layer_type")
+    list_display = ("name", "url", "attribution", "default", "layer_type")
 
 
 admin.site.register(VectorLayerTheming, VectorLayerThemingAdmin)

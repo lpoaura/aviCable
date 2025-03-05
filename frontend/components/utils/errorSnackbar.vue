@@ -2,7 +2,7 @@
   <div class="text-right">
     <v-snackbar v-model="snackbar" :timeout="timeout" multi-line :color="notificationStore.info?.type || 'info'"
       :icon="`$${notificationStore.info?.type || 'info'}`">
-      <v-icon>{{ `$${notificationStore.info?.type || 'info'}` }}</v-icon> 
+      <v-icon>{{ `$${notificationStore.info?.type || 'info'}` }}</v-icon>
       {{ notificationStore.info?.msg || 'NO MESSAGE'}}
       <template #actions>
         <v-btn icon="mdi-close" color="white" variant="text" @click="snackbar = false" />

@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 import uuid
 
-from commons.models import BaseModel
-from config.settings import MEDIA_UPLOAD
 # from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from commons.models import BaseModel
+from config.settings import MEDIA_UPLOAD
 
 
 class Media(BaseModel):
@@ -28,6 +29,6 @@ class Media(BaseModel):
         _("Source of data"), null=True, blank=True, max_length=200
     )
     remark = models.TextField(_("Remark"), null=True, blank=True)
-    
+
     def __str__(self):
-        return f'{self.date} | {self.label} by {self.created_by}'
+        return f"{self.date} | {self.label} by {self.created_by}"

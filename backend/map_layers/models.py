@@ -75,7 +75,7 @@ class BaseLayers(models.Model):
         max_length=50,
         choices=LAYER_TYPES_CHOICES,
         verbose_name=_("Type de couche (leaflet layer_type)"),
-        default=OVERLAY[0]
+        default=OVERLAY[0],
     )
 
     class Meta:

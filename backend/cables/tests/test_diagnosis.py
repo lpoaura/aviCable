@@ -1,9 +1,10 @@
-from cables.models import Diagnosis
-from commons.tests.tests_commons import createTestUser, logTestUser
 from django.test import TestCase
-from media.models import Media
 from rest_framework.test import APIClient
 from sinp_nomenclatures.models import Nomenclature
+
+from cables.models import Diagnosis
+from commons.tests.tests_commons import createTestUser, logTestUser
+from media.models import Media
 
 
 class DiagnosiAnonymousAuthenticationTestCase(TestCase):

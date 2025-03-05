@@ -8,7 +8,15 @@ class MediaSerializer(ModelSerializer):
 
     class Meta:
         model = Media
-        fields = ["id", "label", "storage", "date", "author", "source", "remark"]
+        fields = [
+            "id",
+            "label",
+            "storage",
+            "date",
+            "author",
+            "source",
+            "remark",
+        ]
 
     # TODO: Set those functions after frontend will permit auth for formData posts
     # def create(self, validated_data):

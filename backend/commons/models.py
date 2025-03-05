@@ -46,5 +46,3 @@ class BaseModel(
         #     self.created_by = self.request.user
         # self.updated_by = self.request.user
         super().save(*args, **kwargs)
-    
-

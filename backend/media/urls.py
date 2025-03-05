@@ -6,10 +6,10 @@ from .views import MediaViewSet
 app_name = "media"
 
 router = DefaultRouter()
-router.register(r'', MediaViewSet)
+router.register(r"", MediaViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
     # path(
     #     "",
     #     MediaViewSet.as_view({"get": "list", "post": "create"}),

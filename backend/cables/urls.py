@@ -1,7 +1,12 @@
 from django.urls import path
 
-from .views import (DiagnosisViewSet, InfrastructureViewSet,  # ActionViewSet,
-                    LineViewSet, OperationViewSet, PointViewSet)
+from .views import InfrastructureViewSet  # ActionViewSet,
+from .views import (
+    DiagnosisViewSet,
+    LineViewSet,
+    OperationViewSet,
+    PointViewSet,
+)
 
 urlpatterns = [
     # No create, update or delete on Infrastructure parent class: to be done on inherited classes
@@ -82,9 +87,9 @@ urlpatterns = [
         "operations/",
         OperationViewSet.as_view(
             {
-                "get": "list", 
-                "post": "create", 
-                #"put": "update"
+                "get": "list",
+                "post": "create",
+                # "put": "update"
             }
         ),
         name="operation_list",

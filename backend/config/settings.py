@@ -87,7 +87,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -134,10 +133,10 @@ CORS_ALLOWED_ORIGINS = config(
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGINS = (
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://localhost:8000',
-  'http://127.0.0.1:3000',
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:3000",
 )
 
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
@@ -260,11 +259,19 @@ SERVER_EMAIL = config("SERVER_EMAIL", default=EMAIL_HOST_USER)
 
 if DEBUG:
     import socket  # only if you haven't already imported this
+
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
+        "127.0.0.1",
+        "10.0.2.2",
+    ]
 else:
-    SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
-    SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=True, cast=bool)
+    SECURE_SSL_REDIRECT = config(
+        "SECURE_SSL_REDIRECT", default=False, cast=bool
+    )
+    SESSION_COOKIE_SECURE = config(
+        "SESSION_COOKIE_SECURE", default=True, cast=bool
+    )
     CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=True, cast=bool)
     LOGGING = {
         "version": 1,

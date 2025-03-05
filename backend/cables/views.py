@@ -1,16 +1,21 @@
 import logging
 
 from django.db.models import Prefetch
-from geo_area.models import GeoArea
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework_gis.filters import InBBoxFilter
 
+from geo_area.models import GeoArea
+
 from .filters import InfrstrInBboxFilter
 from .models import Diagnosis, Infrastructure, Line, Operation, Point
-from .serializers import (DiagnosisSerializer,
-                          InfrastructurePolymorphicSerializer, LineSerializer,
-                          OperationPolymorphicSerializer, PointSerializer)
+from .serializers import (
+    DiagnosisSerializer,
+    InfrastructurePolymorphicSerializer,
+    LineSerializer,
+    OperationPolymorphicSerializer,
+    PointSerializer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +112,7 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
     serializer_class = DiagnosisSerializer
     permission_classes = [DjangoModelPermissions]
     queryset = Diagnosis.objects.all()
+
 
 class OperationViewSet(viewsets.ModelViewSet):
     """ViewSet for Operation item"""

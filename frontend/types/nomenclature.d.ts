@@ -27,4 +27,3 @@ export type Type = {
   label: string
   mnemonic: string
 }
-
