@@ -182,8 +182,19 @@ const createOperation = async () => {
     opData.resourcetype = `${infrastructure.value.resourcetype}Operation`
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const { data: operation } = await useApi('/api/v1/cables/operations/', { method: 'post', body: opData })
+    const { data: operation, error } = await useApi('/api/v1/cables/operations/', { method: 'post', body: opData })
     mediaStore.resetMedias()
+    if (error.value) {
+      notificationStore.setInfo({
+        type: 'error',
+        msg: error
+      })
+    } else {
+      notificationStore.setInfo({
+        type: 'success',
+        msg: 'Neutralisation créée'
+      })
+    }
     return operation
   } catch (_err) {
     console.error('error', _err)
@@ -207,8 +218,19 @@ const updateOperation = async () => {
     opData.date = formDate.value.toISOString().substring(0, 10)
     opData.media_id = await createMedias()
     opData.equipments = cablesStore.formEquipments
-    const { data } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
+    const { data, error } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
     mediaStore.resetMedias()
+    if (error.value) {
+      notificationStore.setInfo({
+        type: 'error',
+        msg: error
+      })
+    } else {
+      notificationStore.setInfo({
+        type: 'success',
+        msg: 'Neutralisation mise à jour'
+      })
+    }
     return data
   } catch (_err) {
 

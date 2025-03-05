@@ -6,7 +6,6 @@
         <v-icon v-if="dispMortality && data.properties.mortality?.length" color="red" v-bind="props">mdi-coffin</v-icon>
       </template>
     </v-tooltip>
-
   </v-chip>
 
 </template>

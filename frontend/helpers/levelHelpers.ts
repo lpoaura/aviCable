@@ -6,6 +6,7 @@ export const notationValues: (
   detail: bool
 ) => Risk = (item, t, detail = false) => {
   const risks = {
+    NE: { note: 0, color: "grey", label: t(detail ? 'notEvaluated' : 'ne') },
     RISK_L: { note: 1, color: "blue", label: t(detail ? "lowRisk" : "low") },
     RISK_M: { note: 2, color: "orange", label: t(detail ? "midRisk" : "mid") },
     RISK_H: {
@@ -15,7 +16,7 @@ export const notationValues: (
     },
   };
   const diagnosis = item.properties.diagnosis[0];
-  let result = "RISK_L";
+  let result = "NE";
   if (diagnosis) {
     if (item.resourcetype == "Point") {
       const note =

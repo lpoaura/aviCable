@@ -81,8 +81,19 @@ const moveToNextStep = async () => {
 const createNewInfrastructure = async () => {
   try {
     infrastructureData.geom = newGeoJSONObject.value?.geometry
-    const { data: infrastructure } = await useApi(`/api/v1/cables/${infrastructureType.toLowerCase()}s/`, { method: 'post', body: infrastructureData })
+    const { data: infrastructure, error } = await useApi(`/api/v1/cables/${infrastructureType.toLowerCase()}s/`, { method: 'post', body: infrastructureData })
     cablesStore.setFormInfrastructureId(infrastructure.value.properties.id)
+    if (error.value) {
+      notificationStore.setInfo({
+        type: 'error',
+        msg: error
+      })
+    } else {
+      notificationStore.setInfo({
+        type: 'success',
+        msg: 'Infrastructure créée'
+      })
+    }
     return infrastructure?.value
   } catch (_err) {
     console.error(_err)
