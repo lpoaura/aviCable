@@ -38,7 +38,7 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           build-args: |
-            NUXT_PUBLIC_API_BASE: $NUXT_PUBLIC_API_BASE
+            NUXT_PUBLIC_API_BASE: ${{ vars.NUXT_PUBLIC_API_BASE }}
           tags: ghcr.io/${{ github.repository_owner }}/avicable-frontend:latest
 
       - name: Build and push proxy image
