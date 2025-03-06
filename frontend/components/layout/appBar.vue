@@ -1,7 +1,7 @@
 <template>
   <v-app-bar color="light-blue-darken-3" :density="mobile ? 'compact' : 'default'">
     <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer" />
-    <v-toolbar-title>{{ $t('app.appShortName') }}</v-toolbar-title>
+    <v-toolbar-title><v-avatar  image="/img/icon.png" rounded="0"/>  {{ $t('app.appShortName') }}</v-toolbar-title>
     <v-spacer />
     <div v-if="!mobile">
       {{ $auth.user?.username || 'Not connected' }}

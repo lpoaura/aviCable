@@ -4,7 +4,7 @@
       <v-row justify="center">
         <v-col cols="12" class="justify-center pa-10">
           <div class="text-h2 mb--1">
-            {{ $t('app.appName') }}
+            <v-avatar size="80" image="/img/icon.png" rounded="0"/> {{ $t('app.appName') }}
           </div>
         </v-col>
         <v-col cols="12">
