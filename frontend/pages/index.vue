@@ -7,9 +7,7 @@
             <v-avatar size="80" image="/img/icon.png" rounded="0"/> {{ $t('app.appName') }}
           </div>
         </v-col>
-        <v-col cols="12">
-          <partners-component />
-        </v-col>
+
       </v-row>
     </v-col>
     <v-col cols="12" lg="3" class="pa-0 ">

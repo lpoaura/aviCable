@@ -10,12 +10,15 @@
 
       </div>
     </v-col>
+    <v-col cols="12">
+      <partners-component />
+    </v-col>
   </v-row>
 </template>
 
 
 <script setup lang="ts">
-const {t} = useI18n()
+const { t } = useI18n()
 useHead({
   title: `aviCable - ${t('About')}`,
   meta: [
