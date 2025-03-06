@@ -13,8 +13,9 @@
     <v-divider />
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-home" :title="t('nav.home_page')" to="/" />
-      <v-list-item v-for="[icon, text, url, loggedIn] in links" v-if="$auth.loggedIn" :prepend-icon="icon" :title="text"
+      <v-list-item v-for="[icon, text, url] in links" v-if="$auth.loggedIn" :prepend-icon="icon" :title="text"
         :to="url" />
+      <v-list-item prepend-icon="mdi-information" :title="t('nav.about')" to="/about" />
     </v-list>
     <template v-if="$auth.loggedIn" #append>
       <v-list density="compact" nav>
@@ -34,8 +35,7 @@ const { mobile } = useDisplay()
 
 useRouter()
 const links = ref([
-  ['mdi-map-search', t('nav.application'), '/search', true],
-  ['mdi-information', t('nav.about'), '/about', true]
+  ['mdi-map-search', t('nav.application'), '/search']
 ]);
 
 const rail = ref(true)
