@@ -143,55 +143,12 @@ class DiagnosisSerializer(ModelSerializer):
         user = self.context["request"].user
         validated_data["created_by"] = user
         validated_data["updated_by"] = user
-        try:
-            # define variables to be used in error handling if needed
-            newDiag = None
-            previous_current = []
-            # get current Diagnosis before creation of new one (should be only one, but keep search for several. In case of several ones, this method will correct issue by setting all previous with last=False)
-            old_diags = Diagnosis.objects.all().filter(
-                infrastructure=validated_data["infrastructure"], last=True
-            )
-            for diag in old_diags:
-                previous_current.append(
-                    diag.id
-                )  # keep id of current Diag before new one
+        validated_data["last"] = True
+        Diagnosis.objects.all().filter(
+            infrastructure=validated_data["infrastructure"], last=True
+        ).update(last=False)
 
-            # gather data for ManyToMany fields (and removing related data from validated_data)
-            poleType_data = None
-            media_data = None
-            if "arming" in validated_data:
-                poleType_data = validated_data.pop("arming")
-            if "media" in validated_data:
-                media_data = validated_data.pop("media")
-
-            # create new Diagnosis
-            newDiag = Diagnosis.objects.create(**validated_data)
-            if newDiag is not None:
-                # set old current Diagnosis to last=False
-                for diag in old_diags:
-                    if diag.id != newDiag.id:
-                        diag.last = False
-                        diag.save()
-
-                # set data to ManyToMany fields old newDiag
-                if poleType_data is not None:
-                    newDiag.arming.set(poleType_data)
-                if media_data is not None:
-                    newDiag.media.set(media_data)
-
-        # Error handling: newDiag is deleted if exists, and previous current Diag come back with
-        # last=True. Django would send Response with status code 500 and defined message
-        except Exception:
-            if newDiag is not None:
-                newDiag.delete()
-                for id in previous_current:
-                    Diagnosis.objects.get(id=id).update(last=True)
-
-            msg = "Issue with Diagnosis configuration. No Diagnosis created."
-            logger.error(msg)
-            raise APIException(msg)
-
-        return newDiag  # returns new Diag if success
+        return super().create(validated_data)
 
     def update(self, instance, validated_data):
         user = self.context["request"].user
@@ -293,73 +250,18 @@ class OperationSerializer(ModelSerializer):
             {Operation} -- returns new Operation object
         """
 
-    def create(self, validated_data):
-        logger.debug(
-            f"<OperationSerializer.create> validated_data {validated_data}"
-        )
-        try:
-            # define variables to be used in error handling if needed
-            newOp = None
-            previous_current = []
-            # get current Operation before creation of new one (should be only one, but keep
-            # search for several. In case of several ones, this method will correct issue by
-            # setting all previous with last=False)
-            old_ops = Operation.objects.all().filter(
-                infrastructure=validated_data["infrastructure"], last=True
-            )
-            for op in old_ops:
-                previous_current.append(
-                    op.id
-                )  # keep id of current Operation before new one
-
-            # gather data for ManyToMany fields (and removing related data from validated_data)
-            eqmtType_data = None
-            media_data = None
-            if "eqmt_type" in validated_data:
-                eqmtType_data = validated_data.pop("eqmt_type")
-            if "media" in validated_data:
-                media_data = validated_data.pop("media")
-                logger.debug(f"OperationSerializer {media_data}")
-
-            # create new Operation
-            logger.debug(
-                f"OperationSerializer validated_data {validated_data}"
-            )
-            newOp = Operation.objects.create(**validated_data)
-
-            if newOp is not None:
-                # set old current Diagnosis to last=False
-                for op in old_ops:
-                    if op.id != newOp.id:
-                        op.last = False
-                        op.save()
-                # set data to ManyToMany fields old newDiag
-                if eqmtType_data is not None:
-                    newOp.eqmt_type.set(eqmtType_data)
-                if media_data is not None:
-                    newOp.media.set(media_data)
-
-        # Error handling: newOp is deleted if exists, and previous current Operation come back with
-        # last=True. Django would send Response with status code 500 and defined message
-        except Exception:
-            if newOp is not None:
-                newOp.delete()
-                for id in previous_current:
-                    Operation.objects.get(id=id).update(last=True)
-
-            msg = "Issue with Diagnosis configuration. No Diagnosis created."
-            logger.error(msg)
-            raise APIException(msg)
-
-        return newOp  # returns new Diag if success
-
 
 class BaseOperationSerializer(GeoFeatureModelSerializer):
     equipments = EquipmentSerializer(many=True)
+    geom = GeometryField(required=False, allow_null=True)
     media = MediaSerializer(many=True, read_only=True)
+    created_by = UserSimpleSerializer(read_only=True)
+    updated_by = UserSimpleSerializer(read_only=True)
 
     class Meta:
-        geo_field = "geom"
+        model = Operation
+        geo_field = None
+        abstract = True
         fields = [
             "id",
             "infrastructure",
@@ -368,78 +270,79 @@ class BaseOperationSerializer(GeoFeatureModelSerializer):
             "remark",
             "equipments",
             "media",
+            "media_id",
             "last",
             "geom",
+            "created_by",
+            "updated_by",
+            "timestamp_create",
+            "timestamp_update",
         ]
         extra_kwargs = {
             "id": {"read_only": True},
+            "media_id": {"source": "media", "write_only": True},
         }
 
     def update(self, instance, validated_data):
-        equipments_data = validated_data.pop("equipments")
-        print("validated_data", validated_data)
-        # equipments = instance.equipments.all()
+        logger.debug("<PointOperationSerializer.update>")
+        user = self.context["request"].user
+        validated_data["updated_by"] = user
+        if "geom" not in validated_data or validated_data["geom"] is None:
+            validated_data["geom"] = validated_data.infrastructure.geom
+
+        logger.debug(
+            f"<BaseOperationSerializer.update> validated_data {validated_data}"
+        )
+
+        equipments_list = validated_data.pop("equipments")
+        media = validated_data.pop("media", [])
+
         equipments = []
-        for equipment_data in equipments_data:
-            print(
-                f"equipment_data.keys() {equipment_data.keys()} {equipment_data.get('id')}"
-            )
-            equipment_id = (
-                equipment_data.get("id") if id in equipment_data else None
-            )
-            equipment_type_id = equipment_data.get("type")
-
-            update_values = {
-                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
-                "count": equipment_data.get("count"),
-                "reference": equipment_data.get("reference"),
-                "comment": equipment_data.get("comment"),
-            }
-
+        for equipment_data in equipments_list:
+            equipment_id = equipment_data.pop("id", None)
             equipment, _created = Equipment.objects.update_or_create(
-                id=equipment_id, defaults=update_values
+                id=equipment_id, defaults=equipment_data
             )
             equipments.append(equipment)
+
         instance.equipments.set(equipments)
-        # instance.equipments.
-        return super().update(instance, validated_data)
+        instance.media.set(media)
+        return instance
 
     def create(self, validated_data):
-        equipments_data = validated_data.pop("equipments", [])
+        logger.debug("<BaseOperationSerializer.create>")
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
+        if "geom" not in validated_data or validated_data["geom"] is None:
+            validated_data["geom"] = validated_data.get("infrastructure").geom
+
+        logger.debug(
+            f"<BaseOperationSerializer.create> validated_data {validated_data}"
+        )
+
+        equipments_list = validated_data.pop("equipments", [])
+        media = validated_data.pop("media", [])
 
         # Create the PointOperation instance
-        point_operation = self.Meta.model.objects.create(**validated_data)
+        operation = self.Meta.model.objects.create(**validated_data)
 
         equipments = []
-        for equipment_data in equipments_data:
-            equipment_type_id = equipment_data.get("type")
-            create_values = {
-                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
-                "count": equipment_data.get("count"),
-                "reference": equipment_data.get("reference"),
-                "comment": equipment_data.get("comment"),
-            }
-
+        for equipment_data in equipments_list:
             # Create the Equipment instance
-            equipment = Equipment.objects.create(**create_values)
+            equipment = Equipment.objects.create(**equipment_data)
             equipments.append(equipment)
 
         # Optionally, you can set the equipments to the point_operation if needed
-        point_operation.equipments.set(equipments)
+        operation.equipments.set(equipments)
+        operation.media.set(media)
         Operation.objects.filter(
             infrastructure=validated_data["infrastructure"], last=True
-        ).exclude(pk=point_operation.id).update(last=False)
+        ).exclude(pk=operation.id).update(last=False)
+        return operation
 
-        return point_operation
 
-
-class PointOperationSerializer(GeoFeatureModelSerializer):
-    equipments = EquipmentSerializer(many=True)
-    geom = GeometryField(required=False, allow_null=True)
-    media = MediaSerializer(many=True, read_only=True)
-    created_by = UserSimpleSerializer(read_only=True)
-    updated_by = UserSimpleSerializer(read_only=True)
-
+class PointOperationSerializer(BaseOperationSerializer):
     class Meta:
         model = PointOperation
         geo_field = "geom"
@@ -464,90 +367,8 @@ class PointOperationSerializer(GeoFeatureModelSerializer):
             "media_id": {"source": "media", "write_only": True},
         }
 
-    def update(self, instance, validated_data):
-        user = self.context["request"].user
-        validated_data["updated_by"] = user
-        logger.debug(
-            f"<PointOperationSerializer.update> validated_data {validated_data}"
-        )
-        equipments_data = validated_data.pop("equipments")
-        if "geom" not in validated_data or validated_data["geom"] is None:
-            validated_data["geom"] = validated_data.infrastructure.geom
-        # equipments = instance.equipments.all()
-        equipments = []
-        for equipment_data in equipments_data:
-            print(
-                f"equipment_data.keys() {equipment_data.keys()} {equipment_data.get('id')}"
-            )
-            equipment_id = (
-                equipment_data.get("id") if id in equipment_data else None
-            )
-            equipment_type_id = equipment_data.get("type")
 
-            update_values = {
-                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
-                "count": equipment_data.get("count"),
-                "reference": equipment_data.get("reference"),
-                "comment": equipment_data.get("comment"),
-            }
-
-            equipment, _created = Equipment.objects.update_or_create(
-                id=equipment_id, defaults=update_values
-            )
-            equipments.append(equipment)
-        instance.equipments.set(equipments)
-        # instance.equipments.
-        return super().update(instance, validated_data)
-
-    def create(self, validated_data):
-        user = self.context["request"].user
-        validated_data["created_by"] = user
-        validated_data["updated_by"] = user
-        logger.debug(
-            f"<PointOperationSerializer.create> validated_data {validated_data}"
-        )
-        equipments_data = validated_data.pop("equipments", [])
-        if "geom" not in validated_data or validated_data["geom"] is None:
-            infrastructure = validated_data.get("infrastructure")
-            print(f"INFRASTRUCTURE {infrastructure}")
-            validated_data["geom"] = infrastructure.geom
-
-        # Create the PointOperation instance
-        operation = self.Meta.model.objects.create(**validated_data)
-
-        equipments = []
-        print(f"create operation {equipments_data}")
-        for equipment_data in equipments_data:
-            print(
-                f"PointOperationSerializer create equipement {equipment_data.keys()} {equipment_data.get('id')}"
-            )
-            equipment_type_id = equipment_data.get("type")
-            create_values = {
-                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
-                "count": equipment_data.get("count"),
-                "reference": equipment_data.get("reference"),
-                "comment": equipment_data.get("comment"),
-            }
-
-            # Create the Equipment instance
-            equipment = Equipment.objects.create(**create_values)
-            equipments.append(equipment)
-
-        # Optionally, you can set the equipments to the point_operation if needed
-        operation.equipments.set(equipments)
-        Operation.objects.filter(
-            infrastructure=validated_data["infrastructure"], last=True
-        ).exclude(pk=operation.id).update(last=False)
-
-        return super().create(validated_data)
-
-
-class LineOperationSerializer(GeoFeatureModelSerializer):
-    equipments = EquipmentSerializer(many=True)
-    media = MediaSerializer(many=True, read_only=True)
-    created_by = UserSimpleSerializer(read_only=True)
-    updated_by = UserSimpleSerializer(read_only=True)
-
+class LineOperationSerializer(BaseOperationSerializer):
     class Meta:
         model = LineOperation
         geo_field = "geom"
@@ -571,91 +392,6 @@ class LineOperationSerializer(GeoFeatureModelSerializer):
             "id": {"read_only": True},
             "media_id": {"source": "media", "write_only": True},
         }
-
-    def update(self, instance, validated_data):
-        user = self.context["request"].user
-        validated_data["updated_by"] = user
-
-        logger.debug(
-            f"<LineOperationSerializer.update> validated_data {validated_data}"
-        )
-        equipments_data = validated_data.pop("equipments")
-        print("validated_data", validated_data)
-        # equipments = instance.equipments.all()
-        equipments = []
-        for equipment_data in equipments_data:
-            print(
-                f"equipment_data.keys() {equipment_data.keys()} {equipment_data.get('id')}"
-            )
-            equipment_id = (
-                equipment_data.get("id") if id in equipment_data else None
-            )
-            equipment_type_id = equipment_data.get("type")
-
-            update_values = {
-                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
-                "count": equipment_data.get("count"),
-                "reference": equipment_data.get("reference"),
-                "comment": equipment_data.get("comment"),
-            }
-
-            equipment, _created = Equipment.objects.update_or_create(
-                id=equipment_id, defaults=update_values
-            )
-            equipments.append(equipment)
-        instance.equipments.set(equipments)
-        # instance.equipments.
-        return super().update(instance, validated_data)
-
-    def create(self, validated_data):
-        user = self.context["request"].user
-        validated_data["created_by"] = user
-        validated_data["updated_by"] = user
-
-        logger.debug(
-            f"<LineOperationSerializer.create> validated_data {validated_data}"
-        )
-        print(f"LineOperationSerializer {validated_data}")
-        equipments_data = validated_data.pop("equipments", [])
-        # media = validated_data.pop("media", [])
-        if "geom" not in validated_data or validated_data["geom"] is None:
-            infrastructure = validated_data.get("infrastructure")
-            print(f"INFRASTRUCTURE {infrastructure}")
-            validated_data["geom"] = infrastructure.geom
-
-        # Create the PointOperation instance
-        # print(media)
-        # Create the PointOperation instance
-        operation = self.Meta.model.objects.create(**validated_data)
-
-        equipments = []
-        print(
-            f"LineOperationSerializer create line operation {equipments_data}"
-        )
-        for equipment_data in equipments_data:
-            print(
-                f"LineOperationSerializer create equipement {equipment_data.keys()} {equipment_data.get('id')}"
-            )
-        for equipment_data in equipments_data:
-            equipment_type_id = equipment_data.get("type")
-            create_values = {
-                "type": equipment_type_id,  # Assuming type is a foreign key to Nomenclature
-                "count": equipment_data.get("count"),
-                "reference": equipment_data.get("reference"),
-                "comment": equipment_data.get("comment"),
-            }
-
-            # Create the Equipment instance
-            equipment = Equipment.objects.create(**create_values)
-            equipments.append(equipment)
-
-        # Optionally, you can set the equipments to the point_operation if needed
-        operation.equipments.set(equipments)
-        Operation.objects.filter(
-            infrastructure=validated_data["infrastructure"], last=True
-        ).exclude(pk=operation.id).update(last=False)
-
-        return operation
 
 
 class OperationPolymorphicSerializer(
@@ -719,14 +455,7 @@ class ActionPolymorphicSerializer(PolymorphicSerializer):
     }
 
 
-class PointSerializer(GeoFeatureModelSerializer):
-    """Serializer for Point
-
-    Used to serialize all data from Point.
-    inherit from GeoAreaSerializer as contains geo data.
-    """
-
-    # Allow to display nested data
+class InstrastructureAbstractSerializer(GeoFeatureModelSerializer):
     owner = NomenclatureSerializer(read_only=True)
     areas = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
@@ -735,6 +464,50 @@ class PointSerializer(GeoFeatureModelSerializer):
     mortality = MortalitySimpleSerializer(many=True, read_only=True)
     created_by = UserSimpleSerializer(read_only=True)
     updated_by = UserSimpleSerializer(read_only=True)
+
+    class Meta:
+        abstract = True
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        validated_data["updated_by"] = user
+        infrst = self.Meta.model.objects.create(**validated_data)
+
+        try:
+            # get lists of GeoArea and Sensitive_Area that intersect with Line location
+            geoareas = GeoArea.objects.all().filter(
+                geom__intersects=infrst.geom
+            )
+            sensitiveareas = SensitiveArea.objects.all().filter(
+                geom__intersects=infrst.geom
+            )
+            # set the lists to line.geo_area and save it
+            infrst.areas.set(geoareas)
+            infrst.sensitive_area.set(sensitiveareas)
+            infrst.save()
+
+        except Exception:
+            if infrst is not None:
+                infrst.delete()
+            msg = "Issue with attachment from new Line to sensitive/geo areas. No Line created."
+            logger.error(msg)
+            raise APIException(msg)
+
+        return infrst
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        validated_data["updated_by"] = user
+        return super().update(instance, validated_data)
+
+
+class PointSerializer(InstrastructureAbstractSerializer):
+    """Serializer for Point
+
+    Used to serialize all data from Point.
+    inherit from GeoAreaSerializer as contains geo data.
+    """
 
     class Meta:
         model = Point
@@ -778,57 +551,13 @@ class PointSerializer(GeoFeatureModelSerializer):
             {Point} -- returns new Point object
         """
 
-    def create(self, validated_data):
-        user = self.context["request"].user
-        validated_data["created_by"] = user
-        validated_data["updated_by"] = user
-        # create Point object with given coordinates
-        point = Point.objects.create(**validated_data)
 
-        try:
-            # get lists of GeoArea and Sensitive_Area that intersect with Point location
-            geoareas = GeoArea.objects.all().filter(
-                geom__intersects=point.geom
-            )
-            sensitiveareas = SensitiveArea.objects.all().filter(
-                geom__intersects=point.geom
-            )
-            # set the lists to point.geo_area and save it
-            point.areas.set(geoareas)
-            point.sensitive_area.set(sensitiveareas)
-            point.save()
-
-        except Exception:
-            if point is not None:
-                point.delete()
-            msg = "Issue with attachment from new point to sensitive/geo areas. No Point created."
-            logger.error(msg)
-            raise APIException(msg)
-
-        return point
-
-    def update(self, instance, validated_data):
-        user = self.context["request"].user
-        validated_data["updated_by"] = user
-        return super().update(instance, validated_data)
-
-
-class LineSerializer(GeoFeatureModelSerializer):
+class LineSerializer(InstrastructureAbstractSerializer):
     """Serializer for Line
 
     Used to serialize all data from lines.
     inherit from GeoAreaSerializer as contains geo data.
     """
-
-    # Allow to display nested data
-    owner = NomenclatureSerializer(read_only=True)
-    areas = GeoAreaSerializer(many=True, read_only=True)
-    sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
-    diagnosis = DiagnosisSerializer(many=True, read_only=True)
-    operations = OperationSerializer(many=True, read_only=True)
-    mortality = MortalitySimpleSerializer(many=True, read_only=True)
-    created_by = UserSimpleSerializer(read_only=True)
-    updated_by = UserSimpleSerializer(read_only=True)
 
     class Meta:
         model = Line
@@ -871,40 +600,6 @@ class LineSerializer(GeoFeatureModelSerializer):
         Returns:
             {Line} -- returns new Line object
         """
-
-    def create(self, validated_data):
-        # create Line object with given coordinates
-
-        user = self.context["request"].user
-        validated_data["created_by"] = user
-        validated_data["updated_by"] = user
-        line = Line.objects.create(**validated_data)
-
-        try:
-            # get lists of GeoArea and Sensitive_Area that intersect with Line location
-            geoareas = GeoArea.objects.all().filter(geom__intersects=line.geom)
-            sensitiveareas = SensitiveArea.objects.all().filter(
-                geom__intersects=line.geom
-            )
-            # set the lists to line.geo_area and save it
-            line.areas.set(geoareas)
-            line.sensitive_area.set(sensitiveareas)
-            line.save()
-
-        except Exception:
-            if line is not None:
-                line.delete()
-            msg = "Issue with attachment from new Line to sensitive/geo areas. No Line created."
-            logger.error(msg)
-            raise APIException(msg)
-
-        return line
-
-    def update(self, instance, validated_data):
-        user = self.context["request"].user
-        validated_data["created_by"] = user
-        validated_data["updated_by"] = user
-        return super().update(instance, validated_data)
 
 
 class InfrastructurePolymorphicSerializer(
