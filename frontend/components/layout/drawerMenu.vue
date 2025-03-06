@@ -3,7 +3,7 @@
     @click="rail = false">
     <v-list class="bg-orange-darken-2">
       <v-list-item
-        :prepend-avatar="$auth.loggedIn ? 'https://randomuser.me/api/portraits/lego/7.jpg' : 'https://randomuser.me/api/portraits/lego/1.jpg'"
+        :prepend-avatar="$auth.loggedIn ? `https://randomuser.me/api/portraits/lego/${userAvatar}.jpg` : 'https://randomuser.me/api/portraits/lego/1.jpg'"
         :title="$auth.user?.username || 'Not connected'" :subtitle="$auth.user?.email || 'mail@dot.com'">
         <template #append>
           <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail" />
@@ -40,6 +40,6 @@ const links = ref([
 
 const rail = ref(true)
 const globalStore = useGlobalStore()
-const { drawer } = storeToRefs(globalStore)
+const { drawer, userAvatar } = storeToRefs(globalStore)
 
 </script>

@@ -55,6 +55,7 @@ const auth = useAuth()
 
 const nomenclaturesStore = useNomenclaturesStore()
 const mapLayersStore = useMapLayersStore()
+const globalStore = useGlobalStore()
 
 const loadBaseMapLayers = () => {
   mapLayersStore.getMapBaseLayers()
@@ -69,6 +70,7 @@ const loadNomenclatures = () => {
 onMounted(() => {
   loadBaseMapLayers()
   loadNomenclatures()
+  globalStore.setUserAvatar()
 })
 
 </script>
