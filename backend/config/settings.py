@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_gis",
     "sinp_nomenclatures",
+    "sinp_organisms",
     "map_layers",
 ]
 

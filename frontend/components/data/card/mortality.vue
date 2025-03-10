@@ -19,7 +19,7 @@
           </p>
           <v-chip-group>
             <v-chip :color="item.properties.infrstr.type== 1 ? 'success':'info'" :to="`/infrastructures/${item.properties.infrstr.id}`">
-`              {{ item.properties.infrstr.owner.label }} ({{ item.properties.infrstr.id }})
+              {{ item.properties.infrstr.owner.label }} ({{ item.properties.infrstr.id }})
             </v-chip>
           </v-chip-group>
         </v-col>
@@ -46,30 +46,28 @@
             </v-icon> {{ value }} {{ item.properties.death_cause.label }}
           </p>
           <p>
-            <span class="font-weight-bold">Infrastructure associée&nbsp;:</span>
-            {{ item.properties.infrstr ? item.properties.infrstr : '-' }}
-          </p>
-          <p>
             <span class="font-weight-bold">Source de la donnée&nbsp;:</span>
             {{ item.properties.data_source ? item.properties.data_source : '-' }}
           </p>
+          <data-display-images v-if="item.properties.media.length > 0" :edit="false" :medias="item.properties.media" />
         </v-col>
       </v-row>
     </v-card-text>
-    <!--<v-card-actions>
+    <v-card-actions>
       <v-spacer />
-      <v-dialog max-width="500">
+      <v-btn color="orange" prepend-icon="mdi-pencil-circle" @click="updateDiag">Modifier</v-btn>
+      <v-dialog v-model="deletedDiagConfirm" max-width="500">
         <template #activator="{ props: activatorProps }">
-          <v-btn v-bind="activatorProps" color="red" text="Supprimer" disabled prepend-icon="mdi-delete-circle" />
+          <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle" />
         </template>
 
         <template #default="{ isActive }">
-          <v-card title="Suppression d'une opération de neutralisation" color="red" prepend-icon="mdi-alert">
+          <v-card title="Suppression d'un diagnostic" color="red" prepend-icon="mdi-alert">
             <v-card-text>
               <div class="my-4">
-                Vous êtes sur le point de supprimer une opération, en êtes vous bien certain&nbsp;?
+                Vous êtes sur le point de supprimer un diagnostic, en êtes vous bien certain&nbsp;?
               </div>
-              <v-btn color="white" block text="Oui, Supprimer" prepend-icon="mdi-delete-circle" @click="deleteItem()" />
+              <v-btn color="white" block text="Oui, Supprimer" prepend-icon="mdi-delete-circle" @click="deleteData()" />
             </v-card-text>
 
             <v-card-actions>
@@ -79,9 +77,7 @@
           </v-card>
         </template>
       </v-dialog>
-      <v-btn color="orange" prepend-icon="mdi-pencil-circle" disabled @click="updateDiag()">
-        Modifier</v-btn>
-    </v-card-actions>-->
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -90,21 +86,29 @@
 const { itemId, item } = defineProps(['itemId', 'item'])
 
 const router = useRouter()
+
 const emit = defineEmits()
 const deathCauseIcons = ref({
   COD_EL: 'mdi-lightning-bolt',
   COD_IM: 'mdi-star',
   COD_UNKNOWN: 'mdi-help'
 })
+
+const deletedDiagConfirm = ref(false)
+const mediaStore = useMediaStore()
+// const { medias } = storeToRefs(mediaStore)
 const updateDiag = () => {
   router.push({
-    path: `/infrastructures/${supportId}/operation`,
-    query: { id_operation: operation.id }
+    path: `/mortality`,
+    query: { id_mortality: itemId }
   })
 }
 
-const deleteItem = async () => {
-  await useApi(`/api/v1/cables/mortality/${operation.id}/`, { method: 'delete' })
+
+const deleteData = async () => {
+  await useApi(`/api/v1/mortality/${itemId}/`, { method: 'delete' })
+  deletedDiagConfirm.value = false
+  router.push("/search")
   emit('delete')
 }
 </script>

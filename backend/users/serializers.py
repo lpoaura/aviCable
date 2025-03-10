@@ -1,6 +1,19 @@
+# from django.core.mail import send_mail
 from rest_framework.serializers import ModelSerializer
+from sinp_nomenclatures.serializers import NomenclatureSerializer
+from sinp_organisms.models import OrganismMember
+from sinp_organisms.serializers import OrganismSerializer
 
 from .models import User
+
+
+class OrganismMemberSetSerializer(ModelSerializer):
+    organism = OrganismSerializer()
+    member_level = NomenclatureSerializer(many=True)
+
+    class Meta:
+        model = OrganismMember
+        fields = "__all__"
 
 
 class UserSimpleSerializer(ModelSerializer):
@@ -13,3 +26,29 @@ class UserSimpleSerializer(ModelSerializer):
             "full_name",
             "avatar",
         ]
+
+
+class CustomUserSerializer(ModelSerializer):
+    """Serializer for Media model"""
+
+    organismmember_set = OrganismMemberSetSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "avatar",
+            "organism",
+            "organismmember_set",
+        ]
+
+    def create(self, validated_data):
+        # user = self.context["request"].user
+        # validated_data["created_by"] = user
+        # validated_data["updated_by"] = user
+        validated_data["is_active"] = False
+        return super().create(validated_data)

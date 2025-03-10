@@ -86,7 +86,7 @@
             <!-- <pre>{{diagData }}</pre> -->
           </v-container>
         </v-row>
-        <form-images :medias="diagData.media" @update="getFormMedias"></form-images>
+        <form-images :medias="diagData.media"></form-images>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -104,7 +104,6 @@ import type { NomenclatureItem } from '~/types/nomenclature';
 import type { NotificationInfo } from '~/types/notifications';
 import * as errorCodes from '~/static/errorConfig.json'
 
-const emit = defineEmits();
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
@@ -137,8 +136,6 @@ const diagData: DiagData = reactive({
   isolation_advice: false,
   media_id: [] as number[],
 })
-
-const medias = ref<Array<Media>>([])
 
 //       // rules for form validation
 const rules = reactive({
@@ -213,16 +210,18 @@ const createDiagnosis = async () => {
     diagData.infrastructure = infrastructureId.value
     diagData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     diagData.media_id = await createMedias()
-    const { data: diagnosis, error } = await useApi('/api/v1/cables/diagnosis/', { method: 'post', body: diagData })
+    const url = diagData.id ? `/api/v1/cables/diagnosis/${diagData.id}/` : '/api/v1/cables/diagnosis/'
+    const method = diagData.id ? 'put' : 'post'
+    const { data: diagnosis, error } = await useApi(url, { method: method, body: diagData })
     if (error.value) {
       notificationStore.setInfo({
         type: 'error',
-        msg: error
+        msg: `${error}`
       })
     } else {
       notificationStore.setInfo({
         type: 'success',
-        msg: 'Diagnostic créé'
+        msg: diagData.id ? 'Diagnostic mis à jour' : 'Diagnostic créé'
       })
     }
     console.debug('newDiagData', diagnosis)
@@ -239,54 +238,12 @@ const createDiagnosis = async () => {
   }
 }
 
-/**
- * updateDiagnosis(): Metypethod that update Diagnosis based on forms data (cf.this.diagData)
- *
- * Error handling: If Diagnosis update fails, new created Media will be deleted.
- * Finally, error message is displayed in snackBar through error handling process.
- */
-const updateDiagnosis = async () => {
-  // Create new Media as selected in component form and get list of Ids of created Media
-  // const mediaIdList = await createNewMedia()
-  try {
-
-    diagData.infrastructure = infrastructureId.value
-    diagData.date = formDate.value.toISOString().substring(0, 10)
-    diagData.media_id = await createMedias()
-    // diagData.media_id = mediaIdList // set Media id list
-    // Create Diagnosis
-    const { data, error } = await useApi(`/api/v1/cables/diagnosis/${diagData.id}/`, { method: 'put', body: diagData })
-    if (error.value) {
-      notificationStore.setInfo({
-        type: 'error',
-        msg: error
-      })
-    } else {
-      notificationStore.setInfo({
-        type: 'success',
-        msg: 'Diagnostic mis à jour'
-      })
-    }
-    mediaStore.resetMedias()
-    return data
-  } catch (err) {
-    notificationStore.setInfo({
-      type: 'error',
-      msg: err
-    })
-  }
-}
-
 const moveToNextStep = async () => {
-  const diagnosis = diagnosisId.value ? await updateDiagnosis() : await createDiagnosis()
+  const diagnosis = await createDiagnosis()
   if (diagnosis) {
     router.push(`/infrastructures/${infrastructureId.value}`)
   }
 };
-
-const getFormMedias = (value: Media[]) => {
-  medias.value = value
-}
 
 watch(formDate.value, (newVal, _oldVal) => mediaStore.date = newVal)
 

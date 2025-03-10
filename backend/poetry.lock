@@ -489,6 +489,22 @@ django-filter = ">=23.5,<25.0"
 djangorestframework = ">=3.0,<4.0"
 
 [[package]]
+name = "dj-sinp-organisms"
+version = "1.4.1"
+description = "Django app to manage french SINP organisms standard"
+optional = false
+python-versions = "<4.0,>=3.9.0"
+files = [
+    {file = "dj_sinp_organisms-1.4.1-py3-none-any.whl", hash = "sha256:5df8971974adcc4c4b79dc07557a0057de7a1669ec92f1c5d7db37facd7c99c3"},
+    {file = "dj_sinp_organisms-1.4.1.tar.gz", hash = "sha256:ed2a2e13e92aa3912f2c12d59050a4a3d5e7d161a78c3c8781fcf6941a831f81"},
+]
+
+[package.dependencies]
+dj-sinp-nomenclatures = ">=0.0.0"
+Django = ">=3.2"
+djangorestframework = ">=3,<4"
+
+[[package]]
 name = "django"
 version = "4.2.16"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
@@ -1625,4 +1641,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4"
-content-hash = "750c7bc35ac938c49bf10c1610f5f5aaeddf132aca1749faf7f8d996cdd3baa5"
+content-hash = "a5f0b43379f03c465ccfdaed9625da531b281e0faecd304a40ce3f91a5a75d7c"

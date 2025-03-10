@@ -27,7 +27,7 @@
           </v-container>
         </v-row>
         <form-equipments></form-equipments>
-        <form-images :medias="opData.media" @update="getFormMedias"></form-images>
+        <form-images :medias="opData.media"></form-images>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -243,11 +243,8 @@ const updateOperation = async () => {
   }
 }
 
-const getFormMedias = (value) => {
-  medias.value = value
-}
 
-watch(formDate.value, (newVal, _oldVal) => mediaStore.date = newVal)
+watch(formDate, (newVal, _oldVal) => mediaStore.date = newVal)
 
 // const moveToNextStep = async () => {
 //   const diagnosis = diagnosisId.value ? await updateDiagnosis() : await createDiagnosis()

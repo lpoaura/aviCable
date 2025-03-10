@@ -1,4 +1,6 @@
 export * from './cables'
-export * from './error'
+export * from './notifications'
+export * from './mortality'
 export * from './nomenclature'
 export * from './media'
+export * from './user'

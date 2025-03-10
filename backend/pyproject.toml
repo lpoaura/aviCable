@@ -22,6 +22,7 @@ docutils = "^0.20.1"
 django-debug-toolbar = "^4.2.0"
 setuptools = "^75.5.0"
 gunicorn = "^23.0.0"
+dj-sinp-organisms = "^1.4.1"
 
 
 [tool.poetry.group.dev.dependencies]

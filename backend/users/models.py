@@ -24,46 +24,46 @@ phone_regex = RegexValidator(
 
 
 # Create your models here.
-class Organism(BaseModel):
-    """Organisms model"""
+# class Organism(BaseModel):
+#     """Organisms model"""
 
-    uuid = models.UUIDField(
-        default=uuid4,
-        unique=True,
-        editable=False,
-        verbose_name=_("Identifiant unique"),
-    )
-    label = models.CharField(
-        max_length=500, unique=True, verbose_name=_("Nom")
-    )
-    short_label = models.CharField(
-        max_length=50, unique=True, verbose_name=_("Nom court")
-    )
-    email = models.EmailField(
-        blank=True, null=True, verbose_name=_("Adresse mail")
-    )
-    phone_number = models.CharField(
-        validators=[phone_regex],
-        max_length=17,
-        blank=True,
-        null=True,
-        verbose_name=_("Numéro de téléphone"),
-    )
-    url = models.URLField(
-        max_length=200, blank=True, null=True, verbose_name=_("URL")
-    )
-    extra_data = models.JSONField(
-        blank=True, null=True, verbose_name=_("Additional datas")
-    )
-    logo = models.ImageField(
-        _("Logo"), upload_to=settings.MEDIA_UPLOAD, null=True, blank=True
-    )
+#     uuid = models.UUIDField(
+#         default=uuid4,
+#         unique=True,
+#         editable=False,
+#         verbose_name=_("Identifiant unique"),
+#     )
+#     label = models.CharField(
+#         max_length=500, unique=True, verbose_name=_("Nom")
+#     )
+#     short_label = models.CharField(
+#         max_length=50, unique=True, verbose_name=_("Nom court")
+#     )
+#     email = models.EmailField(
+#         blank=True, null=True, verbose_name=_("Adresse mail")
+#     )
+#     phone_number = models.CharField(
+#         validators=[phone_regex],
+#         max_length=17,
+#         blank=True,
+#         null=True,
+#         verbose_name=_("Numéro de téléphone"),
+#     )
+#     url = models.URLField(
+#         max_length=200, blank=True, null=True, verbose_name=_("URL")
+#     )
+#     extra_data = models.JSONField(
+#         blank=True, null=True, verbose_name=_("Additional datas")
+#     )
+#     logo = models.ImageField(
+#         _("Logo"), upload_to=settings.MEDIA_UPLOAD, null=True, blank=True
+#     )
 
-    class Meta:
-        verbose_name_plural = _("organismes")
+#     class Meta:
+#         verbose_name_plural = _("organismes")
 
-    def __str__(self):
-        return str(self.short_label)
+#     def __str__(self):
+#         return str(self.short_label)
 
 
 class User(BaseModel, AbstractUser, PermissionsMixin):
@@ -93,12 +93,11 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
         blank=True,
         verbose_name=_("Emprise géographique par défaut"),
     )
-    organism = models.ForeignKey(
-        "Organism",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name=_("Organisme"),
+    organisms = models.ManyToManyField(
+        "sinp_organisms.Organism",
+        through="sinp_organisms.OrganismMember",
+        verbose_name=_("Organisms"),
+        related_name="organisms",
     )
     avatar = models.ImageField(
         _("Avatar"), upload_to=settings.MEDIA_UPLOAD, null=True, blank=True
