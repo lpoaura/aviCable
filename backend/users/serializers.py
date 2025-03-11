@@ -16,6 +16,27 @@ class OrganismMemberSetSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class UserRegistrationSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "organism",
+            "areas",
+        ]
+
+    # def create(self, validated_data):
+    #     validated_data["active"] = False
+    #     return super().create(validated_data)
+
+    # def update(self, instance, validated_data):
+    #     return super().update(instance, validated_data)
+
+
 class UserSimpleSerializer(ModelSerializer):
     """Serializer for Media model"""
 
@@ -42,13 +63,14 @@ class CustomUserSerializer(ModelSerializer):
             "email",
             "phone",
             "avatar",
-            "organism",
+            "organisms",
             "organismmember_set",
+            "areas",
         ]
 
-    def create(self, validated_data):
-        # user = self.context["request"].user
-        # validated_data["created_by"] = user
-        # validated_data["updated_by"] = user
-        validated_data["is_active"] = False
-        return super().create(validated_data)
+    # def create(self, validated_data):
+    #     # user = self.context["request"].user
+    #     # validated_data["created_by"] = user
+    #     # validated_data["updated_by"] = user
+    #     validated_data["is_active"] = False
+    #     return super().create(validated_data)

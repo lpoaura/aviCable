@@ -1,0 +1,13 @@
+[
+  {
+    "model": "auth.group",
+    "fields": {
+      "name": "registration_managers",
+      "permissions": [
+        ["change_active_status", "users", "user"],
+        ["change_user", "users", "user"],
+        ["view_user", "users", "user"]
+      ]
+    }
+  }
+]

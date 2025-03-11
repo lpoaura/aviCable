@@ -1,3 +1,5 @@
+import random
+import string
 from uuid import uuid4
 
 from django.conf import settings
@@ -11,6 +13,7 @@ from django.contrib.auth.models import (
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from sinp_nomenclatures.models import Nomenclature
 
 from commons.models import BaseModel
 
@@ -102,12 +105,39 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     avatar = models.ImageField(
         _("Avatar"), upload_to=settings.MEDIA_UPLOAD, null=True, blank=True
     )
+    areas = models.ForeignKey(
+        Nomenclature,
+        on_delete=models.PROTECT,
+        limit_choices_to={"type__mnemonic": "geographic_area"},
+        blank=True,
+        null=True,
+        related_name="areas",
+        verbose_name=_("Geographical area of intervention"),
+        help_text=_(
+            "The geographical area in which the user will be working? To validate registrations, user MUST also be in 'manage_registration' group)?"
+        ),
+    )
+    registration_token = models.CharField(
+        max_length=250,
+        blank=True,
+        null=True,
+        default="".join(
+            random.choices(string.ascii_letters + string.digits, k=64)
+        ),
+    )
+    email_verified = models.BooleanField(default=False)
 
     objects = UserManager()
 
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
+        permissions = [
+            (
+                "change_active_status",
+                "Can change the active status for users in managed areas",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.username} <{self.email}>"
@@ -115,7 +145,8 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         # self.username = generate_username(self.first_name, self.last_name)
         self.last_name = self.last_name.upper()
-        super(User, self).save(*args, **kwargs)
+        self.is_active = False
+        super().save(*args, **kwargs)
 
     def full_name(self):
         """
