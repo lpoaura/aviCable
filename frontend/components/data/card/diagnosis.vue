@@ -1,7 +1,8 @@
 <template>
   <v-card class="my-2">
-    <template #title><strong>{{ diagnosis.date }}</strong> - {{$t('display.diagnosis')}}</template>
-    <template #subtitle>{{ $t("filledIn") }} {{ new  Date(diagnosis.timestamp_create).toLocaleString() }} par {{ diagnosis.created_by?.username || '?' }}</template>
+    <template #title><strong>{{ diagnosis.date }}</strong> - {{ $t('display.diagnosis') }}</template>
+    <template #subtitle>{{ $t("filledIn") }} {{ new Date(diagnosis.timestamp_create).toLocaleString() }} par {{
+      diagnosis.created_by?.username || '?' }}</template>
     <v-card-text>
       <span class="font-weight-bold">Recommandations&nbsp;: </span><br>
       <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation' : ''"
@@ -23,7 +24,7 @@
       <template v-if="isPoint">
         <p>
           <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
-          <v-chip v-if="diagnosis.arming.length > 0" v-for="pt in diagnosis.arming"  :key="pt.id" color="info"
+          <v-chip v-if="diagnosis.arming.length > 0" v-for="pt in diagnosis.arming" :key="pt.id" color="info"
             class="ma-2">
             {{ pt.label }}
           </v-chip>
@@ -118,8 +119,11 @@ const { infrastructureType, diagnosis } = defineProps<Props>()
 const router = useRouter()
 const deletedDiagConfirm = ref(false)
 const mediaStore = useMediaStore()
+const globalStore = useGlobalStore()
+
 
 const { medias } = storeToRefs(mediaStore)
+const { refreshData } = storeToRefs(globalStore)
 
 const riskColors = reactive({
   RISK_L: 'blue lighten-1',
@@ -145,6 +149,7 @@ const updateDiag = () => {
 const deleteDiag = async () => {
   await useApi(`/api/v1/cables/diagnosis/${diagnosis.id}/`, { method: 'delete' })
   deletedDiagConfirm.value = false
+  refreshData.value = true
   emit('delete')
 }
 

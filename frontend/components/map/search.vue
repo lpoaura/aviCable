@@ -63,6 +63,7 @@ const cableStore: StoreGeneric = useCablesStore()
 const mortalityStore: StoreGeneric = useMortalityStore()
 const mapLayersStore: StoreGeneric = useMapLayersStore()
 const coordinatesStore: StoreGeneric = useCoordinatesStore()
+const globalStore: StoreGeneric = useGlobalStore()
 
 // Data
 const map: Ref<typeof LMap | null> = ref(null)
@@ -100,6 +101,7 @@ const {
 } = storeToRefs(cableStore)
 const { mortalityData } = storeToRefs(mortalityStore)
 const { baseLayers } = storeToRefs(mapLayersStore)
+const { refreshData } = storeToRefs(globalStore)
 
 const iconDict: { [key: string]: string } = {
   COD_EL: 'lightning-bolt',
@@ -415,6 +417,7 @@ watch(selectedFeature, (newVal, oldVal) => {
   if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
     const newObj = leaflet.geoJSON(newVal)
     mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
+    bufferedSelectedInfrastructure.value = buffer(newVal, 150, { units: 'meters' })
   }
 })
 
@@ -426,11 +429,11 @@ watch(createLayer, (newLayer, _oldLayer) => {
   }
 });
 
-watch(selectedFeature, (newVal, _oldVal) => {
-  if (newVal) {
-    bufferedSelectedInfrastructure.value = buffer(newVal, 150, { units: 'meters' })
-  }
-})
+// watch(selectedFeature.value, (newVal, _oldVal) => {
+//   if (newVal) {
+//     bufferedSelectedInfrastructure.value = buffer(newVal, 150, { units: 'meters' })
+//   }
+// })
 
 watch(mortalityInfrastructure, (newVal, _oldVal) => {
   if (newVal) {
@@ -474,6 +477,13 @@ watch(bbox, (newVal, _oldVal) => {
   handleBBox(newVal)
 })
 
+watch(refreshData, (newVal, _oldVal) => {
+  console.log('watch refreshData', newVal, newVal.value)
+  if (newVal == true) {
+    handleBBox(bbox.value)
+    refreshData.value = false
+  }
+})
 
 // helpers functions
 const getBbox = () => {

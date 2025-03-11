@@ -6,12 +6,14 @@
 </template>
 
 <script setup lang=ts>
-import {centroid} from '@turf/centroid';
+import { centroid } from '@turf/centroid';
 import { storeToRefs } from 'pinia';
+
+import type { CablesFeature } from '~/types/cables'
 
 
 useHead({
-  titleTemplate : (titleChunk) => {
+  titleTemplate: (titleChunk) => {
     return titleChunk ? `${titleChunk} - Infrastructure ${route.params.id}` : 'Infrastructure';
   }
 })
@@ -19,12 +21,12 @@ useHead({
 const route = useRoute()
 const coordinateStore = useCoordinatesStore()
 
-const { data: infrastructure } = await useApi(`/api/v1/cables/infrastructures/${route.params.id}/`)
+const { data: infrastructure } = await useApi<CablesFeature>(`/api/v1/cables/infrastructures/${route.params.id}/`)
 
-const {selectedFeature,center,zoom} = storeToRefs(coordinateStore)
+const { selectedFeature, center, zoom } = storeToRefs(coordinateStore)
 
 const updateData = async () => {
-  const { data: resp } = await useApi(`/api/v1/cables/infrastructures/${route.params.id}/`)
+  const { data: resp } = await useApi<CablesFeature>(`/api/v1/cables/infrastructures/${route.params.id}/`)
   infrastructure.value = resp
   zoomTo()
   title.value = `aviCable - Infrastructure #${route.query.id}`
@@ -33,10 +35,16 @@ const updateData = async () => {
 const zoomTo = () => {
   // const layer = geoJSON(info.value)
   // TODO: fix error on lines
+  console.debug('zoomTo', infrastructure)
   center.value = centroid(infrastructure.value)?.geometry?.coordinates.reverse()
   selectedFeature.value = infrastructure.value
   zoom.value = 14
 }
+
+watch(infrastructure.value, (_newVal, _oldVal) => {
+  console.debug('watch infrastructure')
+  zoomTo()
+})
 
 onMounted(() => {
   zoomTo()

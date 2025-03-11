@@ -5,7 +5,8 @@
       <widgets-neutralized-status :data="data" :detail="true" class="m1-2 float-right" />
       <widgets-risk-level-status :data="data" class="m1-2 float-right" detail />
     </template>
-    <template #subtitle>{{ $t("filledIn") }} {{ new  Date(data.properties.timestamp_create).toLocaleString() }} par {{ data.properties.created_by?.username || '?' }}</template>
+    <template #subtitle>{{ $t("filledIn") }} {{ new Date(data.properties.timestamp_create).toLocaleString() }} par {{
+      data.properties.created_by?.username || '?' }}</template>
     <v-card-text>
       <v-row>
         <v-col cols="12">
@@ -74,6 +75,9 @@ const router = useRouter()
 const deleteModal = ref(false)
 
 const notificationStore = useNotificationStore()
+const globalStore = useGlobalStore()
+
+const { refreshData } = storeToRefs(globalStore)
 
 const lastDiag = computed(() => {
   return data?.properties.diagnosis.find(
@@ -85,6 +89,7 @@ const lastDiag = computed(() => {
 const deleteInfrastructure = async () => {
   await useApi(`/api/v1/cables/${data.resourcetype.toLowerCase()}s/${data.properties.id}/`, { method: 'DELETE' })
   deleteModal.value = false
+  refreshData.value = true
   notificationStore.setInfo({
     type: 'success',
     msg: 'Infrastructure supprimée avec succès'

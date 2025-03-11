@@ -7,12 +7,14 @@ import { defineStore } from "pinia";
 interface GlobalStoreState {
   drawer: boolean; // Replace 'any' with a more specific type if possible
   userAvatar: number;
+  refreshData: boolean;
 }
 
 export const useGlobalStore = defineStore("global", {
   state: (): GlobalStoreState => ({
     drawer: false,
-    userAvatar: 7
+    userAvatar: 7,
+    refreshData: false,
   }),
   getters: {
     getUserAvatar(state) {

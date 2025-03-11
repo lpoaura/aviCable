@@ -95,8 +95,9 @@ const deathCauseIcons = ref({
 })
 
 const deletedDiagConfirm = ref(false)
-const mediaStore = useMediaStore()
+const globalStore = useGlobalStore()
 // const { medias } = storeToRefs(mediaStore)
+const {refreshData } = storeToRefs(globalStore)
 const updateDiag = () => {
   router.push({
     path: `/mortality`,
@@ -108,6 +109,7 @@ const updateDiag = () => {
 const deleteData = async () => {
   await useApi(`/api/v1/mortality/${itemId}/`, { method: 'delete' })
   deletedDiagConfirm.value = false
+  refreshData.value = true
   router.push("/search")
   emit('delete')
 }
