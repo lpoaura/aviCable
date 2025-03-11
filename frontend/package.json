@@ -23,7 +23,7 @@
     "@nuxt/devtools": "^1.5.2",
     "@nuxt/eslint": "^0.5.7",
     "@nuxtjs/eslint-config": "^12.0.0",
-    "@nuxtjs/i18n": "^8.5.5",
+    "@nuxtjs/i18n": "^9.3.1",
     "@pinia/nuxt": "^0.5.5",
     "@turf/buffer": "^7.1.0",
     "@turf/centroid": "^7.1.0",
@@ -37,7 +37,7 @@
     "leaflet-geosearch": "^4.0.0",
     "leaflet-search": "^4.0.0",
     "leaflet.locatecontrol": "^0.81.1",
-    "nuxt": "^3.15.4",
+    "nuxt": "^3.16.0",
     "pinia": "^2.2.4",
     "tslint": "^5.20.1",
     "vuetify": "^3.7.6"
