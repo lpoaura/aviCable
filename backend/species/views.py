@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
@@ -15,9 +16,7 @@ class SpeciesViewSet(viewsets.ModelViewSet):
 
     serializer_class = SpeciesSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
-    filter_backends = [
-        SearchFilter,
-    ]
+    filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = [
         "=code",
         "scientific_name",
@@ -25,4 +24,5 @@ class SpeciesViewSet(viewsets.ModelViewSet):
         "@scientific_name",
         "@vernacular_name",
     ]
+    filterset_fields = ["id"]
     queryset = Species.objects.all()

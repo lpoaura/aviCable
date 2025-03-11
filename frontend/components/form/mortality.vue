@@ -17,7 +17,7 @@
                   <v-col cols="12" md="6">
                     <v-autocomplete v-model="mortalityData.species_id" v-model:search="speciesSearch"
                       :loading="isLoading" :items="specieSearchEntries" item-title="vernacular_name" item-value="id"
-                      label="Espèce" auto-select-first :rules="[rules.required]" required variant="solo"
+                      label="Espèce" clearable auto-select-first :rules="[rules.required]" required variant="solo"
                       density="compact" hide-no-data hide-details :placeholder="$t('Start typing to Search')" />
                   </v-col>
                   <v-col cols="12" md="6">
@@ -58,7 +58,7 @@
             </v-card>
           </v-container>
         </v-row>
-        <form-images :medias="mortalityData.media"></form-images>
+        <form-images :medias="mortalityData.media" />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -153,16 +153,14 @@ const speciesSelection = async (value: string) => {
   isLoading.value = false
 }
 
-const back = () => {
-  router.back()
-}
+
 
 
 const createData = async () => {
   try {
     mortalityData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
     mortalityData.media_id = await createMedias()
-    const url = mortalityId.value? `/api/v1/mortality/${mortalityId.value}/` : '/api/v1/mortality/'
+    const url = mortalityId.value ? `/api/v1/mortality/${mortalityId.value}/` : '/api/v1/mortality/'
     const method = mortalityId.value ? 'put' : 'post'
     const { data, error } = await useApi<MortalityFeature>(url, { method: method, body: mortalityData })
     if (error.value) {
@@ -209,6 +207,7 @@ const initData = async () => {
       formDate.value = new Date(data.value.properties.date)
       mediaStore.date = formDate.value
       mediaStore.medias = data.value.properties.media
+      specieSearchEntries.value = [data.value.properties.species,]
       const mortalitydata = {
         id: data.value.id,
         date: data.value.properties.date,

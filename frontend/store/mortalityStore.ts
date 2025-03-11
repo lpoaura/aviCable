@@ -4,31 +4,8 @@
 
 import { defineStore } from "pinia";
 import type { FeatureCollection, Feature } from "geojson";
+import type { MortalityStoreState, Species, MortalityData } from "~/types/mortality";
 
-import { useCoordinatesStore } from "./coordinatesStore";
-
-interface MortalityStoreState {
-  mortalityData: FeatureCollection; // Replace 'any' with a more specific type if possible
-  mortalityItem: Feature;
-  error: Error | null;
-  controller: AbortController | null;
-}
-
-interface MortalityData {
-  properties: {
-    id: number;
-    vernacular_name: string;
-    scientific_name: string;
-    death_cause?: string;
-    default: boolean | undefined;
-  };
-}
-
-interface Species {
-  id: number;
-  vernacular_name: string;
-  scientific_name: string;
-}
 
 export const useMortalityStore = defineStore("mortality", {
   state: (): MortalityStoreState => ({

@@ -5,13 +5,31 @@ import type { UserSimple } from "./user"
 import type { Infrastructure } from "./cables";
 import type { GeoApiFrProvider } from "leaflet-geosearch";
 
+
+export interface MortalityStoreState {
+  mortalityData: FeatureCollection; // Replace 'any' with a more specific type if possible
+  mortalityItem: Feature;
+  error: Error | null;
+  controller: AbortController | null;
+}
+
+export interface MortalityData {
+  properties: {
+    id: number;
+    vernacular_name: string;
+    scientific_name: string;
+    death_cause?: string;
+    default: boolean | undefined;
+  };
+}
+
 export interface Species {
     id:number;
-    code: string;
+    code?: string;
     scientific_name: string;
     vernacular_name: string;
-    active: boolean;
-    photo: string;
+    active?: boolean;
+    photo?: string;
 }
 
 interface MortalityInfrastructure {

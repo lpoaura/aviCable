@@ -13,8 +13,6 @@
  * riskLevelItems: list of Items related to Risk Level assessment
  */
 import { defineStore } from "pinia";
-import * as errorCodes from "~/static/errorConfig.json";
-import type { NotificationInfo } from "~/store/notificationStore";
 
 export const useNomenclaturesStore = defineStore("nomenclatures", {
   state: () => ({
