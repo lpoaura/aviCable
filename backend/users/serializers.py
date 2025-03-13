@@ -74,3 +74,9 @@ class CustomUserSerializer(ModelSerializer):
     #     # validated_data["updated_by"] = user
     #     validated_data["is_active"] = False
     #     return super().create(validated_data)
+
+
+class ActivateAccountSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["is_active"]

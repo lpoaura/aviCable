@@ -12,8 +12,10 @@ class UserAdmin(BaseUserAdmin):
         "email",
         "date_joined",
         "last_login",
+        "is_active",
         "is_staff",
         "is_superuser",
+        "email_verified",
         "avatar",
     )
     list_filter = [

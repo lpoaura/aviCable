@@ -25,9 +25,12 @@
           {{ $t('login.sign-in') }}
         </v-btn>
         <div>
-        <a class="text-caption text-decoration-none text-blue" :href="'/account/reset'" rel="noopener noreferrer">
-            Forgot login password?</a>
-          </div>
+          <a class="text-caption text-decoration-none text-blue" :href="'/account/signup'" rel="noopener noreferrer">
+            {{t('login.sign-up')}} ?</a>
+          <v-spacer />
+          <a class="text-caption text-decoration-none text-blue" :href="'/account/reset'" rel="noopener noreferrer">
+            {{t('login.forgotten-password')}}?</a>
+        </div>
         <!-- <v-card-text class="text-center">
           <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" target="_blank">
             Sign up now <v-icon icon="mdi-chevron-right"></v-icon>

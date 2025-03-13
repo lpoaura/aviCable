@@ -1,4 +1,4 @@
 export interface NotificationInfo {
   type?: string;
-  msg: string | null;
+  msg: string | null | undefined;
 }

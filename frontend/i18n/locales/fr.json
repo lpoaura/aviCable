@@ -82,7 +82,7 @@
     "newImage": "Nouvelle photo",
     "valid": "Valider",
     "add": "Ajouter",
-    "newEquipment":"Nouvel équipement",
+    "newEquipment": "Nouvel équipement",
     "equipment": "Equipement"
   },
   "support": {
@@ -122,7 +122,9 @@
     "required_pwd_msg": "Le mot de passe est requis",
     "required_username_msg": "Le nom d'utilisateur est requis",
     "sign-in": "Se connecter",
-    "username": "Identifiant"
+    "sign-up": "Créer un compte",
+    "username": "Identifiant",
+    "forgotten-password": "Mot de mot de passe oublié"
   },
   "operation": {
     "eqmt-type": "Type d'équipements",

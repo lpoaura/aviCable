@@ -1,0 +1,3 @@
+<template>
+    <auth-activate />
+</template>

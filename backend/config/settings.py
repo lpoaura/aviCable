@@ -257,6 +257,9 @@ EMAIL_SUBJECT_PREFIX = config("EMAIL_SUBJECT_PREFIX", default="dbChiroWeb")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
 SERVER_EMAIL = config("SERVER_EMAIL", default=EMAIL_HOST_USER)
 
+SITE_URL = config(
+    "SITE_URL", default=(CORS_ALLOWED_ORIGINS[0] or "http://localhost:8000")
+)
 
 if DEBUG:
     import socket  # only if you haven't already imported this

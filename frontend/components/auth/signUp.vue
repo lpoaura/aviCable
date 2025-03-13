@@ -5,28 +5,24 @@
             <v-card class="mx-auto pa-12 pb-8" elevation="0" rounded="lg">
 
                 <div class="text-subtitle-1 text-medium-emphasis">Username</div>
-
                 <v-text-field v-model="formValue.username" density="compact" placeholder="Usename"
                     prepend-inner-icon="mdi-account-outline" variant="outlined" :rules="required" autofocus/>
 
                 <div class="text-subtitle-1 text-medium-emphasis">First name</div>
-
                 <v-text-field v-model="formValue.first_name" density="compact" placeholder="First name"
                     prepend-inner-icon="mdi-account-outline" variant="outlined" :rules="required" autofocus />
-                <div class="text-subtitle-1 text-medium-emphasis">Last name</div>
 
+                <div class="text-subtitle-1 text-medium-emphasis">Last name</div>
                 <v-text-field v-model="formValue.last_name" density="compact" placeholder="Last name"
                     prepend-inner-icon="mdi-account-outline" variant="outlined" :rules="required" autofocus />
 
                 <div class="text-subtitle-1 text-medium-emphasis">Email</div>
-
                 <v-text-field v-model="formValue.email" density="compact" placeholder="email"
                     prepend-inner-icon="mdi-account-outline" variant="outlined" :rules="required" autofocus />
 
                 <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
                     Password
                 </div>
-
                 <v-text-field v-model="formValue.password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                     :type="visible ? 'text' : 'password'" density="compact" placeholder="Enter your password"
                     prepend-inner-icon="mdi-lock-outline" variant="outlined" :rules="passwordRules"
@@ -42,14 +38,13 @@
 
 
                 <div class="text-subtitle-1 text-medium-emphasis">Areas</div>
-
                 <v-autocomplete v-model="formValue.areas" chips :items="areas" item-title="label" item-value="id"
                     :rules="[required]" hide-selected :label="$t('areas')" multiple deletable-chips variant="outlined"
                     density="compact" />
 
                 <v-btn block class="mb-8" color="blue" size="large" variant="flat" :loading="loading"
                     :disabled="!formValid" @click="signUp()">
-                    {{ $t('login.sign-in') }}
+                    {{ $t('login.sign-up') }}
                 </v-btn>
             </v-card>
         </v-form>
@@ -136,7 +131,7 @@ const pwdStrength = computed(() => {
 })
 
 const signUp = async () => {
-    console.log(formValue)
+    console.log('proceed signUp', formValue)
     const { data, error } = await useApi('/api/v1/user/', { method: 'post', body: formValue })
     if (error.value) {
         notificationStore.setInfo({
