@@ -21,6 +21,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = [
         "organisms",
     ]
+    fieldsets = BaseUserAdmin.fieldsets + ((None, {"fields": ("areas",)}),)
 
 
 admin.site.register(User, UserAdmin)

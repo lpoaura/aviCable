@@ -59,7 +59,7 @@ const nameRules = reactive([v => !!v || t('login.required_username_msg')])
 const pwdRules = reactive([v => !!v || t('login.required_pwd_msg')])
 const visible = ref(false)
 
-const nomenclaturesStore = useNomenclaturesStore()
+// const nomenclaturesStore = useNomenclaturesStore()
 
 const userLogin = async () => {
   try {
@@ -67,7 +67,7 @@ const userLogin = async () => {
       await auth.loginWith('local', {
         body: login
       })
-      nomenclaturesStore.loadNomenclatures()
+      // nomenclaturesStore.loadNomenclatures()
       router.push('/search')
     }
   } catch (err) {

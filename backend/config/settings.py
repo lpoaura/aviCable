@@ -241,6 +241,7 @@ LOGGING = {
     },
 }
 
+NOMENCLATURE_API_IS_PUBLIC = True
 
 # Backoffice maps
 DEFAULT_LAT = config("DEFAULT_LAT", default=45, cast=float)

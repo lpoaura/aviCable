@@ -1,12 +1,14 @@
 <template>
     <v-sheet width="100%" max-width="600" class="mx-auto text-center">
         <v-card class="mx-auto pa-12 pb-8" elevation="0" rounded="lg">
-            <h1>Activate a new account</h1>
-            <div v-if="user">{{ user?.username }} - {{ user?.full_name }}</div>
-            <div><v-icon :color="checkResp?.type" size="50">{{ icon }}</v-icon></div>
-            <div>{{ checkResp?.msg }}</div>
+            <h1><v-icon :color="checkStatus" size="50">{{ icon }}</v-icon> Activate a new account</h1>
+            <div v-if="user">
+                <p><code>{{ user?.username }}</code></p>
+                <p>{{ user?.full_name }}</p>
+                <p>{{ user?.email }}</p>
+            </div>
 
-            <div><v-btn @click="activateUser()" color="success">Activate</v-btn></div>
+            <div><v-btn block @click="activateUser()" class="mt-5" color="success">Activate</v-btn></div>
         </v-card>
     </v-sheet>
 </template>
@@ -39,7 +41,7 @@ const icon = computed(() => {
 
 })
 
-const checkStatus = ref(null)
+const checkStatus = ref<string>()
 const checkResp = ref<NotificationInfo | null>(null)
 
 // const { data, error } = await useApi<UserSimple | NotificationInfo>(`/api/v1/user/activate/${token.value}/`)
@@ -83,13 +85,14 @@ const activateUser = async () => {
             type: 'error',
             msg: `Can't get data for user : ${error.value}`
         })
+        checkStatus.value = 'error'
     }
     if (data.value) {
-        notificationStore.setInfo({
-            type: data.value.type,
-            msg: data.value.msg
-        })
+        notificationStore.setInfo(data.value)
+        checkStatus.value = data.value.type
     }
+    await sleep(2000)
+    router.push("/")
 }
 
 onMounted(() => getInfo())

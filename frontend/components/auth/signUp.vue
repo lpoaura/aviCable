@@ -40,7 +40,7 @@
                 <div class="text-subtitle-1 text-medium-emphasis">Areas</div>
                 <v-autocomplete v-model="formValue.areas" chips :items="areas" item-title="label" item-value="id"
                     :rules="[required]" hide-selected :label="$t('areas')" multiple deletable-chips variant="outlined"
-                    density="compact" />
+                    density="compact" clearable/>
 
                 <v-btn block class="mb-8" color="blue" size="large" variant="flat" :loading="loading"
                     :disabled="!formValid" @click="signUp()">

@@ -20,7 +20,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
   }),
   getters: {
     areas(state) {
-      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "geographic_areas")?.nomenclatures;
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.mnemonic === "geographic_area")?.nomenclatures;
     },
     armingItems(state) {
       return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "ARMING")?.nomenclatures;

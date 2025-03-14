@@ -62,9 +62,7 @@ const loadBaseMapLayers = () => {
 }
 
 const loadNomenclatures = () => {
-  if (auth.loggedIn) {
-    nomenclaturesStore.loadNomenclatures()
-  }
+  nomenclaturesStore.loadNomenclatures()
 }
 
 onMounted(() => {

@@ -78,6 +78,14 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
         editable=False,
         verbose_name=_("Identifiant unique"),
     )
+    is_active = models.BooleanField(
+        _("active"),
+        default=False,
+        help_text=_(
+            "Designates whether this user should be treated as active. "
+            "Unselect this instead of deleting accounts."
+        ),
+    )
     phone = models.CharField(
         max_length=50,
         blank=True,
@@ -105,12 +113,9 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     avatar = models.ImageField(
         _("Avatar"), upload_to=settings.MEDIA_UPLOAD, null=True, blank=True
     )
-    areas = models.ForeignKey(
+    areas = models.ManyToManyField(
         Nomenclature,
-        on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "geographic_area"},
-        blank=True,
-        null=True,
         related_name="areas",
         verbose_name=_("Geographical area of intervention"),
         help_text=_(
@@ -145,7 +150,6 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         # self.username = generate_username(self.first_name, self.last_name)
         self.last_name = self.last_name.upper()
-        self.is_active = False
         super().save(*args, **kwargs)
 
     def full_name(self):

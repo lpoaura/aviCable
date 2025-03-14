@@ -107,23 +107,29 @@ class ActivateAccountViewSet(ViewSet):
             user = User.objects.get(
                 registration_token=token
             )  # Get user by token
-            serializer = ActivateAccountSerializer(
-                user, data=request.data, partial=True
-            )
-
-            if serializer.is_valid():
-                serializer.save()
-                return Response(
-                    {
-                        "type": "success",
-                        "msg": _("Account activated successfully."),
-                    },
-                    status=status.HTTP_200_OK,
+            if not user.is_active:
+                serializer = ActivateAccountSerializer(
+                    user, data={"is_active": True}, partial=True
                 )
 
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(
+                        {
+                            "type": "success",
+                            "msg": _("Account activated successfully."),
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+
+                return Response(
+                    serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+            else:
+                return Response(
+                    {"type": "info", "msg": _("User already activated.")},
+                    status=status.HTTP_208_ALREADY_REPORTED,
+                )
         except User.DoesNotExist:
             return Response(
                 {"type": "error", "msg": _("User does not exist.")},
