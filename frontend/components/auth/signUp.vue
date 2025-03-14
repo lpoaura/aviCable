@@ -39,7 +39,7 @@
 
                 <div class="text-subtitle-1 text-medium-emphasis">Areas</div>
                 <v-autocomplete v-model="formValue.areas" chips :items="areas" item-title="label" item-value="id"
-                    :rules="[required]" hide-selected :label="$t('areas')" multiple deletable-chips variant="outlined"
+                    :rules="[listRequired]" hide-selected :label="$t('areas')" multiple deletable-chips variant="outlined"
                     density="compact" clearable/>
 
                 <v-btn block class="mb-8" color="blue" size="large" variant="flat" :loading="loading"
@@ -74,6 +74,7 @@ const formValue = reactive({
     areas: null
 })
 const required = reactive([v => !!v || t('required')])
+const listRequired = reactive([v=> !!v.length || t('required')])
 const passwordRules = reactive([
     (value) => !!value || 'Please type password.',
     (value) => (value && value.length >= 12) || 'minimum 12 characters',
