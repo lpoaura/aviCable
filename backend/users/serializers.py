@@ -1,4 +1,5 @@
 # from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer
 from sinp_nomenclatures.serializers import NomenclatureSerializer
 from sinp_organisms.models import OrganismMember
@@ -6,6 +7,7 @@ from sinp_organisms.serializers import OrganismSerializer
 
 from .models import User
 
+UserModel = get_user_model()
 
 class OrganismMemberSetSerializer(ModelSerializer):
     organism = OrganismSerializer()
@@ -30,12 +32,16 @@ class UserRegistrationSerializer(ModelSerializer):
             "areas",
         ]
 
-    # def create(self, validated_data):
-    #     validated_data["active"] = False
-    #     return super().create(validated_data)
+    def create(self, validated_data):
+        print('validated_data', validated_data)
+        user = get_user_model().objects.create_user(**validated_data)
+        return user
 
-    # def update(self, instance, validated_data):
-    #     return super().update(instance, validated_data)
+    def update(self, instance, validated_data):
+        if 'password' in validated_data:
+            password = validated_data.pop('password')
+            instance.set_password(password)
+        return super().update(instance, validated_data)
 
 
 class UserSimpleSerializer(ModelSerializer):
