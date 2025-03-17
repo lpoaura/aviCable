@@ -1,0 +1,541 @@
+[
+{
+    "model": "sinp_nomenclatures.source",
+    "fields": {
+        "timestamp_create": "2022-01-26T10:41:30.941Z",
+        "timestamp_update": "2022-01-26T10:41:30.941Z",
+        "name": "Appli_Cable",
+        "version": "v1",
+        "url": "",
+        "create_date": "2022-01-26",
+        "update_date": "2022-01-26"
+    }
+},
+{
+    "model": "sinp_nomenclatures.type",
+    "fields": {
+        "timestamp_create": "2025-03-17T14:33:35.758Z",
+        "timestamp_update": "2025-03-17T14:33:35.758Z",
+        "code": "AREAS",
+        "mnemonic": "geographic_areas",
+        "label": "Zone géographiques (régions/COM)",
+        "status": "VALID",
+        "create_date": "2025-03-17",
+        "update_date": "2025-03-17",
+        "source": [
+            "Appli_Cable",
+            "v1"
+        ]
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "73",
+        "label": "Midi-Pyrénées",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "72",
+        "label": "Aquitaine",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "54",
+        "label": "Poitou-Charentes",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "53",
+        "label": "Bretagne",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "52",
+        "label": "Pays de la Loire",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "44",
+        "label": "Alsace-Champagne-Ardenne-Lorraine",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "43",
+        "label": "Franche-Comté",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "42",
+        "label": "Alsace",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "41",
+        "label": "Lorraine",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "32",
+        "label": "Nord-Pas-de-Calais-Picardie",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "31",
+        "label": "Nord-Pas-de-Calais",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "94",
+        "label": "Corse",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "93",
+        "label": "Provence-Alpes-Côte d'Azur",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "91",
+        "label": "Languedoc-Roussillon",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "84",
+        "label": "Auvergne-Rhône-Alpes",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "83",
+        "label": "Auvergne",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "82",
+        "label": "Rhône-Alpes",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "76",
+        "label": "Languedoc-Roussillon-Midi-Pyrénées",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "75",
+        "label": "Aquitaine-Limousin-Poitou-Charentes",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "28",
+        "label": "Normandie",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "27",
+        "label": "Bourgogne-Franche-Comté",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "26",
+        "label": "Bourgogne",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "25",
+        "label": "Basse-Normandie",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "24",
+        "label": "Centre-Val de Loire",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "23",
+        "label": "Haute-Normandie",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "22",
+        "label": "Picardie",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "21",
+        "label": "Champagne-Ardenne",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "11",
+        "label": "Île-de-France",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "06",
+        "label": "Mayotte",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "04",
+        "label": "La Réunion",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "03",
+        "label": "Guyane",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "02",
+        "label": "Martinique",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "01",
+        "label": "Guadeloupe",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+},
+{
+    "model": "sinp_nomenclatures.nomenclature",
+    "fields": {
+        "timestamp_create": "2021-07-18T21:37:00.239Z",
+        "timestamp_update": "2021-07-18T21:37:00.239Z",
+        "type": [
+            "AREAS"
+        ],
+        "code": "74",
+        "label": "Limousin",
+        "description": "",
+        "status": "ENABLED",
+        "parents": []
+    }
+}
+]

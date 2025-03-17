@@ -2,20 +2,15 @@ import random
 import string
 from uuid import uuid4
 
+from commons.models import BaseModel
 from django.conf import settings
-from django.contrib.auth.models import (
-    AbstractUser,
-    PermissionsMixin,
-    UserManager,
-)
-
+from django.contrib.auth.models import (AbstractUser, PermissionsMixin,
+                                        UserManager)
 # Create your models here.
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Nomenclature
-
-from commons.models import BaseModel
 
 phone_regex = RegexValidator(
     regex=r"^\+?1?\d{9,15}$",
@@ -115,7 +110,7 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     )
     areas = models.ManyToManyField(
         Nomenclature,
-        limit_choices_to={"type__mnemonic": "geographic_area"},
+        limit_choices_to={"type__mnemonic": "geographic_areas"},
         related_name="areas",
         verbose_name=_("Geographical area of intervention"),
         help_text=_(
