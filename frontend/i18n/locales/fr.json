@@ -37,6 +37,23 @@
     "valid": "Valider",
     "technicalProposal": "Proposition technique"
   },
+  "auth": {
+    "createAccount":"Créer un compte",
+    "activate": "Activer",
+    "accountActivation": "Activer le compte",
+    "username":"Nom d'utilisateur",
+    "email": "E-mail",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "areasOfIntervention": "zone géographique d'intervention",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmez le mot de passe",
+    "enterPassword": "Mot de passe manquant",
+    "passwordMinLength": "12 caractères minimum",
+    "passwordStrengthRequired": "Ajoutez des caractères spéciaux et des chiffres à votre mot de passe",
+    "confirmPasswordNotMatch": "La confirmation de mot de passe ne correspond pas",
+    "checkEmail":"Vérification de votre email"
+  },
   "nav": {
     "application": "Application",
     "admin": "Administration",

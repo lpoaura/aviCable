@@ -9,6 +9,7 @@ from .models import User
 
 UserModel = get_user_model()
 
+
 class OrganismMemberSetSerializer(ModelSerializer):
     organism = OrganismSerializer()
     member_level = NomenclatureSerializer(many=True)
@@ -20,7 +21,7 @@ class OrganismMemberSetSerializer(ModelSerializer):
 
 class UserRegistrationSerializer(ModelSerializer):
     class Meta:
-        model = User
+        model = UserModel
         fields = [
             "username",
             "first_name",
@@ -28,20 +29,42 @@ class UserRegistrationSerializer(ModelSerializer):
             "password",
             "email",
             "phone",
-            "organism",
+            # "organism",
             "areas",
         ]
 
+        # def update(self, instance, validated_data):
+        #     if 'password' in validated_data:
+        #         password = validated_data.pop('password')
+        #         instance.set_password(password)
+        #     return super().update(instance, validated_data)
+
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "id": {"read_only": True},
+        }
+
+
     def create(self, validated_data):
-        print('validated_data', validated_data)
-        user = get_user_model().objects.create_user(**validated_data)
+        """Custom create account"""
+        username = validated_data.pop('username')
+        email = validated_data.pop('email')
+        password = validated_data.pop('password')
+        areas = validated_data.pop('areas')
+        user = UserModel.objects.create_user(username=username, email=email, password=password, **validated_data)
+        user.areas.set(areas)
         return user
 
-    def update(self, instance, validated_data):
-        if 'password' in validated_data:
-            password = validated_data.pop('password')
-            instance.set_password(password)
-        return super().update(instance, validated_data)
+
+    # def create(self, validated_data):
+    #     user = UserModel(**validated_data)
+    #     # Hash the user's password.
+    #     user.set_password(validated_data['password'])
+    #     user.save()
+    #     return user
+
+
+    
 
 
 class UserSimpleSerializer(ModelSerializer):

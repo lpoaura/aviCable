@@ -16,7 +16,7 @@ def send_email_verification(sender, instance, created, **kwargs):
     if created and not instance.email_verified:
         subject = _("[aviCable] Email Verification for Your Account")
         message = _(
-            f"""Hi {instance.full_name},\n\nYou asked for a registration on {settings.SITE_URL}.\n
+            f"""Hi {instance.full_name()},\n\nYou asked for a registration on {settings.SITE_URL}.\n
 Please click the link below to verify your email address :\n\n
 {settings.SITE_URL}/account/check_email?token={instance.registration_token}
             """
@@ -30,7 +30,7 @@ Please click the link below to verify your email address :\n\n
 def send_welcome_email(sender, instance, created, **kwargs):
     if not created and instance.email_verified and instance.is_active:
         subject = "[aviCable] Welcome to Our Website"
-        message = f"Hello {instance.full_name},\n\nWelcome to our website! Thank you for joining us."
+        message = f"Hello {instance.full_name()},\n\nWelcome to our website! Thank you for joining us."
         from_email = settings.EMAIL_HOST_USER
         recipient_list = [instance.email]
         send_mail(subject, message, from_email, recipient_list)

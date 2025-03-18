@@ -4,17 +4,14 @@
 
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ViewSet
 
 from .models import User
-from .serializers import (
-    ActivateAccountSerializer,
-    CustomUserSerializer,
-    UserRegistrationSerializer,
-)
+from .serializers import (ActivateAccountSerializer, CustomUserSerializer,
+                          UserRegistrationSerializer)
 
 
 class UserViewSet(ModelViewSet):
@@ -31,13 +28,15 @@ class UserViewSet(ModelViewSet):
     # return queryset
 
     def get_permission_classes(self):
-        if self.request.method == "post":
-            return []
+        if not self.request.user.is_authenticated and self.request.method == "POST":
+            return [AllowAny]
         else:
             return [IsAuthenticated]
 
     def get_serializer_class(self):
-        if not self.request.user and self.request.method == "post":
+        print(f"<UserViewSet> User ({self.request.user.is_authenticated }) / Method ({self.request.method})")
+        if not self.request.user.is_authenticated and self.request.method == "POST":
+            print("<UserViewSet> Choose UserRegistrationSerializer")
             return UserRegistrationSerializer
         return super().get_serializer_class()
 

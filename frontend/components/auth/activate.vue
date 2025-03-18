@@ -1,14 +1,16 @@
 <template>
     <v-sheet width="100%" max-width="600" class="mx-auto text-center">
         <v-card class="mx-auto pa-12 pb-8" elevation="0" rounded="lg">
-            <h1><v-icon :color="checkStatus" size="50">{{ icon }}</v-icon> Activate a new account</h1>
+            <h1><v-icon :color="checkStatus" size="50">{{ icon }}</v-icon> {{ $t('auth.accountActivation') }}</h1>
             <div v-if="user">
                 <p><code>{{ user?.username }}</code></p>
                 <p>{{ user?.full_name }}</p>
                 <p>{{ user?.email }}</p>
             </div>
 
-            <div><v-btn block @click="activateUser()" class="mt-5" color="success">Activate</v-btn></div>
+            <div><v-btn :disabled="disabled" block @click="activateUser()" class="mt-5" color="success">{{
+                $t('auth.activate') }}</v-btn>
+            </div>
         </v-card>
     </v-sheet>
 </template>
@@ -24,6 +26,7 @@ const route = useRoute()
 const router = useRouter()
 const token = computed(() => route.query.token)
 const user = ref<UserSimple | null>(null)
+const disabled = ref(false)
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -67,13 +70,25 @@ const checkResp = ref<NotificationInfo | null>(null)
 // })
 
 const getInfo = async () => {
-    const { data, error } = await useApi<UserSimple>(`/api/v1/user/activate/${token.value}/`)
+    const { data, error, status } = await useApi<UserSimple>(`/api/v1/user/activate/${token.value}/`)
+    console.log(data.value)
     user.value = data.value
+    console.log(error.value)
+    console.log('status', status.value)
     if (error.value) {
-        notificationStore.setInfo({
-            type: 'error',
-            msg: `Can't get data for user : ${error.value}`
-        })
+        console.log('response', error.value.response)
+        if (error.value.response?.status === 401) {
+            notificationStore.setInfo({
+                type: 'error',
+                msg: `You must be logged in to activate an account`
+            })
+        }
+        else {
+            notificationStore.setInfo({
+                type: 'error',
+                msg: `An error occured: ${error.value}`
+            })
+        }
     }
 }
 

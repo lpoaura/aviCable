@@ -1,6 +1,6 @@
 <template>
     <v-sheet width="100%" max-width="600" class="mx-auto text-center">
-        <h1>Check email page</h1>
+        <h1>{{ $t("auth.checkEmail") }}</h1>
         <div><v-icon :color="checkResp?.type" size="50">{{ icon }}</v-icon></div>
         <div>{{ checkResp?.msg }}</div>
 

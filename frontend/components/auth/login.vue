@@ -25,11 +25,11 @@
           {{ $t('login.sign-in') }}
         </v-btn>
         <div>
-          <a class="text-caption text-decoration-none text-blue" :href="'/account/signup'" rel="noopener noreferrer">
-            {{t('login.sign-up')}} ?</a>
+          <NuxtLink class="text-caption text-decoration-none text-blue" to="/account/signup">{{ $t('login.sign-up') }} ?
+          </NuxtLink>
           <v-spacer />
-          <a class="text-caption text-decoration-none text-blue" :href="'/account/reset'" rel="noopener noreferrer">
-            {{t('login.forgotten-password')}}?</a>
+          <NuxtLink class="text-caption text-decoration-none text-blue" to="/account/reset">{{
+            $t('login.forgotten-password') }}?</NuxtLink>
         </div>
         <!-- <v-card-text class="text-center">
           <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" target="_blank">
