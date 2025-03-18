@@ -59,5 +59,7 @@ Please go to to process activation :\n\n
 """
         )
         from_email = settings.EMAIL_HOST_USER
+        
         recipient_list = [user.email for user in recipients]
+        print('ACTIVATION recipients', recipients, recipient_list)
         send_mail(subject, message, from_email, recipient_list)

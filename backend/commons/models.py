@@ -40,9 +40,8 @@ class BaseModel(
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
-        print(f"SAVE----- {dir(self)}")
-        # if not self.created_by:
-        #     self.created_by = self.request.user
-        # self.updated_by = self.request.user
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     # if not self.created_by:
+    #     #     self.created_by = self.request.user
+    #     # self.updated_by = self.request.user
+    #     super().save(*args, **kwargs)
