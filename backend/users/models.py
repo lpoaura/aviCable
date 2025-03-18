@@ -73,6 +73,7 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
         editable=False,
         verbose_name=_("Identifiant unique"),
     )
+    email = models.EmailField(_("email address"), blank=False, unique=True)
     is_active = models.BooleanField(
         _("active"),
         default=False,
