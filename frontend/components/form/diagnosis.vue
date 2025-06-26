@@ -71,7 +71,7 @@
                       density="compact" />
                   </v-col>
                   <v-col cols="12" class="text-left">
-                    <v-textarea v-model="diagData.technicalProposal" clearable clear-icon="mdi-close-circle"
+                    <v-textarea v-model="diagData.technical_proposal" clearable clear-icon="mdi-close-circle"
                       :label="$t('diagnosis.technicalProposal')" :rules="[rules.textLength]" rows="2" counter="300"
                       variant="solo" density="compact" />
                   </v-col>
@@ -99,7 +99,7 @@
 
 <script lang="ts" setup>
 import { VDateInput } from 'vuetify/labs/VDateInput'
-import type { DiagData, Diagnosis, Media } from '~/types/cables';
+import type { DiagData, Diagnosis } from '~/types/cables';
 import type { NomenclatureItem } from '~/types/nomenclature';
 import type { NotificationInfo } from '~/types/notifications';
 import * as errorCodes from '~/static/errorConfig.json'
@@ -168,6 +168,7 @@ const initData = async () => {
         attraction_advice: diagnosis.value.attraction_advice,
         dissuasion_advice: diagnosis.value.dissuasion_advice,
         isolation_advice: diagnosis.value.isolation_advice,
+        change_advice: diagnosis.value.change_advice,
         media_id: [],
       }
       if (infrastructureType.value === 'point') {

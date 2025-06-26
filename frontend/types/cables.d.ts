@@ -9,6 +9,7 @@ export interface DiagData {
   date: string | Date;
   remark: string | null;
   technical_proposal: string | null;
+  change_advice: boolean;
   infrastructure: number | null;
   arming_id: Array<number>;
   neutralized: boolean;
@@ -168,7 +169,7 @@ export type Infrastructure = {
 
 export interface CablesFeature extends Feature {
   properties?: {
-    resource_type?: string; // Optional key for resource type
+    resourcetype?: string; // Optional key for resource type
     [key: string]: any; // Allow other properties
   };
   resourcetype?: string;

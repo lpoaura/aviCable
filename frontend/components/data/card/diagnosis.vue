@@ -61,11 +61,11 @@
             diagnosis.sgmt_landscape_integr_risk?.label }}</span>
         </p>
       </template>
-      <p v-if="diagnosis.technicalProposal">
+      <p v-if="diagnosis.technical_proposal">
         <span class="font-weight-bold">{{ $t('app.technicalProposal') }}</span>
       </p>
       <p>
-        {{ diagnosis.technicalProposal }}
+        {{ diagnosis.technical_proposal }}
       </p>
       <p v-if="diagnosis.remark">
         <span class="font-weight-bold">{{ $t('remark') }}</span>
