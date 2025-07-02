@@ -1,5 +1,6 @@
 <template>
-  <v-card class="my-2">
+  <v-card class="my-2" >
+    <template #prepend-icon><v-icon color="primary">mdi-star-check</v-icon></template>
     <template #title><strong>{{ operation.date }}</strong> - {{$t('display.neutralization')}}</template>
     <template #subtitle>{{ $t("filledIn") }} {{ new  Date(operation.timestamp_create).toLocaleString() }} par {{ operation.created_by?.username || '?' }}</template>
     <v-card-text>

@@ -511,6 +511,7 @@ const hookUpDraw = async () => {
     }).addTo(mapObject.value)
 
     if (mapObject.value && editMode) {
+      console.log('editMode & mode', editMode, mode)
       mapObject.value.pm.addControls({
         position: 'topleft',
         drawMarker: mode === 'point',

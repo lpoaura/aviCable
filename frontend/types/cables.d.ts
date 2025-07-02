@@ -163,7 +163,7 @@ export type Infrastructure = {
   id: number;
   operations: Operation[];
   owner: Nomenclature;
-  owner_id: any;
+  owner_id: number;
   sensitive_area: SensitiveArea[];
 };
 

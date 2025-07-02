@@ -1,5 +1,5 @@
 <template>
-  <v-card class="my-2">
+  <v-card class="my-2" prepend-icon="mdi-playlist-check">
     <template #title><strong>{{ diagnosis.date }}</strong> - {{ $t('display.diagnosis') }}</template>
     <template #subtitle>{{ $t("filledIn") }} {{ new Date(diagnosis.timestamp_create).toLocaleString() }} par {{
       diagnosis.created_by?.username || '?' }}</template>

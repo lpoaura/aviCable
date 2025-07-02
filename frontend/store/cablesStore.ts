@@ -1,6 +1,7 @@
 // Nuxt Store module: cablesStore for Cables module
 import { defineStore } from 'pinia'
 import type { CablesFeatureCollection, OperationFeatureCollection, Line, Point, CablesFeature, Equipment } from '~/types/cables'
+import type { FeatureCollection } from 'geojson'
 
 export const useCablesStore = defineStore('cables', {
   state: () => ({
@@ -15,8 +16,8 @@ export const useCablesStore = defineStore('cables', {
     formInfrastructureId: null,
     formInfrastructure: {} as CablesFeature,
     controller: null as AbortController | null,
-    enedisInfrastructure: null,
-    rteInfrastructure: null,
+    enedisInfrastructure: {} as FeatureCollection,
+    rteInfrastructure: {} as FeatureCollection,
     formEquipments: [] as Equipment[],
     selectedEquipment: null as Equipment | null,
     equipmentToDelete: null as Equipment | null,
@@ -174,21 +175,22 @@ export const useCablesStore = defineStore('cables', {
       console.log('query params', { signal, params })
       try {
         const [{ data: reseauBt }, { data: reseauHta }, { data: poteaux }] = await Promise.all([
-          useApi(
+          useApi<FeatureCollection>(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-bt/exports/geojson', { signal, params }
           ),
-          useApi(
+          useApi<FeatureCollection>(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-hta/exports/geojson', { signal, params }
           ),
-          useApi(
+          useApi<FeatureCollection>(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/position-geographique-des-poteaux-hta-et-bt/exports/geojson', { signal, params }
           )
         ]);
-        this.enedisInfrastructure = {
-          type: 'FeatureCollection',
-          features: [...reseauBt.value.features, ...reseauHta.value.features, ...poteaux.value.features,]
+        if (reseauBt.value && reseauHta.value && poteaux.value) {
+          this.enedisInfrastructure = {
+            type: 'FeatureCollection',
+            features: [...reseauBt.value.features, ...reseauHta.value.features, ...poteaux.value.features,]
+          }
         }
-
       } catch (err) {
         if (err.name === 'AbortError') {
           console.debug('getEnedisInfrastructure Requête annulée');
@@ -219,16 +221,18 @@ export const useCablesStore = defineStore('cables', {
       console.log('query params', { signal, params: paramsPylones })
       try {
         const [{ data: Lines }, { data: Pylones }] = await Promise.all([
-          useApi(
+          useApi<FeatureCollection>(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', { signal, params: paramsLines }
           ),
-          useApi(
+          useApi<FeatureCollection>(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', { signal, params: paramsPylones }
           ),
         ]);
-        this.rteInfrastructure = {
-          type: 'FeatureCollection',
-          features: [...Lines.value.features, ...Pylones.value.features]
+        if (Lines.value && Pylones.value) {
+          this.rteInfrastructure = {
+            type: 'FeatureCollection',
+            features: [...Lines.value.features, ...Pylones.value.features]
+          }
         }
 
       } catch (err) {

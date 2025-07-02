@@ -1,6 +1,6 @@
 <template>
-  <template v-for="(mortality, index) in data" :key="index" @click="dataDetail(mortality)">
-    <v-card class="my-2">
+  <template  v-for="(mortality, index) in data" :key="index" @click="dataDetail(mortality)">
+    <v-card class="my-2" prepend-icon="mdi-coffin">
       <template #title><strong>{{ mortality.date }}</strong> - {{ $t('display.mortalityCases') }}</template>
       <template #subtitle>{{ $t("filledIn") }} {{ new Date(mortality.timestamp_create).toLocaleString() }} par {{
         mortality.created_by?.username || '?' }}</template>

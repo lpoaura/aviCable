@@ -5,7 +5,7 @@
         <v-container>
           <v-row>
             <v-col cols="12" class="text-left">
-              <strong> {{ $t('forms.generalInfrastructure') }}</strong> {{ infrastructureType.toLowerCase() }}
+              <strong> {{ $t('forms.generalInfrastructure') }}</strong>
             </v-col>
           </v-row>
           <v-row>
@@ -15,7 +15,6 @@
             </v-col>
           </v-row>
         </v-container>
-
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -31,6 +30,7 @@
 import { storeToRefs } from 'pinia';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { NotificationInfo } from '~/types/notifications'
+import type { CablesFeature } from '~/types/cables';
 
 const emit = defineEmits();
 
@@ -42,24 +42,43 @@ const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 interface Props {
-  infrastructure?: Infrastructure,
+  infrastructure?: Ref<CablesFeature>,
   infrastructureType: string
 }
+
+const { infrastructure, infrastructureType } = defineProps<Props>()
+
 // data
 const form = ref(null) // used to get form ref from "<v-form ref="form">"
 const formValid = ref(true)
 
-const { infrastructure, infrastructureType } = defineProps<Props>()
+const route = useRoute()
+const router = useRouter()
 
 // Adding operations
 
 const { newGeoJSONObject } = storeToRefs(coordinatesStore)
 const { ownerItems } = storeToRefs(nomenclaturesStore)
+const infrastructureId = computed(() => route.params.id)
 
 const infrastructureData = reactive({
-  geom: null,
-  owner_id: infrastructure ? infrastructure.owner_id : null,
-})
+  geom: {},
+  owner_id: null,
+});
+
+// Watch for changes in the infrastructure prop
+watch(
+  () => infrastructure,
+  (newInfrastructure) => {
+    console.log('wATCHER INFRA', newInfrastructure, infrastructure)
+    if (newInfrastructure?.value) {
+      infrastructureData.geom = newInfrastructure.value.geometry;
+      infrastructureData.owner_id = newInfrastructure.value.properties?.owner?.id;
+    }
+  },
+  { immediate: true } // This will also run the watcher immediately with the current value
+);
+
 
 
 const rules = reactive({
@@ -71,18 +90,24 @@ const rules = reactive({
 })
 
 const moveToNextStep = async () => {
-  const infrastructure = await createNewInfrastructure()
-  if (infrastructure) {
-    emit('nextStep');
-  }
+  const formInfrastructure = await createNewInfrastructure()
+  if (formInfrastructure) {
+    if (!infrastructureId.value) {
+      emit('nextStep');
+    } else {
+      router.push(`/infrastructures/${infrastructureId.value}`)
+    }
+  } 
 };
 
 
 const createNewInfrastructure = async () => {
   try {
     infrastructureData.geom = newGeoJSONObject.value?.geometry
-    const { data: infrastructure, error } = await useApi(`/api/v1/cables/${infrastructureType.toLowerCase()}s/`, { method: 'post', body: infrastructureData })
-    cablesStore.setFormInfrastructureId(infrastructure.value.properties.id)
+    const url = infrastructureId.value ? `/api/v1/cables/${infrastructureType.toLowerCase()}s/${infrastructureId.value}/` : `/api/v1/cables/${infrastructureType.toLowerCase()}s/`
+    const method = infrastructureId.value ? 'put': 'post'
+    const { data, error } = await useApi<CablesFeature>(url, { method, body: infrastructureData })
+    cablesStore.setFormInfrastructureId(data.value?.properties?.id)
     if (error.value) {
       notificationStore.setInfo({
         type: 'error',
@@ -94,7 +119,7 @@ const createNewInfrastructure = async () => {
         msg: 'Infrastructure créée'
       })
     }
-    return infrastructure?.value
+    return data?.value
   } catch (_err) {
     console.error(_err)
     const error: NotificationInfo = {
@@ -104,4 +129,5 @@ const createNewInfrastructure = async () => {
     notificationStore.setInfo(error)
   }
 }
+
 </script>

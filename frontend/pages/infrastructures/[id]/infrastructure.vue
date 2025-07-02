@@ -1,6 +1,8 @@
 <template>
   <NuxtLayout name="view">
-    <template #map><map-search :edit-mode="true" :mode="infrastructure.geometry.type" /></template>
+    <template #map>
+      <map-search :edit-mode="true" :mode="infrastructureType" />
+    </template>
     <v-layout full-height>
       <v-app-bar density="compact" color="blue-grey-lighten-5">
         <v-app-bar-title>
@@ -12,6 +14,9 @@
       </v-app-bar>
       <v-main scrollable>
         <v-container>
+          <!-- <div>
+            <pre>{{ infrastructure }}</pre>
+          </div> -->
           <form-infrastructure :infrastructure="infrastructure" :infrastructure-type="infrastructureType" />
         </v-container>
       </v-main>
@@ -23,27 +28,34 @@
 
 
 <script setup>
-
 definePageMeta({
   auth: true,
 });
 
-const coordinatesStore=useCoordinatesStore()
+const coordinatesStore = useCoordinatesStore()
 const route = useRoute()
-const infrastructure = ref(null)
+
+const infrastructure = ref({})
 const infrastructureId = computed(() => route.params.id)
-const infrastructureType = computed(() => route.query.type)
+const infrastructureType = computed(() => route.query.type?.toLowerCase())
 
-const getData = async () =>{
+const getData = async () => {
+  console.log('getData route.params.id', infrastructureId.value);
   if (infrastructureId.value) {
-    const {data: resInfrastructure} = await useApi(`/api/v1/cables/infrastructures/${route.params.id}`)
-    infrastructure.value=resInfrastructure
-    coordinatesStore.setSelectedFeature(infrastructure.value)
+    try {
+      const { data } = await useApi(`/api/v1/cables/infrastructures/${infrastructureId.value}`);
+      infrastructure.value = data; // Assign the fetched data to the infrastructure ref
+      coordinatesStore.setSelectedFeature(data); // Assuming data is the correct structure
+    } catch (error) {
+      console.error('Error fetching infrastructure data:', error);
+      // Handle error (e.g., show a notification or set an error state)
+    }
   }
-}
+};
 
-onMounted(()=> {
-  getData()
+onMounted(async () => {
+  await getData()
+  console.log('infrastructure mounted', infrastructure)
 })
 
 </script>
