@@ -199,6 +199,9 @@ const submit = async () => {
   }
 }
 
+const isObjectWithId = (value: number | Object): value is Object => {
+    return (value as Object).id !== undefined;
+}
 
 const initData = async () => {
   if (mortalityId.value) {
@@ -212,8 +215,8 @@ const initData = async () => {
         id: data.value.id,
         date: data.value.properties.date,
         author: data.value.properties.author,
-        species_id: data.value.properties.species.id, // null,
-        infrstr_id: data.value.properties.infrstr.id,
+        species_id: data.value.properties.species?.id, // null,
+        infrstr_id: data.value.properties.infrstr?.id,
         nb_death: data.value.properties.nb_death,
         death_cause_id: data.value.properties.death_cause.id,
         data_source: data.value.properties.data_source,

@@ -43,7 +43,8 @@ export interface Mortality extends GeoJsonProperties {
     species?: Species | number;
     species_id?: number;
     death_cause: Nomenclature | number;
-    ifrstr: MortalityInfrastructure | number;
+    infrstr: MortalityInfrastructure | number ;
+    infrstr_id?: number;
     nb_death: number;
     author: string | null;
     data_source: string | null;
