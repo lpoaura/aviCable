@@ -12,10 +12,10 @@
     </v-list>
     <v-divider />
     <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-home" :title="t('nav.home_page')" to="/" />
+      <v-list-item prepend-icon="mdi-home-outline" :title="t('nav.home_page')" to="/" />
       <v-list-item v-for="[icon, text, url] in links" v-if="$auth.loggedIn" :prepend-icon="icon" :title="text"
         :to="url" />
-      <v-list-item prepend-icon="mdi-information" :title="t('nav.about')" to="/about" />
+      <v-list-item prepend-icon="mdi-information-outline" :title="t('nav.about')" to="/about" />
     </v-list>
     <template v-if="$auth.loggedIn" #append>
       <v-list density="compact" nav>

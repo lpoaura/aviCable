@@ -4,7 +4,7 @@
       <v-card-text>
         <v-row>
           <v-container>
-            <v-card title="Infos" prepend-icon="mdi-information">
+            <v-card title="Infos" prepend-icon="mdi-information-outline">
               <v-container>
                 <v-row>
                   <v-col cols="12">

@@ -35,7 +35,7 @@ const icon = computed(() => {
         case 'error':
             return 'mdi-alert-circle';
         case 'info':
-            return 'mdi-information';
+            return 'mdi-information-outline';
         case 'success':
             return 'mdi-check-circle';
         default:
