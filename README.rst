@@ -1,6 +1,6 @@
-***************************
- overheadCablesAndBirdlife
-***************************
+**********
+ aviCable
+**********
 
 .. image:: https://img.shields.io/badge/python-3.7+-yellowgreen
    :target: https://www.python.org/
@@ -41,7 +41,7 @@ Pull requests must be pulled to `dev` branch.
 Licence
 =======
 
-`GNU AGPLv3 <https://www.gnu.org/licenses/gpl.html>`_
+`GNU AGPLv3 <https://opensource.org/licenses/AGPL-3.0>`_
 
 Team
 ====
