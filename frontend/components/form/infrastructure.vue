@@ -111,7 +111,7 @@ const createNewInfrastructure = async () => {
     infrastructureData.geom = newGeoJSONObject.value?.geometry
     console.log('infrastructureData.geom', infrastructureData.geom)
     const url = infrastructureId.value ? `/api/v1/cables/${infrastructureType.toLowerCase()}s/${infrastructureId.value}/` : `/api/v1/cables/${infrastructureType.toLowerCase()}s/`
-    const method = infrastructureId.value ? 'put' : 'post'
+    const method = infrastructureId.value ? 'patch' : 'post'
     const { data, error } = await useApi<CablesFeature>(url, { method, body: infrastructureData })
     cablesStore.setFormInfrastructureId(data.value?.properties?.id)
     if (error.value) {

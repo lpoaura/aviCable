@@ -5,7 +5,7 @@
         <v-chip prepend-icon="mdi-eye-circle-outline" color="primary">
           {{ data.properties.id }}
         </v-chip>&nbsp;{{ type === 'Point' ? $t('support.support') : $t('line.line') }}
-        <strong>{{ data.properties.network_type.label }}</strong>
+        <strong>{{ data.properties.network_type.code }}</strong>
       </v-app-bar-title>
 
       <v-spacer />
@@ -19,7 +19,7 @@
         <data-card-infrastructure :data="data" />
         <data-card-mortality-for-infrastructure v-if="data.properties?.mortality?.length > 0"
           :data="data.properties?.mortality" />
-        <data-card-diagnosis v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type"
+        <data-card-diagnosis v-if="lastDiag" :diagnosis="lastDiag" :infrastructure-type="type" :infrastructure="data"
           @delete="$emit('update')" />
         <data-card-operation v-if="lastOp" :operation="lastOp" :support-id="data.properties?.id"
           :infrastructure-type="type" @delete="$emit('update')" />
@@ -49,6 +49,7 @@
 
 <script setup lang="ts">
 import type { CablesFeature } from '~/types/cables';
+import Infrastructure from '../card/infrastructure.vue';
 
 interface Props {
   data: CablesFeature

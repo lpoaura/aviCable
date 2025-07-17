@@ -117,10 +117,11 @@ const mediaStore = useMediaStore()
 const formValid = ref(false)
 const infrastructureId = computed(() => cablesStore.formInfrastructureId)
 const infrastructureType = computed(() => route.query.type && typeof route.query.type == 'string' ? (route.query.type).toLowerCase() : '')
+const networkTypeId = computed<number>(() => route.query.network_type && typeof route.query.network_type == 'string' && parseInt(route.query.network_type))
 const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
-const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value, ''))
+const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value, networkTypeId.value))
 // <NomenclatureItem[]>
 // const mediaList = ref<Array<number>>([])
 

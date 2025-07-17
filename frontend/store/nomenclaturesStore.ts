@@ -51,12 +51,12 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
       }
     },
     getArmingItems() {
-      return (geomType: string, network_type: string) => {
+      return (geomType: string, network_type: number) => {
         console.log('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
-        console.log('infraTypeId', infraTypeId, )
-        return infraTypeId ? this.armingItems?.filter(item => item.parents?.includes(infraTypeId)) : []
+        console.log('infraTypeId', infraTypeId)
+        return infraTypeId ? (this.armingItems?.filter(item => item.parents?.includes(infraTypeId)))?.filter(item => item.parents?.includes(network_type)) : []
       }
     },
     getEquipmentItems() {

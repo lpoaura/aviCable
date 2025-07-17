@@ -21,28 +21,6 @@
         <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>aviCable</natural><natural>v1</natural></field>
     </object>
     <object model="sinp_nomenclatures.type">
-        <field name="timestamp_create" type="DateTimeField">2025-03-17T14:33:35.758000+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2025-03-17T14:33:35.758000+00:00</field>
-        <field name="code" type="CharField">AREAS</field>
-        <field name="mnemonic" type="CharField">geographic_areas</field>
-        <field name="label" type="CharField">Zone géographiques (régions/COM)</field>
-        <field name="status" type="CharField">VALID</field>
-        <field name="create_date" type="DateField">2025-03-17</field>
-        <field name="update_date" type="DateField">2025-03-17</field>
-        <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>aviCable</natural><natural>v1</natural></field>
-    </object>
-    <object model="sinp_nomenclatures.type">
-        <field name="timestamp_create" type="DateTimeField">2022-02-01T08:00:04.904341+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2022-02-01T08:00:04.904369+00:00</field>
-        <field name="code" type="CharField">EQMT_TYPE</field>
-        <field name="mnemonic" type="CharField">equipment_type</field>
-        <field name="label" type="CharField">Type of equipment</field>
-        <field name="status" type="CharField">VALID</field>
-        <field name="create_date" type="DateField">2022-02-01</field>
-        <field name="update_date" type="DateField">2022-02-01</field>
-        <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>aviCable</natural><natural>v1</natural></field>
-    </object>
-    <object model="sinp_nomenclatures.type">
         <field name="timestamp_create" type="DateTimeField">2024-11-19T20:17:23.991104+00:00</field>
         <field name="timestamp_update" type="DateTimeField">2024-11-19T20:17:23.991115+00:00</field>
         <field name="code" type="CharField">IFR_TYPE</field>
@@ -54,6 +32,17 @@
         <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>aviCable</natural><natural>v1</natural></field>
     </object>
     <object model="sinp_nomenclatures.type">
+        <field name="timestamp_create" type="DateTimeField">2025-03-17T14:33:35.758000+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2025-03-17T14:33:35.758000+00:00</field>
+        <field name="code" type="CharField">AREAS</field>
+        <field name="mnemonic" type="CharField">geographic_areas</field>
+        <field name="label" type="CharField">Zone géographiques (régions/COM)</field>
+        <field name="status" type="CharField">VALID</field>
+        <field name="create_date" type="DateField">2025-03-17</field>
+        <field name="update_date" type="DateField">2025-03-17</field>
+        <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>aviCable</natural><natural>v1</natural></field>
+    </object>
+    <object model="sinp_nomenclatures.type">
         <field name="timestamp_create" type="DateTimeField">2022-01-28T14:40:46.799666+00:00</field>
         <field name="timestamp_update" type="DateTimeField">2022-01-28T14:40:46.799683+00:00</field>
         <field name="code" type="CharField">ARMING</field>
@@ -62,6 +51,17 @@
         <field name="status" type="CharField">VALID</field>
         <field name="create_date" type="DateField">2022-01-28</field>
         <field name="update_date" type="DateField">2022-01-28</field>
+        <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>aviCable</natural><natural>v1</natural></field>
+    </object>
+    <object model="sinp_nomenclatures.type">
+        <field name="timestamp_create" type="DateTimeField">2022-02-01T08:00:04.904341+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2022-02-01T08:00:04.904369+00:00</field>
+        <field name="code" type="CharField">EQMT_TYPE</field>
+        <field name="mnemonic" type="CharField">equipment_type</field>
+        <field name="label" type="CharField">Type of equipment</field>
+        <field name="status" type="CharField">VALID</field>
+        <field name="create_date" type="DateField">2022-02-01</field>
+        <field name="update_date" type="DateField">2022-02-01</field>
         <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>aviCable</natural><natural>v1</natural></field>
     </object>
     <object model="sinp_nomenclatures.type">
@@ -153,6 +153,16 @@
         <field name="source" rel="ManyToOneRel" to="sinp_nomenclatures.source"><natural>aviCable</natural><natural>v1</natural></field>
     </object>
     <object model="sinp_nomenclatures.nomenclature">
+        <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2025-07-17T14:23:40.036790+00:00</field>
+        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
+        <field name="code" type="CharField">DA</field>
+        <field name="label" type="CharField">Double ancrage</field>
+        <field name="description" type="TextField"></field>
+        <field name="status" type="CharField">ENABLED</field>
+        <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>NETW_TYP</natural><natural>HTA-BT</natural></object></field>
+    </object>
+    <object model="sinp_nomenclatures.nomenclature">
         <field name="timestamp_create" type="DateTimeField">2024-11-20T09:42:21.815145+00:00</field>
         <field name="timestamp_update" type="DateTimeField">2025-07-17T07:55:40.918332+00:00</field>
         <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>NETW_TYP</natural></field>
@@ -201,16 +211,6 @@
         <field name="description" type="TextField"></field>
         <field name="status" type="CharField">ENABLED</field>
         <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>NETW_TYP</natural><natural>HTA-BT</natural></object><object><natural>IFR_TYPE</natural><natural>POLE</natural></object></field>
-    </object>
-    <object model="sinp_nomenclatures.nomenclature">
-        <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2025-06-10T15:25:17.490138+00:00</field>
-        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
-        <field name="code" type="CharField">DA</field>
-        <field name="label" type="CharField">Double ancrage</field>
-        <field name="description" type="TextField"></field>
-        <field name="status" type="CharField">ENABLED</field>
-        <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>IFR_TYPE</natural><natural>POLE</natural></object></field>
     </object>
     <object model="sinp_nomenclatures.nomenclature">
         <field name="timestamp_create" type="DateTimeField">2021-07-18T21:37:00.239000+00:00</field>
@@ -511,6 +511,36 @@
         <field name="description" type="TextField"></field>
         <field name="status" type="CharField">ENABLED</field>
         <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
+    </object>
+    <object model="sinp_nomenclatures.nomenclature">
+        <field name="timestamp_create" type="DateTimeField">2024-11-19T20:18:24.763261+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2025-07-17T14:26:00.769305+00:00</field>
+        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>IFR_TYPE</natural></field>
+        <field name="code" type="CharField">LINE</field>
+        <field name="label" type="CharField">Ligne, Portée</field>
+        <field name="description" type="TextField"></field>
+        <field name="status" type="CharField">ENABLED</field>
+        <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>NETW_TYP</natural><natural>HTA-BT</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
+    </object>
+    <object model="sinp_nomenclatures.nomenclature">
+        <field name="timestamp_create" type="DateTimeField">2024-11-19T20:18:07.902399+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2025-07-17T14:25:39.576772+00:00</field>
+        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>IFR_TYPE</natural></field>
+        <field name="code" type="CharField">POLE</field>
+        <field name="label" type="CharField">Pôteau, Pylone</field>
+        <field name="description" type="TextField"></field>
+        <field name="status" type="CharField">ENABLED</field>
+        <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>NETW_TYP</natural><natural>HTA-BT</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object></field>
+    </object>
+    <object model="sinp_nomenclatures.nomenclature">
+        <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
+        <field name="timestamp_update" type="DateTimeField">2025-07-17T14:25:00.476772+00:00</field>
+        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
+        <field name="code" type="CharField">AUTRES</field>
+        <field name="label" type="CharField">Autres</field>
+        <field name="description" type="TextField"></field>
+        <field name="status" type="CharField">ENABLED</field>
+        <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>NETW_TYP</natural><natural>HTA-BT</natural></object><object><natural>NETW_TYP</natural><natural>HTB</natural></object><object><natural>IFR_TYPE</natural><natural>POLE</natural></object><object><natural>IFR_TYPE</natural><natural>LINE</natural></object></field>
     </object>
     <object model="sinp_nomenclatures.nomenclature">
         <field name="timestamp_create" type="DateTimeField">2021-07-18T21:37:00.239000+00:00</field>
@@ -1021,36 +1051,6 @@
         <field name="description" type="TextField"></field>
         <field name="status" type="CharField">ENABLED</field>
         <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"><object><natural>NETW_TYP</natural><natural>HTA-BT</natural></object><object><natural>IFR_TYPE</natural><natural>POLE</natural></object></field>
-    </object>
-    <object model="sinp_nomenclatures.nomenclature">
-        <field name="timestamp_create" type="DateTimeField">2024-11-19T20:18:24.763261+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2024-11-19T20:18:24.763274+00:00</field>
-        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>IFR_TYPE</natural></field>
-        <field name="code" type="CharField">LINE</field>
-        <field name="label" type="CharField">Ligne, Portée</field>
-        <field name="description" type="TextField"></field>
-        <field name="status" type="CharField">ENABLED</field>
-        <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
-    </object>
-    <object model="sinp_nomenclatures.nomenclature">
-        <field name="timestamp_create" type="DateTimeField">2024-11-19T20:18:07.902399+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2024-11-19T20:18:07.902438+00:00</field>
-        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>IFR_TYPE</natural></field>
-        <field name="code" type="CharField">POLE</field>
-        <field name="label" type="CharField">Pôteau, Pylonne</field>
-        <field name="description" type="TextField"></field>
-        <field name="status" type="CharField">ENABLED</field>
-        <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
-    </object>
-    <object model="sinp_nomenclatures.nomenclature">
-        <field name="timestamp_create" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
-        <field name="timestamp_update" type="DateTimeField">2023-11-29T10:51:33.465122+00:00</field>
-        <field name="type" rel="ManyToOneRel" to="sinp_nomenclatures.type"><natural>ARMING</natural></field>
-        <field name="code" type="CharField">AUTRES</field>
-        <field name="label" type="CharField">Autres</field>
-        <field name="description" type="TextField"></field>
-        <field name="status" type="CharField">ENABLED</field>
-        <field name="parents" rel="ManyToManyRel" to="sinp_nomenclatures.nomenclature"></field>
     </object>
     <object model="sinp_nomenclatures.nomenclature">
         <field name="timestamp_create" type="DateTimeField">2022-02-03T08:46:28.680213+00:00</field>

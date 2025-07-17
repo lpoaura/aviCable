@@ -107,15 +107,16 @@
 </template>
 
 <script setup lang="ts">
-import type { Diagnosis } from '~/types/cables';
+import type { CablesFeature, Diagnosis } from '~/types/cables';
 
 
 interface Props {
+  infrastructure: CablesFeature,
   infrastructureType: string,
   diagnosis: Diagnosis,
 }
 const emit = defineEmits()
-const { infrastructureType, diagnosis } = defineProps<Props>()
+const { infrastructure, infrastructureType, diagnosis } = defineProps<Props>()
 const router = useRouter()
 const deletedDiagConfirm = ref(false)
 const mediaStore = useMediaStore()
@@ -142,7 +143,7 @@ const isLine = computed(() => infrastructureType === 'Line')
 const updateDiag = () => {
   router.push({
     path: `/infrastructures/${diagnosis.infrastructure}/diagnosis`,
-    query: { id_diagnosis: diagnosis.id, type: infrastructureType.toLowerCase() }
+    query: { id_diagnosis: diagnosis.id, type: infrastructureType.toLowerCase(), network_type: infrastructure.properties?.network_type.id }
   })
 }
 
