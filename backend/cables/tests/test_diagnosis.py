@@ -163,7 +163,7 @@ class CreatePointDiagnosisTestCase(TestCase):
         self.authentified_client = logTestUser("user", "password")
 
         # Gather data from DB to create Diagnosis
-        owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
+        network_type_id = Nomenclature.objects.filter(type__mnemonic="network_type")[0].id
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"
         )[0].id
@@ -180,7 +180,7 @@ class CreatePointDiagnosisTestCase(TestCase):
 
         # create new Point
         data = {
-            "owner_id": owner_id,
+            "network_type_id": network_type_id,
             "geom": {"type": "Point", "coordinates": [0.5, 0.5]},
         }
         resp = self.authentified_client.post(
@@ -351,7 +351,7 @@ class CreateLineDiagnosisTestCase(TestCase):
         self.authentified_client = logTestUser("user", "password")
 
         # Gather data from DB to create Diagnosis
-        owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
+        network_type_id = Nomenclature.objects.filter(type__mnemonic="network_type")[0].id
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"
         )[0].id
@@ -363,7 +363,7 @@ class CreateLineDiagnosisTestCase(TestCase):
 
         # create new Line
         data = {
-            "owner_id": owner_id,
+            "network_type_id": network_type_id,
             "geom": {"type": "LineString", "coordinates": [[2, 6], [2, 4]]},
         }
 

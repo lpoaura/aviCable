@@ -36,13 +36,13 @@ class Infrastructure(BaseModel, PolymorphicModel):
         editable=False,
         verbose_name=_("Identifiant unique"),
     )
-    owner = models.ForeignKey(
+    network_type = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "owner"},
-        related_name="%(class)s_owner",
-        verbose_name=_("Infrastructure owner"),
-        help_text=_("Infrastructure owner"),
+        limit_choices_to={"type__mnemonic": "network_type"},
+        related_name="%(class)s_network_type",
+        verbose_name=_("Infrastructure network type"),
+        help_text=_("Infrastructure network type"),
     )
     areas = models.ManyToManyField(
         GeoArea,

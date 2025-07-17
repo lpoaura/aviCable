@@ -10,7 +10,7 @@
           </v-row>
           <v-row>
             <v-col cols="12" lg="12">
-              <v-select v-model="infrastructureData.owner_id" :items="ownerItems" item-title="label" item-value="id"
+              <v-select v-model="infrastructureData.network_type_id" :items="networkTypeItems" item-title="label" item-value="id"
                 :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required />
             </v-col>
           </v-row>
@@ -58,12 +58,12 @@ const router = useRouter()
 // Adding operations
 
 const { newGeoJSONObject } = storeToRefs(coordinatesStore)
-const { ownerItems } = storeToRefs(nomenclaturesStore)
+const { networkTypeItems } = storeToRefs(nomenclaturesStore)
 const infrastructureId = computed(() => route.params.id)
 
 const infrastructureData = reactive({
   geom: {},
-  owner_id: null,
+  network_type_id: null,
 });
 
 // Watch for changes in the infrastructure prop
@@ -73,7 +73,7 @@ watch(
     console.log('wATCHER INFRA', newInfrastructure, infrastructure)
     if (newInfrastructure?.value) {
       infrastructureData.geom = newInfrastructure.value.geometry;
-      infrastructureData.owner_id = newInfrastructure.value.properties?.owner?.id;
+      infrastructureData.network_type_id = newInfrastructure.value.properties?.network_type?.id;
     }
   },
   { immediate: true } // This will also run the watcher immediately with the current value

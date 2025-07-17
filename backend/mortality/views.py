@@ -23,7 +23,7 @@ class MortalityViewSet(viewsets.ModelViewSet):
         Mortality.objects.all()
         .select_related("species")
         .select_related("infrstr")
-        .select_related("infrstr__owner")
+        .select_related("infrstr__network_type")
         .select_related("death_cause__type")
         .select_related("data_source")
         .prefetch_related("media")

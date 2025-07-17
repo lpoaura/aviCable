@@ -32,7 +32,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     bbox_filter_include_overlapping = True
     queryset = (
         Infrastructure.objects.all()
-        .select_related("owner")
+        .select_related("network_type")
         .prefetch_related(
             Prefetch(
                 "areas",
@@ -75,7 +75,7 @@ class PointViewSet(viewsets.ModelViewSet):
     # Define queryset by optimizing DB requests
     queryset = (
         Point.objects.all()
-        .select_related("owner")
+        .select_related("network_type")
         .prefetch_related("areas")
         .prefetch_related("sensitive_area")
     )
@@ -92,7 +92,7 @@ class LineViewSet(viewsets.ModelViewSet):
     # Define queryset by optimizing DB requests
     queryset = (
         Line.objects.all()
-        .select_related("owner")
+        .select_related("network_type")
         .prefetch_related("areas")
         .prefetch_related("sensitive_area")
     )

@@ -32,7 +32,7 @@
                   </v-col>
                   <v-col cols="12">
                     <v-text-field ref="infrstr"
-                      :value="mortalityInfrastructure?.properties ? `#${mortalityInfrastructure?.properties.id} ${mortalityInfrastructure?.resourcetype} ${mortalityInfrastructure?.properties.owner.label}` : ''"
+                      :value="mortalityInfrastructure?.properties ? `#${mortalityInfrastructure?.properties.id} ${mortalityInfrastructure?.resourcetype} ${mortalityInfrastructure?.properties.network_type.label}` : ''"
                       label="support/ligne concerné" type="string" placeholder="support/ligne concerné"
                       hide-spin-buttons variant="solo" density="compact" readonly focused
                       :messages="t('Cliquez sur la carte')">

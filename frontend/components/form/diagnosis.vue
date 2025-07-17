@@ -12,7 +12,7 @@
                       variant="solo" density="compact" :rules="[rules.required]" :max="new Date()" />
                   </v-col>
                   <v-col cols="12">
-                    <v-autocomplete v-model="diagData.arming_id" chips :items="armingItems" item-title="label"
+                    <v-autocomplete v-model="diagData.arming_id" chips :items="armingItems.sort((a, b) => a.label.localeCompare(b.label))" item-title="label"
                       item-value="id" :rules="[rules.required]" hide-selected :label="$t('armings')" multiple
                       deletable-chips variant="solo" density="compact" />
                   </v-col>
@@ -116,11 +116,12 @@ const mediaStore = useMediaStore()
 
 const formValid = ref(false)
 const infrastructureId = computed(() => cablesStore.formInfrastructureId)
-const infrastructureType = computed(() => (route.query.type).toLowerCase())
+const infrastructureType = computed(() => route.query.type && typeof route.query.type == 'string' ? (route.query.type).toLowerCase() : '')
 const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value, ''))
+// <NomenclatureItem[]>
 // const mediaList = ref<Array<number>>([])
 
 const diagData: DiagData = reactive({
@@ -131,6 +132,7 @@ const diagData: DiagData = reactive({
   arming_id: [],
   neutralized: false,
   condition_id: null,
+  change_advice: false,
   attraction_advice: false,
   dissuasion_advice: false,
   isolation_advice: false,

@@ -19,9 +19,9 @@
     "code": 703,
     "msg": "loading-conditions-issue"
   },
-  "get_infrstr_owners": {
+  "get_infrstr_network_types": {
     "code": 704,
-    "msg": "loading-owners-issue"
+    "msg": "loading-network_types-issue"
   },
   "get_infrstr_armings": {
     "code": 705,

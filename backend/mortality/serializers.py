@@ -17,13 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 class MortalityInfrastructureSerializer(ModelSerializer):
-    owner = NomenclatureSerializer(read_only=True)
+    network_type = NomenclatureSerializer(read_only=True)
 
     class Meta:
         model = Infrastructure
         fields = [
             "id",
-            "owner",
+            "network_type",
         ]
 
 

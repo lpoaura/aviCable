@@ -34,7 +34,7 @@ export interface Species {
 
 interface MortalityInfrastructure {
     id: number;
-    owner: Nomenclature;
+    network_type: Nomenclature;
 }
 
 export interface Mortality extends GeoJsonProperties {

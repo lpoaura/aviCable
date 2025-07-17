@@ -68,7 +68,7 @@ const tableHeaders = reactive([
     key: 'properties.id'
   },
   { title: t('app.type'), key: 'resourcetype' },
-  { title: t('support.owner'), key: 'properties.owner.label' },
+  { title: t('support.network_type'), key: 'properties.network_type.code' },
   { title: t('risks'), key: 'properties.diagnosis.0' },
   {
     title: 'Neutralisé',

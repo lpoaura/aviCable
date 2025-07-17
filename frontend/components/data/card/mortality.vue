@@ -19,7 +19,7 @@
           </p>
           <v-chip-group>
             <v-chip :color="item.properties.infrstr.type== 1 ? 'success':'info'" :to="`/infrastructures/${item.properties.infrstr.id}`">
-              {{ item.properties.infrstr.owner.label }} ({{ item.properties.infrstr.id }})
+              {{ item.properties.infrstr.network_type.label }} ({{ item.properties.infrstr.id }})
             </v-chip>
           </v-chip-group>
         </v-col>

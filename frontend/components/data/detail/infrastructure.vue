@@ -5,7 +5,7 @@
         <v-chip prepend-icon="mdi-eye-circle-outline" color="primary">
           {{ data.properties.id }}
         </v-chip>&nbsp;{{ type === 'Point' ? $t('support.support') : $t('line.line') }}
-        <strong>{{ data.properties.owner.label }}</strong>
+        <strong>{{ data.properties.network_type.label }}</strong>
       </v-app-bar-title>
 
       <v-spacer />

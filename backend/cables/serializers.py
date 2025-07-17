@@ -424,7 +424,7 @@ class InfrastructureSerializer(ModelSerializer):
     """
 
     # Allow to display nested data
-    owner = NomenclatureSerializer()
+    network_type = NomenclatureSerializer()
     areas = GeoAreaSerializer(many=True)
     sensitive_area = SensitiveAreaSerializer(many=True)
     diagnosis = DiagnosisSerializer(many=True)
@@ -435,7 +435,7 @@ class InfrastructureSerializer(ModelSerializer):
         model = Infrastructure
         fields = [
             "id",
-            "owner",
+            "network_type",
             "geom",
             "areas",
             "sensitive_area",
@@ -456,7 +456,7 @@ class ActionPolymorphicSerializer(PolymorphicSerializer):
 
 
 class InstrastructureAbstractSerializer(GeoFeatureModelSerializer):
-    owner = NomenclatureSerializer(read_only=True)
+    network_type = NomenclatureSerializer(read_only=True)
     areas = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
     diagnosis = DiagnosisSerializer(many=True, read_only=True)
@@ -515,8 +515,8 @@ class PointSerializer(InstrastructureAbstractSerializer):
         fields = [
             "id",
             "geom",
-            "owner",
-            "owner_id",
+            "network_type",
+            "network_type_id",
             "areas",
             # "geo_area_id",
             "sensitive_area",
@@ -531,7 +531,7 @@ class PointSerializer(InstrastructureAbstractSerializer):
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
-            "owner_id": {"source": "owner", "write_only": True},
+            "network_type_id": {"source": "network_type", "write_only": True},
             # "geo_area_id": {"source": "geo_area", "write_only": True},
             # "sensitive_area_id": {"source": "sensitive_area", "write_only": True},
         }
@@ -565,8 +565,8 @@ class LineSerializer(InstrastructureAbstractSerializer):
         fields = [
             "id",
             "geom",
-            "owner",
-            "owner_id",
+            "network_type",
+            "network_type_id",
             "areas",
             # "geo_area_id",
             "sensitive_area",
@@ -581,7 +581,7 @@ class LineSerializer(InstrastructureAbstractSerializer):
         ]
         # Allow to handle create/update/partial_updcreateate with nested data
         extra_kwargs = {
-            "owner_id": {"source": "owner", "write_only": True},
+            "network_type_id": {"source": "network_type", "write_only": True},
             # "geo_area_id": {"source": "geo_area", "write_only": True},
             # "sensitive_area_id": {"source": "sensitive_area", "write_only": True},
         }

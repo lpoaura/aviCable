@@ -49,7 +49,7 @@ export type InfrastructurePolymorphic = {
   created_by: any | null;
   geo_area?: any;
   id: number;
-  owner: any;
+  network_type: any;
   polymorphic_ctype: any | null;
   sensitive_area?: any;
   timestamp_create: string;
@@ -124,8 +124,8 @@ export type Line = {
   geom?: Geometry | null;
   id: number;
   operations: Operation[];
-  owner: Nomenclature;
-  owner_id: any;
+  network_type: Nomenclature;
+  network_type_id: any;
   sensitive_area: SensitiveArea[];
 };
 
@@ -151,8 +151,8 @@ export type Point = {
   geom?: Geometry | null;
   id: number;
   operations: Operation[];
-  owner: Nomenclature;
-  owner_id: any;
+  network_type: Nomenclature;
+  network_type_id: any;
   sensitive_area: SensitiveArea[];
 };
 
@@ -162,8 +162,8 @@ export type Infrastructure = {
   geom?: Geometry | null;
   id: number;
   operations: Operation[];
-  owner: Nomenclature;
-  owner_id: number;
+  network_type: Nomenclature;
+  network_type_id: number;
   sensitive_area: SensitiveArea[];
 };
 

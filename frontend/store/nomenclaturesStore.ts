@@ -8,7 +8,7 @@
  * flexibility as the application remain configurable by updation Source/Type/Item in DB.
  *
  * conditionItems: list of Items related to Infrastructure Condition
- * ownerItems: list of Items related to Infrastructure Owners
+ * networkTypeItems: list of Items related to Infrastructure Owners
  * armingItems: list of Items related to Type of Point Infrastructure (Pole/Pylones)
  * riskLevelItems: list of Items related to Risk Level assessment
  */
@@ -25,8 +25,8 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
     armingItems(state) {
       return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "ARMING")?.nomenclatures;
     },
-    ownerItems(state) {
-      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "OWNER")?.nomenclatures;
+    networkTypeItems(state) {
+      return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "NETW_TYP")?.nomenclatures;
     },
     riskLevelItems(state) {
       return state.nomenclatureTypes?.find((elem: NomenclatureType) => elem.code === "RISK_LEV")?.nomenclatures;
@@ -51,15 +51,16 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
       }
     },
     getArmingItems() {
-      return (geomType: string, owner: string) => {
+      return (geomType: string, network_type: string) => {
         console.log('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
+        console.log('infraTypeId', infraTypeId, )
         return infraTypeId ? this.armingItems?.filter(item => item.parents?.includes(infraTypeId)) : []
       }
     },
     getEquipmentItems() {
-      return (geomType: string, owner: string) => {
+      return (geomType: string, network_type: string) => {
         console.log('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
