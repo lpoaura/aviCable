@@ -1,22 +1,11 @@
 from django.urls import path
-
+from rest_framework.routers import DefaultRouter
 from .views import GeoAreaViewSet
 
 app_name = "geo_area"
 
 
-urlpatterns = [
-    path("", GeoAreaViewSet.as_view({"get": "list"}), name="georea-list"),
-    path(
-        "<int:pk>/",
-        GeoAreaViewSet.as_view(
-            {
-                "get": "retrieve",
-                "put": "update",
-                "patch": "partial_update",
-                "delete": "destroy",
-            }
-        ),
-        name="georea-detail",
-    ),
-]
+router = DefaultRouter()
+router.register(r"", GeoAreaViewSet, basename="geoarea")
+
+urlpatterns = router.urls
