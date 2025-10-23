@@ -58,6 +58,7 @@ export interface Mortality extends GeoJsonProperties {
     updated_by?: UserSimple;
     timestamp_create?: string;
     timestamp_update?: string;
+    geom: Geometry | null;
 };
 
 

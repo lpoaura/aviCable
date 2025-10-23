@@ -53,7 +53,7 @@ export const useCoordinatesStore = defineStore("coordinates", {
       this.bbox = data;
     },
     setSelectedFeature(data: Feature) {
-      console.log("setSelectedFeature", data)
+      console.debug("setSelectedFeature", data)
       this.selectedFeature = data;
     },
     setCenter(data: LatLng) {

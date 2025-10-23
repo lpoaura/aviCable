@@ -49,6 +49,7 @@ const fileInput = ref()
 const valid = ref(false)
 
 const mediaStore: StoreGeneric = useMediaStore()
+const cablesStore : StoreGeneric = useCablesStore()
 const { selectedMedia } = storeToRefs(mediaStore)
 
 const locale = useLocale()
@@ -85,7 +86,7 @@ watch(file,
 )
 
 onMounted(() => {
-  if (!selectedMedia.value.date) selectedMedia.value.date = mediaStore.date
+  if (!selectedMedia.value.date) selectedMedia.value.date = cablesStore.getFormDate
 })
 
 onUnmounted(() => {

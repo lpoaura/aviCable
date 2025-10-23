@@ -81,6 +81,8 @@ export default defineNuxtConfig({
     "@mdi/font/css/materialdesignicons.min.css",
     "leaflet/dist/leaflet.css",
     "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
+    'leaflet.locatecontrol/dist/L.Control.Locate.min.css',
+    "leaflet-geosearch/assets/css/leaflet.css"
   ],
 
   build: {

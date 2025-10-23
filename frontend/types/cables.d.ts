@@ -1,12 +1,14 @@
 import type { Geometry, Feature, GeoJsonProperties, FeatureCollection } from "geojson";
+import type {Polyline, Marker} from "leaflet"
 import type { Nomenclature } from "./nomenclature";
 import type { Medias } from "./media"
 import type { UserSimple } from "./user"
 
+export type NewLayerType = Polyline | Marker
 
 export interface DiagData {
   id?: number | null;
-  date: string | Date;
+  date?: string | Date;
   remark: string | null;
   technical_proposal: string | null;
   change_advice: boolean;
@@ -182,3 +184,34 @@ export interface Risk {
   label: string;
   color: string;
 }
+
+export interface NetworkFeature extends Feature {
+  properties: {
+    type?: string;
+    category?: string;
+    [key: string]: any; 
+  };
+}
+
+// export interface NetworkFeature extends Feature {
+//   properties: {
+//     type?: string;
+//     category?: string; 
+//     [key: string]: any; 
+//   } | never; // Ensures properties is never null
+// }
+
+
+export interface NetworkProperties extends GeoJsonProperties {
+    type?: string;
+    category?: string; 
+};
+
+
+
+interface NetworkFeature extends Feature<Geometry, NetworkProperties> {
+  properties: Operation;
+}
+
+
+export type NetworkFeatureCollection = FeatureCollection<NetworkFeature>;

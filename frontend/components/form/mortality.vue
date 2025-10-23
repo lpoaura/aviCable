@@ -11,8 +11,7 @@
                     <strong>{{ $t('forms.general') }}</strong>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar"
-                      variant="solo" density="compact" :rules="[rules.required]" :max="new Date()" />
+                    <form-date-input :rules="[rules.required]" label="Date de visite"/>
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-autocomplete v-model="mortalityData.species_id" v-model:search="speciesSearch"
@@ -73,7 +72,9 @@
 </template>
 
 <script setup lang="ts">
+import type { Geometry } from 'geojson'
 import { storeToRefs } from 'pinia'
+import { getLocaleDateString } from '~/helpers/formHelpers'
 import type { MortalityFeature, Mortality } from '~/types/mortality'
 import type { NotificationInfo } from '~/types/notifications'
 
@@ -85,6 +86,7 @@ const route = useRoute()
 const notificationStore = useNotificationStore()
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
+const cablesStore = useCablesStore()
 // Species Autocomplete data
 
 
@@ -112,7 +114,7 @@ const mortalityData = reactive<Mortality>({
   data_source: null,
   data_source_url: null,
   comment: null,
-  geom: null,
+  geom: {} as Geometry,
 })
 
 // rules for form validation
@@ -127,7 +129,7 @@ const rules = reactive({
 
 const { newGeoJSONObject, mortalityInfrastructure, mortalityGetInfrastructure, selectedFeature } = storeToRefs(coordinatesStore)
 
-watch(formDate.value, (newVal, _oldVal) => mediaStore.date = newVal)
+watch(formDate.value, (newVal, _oldVal) => cable.date = newVal)
 
 watch(mortalityInfrastructure, (val) => {
   if (val) {
@@ -141,6 +143,9 @@ watch(newGeoJSONObject, (val) => {
   }
 })
 
+watch(()=> cablesStore.getFormDate,(newDate) => {
+  mortalityData.date = getLocaleDateString(newDate)
+})
 
 watch(speciesSearch, async (val) => {
   val && val !== mortalityData.species_id && speciesSelection(val)
@@ -158,7 +163,7 @@ const speciesSelection = async (value: string) => {
 
 const createData = async () => {
   try {
-    mortalityData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
+    mortalityData.date = cablesStore.getFormDate?.toISOString().substring(0, 10)
     mortalityData.media_id = await createMedias()
     const url = mortalityId.value ? `/api/v1/mortality/${mortalityId.value}/` : '/api/v1/mortality/'
     const method = mortalityId.value ? 'put' : 'post'
@@ -207,16 +212,16 @@ const initData = async () => {
   if (mortalityId.value) {
     const { data } = await useApi<MortalityFeature>(`/api/v1/mortality/${mortalityId.value}/`, { method: 'get' })
     if (data.value) {
-      formDate.value = new Date(data.value.properties.date)
-      mediaStore.date = formDate.value
+      const date = data.value.properties.date ? new Date(data.value.properties.date) : new Date()
+      cablesStore.setFormDate(date)
       mediaStore.medias = data.value.properties.media
       specieSearchEntries.value = [data.value.properties.species,]
       const mortalitydata = {
         id: data.value.id,
         date: data.value.properties.date,
         author: data.value.properties.author,
-        species_id: data.value.properties.species?.id, // null,
-        infrstr_id: data.value.properties.infrstr?.id,
+        species_id: data.value.properties.species?.id , // null,
+        infrstr_id: data.value.properties.infrstr?.id ,
         nb_death: data.value.properties.nb_death,
         death_cause_id: data.value.properties.death_cause.id,
         data_source: data.value.properties.data_source,

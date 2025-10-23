@@ -60,7 +60,7 @@ export const useMortalityStore = defineStore("mortality", {
       }
     },
     cancelRequest() {
-      console.log('mortality abort request')
+      console.debug('mortality abort request')
       this.controller?.abort()
       this.controller = null;
     },

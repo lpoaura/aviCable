@@ -33,11 +33,15 @@ const prependIcon = computed<string>(() => {
 })
 
 const color = computed<string>(() => {
+  // si neutralisé
   if (lastOp.value && lastOp.value.neutralization_level) {
     return (
       lastOp.value.neutralization_level == 'full' ?
         'green' : 'yellow')
   }
+  // TODO: Si on a un risque faible, alors on met en gris
+  
+  // sinon
   return 'red'
 })
 </script>

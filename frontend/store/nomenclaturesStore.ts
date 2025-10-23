@@ -45,26 +45,27 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
     },
     getInfrastructureTypeId() {
       return (geomType: string) => {
-        console.log('geomType', geomType)
+        console.debug('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         return this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
       }
     },
     getArmingItems() {
       return (geomType: string, network_type: number) => {
-        console.log('geomType', geomType)
+        console.debug('<getArmingItems> geomType', geomType, 'networkType',network_type)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
-        console.log('infraTypeId', infraTypeId)
+        console.debug('<getArmingItems> infraTypeId', infraTypeId)
+        console.debug('<getArmingItems>',infraTypeId ? (this.armingItems?.filter(item => item.parents?.includes(infraTypeId)))?.filter(item => item.parents?.includes(network_type)) : [])
         return infraTypeId ? (this.armingItems?.filter(item => item.parents?.includes(infraTypeId)))?.filter(item => item.parents?.includes(network_type)) : []
       }
     },
     getEquipmentItems() {
       return (geomType: string, network_type: string) => {
-        console.log('geomType', geomType)
+        console.debug('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id
-        console.log('<getEquipmentItems> infraTypeId', infraTypeId, this.equipmentTypeItems)
+        console.debug('<getEquipmentItems> infraTypeId', infraTypeId, this.equipmentTypeItems)
         return infraTypeId ? this.equipmentTypeItems?.filter(item => {
           return item.parents?.includes(infraTypeId)
         }) : []

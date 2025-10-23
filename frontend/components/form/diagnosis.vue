@@ -8,8 +8,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-date-input v-model="formDate" label="Date de visite" inner-prepend-icon="mdi-calendar"
-                      variant="solo" density="compact" :rules="[rules.required]" :max="new Date()" />
+                      <form-date-input :rules="[rules.required]" label="Date de visite"/>
                   </v-col>
                   <v-col cols="12">
                     <v-autocomplete v-model="diagData.arming_id" chips :items="armingItems.sort((a, b) => a.label.localeCompare(b.label))" item-title="label"
@@ -102,7 +101,8 @@ import { VDateInput } from 'vuetify/labs/VDateInput'
 import type { DiagData, Diagnosis } from '~/types/cables';
 import type { NomenclatureItem } from '~/types/nomenclature';
 import type { NotificationInfo } from '~/types/notifications';
-import * as errorCodes from '~/static/errorConfig.json'
+import * as errorCodes from '~/static/errorConfig.json';
+import {getLocaleDateString} from '~/helpers/formHelpers';
 
 const { t } = useI18n()
 const router = useRouter()
@@ -117,16 +117,15 @@ const mediaStore = useMediaStore()
 const formValid = ref(false)
 const infrastructureId = computed(() => cablesStore.formInfrastructureId)
 const infrastructureType = computed(() => route.query.type && typeof route.query.type == 'string' ? (route.query.type).toLowerCase() : '')
-const networkTypeId = computed<number>(() => route.query.network_type && typeof route.query.network_type == 'string' && parseInt(route.query.network_type))
+const networkTypeId = computed<number>(() => parseInt(route.query.network_type as string) || 0);
 const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
-const formDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000))
 const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value, networkTypeId.value))
-// <NomenclatureItem[]>
-// const mediaList = ref<Array<number>>([])
+
 
 const diagData: DiagData = reactive({
-  date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
+  // date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
+  date: null,
   remark: '',
   technical_proposal: '',
   infrastructure: infrastructureId.value,
@@ -156,12 +155,14 @@ const initData = async () => {
   if (diagnosisId.value && infrastructureType) {
     const { data: diagnosis } = await useApi<Diagnosis>(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, { method: 'get' })
     if (diagnosis.value) {
-      formDate.value = new Date(diagnosis.value.date)
-      mediaStore.date = formDate.value
+      const date = new Date(diagnosis.value.date)
+      cablesStore.setFormDate(date)
+      console.log(date)
+      // mediaStore.date = formDate.value
       mediaStore.medias = diagnosis.value.media
       const diagdata: DiagData = {
         id: diagnosis.value.id,
-        date: diagnosis.value.date,
+        date: getLocaleDateString(cablesStore.getFormDate),
         remark: diagnosis.value.remark,
         technical_proposal: diagnosis.value.technical_proposal,
         infrastructure: diagnosis.value.infrastructure,
@@ -190,6 +191,9 @@ const initData = async () => {
   // const diagData = null
 }
 
+watch(()=> cablesStore.getFormDate,(newDate) => {
+  diagData.date = getLocaleDateString(newDate)
+})
 
 /**
  * addNewDiagnosis(): Method that create new Diagnosis based on forms data (cf.this.diagData)
@@ -212,7 +216,7 @@ const createDiagnosis = async () => {
   // const mediaIdList = await createNewMedia()
   try {
     diagData.infrastructure = infrastructureId.value
-    diagData.date = formDate.value.toISOString().substring(0, 10) // set Infrastructure (Point) id
+    // diagData.date = cablesStore.getFormDate?.toISOString().substring(0, 10)
     diagData.media_id = await createMedias()
     const url = diagData.id ? `/api/v1/cables/diagnosis/${diagData.id}/` : '/api/v1/cables/diagnosis/'
     const method = diagData.id ? 'put' : 'post'
@@ -248,8 +252,6 @@ const moveToNextStep = async () => {
     router.push(`/infrastructures/${infrastructureId.value}`)
   }
 };
-
-watch(formDate.value, (newVal, _oldVal) => mediaStore.date = newVal)
 
 onMounted(() => {
   initData()

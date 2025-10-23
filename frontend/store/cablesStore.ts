@@ -1,8 +1,7 @@
 // Nuxt Store module: cablesStore for Cables module
 import { defineStore } from 'pinia'
-import type { CablesFeatureCollection, OperationFeatureCollection, Line, Point, CablesFeature, Equipment } from '~/types/cables'
+import type { CablesFeatureCollection, OperationFeatureCollection, Line, Point, CablesFeature, Equipment, NetworkFeatureCollection } from '~/types/cables'
 import type { FeatureCollection } from 'geojson'
-
 export const useCablesStore = defineStore('cables', {
   state: () => ({
     infstrData: {} as CablesFeatureCollection, // Infrastructure data
@@ -12,17 +11,19 @@ export const useCablesStore = defineStore('cables', {
     opData: {} as OperationFeatureCollection,
     pointOpData: [] as Line[],
     lineOpData: [] as Point[],
+    formDate: new Date() as Date,
     formSupportId: null,
     formInfrastructureId: null,
     formInfrastructure: {} as CablesFeature,
     controller: null as AbortController | null,
-    enedisInfrastructure: {} as FeatureCollection,
+    enedisInfrastructure: {} as NetworkFeatureCollection,
     rteInfrastructure: {} as FeatureCollection,
     formEquipments: [] as Equipment[],
     selectedEquipment: null as Equipment | null,
     equipmentToDelete: null as Equipment | null,
   }),
   getters: {
+    getFormDate: (state) => state.formDate,
     infstrDatafeatures(state): CablesFeature[] {
       return state.infstrData.features
     },
@@ -76,12 +77,16 @@ export const useCablesStore = defineStore('cables', {
     },
   },
   actions: {
-    async getInfstrData(params) {
+    setFormDate(date: Date) {
+      console.debug("Store setFormDate", date)
+      this.formDate = date;
+    },
+    async getInfstrData(params: Object) {
       if (this.controller === null) {
         this.controller = new AbortController();
       }
       const { signal } = this.controller;
-      console.log('<getInfstrData> this.controller', this.controller)
+      console.debug('<getInfstrData> this.controller', this.controller)
       try {
         this.infstrDataLoadingStatus = true
         console.debug("getInfstrData signal", signal)
@@ -172,23 +177,50 @@ export const useCablesStore = defineStore('cables', {
       }
       const { signal } = this.controller;
       console.debug('getEnedisInfrastructure', signal)
-      console.log('query params', { signal, params })
+      console.debug('query params', { signal, params })
       try {
-        const [{ data: reseauBt }, { data: reseauHta }, { data: poteaux }] = await Promise.all([
-          useApi<FeatureCollection>(
+        const [{ data: reseauBt }, { data: reseauSoutBt }, { data: reseauHta }, { data: reseauSoutHta }, { data: poteaux }] = await Promise.all([
+          useApi<NetworkFeatureCollection>(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-bt/exports/geojson', { signal, params }
           ),
-          useApi<FeatureCollection>(
+          useApi<NetworkFeatureCollection>(
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-souterrain-bt/exports/geojson', { signal, params }
+          ),
+          useApi<NetworkFeatureCollection>(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-hta/exports/geojson', { signal, params }
           ),
-          useApi<FeatureCollection>(
+          useApi<NetworkFeatureCollection>(
+            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-souterrain-hta/exports/geojson', { signal, params }
+          ),
+          useApi<NetworkFeatureCollection>(
             'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/position-geographique-des-poteaux-hta-et-bt/exports/geojson', { signal, params }
           )
         ]);
-        if (reseauBt.value && reseauHta.value && poteaux.value) {
+        if (reseauBt.value && reseauSoutBt.value && reseauHta.value && reseauSoutHta.value && poteaux.value) {
+          //const taggedReseauBt = ...reseauBt.value.features.map(v => ({...v, properties.type: "aerien"}))*
+          // const taggedReseauBt = reseauBt.value.features.forEach(v => { v.properties.type = 'Overhead' })
+          // const taggedReseauHta = reseauHta.value.features.forEach(v => { v.properties.type = 'Overhead' })
+          // const taggedReseauSoutBt = reseauSoutBt.value.features.forEach(v => { v.properties.type = 'Underground' })
+          // const taggedReseauSoutHta = reseauSoutHta.value.features.forEach(v => { v.properties.type = 'Underground' })
+          reseauBt.value.features.forEach(v => {
+            v.properties.type = 'Overhead'
+            v.properties.category = 'bt'
+          })
+          reseauSoutBt.value.features.forEach(v => {
+            v.properties.type = 'Underground'
+            v.properties.category = 'bt'
+          })
+          reseauHta.value.features.forEach(v => {
+            v.properties.type = 'Overhead'
+            v.properties.category = 'hta'
+          })
+          reseauSoutHta.value.features.forEach(v => {
+            v.properties.type = 'Underground'
+            v.properties.category = 'hta'
+          })
           this.enedisInfrastructure = {
             type: 'FeatureCollection',
-            features: [...reseauBt.value.features, ...reseauHta.value.features, ...poteaux.value.features,]
+            features: [...reseauBt.value.features, ...reseauHta.value.features, ...reseauSoutBt.value.features, ...reseauSoutHta.value.features, ...poteaux.value.features,]
           }
         }
       } catch (err) {
@@ -218,7 +250,7 @@ export const useCablesStore = defineStore('cables', {
       }
       const { signal } = this.controller;
       console.debug('getRteInfrastructure signal', signal)
-      console.log('query params', { signal, params: paramsPylones })
+      console.debug('query params', { signal, params: paramsPylones })
       try {
         const [{ data: Lines }, { data: Pylones }] = await Promise.all([
           useApi<FeatureCollection>(
@@ -247,11 +279,11 @@ export const useCablesStore = defineStore('cables', {
       }
     },
     cancelRequest() {
-      console.log('cancelRequest abort request - 1', this.controller)
+      console.debug('cancelRequest abort request - 1', this.controller)
       this.controller?.abort()
-      console.log('cancelRequest abort request - 2', this.controller)
+      console.debug('cancelRequest abort request - 2', this.controller)
       this.controller = null;
-      console.log('cancelRequest abort request - 3', this.controller)
+      console.debug('cancelRequest abort request - 3', this.controller)
     },
     setFormInfrastructureId(id) {
       this.formInfrastructureId = id
@@ -260,7 +292,7 @@ export const useCablesStore = defineStore('cables', {
       this.formInfrastructure = infrastructure
     },
     addSelectedToEquipments() {
-      console.log('addSelectedToMedias')
+      console.debug('addSelectedToMedias')
       if (this.selectedEquipment?.id) {
         this.formEquipments[this.formEquipments.findIndex(item => item.id === this.selectedEquipment?.id)] = this.selectedEquipment
       } else {
@@ -272,11 +304,11 @@ export const useCablesStore = defineStore('cables', {
     //   this.formEquipments = data
     // }
     async deleteEquipment(index: number) {
-      console.log('<deleteEquipment>', index, this.formEquipments, this.formEquipments[index])
+      console.debug('<deleteEquipment>', index, this.formEquipments, this.formEquipments[index])
       try {
         this.equipmentToDelete = this.formEquipments[index]
         const equipment = { ...this.equipmentToDelete }
-        console.log('this.mediaToDelete test', (index !== null), this.equipmentToDelete, this.equipmentToDelete.id)
+        console.debug('this.mediaToDelete test', (index !== null), this.equipmentToDelete, this.equipmentToDelete.id)
         // if (this.equipmentToDelete && this.equipmentToDelete.id) {
         //   const { data: _resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
         // }

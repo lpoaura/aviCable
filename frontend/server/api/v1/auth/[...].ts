@@ -11,24 +11,24 @@ export default defineEventHandler(async (event) => {
   }
 
   const { method, url, headers } = event.req;
-  console.log('event',event)
+  console.debug('event',event)
   const body = method !== "GET" && method !== "HEAD" ? await readBody(event) : undefined;
 
-  console.log("API Service method", method);
-  console.log("baseURL", config.public.baseURL);
-  console.log('url', url);
-  console.log("headers", headers);
-  console.log('body', body)
+  console.debug("API Service method", method);
+  console.debug("baseURL", config.public.baseURL);
+  console.debug('url', url);
+  console.debug("headers", headers);
+  console.debug('body', body)
 
   try {
-    console.log('try fetch')
+    console.debug('try fetch')
     const response = await $fetch.raw(url, {
       method,
       baseURL: config.public.baseURL,
       headers,
       body,
     });
-    console.log('response', response)
+    console.debug('response', response)
     for (const header of ["set-cookie", "cache-control"]) {
       if (response.headers.has(header)) {
         appendHeader(event, header, response.headers.get(header));

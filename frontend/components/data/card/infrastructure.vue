@@ -1,13 +1,14 @@
 <template>
-  <v-card prepend-icon="mdi-map-marker-circle">
+  <v-card   >
+    <v-card-item prepend-icon="mdi-map-marker-circle">
     <template #title>
-            Information contextuelle
       <widgets-neutralized-status :data="data" :detail="true" class="m1-2 float-right" />
       <widgets-risk-level-status :data="data" class="m1-2 float-right" detail />
-
+      {{ $t("display.context") }}
     </template>
     <template #subtitle>{{ $t("filledIn") }} {{ new Date(data.properties.timestamp_create).toLocaleString() }} par {{
       data.properties.created_by?.username || '?' }}</template>
+      </v-card-item>
     <v-card-text>
       <v-row>
         <v-col cols="12">

@@ -15,7 +15,7 @@ export const useMediaStore = defineStore("media", {
   }),
   actions: {
     async postMedia(media: MediaData) {
-      console.log('postMedia before post/update', media);
+      console.debug('postMedia before post/update', media);
       const formData = new FormData();
       const date = !!media.date && (new Date(media.date)).toISOString().substring(0, 10);
 
@@ -23,7 +23,7 @@ export const useMediaStore = defineStore("media", {
         formData.append('date', date);
       }
 
-      console.log('media.storage', media.storage, media.storage instanceof File, typeof media.storage);
+      console.debug('media.storage', media.storage, media.storage instanceof File, typeof media.storage);
 
       if (media.storage instanceof File) {
         console.debug('<postMedia> media.storage', media.storage)
@@ -51,14 +51,14 @@ export const useMediaStore = defineStore("media", {
       //   throw new Error('Failed to post media');
       // }
 
-      console.log('postMedia response', newImg); // Log the entire response
+      console.debug('postMedia response', newImg); // Log the entire response
       return newImg.id; // Return the ID
     },
     async postMedias() {
       return Promise.all(this.medias.map(media => this.postMedia(media)))
     },
     addSelectedToMedias() {
-      console.log('addSelectedToMedias')
+      console.debug('addSelectedToMedias')
       if (this.selectedMedia.id) {
         this.medias[this.medias.findIndex(item => item.id === this.selectedMedia.id)] = this.selectedMedia
       } else {
@@ -82,11 +82,11 @@ export const useMediaStore = defineStore("media", {
       this.date = null
     },
     async deleteMedia(index: number) {
-      console.log('deleteMedia', index, this.medias, this.medias[index])
+      console.debug('deleteMedia', index, this.medias, this.medias[index])
       try {
         this.mediaToDelete = this.medias[index]
         const file = { ...this.mediaToDelete }
-        console.log('this.mediaToDelete test', (index !== null), this.mediaToDelete, this.mediaToDelete.id)
+        console.debug('this.mediaToDelete test', (index !== null), this.mediaToDelete, this.mediaToDelete.id)
         if (this.mediaToDelete && this.mediaToDelete.id) {
           const { data: _resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
         }

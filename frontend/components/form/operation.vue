@@ -70,7 +70,7 @@ const neutralizationLevelItems = [
   },
 ]
 
-const medias = ref<Array<Media>>([])
+// const medias = ref<Array<Media>>([])
 
 const { newGeoJSONObject, selectedFeature } = storeToRefs(coordinatesStore)
 const { formInfrastructure } = storeToRefs(cablesStore)
@@ -244,7 +244,7 @@ const updateOperation = async () => {
 }
 
 
-watch(formDate, (newVal, _oldVal) => mediaStore.date = newVal)
+watch(formDate, (newVal, _oldVal) => cablesStore.formDate = newVal)
 
 // const moveToNextStep = async () => {
 //   const diagnosis = diagnosisId.value ? await updateDiagnosis() : await createDiagnosis()

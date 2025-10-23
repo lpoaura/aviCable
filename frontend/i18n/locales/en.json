@@ -27,7 +27,8 @@
     "line": "Line",
     "lines": "Lines",
     "lines-eqmt": "Lines Equipments",
-    "sensitiveAreas": "Sensitive areas"
+    "sensitiveAreas": "Sensitive areas",
+    "context": "Context"  
   },
   "forms": {
     "coordinates": "Coordinates",
