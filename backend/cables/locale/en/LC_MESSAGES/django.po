@@ -1,0 +1,152 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-08 10:33+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: cables/models.py:21
+msgid "Partial"
+msgstr ""
+
+#: cables/models.py:21
+msgid "Full"
+msgstr ""
+
+#: cables/models.py:37
+msgid "Identifiant unique"
+msgstr ""
+
+#: cables/models.py:44 cables/models.py:45
+msgid "Infrastructure network type"
+msgstr ""
+
+#: cables/models.py:51 cables/models.py:52
+msgid "Associated Administrative and Natural Areas"
+msgstr ""
+
+#: cables/models.py:58 cables/models.py:59
+msgid "Associated Sensitivity Areas"
+msgstr ""
+
+#: cables/models.py:103 cables/models.py:229
+msgid "unique Id"
+msgstr ""
+
+#: cables/models.py:106
+msgid "Date"
+msgstr ""
+
+#: cables/models.py:107
+msgid "Remarks"
+msgstr ""
+
+#: cables/models.py:112
+msgid "Last record"
+msgstr ""
+
+#: cables/models.py:131 cables/models.py:132 cables/models.py:257
+#: cables/models.py:258
+msgid "Infrastructure attached with this Action"
+msgstr ""
+
+#: cables/models.py:138 cables/models.py:139 cables/models.py:267
+#: cables/models.py:268
+msgid "Media attached with this diagnosis"
+msgstr ""
+
+#: cables/models.py:143
+msgid "To be insulated"
+msgstr ""
+
+#: cables/models.py:147
+msgid "Discourage"
+msgstr ""
+
+#: cables/models.py:151
+msgid "Providing incentives"
+msgstr ""
+
+#: cables/models.py:155
+msgid "Change arming"
+msgstr ""
+
+#: cables/models.py:159
+msgid "Technical proposal"
+msgstr ""
+
+#: cables/models.py:166 cables/models.py:167
+msgid "Armings"
+msgstr ""
+
+#: cables/models.py:176 cables/models.py:177
+msgid "Attractivity level of risk"
+msgstr ""
+
+#: cables/models.py:186 cables/models.py:187
+msgid "dangerousness level of risk"
+msgstr ""
+
+#: cables/models.py:196
+msgid "moving level of risk"
+msgstr ""
+
+#: cables/models.py:197
+msgid "Moving level of risk"
+msgstr ""
+
+#: cables/models.py:206
+msgid "topological level of risk"
+msgstr ""
+
+#: cables/models.py:207
+msgid "Topological level of risk"
+msgstr ""
+
+#: cables/models.py:216
+msgid "landscape level of risk"
+msgstr ""
+
+#: cables/models.py:217
+msgid "Landscape level of risk"
+msgstr ""
+
+#: cables/models.py:221
+msgid "Diagnosis"
+msgstr ""
+
+#: cables/models.py:235 cables/models.py:236
+msgid "Type of equipment"
+msgstr ""
+
+#: cables/models.py:240
+msgid "Number of equipments"
+msgstr ""
+
+#: cables/models.py:242
+msgid "Equipment model reference"
+msgstr ""
+
+#: cables/models.py:244
+msgid "Comments"
+msgstr ""
+
+#: cables/models.py:274
+msgid "Equipments"
+msgstr ""
+
+#: cables/models.py:275
+msgid "Equipements"
+msgstr ""

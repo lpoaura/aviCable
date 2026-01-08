@@ -9,10 +9,17 @@ docker_graphviz:
 build-docs:
 	cd docs && poetry run make html
 
+
 graph-models:
 	cd backend && poetry run python -m manage graph_models -g --language fr --output ../database_model.png  cables commons custom_content geo_area map_layers media mortality species users
 
+
+messages:
+	cd backend && poetry run python -m manage makemessages --locale=fr --locale=en
+
+
 docs: build-docs graph-models
+
 
 # backend-requirements:
 # 	cd backend && \

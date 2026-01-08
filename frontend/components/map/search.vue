@@ -53,7 +53,7 @@ import type { Layer, Map, LatLng, LatLngBounds, Polyline, Marker } from "leaflet
 import { computed, ref, type Reactive, type Ref } from 'vue';
 import type { MortalityFeature } from '~/types/mortality';
 import type { CablesFeature, NetworkFeatureCollection, NetworkFeature, NewLayerType } from '~/types/cables';
-import 'leaflet.control.layers.tree';
+// import 'leaflet.control.layers.tree';
 await import("@geoman-io/leaflet-geoman-free");
 
 

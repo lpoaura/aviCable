@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import Group
 
 from .models import User
 
@@ -12,14 +13,13 @@ logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=User)
-def send_email_verification(sender, instance, created, **kwargs):
+def send_email_verification(sender, instance: User, created, **kwargs):
     if created and not instance.email_verified:
-        subject = _("[aviCable] Email Verification for Your Account")
-        message = _(
-            f"""Hi {instance.full_name()},\n\nYou asked for a registration on {settings.SITE_URL}.\n
-Please click the link below to verify your email address :\n\n
-{settings.SITE_URL}/account/check_email?token={instance.registration_token}
-            """
+        subject = "[aviCable] " + _("confirm_email.mail.subject")
+        message = _("confirm_email.mail.message").format(
+            name=instance.full_name,
+            url=settings.SITE_URL,
+            token=instance.registration_token,
         )
         from_email = settings.EMAIL_HOST_USER
         recipient_list = [instance.email]
@@ -29,8 +29,10 @@ Please click the link below to verify your email address :\n\n
 @receiver(post_save, sender=User)
 def send_welcome_email(sender, instance, created, **kwargs):
     if not created and instance.email_verified and instance.is_active:
-        subject = "[aviCable] Welcome to Our Website"
-        message = f"Hello {instance.full_name()},\n\nWelcome to our website! Thank you for joining us."
+        subject = "[aviCable] " + _("welcome.mail.subject")
+        message = _("welcome.mail.message").format(
+            name=instance.full_name, url=settings.SITE_URL
+        )
         from_email = settings.EMAIL_HOST_USER
         recipient_list = [instance.email]
         send_mail(subject, message, from_email, recipient_list)
@@ -50,16 +52,23 @@ def send_activation_email_to_admin(sender, instance, created, **kwargs):
                 user for user in User.objects.filter(is_superuser=True)
             ]
 
-        subject = _("[aviCable] A new user to active have been registered")
-        message = _(
-            f"""Hello,\n\n
-A new user have been registered on {settings.SITE_URL} and require an activation.\n\n
-Please go to to process activation :\n\n
-{settings.SITE_URL}/account/activate?token={instance.registration_token}
-"""
+        subject = "[aviCable] " + _("subscription.mail.subject")
+        message = _("subscription.mail.message").format(
+            name=instance.full_name,
+            url=settings.SITE_URL,
+            token=instance.registration_token,
         )
+
         from_email = settings.EMAIL_HOST_USER
-        
+
         recipient_list = [user.email for user in recipients]
-        print('ACTIVATION recipients', recipients, recipient_list)
         send_mail(subject, message, from_email, recipient_list)
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        try:
+            instance.groups.add(Group.objects.get(name="data-read-only"))
+        except Group.DoesNotExist as _e:
+            logger.error(_e)

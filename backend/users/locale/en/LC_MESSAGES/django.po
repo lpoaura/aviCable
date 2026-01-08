@@ -1,0 +1,147 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-08 15:58+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: users/models.py:78
+msgid "Identifiant unique"
+msgstr ""
+
+#: users/models.py:80
+msgid "email address"
+msgstr ""
+
+#: users/models.py:82
+msgid "active"
+msgstr ""
+
+#: users/models.py:85
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: users/models.py:93
+msgid "Numéro de téléphone fixe"
+msgstr ""
+
+#: users/models.py:95
+msgid "Address"
+msgstr ""
+
+#: users/models.py:97
+msgid "Commentaire"
+msgstr ""
+
+#: users/models.py:105
+msgid "Emprise géographique par défaut"
+msgstr ""
+
+#: users/models.py:110
+msgid "Organisms"
+msgstr ""
+
+#: users/models.py:114
+msgid "Avatar"
+msgstr ""
+
+#: users/models.py:120
+msgid "Geographical area of intervention"
+msgstr ""
+
+#: users/models.py:122
+msgid ""
+"The geographical area in which the user will be working? To validate "
+"registrations, user MUST also be in 'manage_registration' group)?"
+msgstr ""
+
+#: users/models.py:138
+msgid "user"
+msgstr ""
+
+#: users/models.py:139
+msgid "users"
+msgstr ""
+
+#: users/signals.py:18
+msgid "confirm_email.mail.subject"
+msgstr ""
+
+#: users/signals.py:19
+msgid "confirm_email.mail.message"
+msgstr ""
+"Email Verification for your new accountHi {name},\n"
+"\n"
+"You asked for a registration on {url}.\n"
+"Please click the link below to verify your email address :\n"
+"\n"
+"{url}/account/check_email?token={token}"
+
+#: users/signals.py:32
+msgid "welcome.mail.subject"
+msgstr ""
+
+#: users/signals.py:33
+msgid "welcome.mail.message"
+msgstr ""
+"Hi {name},\n"
+"\n"
+"You asked for a registration on {url}.\n"
+"Please click the link below to verify your email address :\n"
+"\n"
+"{url}/account/check_email?token={token}"
+
+#: users/signals.py:55
+msgid "subscription.mail.subject"
+msgstr ""
+
+#: users/signals.py:56
+#, fuzzy
+#| msgid "welcome.mail.message"
+msgid "subscription.mail.message"
+msgstr ""
+"Hi {name},\n"
+"\n"
+"You asked for a registration on {url}.\n"
+"Please click the link below to verify your email address :\n"
+"\n"
+"{url}/account/check_email?token={token}"
+
+#: users/views.py:72
+msgid "Email successfully verified"
+msgstr ""
+
+#: users/views.py:77
+msgid "Email already verified"
+msgstr ""
+
+#: users/views.py:80
+msgid "User does not exist"
+msgstr ""
+
+#: users/views.py:100 users/views.py:134
+msgid "User does not exist."
+msgstr ""
+
+#: users/views.py:119
+msgid "Account activated successfully."
+msgstr ""
+
+#: users/views.py:129
+msgid "User already activated."
+msgstr ""

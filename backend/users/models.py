@@ -1,3 +1,4 @@
+import logging
 import random
 import string
 from uuid import uuid4
@@ -6,11 +7,14 @@ from commons.models import BaseModel
 from django.conf import settings
 from django.contrib.auth.models import (AbstractUser, PermissionsMixin,
                                         UserManager)
+
 # Create your models here.
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Nomenclature
+
+logger = logging.getLogger(__name__)
 
 phone_regex = RegexValidator(
     regex=r"^\+?1?\d{9,15}$",
@@ -148,9 +152,12 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
         self.last_name = self.last_name.upper()
         super().save(*args, **kwargs)
 
+    @property
     def full_name(self):
         """
         Returns the first_name plus the last_name, with a space in between.
         """
         full_name = f"{self.first_name} {self.last_name}"
         return full_name.strip()
+
+

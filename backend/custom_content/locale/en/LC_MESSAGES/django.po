@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-08 10:33+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: custom_content/models.py:9
+msgid "Titre"
+msgstr ""
+
+#: custom_content/models.py:10
+msgid "Introduction"
+msgstr ""
+
+#: custom_content/models.py:11
+msgid "Corps du texte"
+msgstr ""
+
+#: custom_content/models.py:12
+msgid "Contenu privé"
+msgstr ""
+
+#: custom_content/models.py:15
+msgid "News"
+msgstr ""
+
+#: custom_content/models.py:19
+msgid "Nom"
+msgstr ""
+
+#: custom_content/models.py:20
+msgid "Nom court"
+msgstr ""
+
+#: custom_content/models.py:21
+msgid "Site internet"
+msgstr ""
+
+#: custom_content/models.py:23
+msgid "Logo"
+msgstr ""
+
+#: custom_content/models.py:31
+msgid "Partners"
+msgstr ""

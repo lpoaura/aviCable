@@ -24,7 +24,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     """ViewSet for Infrastructure item"""
 
     serializer_class = InfrastructurePolymorphicSerializer
-    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions]
     # Define queryset by optimizing DB requests
     filter_backends = (InfrstrInBboxFilter,)
     # bbox_filter_field = 'point__geom'
@@ -68,7 +68,7 @@ class PointViewSet(viewsets.ModelViewSet):
     """ViewSet for Point item"""
 
     serializer_class = PointSerializer
-    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions]
     filter_backends = (InBBoxFilter,)
     bbox_filter_field = "geom"
     bbox_filter_include_overlapping = True
@@ -98,13 +98,6 @@ class LineViewSet(viewsets.ModelViewSet):
     )
 
 
-# class ActionViewSet(viewsets.ModelViewSet):
-#     """ViewSet for Action item"""
-
-#     serializer_class = ActionPolymorphicSerializer
-#     permission_classes = [DjangoModelPermissions]
-#     queryset = Action.objects.all()
-
 
 class DiagnosisViewSet(viewsets.ModelViewSet):
     """ViewSet for Diagnosis item"""
@@ -118,7 +111,7 @@ class OperationViewSet(viewsets.ModelViewSet):
     """ViewSet for Operation item"""
 
     serializer_class = OperationPolymorphicSerializer
-    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions]
     queryset = (
         Operation.objects.all()
         .select_related("infrastructure")
