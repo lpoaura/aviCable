@@ -2,23 +2,78 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+import datetime
 
 
-def set_network_type(apps, schema_editor):
-    Infrastructure = apps.get_model('cables', 'Infrastructure')
-    Nomenclature = apps.get_model('sinp_nomenclatures', 'Nomenclature')
-    htb_network_nomenclature = Nomenclature.objects.get(type__mnemonic='network_type',code='HTB')
-    hta_network_nomenclature = Nomenclature.objects.get(type__mnemonic='network_type',code='HTA-BT')
-    Infrastructure.objects.filter(owner__code='IO-RTE').update(network_type=htb_network_nomenclature)
-    Infrastructure.objects.filter(owner__code='IO-ENEDIS').update(network_type=hta_network_nomenclature)
+def set_network_type(apps, schema_editor) -> None:
+    """Get or creatre Nomenclature default value"""
+
+    # Get models
+    Source = apps.get_model("sinp_nomenclatures", "Source")
+    Type = apps.get_model("sinp_nomenclatures", "Type")
+    Nomenclature = apps.get_model("sinp_nomenclatures", "Nomenclature")
+    Infrastructure = apps.get_model("cables", "Infrastructure")
+
+    source = Source.objects.get_or_create(
+        name="aviCable",
+        version="v1",
+        defaults={
+            "url": "",
+            "create_date": datetime.datetime.now(),
+            "update_date": datetime.datetime.now(),
+        },
+    )
+
+    nomenclature_type = Type.objects.get_or_create(
+        code="NETW_TYP",
+        defaults={
+            "mnemonic": "type_mnemonic",
+            "label": "Type de réseau",
+            "status": "VALID",
+            "create_date": datetime.datetime.now(),
+            "update_date": datetime.datetime.now(),
+            "source": source[0],
+        },
+    )
+    htb_network_nomenclature = Nomenclature.objects.get_or_create(
+        type=nomenclature_type[0],
+        code="HTB",
+        defaults={
+            "label": "Réseau de transport (ex. RTE, lignes HTB)",
+            "status": "ENABLED",
+            # "timestamp_create": datetime.datetime.now(),
+            # "timestamp_create": datetime.datetime.now(),
+        },
+    )
+    hta_network_nomenclature = Nomenclature.objects.get_or_create(
+        type=nomenclature_type[0],
+        code="HTA-BT",
+        defaults={
+            "label": "Réseau de distribution (ex. ENEDIS, lignes HTA/BT)",
+            "status": "ENABLED",
+            # "timestamp_create": datetime.datetime.now(),
+            # "timestamp_create": datetime.datetime.now(),
+        },
+    )
+    Infrastructure.objects.filter(owner__code="IO-RTE").update(
+        network_type=htb_network_nomenclature[0]
+    )
+    Infrastructure.objects.filter(owner__code="IO-ENEDIS").update(
+        network_type=hta_network_nomenclature[0]
+    )
 
 
 class Migration(migrations.Migration):
     dependencies = [
+        (
+            "sinp_nomenclatures",
+            "0003_nomenclature_parents",
+        ),
         ("cables", "0011_operation_neutralization_level"),
     ]
 
     operations = [
+        migrations.RunSQL('SET CONSTRAINTS ALL IMMEDIATE;'),
         migrations.AddField(
             model_name="infrastructure",
             name="network_type",
@@ -49,4 +104,5 @@ class Migration(migrations.Migration):
             model_name="infrastructure",
             name="owner",
         ),
+        migrations.RunSQL('SET CONSTRAINTS ALL DEFERRED;'),
     ]
