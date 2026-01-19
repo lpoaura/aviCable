@@ -24,7 +24,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     """ViewSet for Infrastructure item"""
 
     serializer_class = InfrastructurePolymorphicSerializer
-    permission_classes = [DjangoModelPermissions]
+    # permission_classes = [DjangoModelPermissions]
     # Define queryset by optimizing DB requests
     filter_backends = (InfrstrInBboxFilter,)
     # bbox_filter_field = 'point__geom'
@@ -33,32 +33,38 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     queryset = (
         Infrastructure.objects.all()
         .select_related("network_type")
+        .prefetch_related("network_type__parents")
         .prefetch_related(
             Prefetch(
                 "areas",
-                queryset=GeoArea.objects.only("id", "code", "name", "type"),
+                queryset=GeoArea.objects.only("id", "code", "name", "type").prefetch_related('type__parents'),
             )
         )
         .prefetch_related("areas__type")
         .prefetch_related("sensitive_area")
         .prefetch_related("diagnosis")
+        .prefetch_related("diagnosis__created_by", "diagnosis__updated_by")
         .prefetch_related("diagnosis__media")
-        .prefetch_related("diagnosis__arming")
-        .prefetch_related("diagnosis__pole_attractivity")
-        .prefetch_related("diagnosis__pole_dangerousness")
-        .prefetch_related("diagnosis__sgmt_moving_risk")
-        .prefetch_related("diagnosis__sgmt_topo_integr_risk")
-        .prefetch_related("diagnosis__sgmt_landscape_integr_risk")
-        .prefetch_related("operations")
-        .prefetch_related("operations__equipments")
-        .prefetch_related("operations__equipments__type")
+        .prefetch_related("diagnosis__arming__parents")
+        .prefetch_related("diagnosis__pole_attractivity__parents")
+        .prefetch_related("diagnosis__pole_dangerousness__parents")
+        .prefetch_related("diagnosis__sgmt_moving_risk__parents")
+        .prefetch_related("diagnosis__sgmt_topo_integr_risk__parents")
+        .prefetch_related("diagnosis__sgmt_landscape_integr_risk__parents")
+        # .prefetch_related("operations")
+        .prefetch_related("operations__created_by", "operations__updated_by")
+        .prefetch_related("operations__equipments__type__parents")
+        # .prefetch_related("operations__equipments__type")
         .prefetch_related("operations__media")
         .prefetch_related("mortality")
+        .prefetch_related("mortality__created_by", "mortality__updated_by")
         .prefetch_related("mortality__media")
         .prefetch_related("mortality__species")
-        .prefetch_related("mortality__death_cause")
+        .prefetch_related("mortality__death_cause__parents")
+        .select_related("created_by", "updated_by")
+        # .prefetch_related("diagnosis__created_by", "diagnosis__updated_by")
+        # .prefetch_related("mortality__created_by", "mortality__updated_by")
     )
-
     # def get_bbox_filter_field(self):
     #     print(f'get_bbox_filter_field {dir(self)}')
     #     return 'point__geom'
@@ -96,7 +102,6 @@ class LineViewSet(viewsets.ModelViewSet):
         .prefetch_related("areas")
         .prefetch_related("sensitive_area")
     )
-
 
 
 class DiagnosisViewSet(viewsets.ModelViewSet):
