@@ -5,7 +5,7 @@
         <v-row>
           <v-col lg="4" md="12">
             <v-autocomplete v-model="selectedEquipment.type_id" :items="equipmentItems" item-title="label"
-              item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" variant="solo"
+              item-value="id" :rules="[rules.required]" hide-selected :label="$t('forms.equipment')" variant="solo"
               density="compact" @input="updateEquipmentData" />
           </v-col>
           <v-col lg="4" md="12">
@@ -38,10 +38,10 @@ const nomenclaturesStore = useNomenclaturesStore()
 const valid = ref(false)
 const cablesStore = useCablesStore()
 
-const { formEquipments, selectedEquipment } = storeToRefs(cablesStore)
+const { selectedEquipment } = storeToRefs(cablesStore)
 
 const infrastructureType = computed(() => (!!route.query.type && typeof route.query.type === 'string') && (route.query.type).toLowerCase() || '')
-const equipmentItems = computed(() => nomenclaturesStore.getEquipmentItems(infrastructureType.value, ''))
+const equipmentItems = computed(() => nomenclaturesStore.getEquipmentItems(infrastructureType.value))
 
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),

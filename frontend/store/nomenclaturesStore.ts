@@ -61,7 +61,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
       }
     },
     getEquipmentItems() {
-      return (geomType: string, network_type: string) => {
+      return (geomType: string) => {
         console.debug('geomType', geomType)
         const code = geomType.toLowerCase() === 'point' ? 'POLE' : 'LINE'
         const infraTypeId: number | undefined = this.infrastructureType?.find((elem: NomenclatureItem) => elem.code === code)?.id

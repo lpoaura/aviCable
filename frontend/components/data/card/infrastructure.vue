@@ -1,14 +1,14 @@
 <template>
-  <v-card   >
+  <v-card>
     <v-card-item prepend-icon="mdi-map-marker-circle">
-    <template #title>
-      <widgets-neutralized-status :data="data" :detail="true" class="m1-2 float-right" />
-      <widgets-risk-level-status :data="data" class="m1-2 float-right" detail />
-      {{ $t("display.context") }}
-    </template>
-    <template #subtitle>{{ $t("filledIn") }} {{ new Date(data.properties.timestamp_create).toLocaleString() }} par {{
-      data.properties.created_by?.username || '?' }}</template>
-      </v-card-item>
+      <template #title>
+        <widgets-neutralized-status :data="data" :detail="true" class="m1-2 float-right" />
+        <widgets-risk-level-status :data="data" class="m1-2 float-right" detail />
+        {{ $t("display.context") }}
+      </template>
+      <template #subtitle>{{ $t("filledIn") }} {{ new Date(data.properties.timestamp_create).toLocaleString() }} par {{
+        data.properties.created_by?.username || '?' }}</template>
+    </v-card-item>
     <v-card-text>
       <v-row>
         <v-col cols="12">
@@ -35,9 +35,9 @@
     <v-card-actions>
 
       <v-btn color="green" prepend-icon="mdi-plus-circle"
-        @click="router.push({ path: `/infrastructures/${data?.properties.id}/diagnosis`, query: { type: data.resourcetype } })">Diagnostic</v-btn>
+        @click="router.push({ path: `/infrastructures/${data?.properties.id}/diagnosis`, query: { type: data.resourcetype, network_type: data.properties?.network_type.id } })">Diagnostic</v-btn>
       <v-btn color="green" prepend-icon="mdi-plus-circle"
-        @click="router.push({ path: `/infrastructures/${data?.properties.id}/operation`, query: { type: data.resourcetype } })">Neutralisation</v-btn>
+        @click="router.push({ path: `/infrastructures/${data?.properties.id}/operation`, query: { type: data.resourcetype, network_type: data.properties?.network_type.id } })">Neutralisation</v-btn>
       <v-spacer />
       <v-btn color="orange"
         @click="router.push({ path: `/infrastructures/${data.properties.id}/infrastructure`, query: { type: data.resourcetype } })"><v-icon>mdi-pencil-circle</v-icon>

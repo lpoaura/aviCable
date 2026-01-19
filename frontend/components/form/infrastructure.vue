@@ -92,6 +92,7 @@ const rules = reactive({
 const moveToNextStep = async () => {
   const formInfrastructure = await createNewInfrastructure()
   if (formInfrastructure) {
+    cablesStore.setFormInfrastructure(formInfrastructure)
     if (!infrastructureId.value) {
       emit('nextStep');
     } else {
@@ -100,7 +101,7 @@ const moveToNextStep = async () => {
   }
 };
 
-watch(newGeoJSONObject, (newVal, oldVal) => {
+watch(newGeoJSONObject, (newVal, _oldVal) => {
   if (newVal) {
     infrastructureData.geom = newVal?.geometry
   }

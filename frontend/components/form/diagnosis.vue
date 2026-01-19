@@ -8,10 +8,11 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                      <form-date-input :rules="[rules.required]" label="Date de visite"/>
+                    <form-date-input :rules="[rules.required]" label="Date de visite" />
                   </v-col>
                   <v-col cols="12">
-                    <v-autocomplete v-model="diagData.arming_id" chips :items="armingItems.sort((a, b) => a.label.localeCompare(b.label))" item-title="label"
+                    <v-autocomplete v-model="diagData.arming_id" chips
+                      :items="armingItems.sort((a, b) => a.label.localeCompare(b.label))" item-title="label"
                       item-value="id" :rules="[rules.required]" hide-selected :label="$t('armings')" multiple
                       deletable-chips variant="solo" density="compact" />
                   </v-col>
@@ -102,7 +103,7 @@ import type { DiagData, Diagnosis } from '~/types/cables';
 import type { NomenclatureItem } from '~/types/nomenclature';
 import type { NotificationInfo } from '~/types/notifications';
 import * as errorCodes from '~/static/errorConfig.json';
-import {getLocaleDateString} from '~/helpers/formHelpers';
+import { getLocaleDateString } from '~/helpers/formHelpers';
 
 const { t } = useI18n()
 const router = useRouter()
@@ -116,8 +117,9 @@ const mediaStore = useMediaStore()
 
 const formValid = ref(false)
 const infrastructureId = computed(() => cablesStore.formInfrastructureId)
+const formInfrastructure = computed(() => cablesStore.formInfrastructure)
 const infrastructureType = computed(() => route.query.type && typeof route.query.type == 'string' ? (route.query.type).toLowerCase() : '')
-const networkTypeId = computed<number>(() => parseInt(route.query.network_type as string) || 0);
+const networkTypeId = computed<number>(() => parseInt(route.query.network_type as string) || formInfrastructure.value?.properties?.network_type?.id || 0);
 const diagnosisReady = ref(false)
 const diagnosisId = computed(() => route.query.id_diagnosis)
 const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastructureType.value, networkTypeId.value))
@@ -191,7 +193,7 @@ const initData = async () => {
   // const diagData = null
 }
 
-watch(()=> cablesStore.getFormDate,(newDate) => {
+watch(() => cablesStore.getFormDate, (newDate) => {
   diagData.date = getLocaleDateString(newDate)
 })
 
@@ -247,9 +249,17 @@ const createDiagnosis = async () => {
 }
 
 const moveToNextStep = async () => {
-  const diagnosis = await createDiagnosis()
-  if (diagnosis) {
-    router.push(`/infrastructures/${infrastructureId.value}`)
+  try {
+    const diagnosis = await createDiagnosis()
+    if (diagnosis) {
+      router.push(`/infrastructures/${infrastructureId.value}`)
+    }
+  } catch (err) {
+    const error: NotificationInfo = {
+      type: 'error',
+      msg: `${t(`error.${errorCodes.create_point.msg}`)} - ${err}`
+    }
+    notificationStore.setInfo(error)
   }
 };
 
