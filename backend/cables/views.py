@@ -24,7 +24,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     """ViewSet for Infrastructure item"""
 
     serializer_class = InfrastructurePolymorphicSerializer
-    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions]
     # Define queryset by optimizing DB requests
     filter_backends = (InfrstrInBboxFilter,)
     # bbox_filter_field = 'point__geom'
