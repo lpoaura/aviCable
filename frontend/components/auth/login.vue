@@ -46,9 +46,8 @@ const { t } = useI18n()
 const router = useRouter()
 
 
-
+const notificationStore = useNotificationStore()
 const auth = useAuth()
-const loginForm = ref(null)
 const formValid = ref(false)
 const loading = ref(false)
 const login = reactive({
@@ -68,10 +67,19 @@ const userLogin = async () => {
         body: login
       })
       // nomenclaturesStore.loadNomenclatures()
+      notificationStore.setInfo({
+        type: 'success',
+        msg: `You successfully logged in`
+      })
       router.push('/search')
     }
   } catch (err) {
-    console.error(err)
+    console.error('Login Error', err.data.data.detail)
+    const message = err.data?.data?.detail || err
+    notificationStore.setInfo({
+      type: 'error',
+      msg: message
+    })
   }
 }
 </script>
