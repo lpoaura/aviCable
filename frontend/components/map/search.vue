@@ -774,7 +774,7 @@ const supportColor = (feature: Feature) => {
 }
 
 const reverseBBoxString = (bounds: LatLngBounds) => {
-  const coords: Array<number> = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()]
+  const coords: Array<number> = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()]
   return coords.toString()
 }
 

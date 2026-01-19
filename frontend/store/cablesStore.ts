@@ -164,13 +164,12 @@ export const useCablesStore = defineStore('cables', {
       }
     },
     async getEnedisInfrastructure(bbox) {
+      console.log('bbox',bbox)
       const params = {
-        where: `in_bbox(geo_shape,${bbox})`,
-        limit: "10000",
-        lang: "fr",
-        timezone: "Europe/Paris",
-        use_labels: "false",
-        epsg: "4326"
+        bbox: bbox,
+        //bbox: `${bbox[1]},${bbox[0]},${bbox[3]},${bbox[2]}`,
+        format: "geojson",
+        size: "10000",
       }
       if (this.controller === null) {
         this.controller = new AbortController();
@@ -181,42 +180,51 @@ export const useCablesStore = defineStore('cables', {
       try {
         const [{ data: reseauBt }, { data: reseauSoutBt }, { data: reseauHta }, { data: reseauSoutHta }, { data: poteaux }] = await Promise.all([
           useApi<NetworkFeatureCollection>(
-            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-bt/exports/geojson', { signal, params }
+            'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-bt/lines', { signal, params }
           ),
           useApi<NetworkFeatureCollection>(
-            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-souterrain-bt/exports/geojson', { signal, params }
+            'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-souterrain-bt/lines', { signal, params }
           ),
           useApi<NetworkFeatureCollection>(
-            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-hta/exports/geojson', { signal, params }
+            'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-hta/lines', { signal, params }
           ),
           useApi<NetworkFeatureCollection>(
-            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/reseau-souterrain-hta/exports/geojson', { signal, params }
+            'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-souterrain-hta/lines', { signal, params }
           ),
           useApi<NetworkFeatureCollection>(
-            'https://data.enedis.fr/api/explore/v2.1/catalog/datasets/position-geographique-des-poteaux-hta-et-bt/exports/geojson', { signal, params }
+            'https://opendata.enedis.fr/data-fair/api/v1/datasets/position-geographique-des-poteaux-hta-et-bt/lines', { signal, params }
           )
         ]);
         if (reseauBt.value && reseauSoutBt.value && reseauHta.value && reseauSoutHta.value && poteaux.value) {
-          //const taggedReseauBt = ...reseauBt.value.features.map(v => ({...v, properties.type: "aerien"}))*
-          // const taggedReseauBt = reseauBt.value.features.forEach(v => { v.properties.type = 'Overhead' })
-          // const taggedReseauHta = reseauHta.value.features.forEach(v => { v.properties.type = 'Overhead' })
-          // const taggedReseauSoutBt = reseauSoutBt.value.features.forEach(v => { v.properties.type = 'Underground' })
-          // const taggedReseauSoutHta = reseauSoutHta.value.features.forEach(v => { v.properties.type = 'Underground' })
           reseauBt.value.features.forEach(v => {
-            v.properties.type = 'Overhead'
-            v.properties.category = 'bt'
+            if (v.properties) {
+              v.properties.type = 'Overhead'
+              v.properties.category = 'bt'
+            }
           })
           reseauSoutBt.value.features.forEach(v => {
-            v.properties.type = 'Underground'
-            v.properties.category = 'bt'
+            if (v.properties) {
+              v.properties.type = 'Underground'
+              v.properties.category = 'bt'
+            }
           })
           reseauHta.value.features.forEach(v => {
-            v.properties.type = 'Overhead'
-            v.properties.category = 'hta'
+            if (v.properties) {
+              v.properties.type = 'Overhead'
+              v.properties.category = 'hta'
+            }
           })
           reseauSoutHta.value.features.forEach(v => {
-            v.properties.type = 'Underground'
-            v.properties.category = 'hta'
+            if (v.properties) {
+              v.properties.type = 'Underground'
+              v.properties.category = 'hta'
+            }
+          })
+          poteaux.value.features.forEach(v => {
+            if (v.properties) {
+              v.properties.type = 'Overhead'
+              v.properties.category = 'hta'
+            }
           })
           this.enedisInfrastructure = {
             type: 'FeatureCollection',
