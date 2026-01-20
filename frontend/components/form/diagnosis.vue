@@ -98,7 +98,6 @@
 </template>
 
 <script lang="ts" setup>
-import { VDateInput } from 'vuetify/labs/VDateInput'
 import type { DiagData, Diagnosis } from '~/types/cables';
 import type { NomenclatureItem } from '~/types/nomenclature';
 import type { NotificationInfo } from '~/types/notifications';

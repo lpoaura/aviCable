@@ -31,7 +31,6 @@
 
 <script setup lang="ts">
 import type { NotificationInfo } from '~/types/notifications'
-import * as errorCodes from '~/static/errorConfig.json'
 
 // import { useNotificationStore } from 'store/notificationStore'
 

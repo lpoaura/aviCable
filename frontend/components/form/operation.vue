@@ -40,15 +40,11 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
-// import { VDateInput } from 'vuetify/labs/VDateInput'
-// import type {DiagData, Diagnosis} from '~/types/diagnosis';
 import * as errorCodes from '~/static/errorConfig.json'
 import type { NotificationInfo } from '~/types/notifications'
-import type { OperationFeature, Operation, CablesFeature } from '~/types/cables';
-import type { Media } from '~/types/media';
+import type { OperationFeature, CablesFeature } from '~/types/cables';
 import type { Feature } from 'geojson';
 
-const emit = defineEmits();
 const { t, locales } = useI18n()
 const router = useRouter()
 const route = useRoute()
