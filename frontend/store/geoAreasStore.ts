@@ -1,10 +1,13 @@
 // Nuxt Store module: cablesStore for Cables module
 import { defineStore } from 'pinia'
 import type { FeatureCollection } from 'geojson'
+import type { GeoAreaFeatureCollection , GeoAreasFetchParams} from '~/types/geoAreas';
+
+
 export const useGeoAreasStore = defineStore('geoAreas', {
   state: () => ({
-    municipalities: {} as FeatureCollection, // Infrastructure data
-    departements: {} as FeatureCollection,
+    municipalities: {} as GeoAreaFeatureCollection, // Infrastructure data
+    departements: {} as GeoAreaFeatureCollection,
     municipalitiesVisible: false,
     departmentsVisible: false,
     // pointData: {}, // Pole and Pylon data
@@ -12,7 +15,7 @@ export const useGeoAreasStore = defineStore('geoAreas', {
     controller: null as AbortController | null,
   }),
   actions: {
-    async getMunicipalities(params: Object) {
+    async getMunicipalities(params: GeoAreasFetchParams) {
       if (this.controller === null) {
         this.controller = new AbortController();
       }
@@ -21,13 +24,15 @@ export const useGeoAreasStore = defineStore('geoAreas', {
       try {
         params['type__code'] = "ADMIN_COM"
         console.debug("getMunicipalities signal", signal)
-        await useApi(
+        await useApi<GeoAreaFeatureCollection>(
           '/api/v1/geoareas/', { signal, params }
         ).then(resp => {
-          console.debug('useApi municipalities datra',resp.data)
-          this.municipalities = resp.data.value
+          console.debug('useApi municipalities datra', resp.data)
+          if (resp.data.value) {
+            this.municipalities = resp.data.value
+          }
         })
-      } catch (error: any) {
+      } catch (error: unknown ) {
         if (error instanceof Error && error.name === "AbortError") {
           console.debug("Requête annulée");
         } else {
@@ -37,9 +42,8 @@ export const useGeoAreasStore = defineStore('geoAreas', {
         // Reset loading status and controller
         this.controller = null; // Reset the controller after the request
       }
-
     },
-    
+
     cancelRequest() {
       console.debug('cancelRequest abort request - 1', this.controller)
       this.controller?.abort()

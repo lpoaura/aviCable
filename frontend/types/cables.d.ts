@@ -1,8 +1,9 @@
 import type { Geometry, Feature, GeoJsonProperties, FeatureCollection } from "geojson";
-import type {Polyline, Marker} from "leaflet"
+import type { Polyline, Marker } from "leaflet"
 import type { Nomenclature } from "./nomenclature";
 import type { Medias } from "./media"
 import type { UserSimple } from "./user"
+import type { GeoArea } from "./geoAreas";
 
 export type NewLayerType = Polyline | Marker
 
@@ -60,12 +61,7 @@ export type InfrastructurePolymorphic = {
   uuid: string;
 };
 
-export type GeoArea = {
-  code: string;
-  id: number;
-  name: string;
-  type: Nomenclature;
-};
+
 
 export interface Equipment {
   id?: number;
@@ -189,22 +185,14 @@ export interface NetworkFeature extends Feature {
   properties: {
     type?: string;
     category?: string;
-    [key: string]: any; 
+    [key: string]: any;
   };
 }
 
-// export interface NetworkFeature extends Feature {
-//   properties: {
-//     type?: string;
-//     category?: string; 
-//     [key: string]: any; 
-//   } | never; // Ensures properties is never null
-// }
-
 
 export interface NetworkProperties extends GeoJsonProperties {
-    type?: string;
-    category?: string; 
+  type?: string;
+  category?: string;
 };
 
 

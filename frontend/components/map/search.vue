@@ -1,5 +1,5 @@
 <template>
-  <l-map id="map" ref="map" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getBbox"
+  <l-map id="map" ref="searchMap" class="d-flex" :zoom="zoom" :center="center" @ready="hookUpDraw" @zoom="getBbox"
     @moveend="getBbox">
     <template v-if="mapReady">
       <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
@@ -14,11 +14,9 @@
           :ref="layer.ref" :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name"
           layer-type="overlay" />
       </template>
-      <!-- <l-geo-json v-if="municipalities && !(Object.keys(municipalities).length === 0)" :geojson="municipalities"
-        name="Communes" layer-type='overlay' :options="municipalitiesGeoJsonOptions" ref="municipalities"
-        :options-style="municipalitiesOptionsStyle" @update:visible="municipalitesVisibleEvent"
-        :visible="municipalitiesVisible">
-      </l-geo-json> -->
+      <l-geo-json v-if="municipalities && !(Object.keys(municipalities).length === 0)" name="Communes" layer-type="overlay" ref="municipalitiesLayer"
+        :geojson="municipalities" :options-style="municipalitiesOptionsStyle" 
+        :visible="municipalitiesVisible"/>
       <l-geo-json v-for="(layer, index) in validOtherNetworksLayers" :key='index' :geojson="layer.data" :ref="layer.ref"
         :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name" layer-type='overlay'
         @ready="otherNetworksLayersReady = true" :visible="layer.visible" />
@@ -73,7 +71,7 @@ const coordinatesStore: StoreGeneric = useCoordinatesStore()
 const globalStore: StoreGeneric = useGlobalStore()
 const geoAreasStore: StoreGeneric = useGeoAreasStore()
 // Data
-const map: Ref<Map | null> = ref(null)
+const searchMap: Ref<Map | null> = ref(null)
 const mapObject: Ref<typeof LMap | null> = ref(null)
 // const createLayer: Reactive<NewLayerType> = reactive({} as NewLayerType)
 const createLayer: Ref<NewLayerType | null> = ref(null)
@@ -86,7 +84,7 @@ const otherNetworksLayersReady: Ref<boolean> = ref(false)
 const bufferedSelectedInfrastructure: Ref<Feature<GeometryObject> | undefined> = ref(undefined)
 const bufferedMortalityInfrastructure: Ref<Feature<GeometryObject> | undefined> = ref(undefined)
 const enedisIsVisible = ref(false)
-const rteIsVisible = ref(false)
+// const rteIsVisible = ref(false)
 
 const {
   zoom,
@@ -106,12 +104,12 @@ const {
   lineStringData,
   operatedLineStringData,
   enedisInfrastructure,
-  rteInfrastructure,
+  // rteInfrastructure,
 } = storeToRefs(cableStore)
 const { mortalityData } = storeToRefs(mortalityStore)
 const { baseLayers } = storeToRefs(mapLayersStore)
 const { refreshData } = storeToRefs(globalStore)
-// const { municipalities, municipalitiesVisible } = storeToRefs(geoAreasStore)
+const { municipalities, municipalitiesVisible } = storeToRefs(geoAreasStore)
 
 const iconDict: { [key: string]: string } = {
   COD_EL: 'lightning-bolt',
@@ -366,29 +364,29 @@ const enedisInfrastructureGeoJsonOptions = () => {
 
 
 
-const rteInfrastructureGeoJsonOptions = () => {
-  return {
-    pointToLayer: (_feature: Feature, latlng: LatLng | null) => {
-      if (latlng) {
-        return leaflet.circleMarker(latlng, {
-          radius: 3,
-          fillColor: rteColor,
-          color: rteColor,
-          weight: 0.5,
-          opacity: 0.5,
-          fillOpacity: 0.8,
-        })
-      }
-    }
-  }
-}
-
-
-// const municipalitiesGeoJsonOptions = () => {
+// const rteInfrastructureGeoJsonOptions = () => {
 //   return {
-//     onEachFeature: municipalitiesOnEachFeature,
+//     pointToLayer: (_feature: Feature, latlng: LatLng | null) => {
+//       if (latlng) {
+//         return leaflet.circleMarker(latlng, {
+//           radius: 3,
+//           fillColor: rteColor,
+//           color: rteColor,
+//           weight: 0.5,
+//           opacity: 0.5,
+//           fillOpacity: 0.8,
+//         })
+//       }
+//     }
 //   }
 // }
+
+
+const municipalitiesGeoJsonOptions = () => {
+  return {
+    onEachFeature: municipalitiesOnEachFeature,
+  }
+}
 
 
 // Layers OptionsStyles
@@ -438,24 +436,24 @@ const bufferedSelectedInfrastructureGeoJsonOptionsStyle = (_feature: Feature) =>
   }
 }
 
-const rteInfrastructureGeoJsonOptionsStyle = () => {
-  return {
-    color: rteColor,
-    opacity: 0.8,
-    weight: 2,
-    dashArray: '10, 10'
-  }
-}
-
-// const municipalitiesOptionsStyle = (_feature: Feature) => {
+// const rteInfrastructureGeoJsonOptionsStyle = () => {
 //   return {
-//     color: '#333',
-//     fillColor: '#000',
-//     weight: 1,
-//     opacity: 0.7,
-//     fillOpacity: 0,
+//     color: rteColor,
+//     opacity: 0.8,
+//     weight: 2,
+//     dashArray: '10, 10'
 //   }
 // }
+
+const municipalitiesOptionsStyle = (_feature: Feature) => {
+  return {
+    color: '#333',
+    fillColor: '#000',
+    weight: 1,
+    opacity: 0.7,
+    fillOpacity: 0,
+  }
+}
 
 
 // const municipalitesVisibleEvent = (visibility) => {
@@ -606,7 +604,7 @@ const getBbox = () => {
 
 
 const hookUpDraw = async () => {
-  mapObject.value = map.value?.leafletObject;
+  mapObject.value = searchMap.value?.leafletObject;
 
   if (mapObject.value) {
     mapReady.value = true;

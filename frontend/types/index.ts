@@ -1,4 +1,5 @@
 export * from './cables'
+export * from './geoAreas'
 export * from './notifications'
 export * from './mortality'
 export * from './nomenclature'
