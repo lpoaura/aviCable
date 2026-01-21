@@ -1,6 +1,6 @@
 <template>
     <v-sheet width="100%" max-width="600" class="mx-auto">
-        
+
         <v-form ref="signUpForm" v-model="formValid">
             <v-card class="mx-auto pa-12 pb-8" elevation="0" rounded="lg">
                 <h1><v-icon>mdi-account-plus</v-icon> {{ $t('auth.createAccount') }}</h1>
@@ -39,7 +39,7 @@
 
                 <div class="text-subtitle-1 text-medium-emphasis">{{ $t('auth.areasOfIntervention') }}</div>
                 <v-autocomplete v-model="formValue.areas" chips :items="areas" item-title="label" item-value="id"
-                    :rules="[listRequired]" hide-selected :label="$t('auth.areasOfIntervention')" multiple deletable-chips
+                    :rules="listRequired" hide-selected :label="$t('auth.areasOfIntervention')" multiple deletable-chips
                     variant="outlined" density="compact" clearable required />
 
                 <v-btn block class="mb-8" color="blue" size="large" variant="flat" :loading="loading"
@@ -58,7 +58,7 @@ import zxcvbn from 'zxcvbn';
 const { t } = useI18n()
 const router = useRouter()
 
-
+const signUpForm = ref()
 const confirmPassword = ref(null)
 const formValid = ref(false)
 const loading = ref(false)
@@ -72,10 +72,9 @@ const formValue = reactive({
     organisms: null,
     areas: null
 })
-const required = reactive([v => !!v || t('auth.required')])
+const required = reactive([v => !!v || t('valid.required')])
 const listRequired = reactive([v => {
-    console.debug('<listRequired> v', v, v.length, !!v.length)
-    return !!v.length  || t('auth.required')
+    return !!(v?.length) || t('valid.required')
 }])
 const passwordRules = reactive([
     (value) => !!value || t('auth.enterPassword'),
@@ -135,19 +134,26 @@ const pwdStrength = computed(() => {
 
 const signUp = async () => {
     console.log('proceed signUp', formValue)
-    const { data, error } = await useApi('/api/v1/user/', { method: 'post', body: formValue })
-    if (error.value) {
-        console.error(error.value)
-        notificationStore.setInfo({
-            type: 'error',
-            msg: `${error.value}`
-        })
-    } else {
-        router.push('/')
-        notificationStore.setInfo({
-            type: 'success',
-            msg: `User ${data.value.username} successfully created, an email have been sent to administrators to valid your registration`
-        })
+    const { valid } = signUpForm.value.validate()
+    if (valid) {
+        const { data, error } = await useApi('/api/v1/user/', { method: 'post', body: formValue })
+        if (error.value) {
+            console.error(error.value.data)
+            console.debug(data.value)
+            custom_content =
+                notificationStore.setInfo({
+                    type: 'error',
+                    msg: `${error.value}
+            
+            `
+                })
+        } else {
+            router.push('/')
+            notificationStore.setInfo({
+                type: 'success',
+                msg: `User ${data.value.username} successfully created, an email have been sent to administrators to valid your registration`
+            })
+        }
     }
 
 }
