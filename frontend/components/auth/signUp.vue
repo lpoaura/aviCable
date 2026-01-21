@@ -73,7 +73,10 @@ const formValue = reactive({
     areas: null
 })
 const required = reactive([v => !!v || t('auth.required')])
-const listRequired = reactive([v => !!v.length || t('auth.required')])
+const listRequired = reactive([v => {
+    console.debug('<listRequired> v', v, v.length, !!v.length)
+    return !!v.length  || t('auth.required')
+}])
 const passwordRules = reactive([
     (value) => !!value || t('auth.enterPassword'),
     (value) => (value && value.length >= 12) || t('auth.passwordMinLength'),
@@ -134,6 +137,7 @@ const signUp = async () => {
     console.log('proceed signUp', formValue)
     const { data, error } = await useApi('/api/v1/user/', { method: 'post', body: formValue })
     if (error.value) {
+        console.error(error.value)
         notificationStore.setInfo({
             type: 'error',
             msg: `${error.value}`
