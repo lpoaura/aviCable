@@ -134,27 +134,23 @@ const pwdStrength = computed(() => {
 
 const signUp = async () => {
     console.log('proceed signUp', formValue)
-    const { valid } = signUpForm.value.validate()
-    if (valid) {
-        const { data, error } = await useApi('/api/v1/user/', { method: 'post', body: formValue })
-        if (error.value) {
-            console.error(error.value.data)
-            console.debug(data.value)
-            custom_content =
-                notificationStore.setInfo({
-                    type: 'error',
-                    msg: `${error.value}
+    const { data, error } = await useApi('/api/v1/user/', { method: 'post', body: formValue })
+    if (error.value) {
+        console.error(error.value.data)
+        console.debug(data.value)
+        custom_content =
+            notificationStore.setInfo({
+                type: 'error',
+                msg: `${error.value}
             
             `
-                })
-        } else {
-            router.push('/')
-            notificationStore.setInfo({
-                type: 'success',
-                msg: `User ${data.value.username} successfully created, an email have been sent to administrators to valid your registration`
             })
-        }
+    } else {
+        router.push('/')
+        notificationStore.setInfo({
+            type: 'success',
+            msg: `User ${data.value.username} successfully created, an email have been sent to administrators to valid your registration`
+        })
     }
-
 }
 </script>
