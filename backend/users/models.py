@@ -125,10 +125,7 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     registration_token = models.CharField(
         max_length=250,
         blank=True,
-        null=True,
-        default="".join(
-            random.choices(string.ascii_letters + string.digits, k=64)
-        ),
+        null=True
     )
     email_verified = models.BooleanField(default=False)
 
@@ -150,6 +147,10 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         # self.username = generate_username(self.first_name, self.last_name)
         self.last_name = self.last_name.upper()
+        if not self.registration_token:
+            self.registration_token = "".join(
+            random.choices(string.ascii_letters + string.digits, k=64)
+        )
         super().save(*args, **kwargs)
 
     @property
