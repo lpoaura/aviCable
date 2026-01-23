@@ -14,9 +14,9 @@
           :ref="layer.ref" :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name"
           layer-type="overlay" />
       </template>
-      <l-geo-json v-if="municipalities && !(Object.keys(municipalities).length === 0)" name="Communes" layer-type="overlay" ref="municipalitiesLayer"
-        :geojson="municipalities" :options-style="municipalitiesOptionsStyle" 
-        :visible="municipalitiesVisible"/>
+      <l-geo-json v-if="municipalities && !(Object.keys(municipalities).length === 0)" name="Communes"
+        layer-type="overlay" ref="municipalitiesLayer" :geojson="municipalities"
+        :options-style="municipalitiesOptionsStyle" :visible="municipalitiesVisible" />
       <l-geo-json v-for="(layer, index) in validOtherNetworksLayers" :key='index' :geojson="layer.data" :ref="layer.ref"
         :options="layer.options(layer.data)" :options-style="layer.optionsStyle" :name="layer.name" layer-type='overlay'
         @ready="otherNetworksLayersReady = true" :visible="layer.visible" />
@@ -758,7 +758,7 @@ const supportColor = (feature: Feature) => {
   const lastDiag = feature.properties?.diagnosis[0]
   if (lastDiag && lastDiag.pole_attractivity && lastDiag.pole_attractivity) {
     const attractivity = lastDiag.pole_attractivity.code
-    const dangerousness = lastDiag.pole_attractivity.code
+    const dangerousness = lastDiag.pole_dangerousness.code
     const note = levelNotes[attractivity] + levelNotes[dangerousness]
     if (note == 2) {
       return 'blue'
