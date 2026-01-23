@@ -178,48 +178,48 @@ export const useCablesStore = defineStore('cables', {
       console.debug('getEnedisInfrastructure', signal)
       console.debug('query params', { signal, params })
       try {
-        const [{ data: reseauBt }, { data: reseauSoutBt }, { data: reseauHta }, { data: reseauSoutHta }, { data: poteaux }] = await Promise.all([
+        const [{ data: reseauBt }, { data: reseauHta }, { data: poteaux }] = await Promise.all([
           useApi<NetworkFeatureCollection>(
             'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-bt/lines', { signal, params }
           ),
-          useApi<NetworkFeatureCollection>(
-            'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-souterrain-bt/lines', { signal, params }
-          ),
+          // useApi<NetworkFeatureCollection>(
+          //   'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-souterrain-bt/lines', { signal, params }
+          // ),
           useApi<NetworkFeatureCollection>(
             'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-hta/lines', { signal, params }
           ),
-          useApi<NetworkFeatureCollection>(
-            'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-souterrain-hta/lines', { signal, params }
-          ),
+          // useApi<NetworkFeatureCollection>(
+          //   'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-souterrain-hta/lines', { signal, params }
+          // ),
           useApi<NetworkFeatureCollection>(
             'https://opendata.enedis.fr/data-fair/api/v1/datasets/position-geographique-des-poteaux-hta-et-bt/lines', { signal, params }
           )
         ]);
-        if (reseauBt.value && reseauSoutBt.value && reseauHta.value && reseauSoutHta.value && poteaux.value) {
+        if (reseauBt.value && reseauHta.value && poteaux.value) {
           reseauBt.value.features.forEach(v => {
             if (v.properties) {
               v.properties.type = 'Overhead'
               v.properties.category = 'bt'
             }
           })
-          reseauSoutBt.value.features.forEach(v => {
-            if (v.properties) {
-              v.properties.type = 'Underground'
-              v.properties.category = 'bt'
-            }
-          })
+          // reseauSoutBt.value.features.forEach(v => {
+          //   if (v.properties) {
+          //     v.properties.type = 'Underground'
+          //     v.properties.category = 'bt'
+          //   }
+          // })
           reseauHta.value.features.forEach(v => {
             if (v.properties) {
               v.properties.type = 'Overhead'
               v.properties.category = 'hta'
             }
           })
-          reseauSoutHta.value.features.forEach(v => {
-            if (v.properties) {
-              v.properties.type = 'Underground'
-              v.properties.category = 'hta'
-            }
-          })
+          // reseauSoutHta.value.features.forEach(v => {
+          //   if (v.properties) {
+          //     v.properties.type = 'Underground'
+          //     v.properties.category = 'hta'
+          //   }
+          // })
           poteaux.value.features.forEach(v => {
             if (v.properties) {
               v.properties.type = 'Overhead'
@@ -228,12 +228,12 @@ export const useCablesStore = defineStore('cables', {
           })
           this.enedisInfrastructure = {
             type: 'FeatureCollection',
-            features: [...reseauBt.value.features, ...reseauHta.value.features, ...reseauSoutBt.value.features, ...reseauSoutHta.value.features, ...poteaux.value.features,]
+            features: [...reseauBt.value.features, ...reseauHta.value.features, ...poteaux.value.features,]
           }
         }
       } catch (err) {
         if (err.name === 'AbortError') {
-          console.debug('getEnedisInfrastructure Requête annulée');
+          console.debug('getEnedisInfrastruc        ture Requête annulée');
         } else {
           console.error(err)
         }
