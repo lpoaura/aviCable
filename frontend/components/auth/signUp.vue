@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import zxcvbn from 'zxcvbn';
-import type { ApiErrorResponse } from '~/types/commons';
+import {generateSnackbarMessage} from '~/helpers/messageHelpers'
 // import type { ApiErrorResponse } from '~/types/commons';
 const { t } = useI18n()
 const router = useRouter()
@@ -86,23 +86,6 @@ const confirmPasswordRules = reactive([
     (value: string) =>
         value === formValue.password || t('auth.confirmPasswordNotMatch'),
 ])
-
-
-function generateSnackbarMessage(response: ApiErrorResponse): string {
-    const messages: string[] = [];
-
-    // Iterate through each key in the response object
-    for (const key in response) {
-        if (Object.prototype.hasOwnProperty.call(response, key)) {
-            const errors = response[key];
-            if (errors && errors.length > 0) {
-                messages.push(...errors); // Collect all messages
-            }
-        }
-    }
-
-    return messages.length > 0 ? messages.join(' ') : "An unknown error occurred."; // Fallback message
-}
 
 const visible = ref(false)
 
@@ -150,7 +133,7 @@ const pwdStrength = computed(() => {
 })
 
 const signUp = async () => {
-    console.log('proceed signUp', formValue)
+    console.debug('proceed signUp', formValue)
     const { data, error } = await useApi('/api/v1/user/', { method: 'post', body: formValue })
     if (error.value) {
         console.error(error.value.data)

@@ -40,7 +40,7 @@ const infrastructureId = computed(() => route.params.id)
 const infrastructureType = computed(() => route.query.type?.toLowerCase())
 
 const getData = async () => {
-  console.log('getData route.params.id', infrastructureId.value);
+  console.debug('getData route.params.id', infrastructureId.value);
   if (infrastructureId.value) {
     try {
       const { data } = await useApi(`/api/v1/cables/infrastructures/${infrastructureId.value}`);
@@ -55,7 +55,7 @@ const getData = async () => {
 
 onMounted(async () => {
   await getData()
-  console.log('infrastructure mounted', infrastructure)
+  console.debug('infrastructure mounted', infrastructure)
 })
 
 </script>

@@ -102,7 +102,10 @@ const opData = reactive<OperationData>({
 
 
 const locale = useLocale()
-const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
+console.debug('locale', locale)
+console.debug('locales',locales)
+const currentLocale = computed(() => locales.value.find(item => item.language == locale.value))
+console.debug('currentLocale', currentLocale)
 
 watch(newGeoJSONObject, (value: Feature) => {
   if (value) {
@@ -119,7 +122,7 @@ const rules = reactive({
 const initData = async () => {
   if (infrastructureId.value && !operationId.value) {
     // opData.resourcetype = infrastructure.value?.resourcetype?.toLowerCase() === 'point' ? 'PointOperation' : 'LineOperation'
-    // console.log('resourceType', infrastructure.value.resourcetype, opData.resourcetype)
+    // console.debug('resourceType', infrastructure.value.resourcetype, opData.resourcetype)
     equipmentsReady.value = true
   }
   if (operationId.value) {

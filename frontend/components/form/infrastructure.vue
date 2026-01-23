@@ -70,7 +70,7 @@ const infrastructureData = reactive({
 watch(
   () => infrastructure,
   (newInfrastructure) => {
-    console.log('wATCHER INFRA', newInfrastructure, infrastructure)
+    console.debug('wATCHER INFRA', newInfrastructure, infrastructure)
     if (newInfrastructure?.value) {
       infrastructureData.geom = newInfrastructure.value.geometry;
       infrastructureData.network_type_id = newInfrastructure.value.properties?.network_type?.id;
@@ -110,7 +110,7 @@ watch(newGeoJSONObject, (newVal, _oldVal) => {
 const createNewInfrastructure = async () => {
   try {
     infrastructureData.geom = newGeoJSONObject.value?.geometry
-    console.log('infrastructureData.geom', infrastructureData.geom)
+    console.debug('infrastructureData.geom', infrastructureData.geom)
     const url = infrastructureId.value ? `/api/v1/cables/${infrastructureType.toLowerCase()}s/${infrastructureId.value}/` : `/api/v1/cables/${infrastructureType.toLowerCase()}s/`
     const method = infrastructureId.value ? 'patch' : 'post'
     const { data, error } = await useApi<CablesFeature>(url, { method, body: infrastructureData })

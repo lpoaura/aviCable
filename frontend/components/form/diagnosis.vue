@@ -103,6 +103,7 @@ import type { NomenclatureItem } from '~/types/nomenclature';
 import type { NotificationInfo } from '~/types/notifications';
 import * as errorCodes from '~/static/errorConfig.json';
 import { getLocaleDateString } from '~/helpers/formHelpers';
+import {generateSnackbarMessage} from '~/helpers/messageHelpers';
 
 const { t } = useI18n()
 const router = useRouter()
@@ -126,7 +127,7 @@ const armingItems = computed(() => nomenclaturesStore.getArmingItems(infrastruct
 
 const diagData: DiagData = reactive({
   // date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000),
-  date: null,
+  date: getLocaleDateString(new Date()),
   remark: '',
   technical_proposal: '',
   infrastructure: infrastructureId.value,
@@ -158,7 +159,7 @@ const initData = async () => {
     if (diagnosis.value) {
       const date = new Date(diagnosis.value.date)
       cablesStore.setFormDate(date)
-      console.log(date)
+      console.debug(date)
       // mediaStore.date = formDate.value
       mediaStore.medias = diagnosis.value.media
       const diagdata: DiagData = {
@@ -189,6 +190,9 @@ const initData = async () => {
       diagnosisReady.value = true
     }
   }
+  // } else if (!cablesStore.getFormDate) {
+  //   cablesStore.setFormDate(new Date())
+  // }
   // const diagData = null
 }
 
@@ -225,7 +229,7 @@ const createDiagnosis = async () => {
     if (error.value) {
       notificationStore.setInfo({
         type: 'error',
-        msg: `${error}`
+        msg: `${generateSnackbarMessage(error.value.data)}`
       })
     } else {
       notificationStore.setInfo({

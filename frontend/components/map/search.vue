@@ -22,8 +22,8 @@
         @ready="otherNetworksLayersReady = true" :visible="layer.visible" />
       <l-geo-json v-if="isValidFeatureCollection(mortalityData)" name="Mortalité" layer-type="overlay" ref="mortality"
         :geojson="mortalityData" :options="mortalityGeoJsonOptions()" />
-      <l-geo-json v-if="bufferedSelectedInfrastructure" :geojson="bufferedSelectedInfrastructure"
-        :options-style="bufferedSelectedInfrastructureGeoJsonOptionsStyle" />
+      <l-geo-json v-if="bufferedSelectedFeature" :geojson="bufferedSelectedFeature"
+        :options-style="bufferedSelectedFeatureGeoJsonOptionsStyle" />
       <l-geo-json v-if="bufferedMortalityInfrastructure" :geojson="bufferedMortalityInfrastructure"
         :options-style="bufferedMortalityInfrastructureGeoJsonOptionsStyle" />
       <l-control-scale position="bottomright" />
@@ -81,7 +81,7 @@ const router = useRouter()
 const externalSourceDataZoomTreshold = 13
 const infrastructureLayersReady: Ref<boolean> = ref(false)
 const otherNetworksLayersReady: Ref<boolean> = ref(false)
-const bufferedSelectedInfrastructure: Ref<Feature<GeometryObject> | undefined> = ref(undefined)
+const bufferedSelectedFeature: Ref<Feature<GeometryObject> | undefined> = ref(undefined)
 const bufferedMortalityInfrastructure: Ref<Feature<GeometryObject> | undefined> = ref(undefined)
 const enedisIsVisible = ref(false)
 // const rteIsVisible = ref(false)
@@ -117,19 +117,19 @@ const iconDict: { [key: string]: string } = {
   COD_UNKNOWN: 'help',
 }
 const levelNotes: { [key: string]: number } = { 'RISK_L': 1, 'RISK_M': 2, 'RISK_H': 3 }
-const rteColor: string = '#00838F' // Vuetify cyan-darken-3
+// const rteColor: string = '#00838F' // Vuetify cyan-darken-3
 const enedisColor = (item: NetworkFeature) => item.properties.type === 'Underground' ? 'rgba(46,125,50,0.6)' : 'rgba(46,125,50,1)' // Vuetify green-darken-3
 const enedisDash = (item: NetworkFeature) => item.properties.type === 'Underground' ? '3, 7, 3, 7' : '7, 3, 3, 3'
 
-const baseTree = [
-  {
-    label: 'Test',
-    children: [
-      { label: 'mortality', layer: 'mortality' },
-      { label: 'municipality', layer: 'municipality' },
-    ],
-  },
-];
+// const baseTree = [
+//   {
+//     label: 'Test',
+//     children: [
+//       { label: 'mortality', layer: 'mortality' },
+//       { label: 'municipality', layer: 'municipality' },
+//     ],
+//   },
+// ];
 
 const infraStructureLayers = computed(() => [
   {
@@ -235,7 +235,7 @@ const isValidFeatureCollection = (obj: any): obj is FeatureCollection => {
 }
 
 const infrastructureOnEachFeature = (feature: CablesFeature, layer: Layer) => {
-  if (!mortalityGetInfrastructure.value) {
+  if (!mortalityGetInfrastructure.value && !editMode) {
     if (feature.resourcetype?.endsWith('Operation')) {
       feature = infstrData.value.features.find(item => item.id = feature.properties?.infrastructure)
     }
@@ -282,7 +282,6 @@ const mortalityOnEachFeature = (feature: MortalityFeature, layer: Layer) => {
 // const municipalitiesOnEachFeature = (feature: Feature, layer: Layer) => {
 
 //   // layer.bindTooltip(feature.properties?.name)
-//   console.log('<municipalitiesOnEachFeature>', feature)
 //   layer.bindTooltip("Hello", {});
 // }
 
@@ -382,11 +381,11 @@ const enedisInfrastructureGeoJsonOptions = () => {
 // }
 
 
-const municipalitiesGeoJsonOptions = () => {
-  return {
-    onEachFeature: municipalitiesOnEachFeature,
-  }
-}
+// const municipalitiesGeoJsonOptions = () => {
+//   return {
+//     onEachFeature: municipalitiesOnEachFeature,
+//   }
+// }
 
 
 // Layers OptionsStyles
@@ -427,12 +426,13 @@ const bufferedMortalityInfrastructureGeoJsonOptionsStyle = (_feature: Feature) =
   }
 }
 
-const bufferedSelectedInfrastructureGeoJsonOptionsStyle = (_feature: Feature) => {
+const bufferedSelectedFeatureGeoJsonOptionsStyle = (_feature: Feature) => {
+  const color = '#03A9F4'
   return {
-    color: '#03A9F4',
-    fillColor: '#03A9F4',
+    color: color,
+    fillColor: color,
     weight: 2,
-    opacity: 0.5,
+    fillOpacity: 0.1,
   }
 }
 
@@ -464,14 +464,12 @@ const municipalitiesOptionsStyle = (_feature: Feature) => {
 const displaySelectedFeature = (feature: Feature) => {
   const newObj = leaflet.geoJSON(feature)
   mapObject.value?.setView(newObj.getBounds().getCenter(), 15)
-  bufferedSelectedInfrastructure.value = buffer(feature, 150, { units: 'meters' })
-  console.log('selectedFeature feature', newObj, Object.keys(newObj), isLayer(newObj))
+  bufferedSelectedFeature.value = buffer(feature, 100, { units: 'meters' })
 }
 
-watch(selectedFeature, (newVal, oldVal) => {
-  if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+watch(() => selectedFeature.value, (newVal, oldVal) => {
+  if (newVal && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
     displaySelectedFeature(newVal)
-    console.log('selectedFeature newVal', newVal, Object.keys(newVal), isLayer(newVal))
   }
 })
 
@@ -485,9 +483,8 @@ function isLayer(layer: Layer): layer is Layer {
 }
 
 watch(createLayer, (newLayer: NewLayerType, _oldLayer) => {
-  console.log('watcher createLayer', newLayer, typeof newLayer, isLayer(newLayer))
   if (newLayer && isLayer(newLayer)) {
-    console.log('set NewGeoJSONObject value')
+    console.debug('set NewGeoJSONObject value')
     newGeoJSONObject.value = newLayer.toGeoJSON()
   } else {
     console.debug('Unique layer removed');
@@ -508,7 +505,7 @@ watch(createLayer, (newLayer: NewLayerType, _oldLayer) => {
 
 // watch(selectedFeature.value, (newVal, _oldVal) => {
 //   if (newVal) {
-//     bufferedSelectedInfrastructure.value = buffer(newVal, 150, { units: 'meters' })
+//     bufferedSelectedFeature.value = buffer(newVal, 150, { units: 'meters' })
 //   }
 // })
 
@@ -539,7 +536,7 @@ const handleBBox = debounce((bbox: BBox) => {
   cableStore.cancelRequest();
   mortalityStore.cancelRequest();
 
-  if (zoom.value >= 10) {
+  if (zoom.value >= 10 && bbox) {
     const params = { in_bbox: bbox }
     cableStore.getAllInfrastructureData(params);
     mortalityStore.getMortalityData(params);
@@ -549,7 +546,7 @@ const handleBBox = debounce((bbox: BBox) => {
     infstrData.value = {};
     opData.value = {};
     mortalityData.value = {} as FeatureCollection;
-    // municipalities.value = {} as FeatureCollection;
+    municipalities.value = {} as FeatureCollection;
   }
 
   if (zoom.value >= externalSourceDataZoomTreshold && mapObject.value) {
@@ -586,7 +583,7 @@ watch(bbox, (newVal, _oldVal) => {
 
 
 watch(refreshData, (newVal, _oldVal) => {
-  console.log('watch refreshData', newVal, newVal.value)
+  console.debug('watch refreshData', newVal, newVal.value)
   if (newVal == true) {
     handleBBox(bbox.value)
     refreshData.value = false
@@ -614,7 +611,7 @@ const hookUpDraw = async () => {
 
     // const treeControl = L.control.layers.tree(baseTree).addTo(mapObject.value);
 
-    console.log('mapObject.value', mapObject.value)
+    console.debug('mapObject.value', mapObject.value)
 
 
 
@@ -625,7 +622,7 @@ const hookUpDraw = async () => {
     }).addTo(mapObject.value)
 
     if (mapObject.value && editMode) {
-      console.log('editMode & mode', editMode, mode)
+      console.debug('editMode & mode', editMode, mode)
       mapObject.value.pm.addControls({
         position: 'topleft',
         drawMarker: mode === 'point',
@@ -675,38 +672,38 @@ const hookUpDraw = async () => {
       })
       createLayer.value?.on('pm:drag', ({ layer }: { layer: NewLayerType }) => {
         newGeoJSONObject.value = layer.toGeoJSON()
-        console.log('layer pm:drag', newGeoJSONObject.value)
+        console.debug('layer pm:drag', newGeoJSONObject.value)
       })
       // mapObject.value.on('pm:drag', ({ layer }: { layer: NewLayerType }) => {
       //   newGeoJSONObject.value = layer.toGeoJSON()
-      //   console.log('pm:drag', newGeoJSONObject.value)
+      //   console.debug('pm:drag', newGeoJSONObject.value)
       // })
       mapObject.value.on("pm:globalremovalmodetoggled", ({ layer }: { layer: NewLayerType }) => {
-        console.log('pm:globalremovalmodetoggled', layer);
+        console.debug('pm:globalremovalmodetoggled', layer);
       });
       mapObject.value.on('pm:drawend', ({ layer }: { layer: NewLayerType }) => {
-        console.log('pm:drawend', layer)
+        console.debug('pm:drawend', layer)
       })
       // mapObject.value.on('pm:dragend', ({ layer }: { layer: NewLayerType }) => {
-      //   console.log('pm:dragend', layer)
+      //   console.debug('pm:dragend', layer)
       // })
       // mapObject.value.on('pm:dragstart', ({ layer }: { layer: NewLayerType }) => {
-      //   console.log('pm:dragstart', layer)
+      //   console.debug('pm:dragstart', layer)
       // })
       mapObject.value.on('pm:update', ({ layer }: { layer: NewLayerType }) => {
-        console.log('pm:update', layer)
+        console.debug('pm:update', layer)
       })
       mapObject.value.on('pm:cancel', ({ layer }: { layer: NewLayerType }) => {
-        console.log('pm:cancel', layer)
+        console.debug('pm:cancel', layer)
       })
       mapObject.value.on('pm:change', ({ layer }: { layer: NewLayerType }) => {
         newGeoJSONObject.value = layer.toGeoJSON()
-        console.log('pm:change', newGeoJSONObject.value)
+        console.debug('pm:change', newGeoJSONObject.value)
       })
       mapObject.value.on('pm:remove', ({ layer }: { layer: NewLayerType }) => {
         newGeoJSONObject.value = null;
         createLayer.value = null;
-        console.log('map pm:remove', layer, newGeoJSONObject.value, createLayer.value)
+        console.debug('map pm:remove', layer, newGeoJSONObject.value, createLayer.value)
         mapObject.value?.pm.globalDrawModeEnabled();
         // mapObject.value?.pm.removeControls({
         //   drawMarker: false,

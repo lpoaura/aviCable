@@ -58,7 +58,7 @@ const currentLocale = computed(() => locales.value.find(item => item.code == loc
 const rules = reactive({
   required: (v: string | number) => !!v || t('valid.required'),
   filesize: (v: any) => {
-    // console.log('rules.filesize',!!selectedMedia.value.id, v[0], typeof v, Object.keys(v))
+    // console.debug('rules.filesize',!!selectedMedia.value.id, v[0], typeof v, Object.keys(v))
     (!v[0] || v[0].size < 20000000) || 'Avatar size should be less than 20 MB!'
   },
   textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,

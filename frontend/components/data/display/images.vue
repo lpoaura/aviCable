@@ -61,7 +61,7 @@ const items = computed(() => medias.map((media: MediaData) => {
 }))
 
 const selectMedia = (index: number) => {
-  console.log('selectMedia event', index)
+  console.debug('selectMedia event', index)
   selectedMedia.value = medias[index]
 }
 

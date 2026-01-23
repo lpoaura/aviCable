@@ -71,12 +71,12 @@ const checkResp = ref<NotificationInfo | null>(null)
 
 const getInfo = async () => {
     const { data, error, status } = await useApi<UserSimple>(`/api/v1/user/activate/${token.value}/`)
-    console.log(data.value)
+    console.debug(data.value)
     user.value = data.value
-    console.log(error.value)
-    console.log('status', status.value)
+    console.debug(error.value)
+    console.debug('status', status.value)
     if (error.value) {
-        console.log('response', error.value.response)
+        console.debug('response', error.value.response)
         if (error.value.response?.status === 401) {
             notificationStore.setInfo({
                 type: 'error',
@@ -93,7 +93,7 @@ const getInfo = async () => {
 }
 
 const activateUser = async () => {
-    console.log('activate')
+    console.debug('activate')
     const { data, error } = await useApi<NotificationInfo>(`/api/v1/user/activate/${token.value}/`, { method: 'PATCH' })
     if (error.value) {
         notificationStore.setInfo({

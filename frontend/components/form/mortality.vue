@@ -198,7 +198,7 @@ const createData = async () => {
 
 const submit = async () => {
   const data = await createData()
-  console.log('submit', data, data?.value)
+  console.debug('submit', data, data?.value)
   if (data?.value?.id) {
     router.push(`/mortality/${data.value.id}`)
   }

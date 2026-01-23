@@ -40,7 +40,7 @@ const updateDate = () => {
 watch(
   () => cablesStore.getFormDate,
   (newDate) => {
-    console.log('watch cablesStore.getFormDate', newDate)
+    console.debug('watch cablesStore.getFormDate', newDate)
     formDate.value = newDate;
   }
 );
@@ -48,8 +48,15 @@ watch(
 watch(
   () => formDate.value,
   (newDate) => {
-    console.log('watch formDate', newDate)
+    console.debug('watch formDate', newDate)
     cablesStore.setFormDate(newDate);
   }
 );
+
+onMounted(() => {
+  if (!cablesStore.getFormDate) {
+    cablesStore.setFormDate(new Date())
+  }
+})
+
 </script>

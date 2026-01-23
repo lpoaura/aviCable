@@ -18,7 +18,7 @@ const snackbar = ref(false)
 const timeout = ref(2000)
 
 watch(() => notificationStore.info, () => {
-  console.log('value changes detected')
+  console.debug('value changes detected')
   snackbar.value = true
 })
 
