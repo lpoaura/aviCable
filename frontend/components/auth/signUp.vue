@@ -58,7 +58,7 @@ import zxcvbn from 'zxcvbn';
 const { t } = useI18n()
 const router = useRouter()
 
-const signUpForm = ref()
+
 const confirmPassword = ref(null)
 const formValid = ref(false)
 const loading = ref(false)

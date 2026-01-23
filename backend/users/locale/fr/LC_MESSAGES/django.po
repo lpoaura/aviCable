@@ -6,17 +6,18 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-08 15:58+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2026-01-21 22:18+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
 
 #: users/models.py:78
 msgid "Identifiant unique"
@@ -35,6 +36,8 @@ msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr ""
+"Indique si cet utilisateur doit être considéré comme actif. Désélectionnez "
+"cette option au lieu de supprimer les comptes."
 
 #: users/models.py:93
 msgid "Numéro de téléphone fixe"
@@ -83,7 +86,7 @@ msgstr "Utilisateurs"
 
 #: users/signals.py:18
 msgid "confirm_email.mail.subject"
-msgstr "Conformation de votre email"
+msgstr "Confirmation de votre e-mail"
 
 #: users/signals.py:19
 msgid "confirm_email.mail.message"
@@ -97,14 +100,14 @@ msgstr ""
 
 #: users/signals.py:32
 msgid "welcome.mail.subject"
-msgstr ""
+msgstr "Votre compte a bien été activé"
 
 #: users/signals.py:33
 msgid "welcome.mail.message"
 msgstr ""
 "Bonjour {name},\n"
 "\n"
-"Votre demande d'inscriptio  sur le site {url} a été activée.\n"
+"Votre demande d'inscription sur le site {url} a été activée.\n"
 "Vous pouvez dès à présent vous connecter sur le site:\n"
 "\n"
 "{url}"
@@ -114,8 +117,6 @@ msgid "subscription.mail.subject"
 msgstr "Nouvel inscription en attente d'activation"
 
 #: users/signals.py:56
-#, fuzzy
-#| msgid "welcome.mail.message"
 msgid "subscription.mail.message"
 msgstr ""
 "Bonjour {name},\n"
