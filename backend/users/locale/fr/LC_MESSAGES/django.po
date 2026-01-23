@@ -119,12 +119,12 @@ msgstr "Nouvel inscription en attente d'activation"
 #: users/signals.py:56
 msgid "subscription.mail.message"
 msgstr ""
-"Bonjour {name},\n"
+"Cher administrateur,\n"
 "\n"
-"Vous avez demandé une inscription sur le site {url}.\n"
-"Veuillez cliquer sur le lien suivant pour confirmer votre adresse email :\n"
+"Vous avez demandé une demande d'inscription en attente sur le site {url} pour l'utilisateur {name}.\n"
+"Veuillez cliquer sur le lien suivant pour valider cette inscription :\n"
 "\n"
-"{url}/account/check_email?token={token}"
+"{url}/account/activate?token={token}"
 
 #: users/views.py:72
 msgid "Email successfully verified"
