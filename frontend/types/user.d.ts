@@ -3,3 +3,4 @@ export interface UserSimple {
     full_name: string | null;
     avatar: string | null;
 }
+

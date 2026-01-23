@@ -51,10 +51,10 @@
     </v-sheet>
 </template>
 
-<script setup type="ts">
+<script setup lang="ts">
 import zxcvbn from 'zxcvbn';
-
-
+import type { ApiErrorResponse } from '~/types/commons';
+// import type { ApiErrorResponse } from '~/types/commons';
 const { t } = useI18n()
 const router = useRouter()
 
@@ -77,15 +77,32 @@ const listRequired = reactive([v => {
     return !!(v?.length) || t('valid.required')
 }])
 const passwordRules = reactive([
-    (value) => !!value || t('auth.enterPassword'),
-    (value) => (value && value.length >= 12) || t('auth.passwordMinLength'),
-    (value) => zxcvbn(value).score >= 3 || t('auth.passwordStrengthRequired'),
+    (value: string) => !!value || t('auth.enterPassword'),
+    (value: string) => (value && value.length >= 12) || t('auth.passwordMinLength'),
+    (value: string) => zxcvbn(value).score >= 3 || t('auth.passwordStrengthRequired'),
 ])
 const confirmPasswordRules = reactive([
-    (value) => !!value || t('confirmPassword'),
-    (value) =>
+    (value: string) => !!value || t('confirmPassword'),
+    (value: string) =>
         value === formValue.password || t('auth.confirmPasswordNotMatch'),
 ])
+
+
+function generateSnackbarMessage(response: ApiErrorResponse): string {
+    const messages: string[] = [];
+
+    // Iterate through each key in the response object
+    for (const key in response) {
+        if (Object.prototype.hasOwnProperty.call(response, key)) {
+            const errors = response[key];
+            if (errors && errors.length > 0) {
+                messages.push(...errors); // Collect all messages
+            }
+        }
+    }
+
+    return messages.length > 0 ? messages.join(' ') : "An unknown error occurred."; // Fallback message
+}
 
 const visible = ref(false)
 
@@ -138,18 +155,16 @@ const signUp = async () => {
     if (error.value) {
         console.error(error.value.data)
         console.debug(data.value)
-        custom_content =
-            notificationStore.setInfo({
-                type: 'error',
-                msg: `${error.value}
-            
-            `
-            })
+
+        notificationStore.setInfo({
+            type: 'error',
+            msg: `${generateSnackbarMessage(error.value.data)}`
+        })
     } else {
         router.push('/')
         notificationStore.setInfo({
             type: 'success',
-            msg: `User ${data.value.username} successfully created, an email have been sent to administrators to valid your registration`
+            msg: `User ${data.value?.username} successfully created, an email have been sent to administrators to valid your registration`
         })
     }
 }
