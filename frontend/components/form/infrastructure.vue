@@ -11,7 +11,7 @@
           <v-row>
             <v-col cols="12" lg="12">
               <v-select v-model="infrastructureData.network_type_id" :items="networkTypeItems" item-title="label" item-value="id"
-                :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required />
+                :rules="[rules.required]" :label="$t('infrastructure.network')" variant="solo" density="compact" required />
             </v-col>
           </v-row>
         </v-container>

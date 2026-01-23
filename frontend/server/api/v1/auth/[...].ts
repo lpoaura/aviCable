@@ -14,11 +14,11 @@ export default defineEventHandler(async (event) => {
   console.debug('event',event)
   const body = method !== "GET" && method !== "HEAD" ? await readBody(event) : undefined;
 
-  console.debug("API Service method", method);
-  console.debug("baseURL", config.public.baseURL);
-  console.debug('url', url);
-  console.debug("headers", headers);
-  console.debug('body', body)
+  console.debug("API [...].ts API Service method", method);
+  console.debug("API [...].ts baseURL", config.public.baseURL);
+  console.debug('API [...].ts url', url);
+  console.debug("API [...].ts headers", headers);
+  console.debug('API [...].ts body', body)
 
   try {
     console.debug('try fetch')

@@ -11,7 +11,7 @@ Dans un modal
         <v-row>
           <v-col cols="12" md="6">
             <v-select v-model="display" label="Type d'infrastructure"
-              :items="[{ state: $t('display.all'), value: 'both' }, { state: $t('support.supports'), value: 'poles' }, { state: $t('display.lines'), value: 'segments' }]"
+              :items="[{ state: $t('display.all'), value: 'both' }, { state: $t('infrastructure.supports'), value: 'poles' }, { state: $t('display.lines'), value: 'segments' }]"
               item-title="state" item-value="value" variant="outlined" density="compact" />
           </v-col>
           <v-col cols="12" md="6">
@@ -39,7 +39,7 @@ Dans un modal
           <v-chip :color="value == 'Point' ? 'green' : 'blue'"   variant="flat">
             <v-icon >
               {{ value == 'Point' ? 'mdi-transmission-tower' : 'mdi-cable-data' }}
-            </v-icon> {{ value == 'Point' ? $t('support.support') : $t('line.line') }}
+            </v-icon> {{ value == 'Point' ? $t('infrastructure.support') : $t('line.line') }}
           </v-chip>
         </template>
         <template #item.properties.operations="{ _value, item }">
@@ -68,7 +68,7 @@ const tableHeaders = reactive([
     key: 'properties.id'
   },
   { title: t('app.type'), key: 'resourcetype' },
-  { title: t('support.network_type'), key: 'properties.network_type.code' },
+  { title: t('infrastructure.network_type'), key: 'properties.network_type.code' },
   { title: t('risks'), key: 'properties.diagnosis.0' },
   {
     title: 'Neutralisé',

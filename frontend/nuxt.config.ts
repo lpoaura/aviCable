@@ -6,9 +6,7 @@ export default defineNuxtConfig({
       autoImports: ["defineStore", "acceptHMRUpdate"],
     },
   ], "@invictus.codes/nuxt-vuetify", "@nuxtjs/i18n", "@nuxt/eslint"],
-
   ssr: false,
-
   app: {
     head: {
       title: 'aviCable',
@@ -172,6 +170,5 @@ export default defineNuxtConfig({
       },
     },
   },
-
   compatibilityDate: "2024-07-15",
 });

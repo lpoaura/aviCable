@@ -4,7 +4,7 @@
       <v-app-bar-title>
         <v-chip prepend-icon="mdi-eye-circle-outline" color="primary">
           {{ data.properties.id }}
-        </v-chip>&nbsp;{{ type === 'Point' ? $t('support.support') : $t('line.line') }}
+        </v-chip>&nbsp;{{ type === 'Point' ? $t('infrastructure.support') : $t('line.line') }}
         <strong>{{ data.properties.network_type.code }}</strong>
       </v-app-bar-title>
 
@@ -26,7 +26,7 @@
         <v-card v-if="otherDiags.length || otherOps.length" class="my-2">
           <v-layout>
             <v-app-bar density="compact" color="blue-lighten-2" @click="expandHistory = !expandHistory">
-              <v-app-bar-title> {{ $t('support.history') }} </v-app-bar-title><v-spacer />
+              <v-app-bar-title> {{ $t('infrastructure.history') }} </v-app-bar-title><v-spacer />
               <v-chip prepend-icon="mdi-list-status">{{ otherDiags.length }}</v-chip>&nbsp;
               <v-chip prepend-icon="mdi-cog">{{ otherOps.length }}</v-chip>
               <v-btn density="compact" :icon="expandHistory ? 'mdi-chevron-up' : 'mdi-chevron-down'" />

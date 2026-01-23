@@ -37,7 +37,7 @@
     "leaflet-geosearch": "^4.0.0",
     "leaflet-search": "^4.0.0",
     "leaflet.locatecontrol": "^0.81.1",
-    "nuxt": "^3.20.2",
+    "nuxt": "^3.21.0",
     "pinia": "^3.0.4",
     "tslint": "^5.20.1",
     "vuetify": "^3.7.6",

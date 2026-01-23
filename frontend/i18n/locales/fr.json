@@ -88,18 +88,6 @@
     "neutralization": "Neutralisation",
     "context": "Contexte"
   },
-  "diagnosis": {
-    "lastOne": "Dernier diagnostic le ",
-    "proposals": "Propositions",
-    "actions": "Actions",
-    "technicalProposal": "Proposition technique",
-    "equipment": "Structure équipée",
-    "makeDissuasive": "rendre dissuasif",
-    "isolate": "isoler",
-    "makeAttractive": "rendre attractif",
-    "changeAdvice": "changer l'armement",
-    "buildingIntegration": "Intégration bâti"
-  },
   "forms": {
     "coordinates": "Coordonnées",
     "datecreate": "Date du diagnostic",
@@ -114,7 +102,7 @@
     "newEquipment": "Nouvel équipement",
     "equipment": "Equipement"
   },
-  "support": {
+  "infrastructure": {
     "advice": "Recommandations",
     "toInsulate": "A isoler",
     "discourage": "Dissuader",
@@ -135,7 +123,21 @@
     "support": "Support",
     "supports": "Supports",
     "supports-eqmt": "Equipements Support",
-    "support-type": "Type de support"
+    "support-type": "Type de support",
+    "lastOne": "Dernier diagnostic le ",
+    "proposals": "Propositions",
+    "actions": "Actions",
+    "technicalProposal": "Proposition technique",
+    "equipment": "Structure équipée",
+    "makeDissuasive": "rendre dissuasif",
+    "isolate": "isoler",
+    "makeAttractive": "rendre attractif",
+    "changeAdvice": "changer l'armement",
+    "buildingIntegration": "Intégration bâti",
+    "makeVisible": "rendre visible",
+    "visibilityAdvice":"Rendre visible",
+    "burialAdvice": "Enterrer",
+    "toBury": "enterrer"
   },
   "line": {
     "line": "Ligne",

@@ -13,6 +13,8 @@ export interface DiagData {
   remark: string | null;
   technical_proposal: string | null;
   change_advice: boolean;
+  visibility_advice: boolean;
+  burial_advice: boolean;
   infrastructure: number | null;
   arming_id: Array<number>;
   neutralized: boolean;

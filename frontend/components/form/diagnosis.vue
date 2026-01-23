@@ -4,7 +4,8 @@
       <v-card-text>
         <v-row>
           <v-container>
-            <v-card title="Infos" prepend-icon="mdi-information-outline">
+            <v-card title="Infos" prepend-icon="mdi-information-outline"> 
+              {{ infrastructureId }}
               <v-container>
                 <v-row>
                   <v-col cols="12">
@@ -19,12 +20,12 @@
                   <template v-if="infrastructureType === 'point'">
                     <v-col cols="12" md="6">
                       <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label"
-                        item-value="id" :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
+                        item-value="id" :rules="[rules.required]" :label="$t('infrastructure.attractiveness')" variant="solo"
                         density="compact" />
                     </v-col>
                     <v-col cols="12" md="6">
                       <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
-                        item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
+                        item-value="id" :rules="[rules.required]" :label="$t('infrastructure.dangerousness')" variant="solo"
                         density="compact" />
                     </v-col>
                   </template>
@@ -51,28 +52,41 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" class="text-left">
-                    <strong>{{ $t('diagnosis.actions') }}</strong>
+                    <strong>{{ $t('infrastructure.actions') }}</strong>
                   </v-col>
-                  <v-col cols="12" md="3">
-                    <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.toInsulate')"
-                      density="compact" />
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.discourage')"
-                      density="compact" />
-                  </v-col>
+                  <template v-if="infrastructureType === 'point'">
+                    <v-col cols="12" md="3">
+                      <v-checkbox v-model="diagData.isolation_advice" :label="$t('infrastructure.toInsulate')"
+                        density="compact" />
+                    </v-col>
+                    <v-col cols="12" md="3">
+                      <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('infrastructure.discourage')"
+                        density="compact" />
+                    </v-col>
+                    <v-col cols="12" md="3">
+                      <v-checkbox v-model="diagData.attraction_advice" :label="$t('infrastructure.providingIncentives')"
+                        density="compact" />
+                    </v-col>
+                    <v-col cols="12" md="3">
+                      <v-checkbox v-model="diagData.change_advice" :label="$t('infrastructure.changeAdvice')"
+                        density="compact" />
+                    </v-col>
+                  </template>
+                  <template v-if="infrastructureType === 'line'">
 
-                  <v-col cols="12" md="3">
-                    <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.providingIncentives')"
-                      density="compact" />
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-checkbox v-model="diagData.change_advice" :label="$t('diagnosis.changeAdvice')"
-                      density="compact" />
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-checkbox v-model="diagData.visibility_advice" :label="$t('infrastructure.visibilityAdvice')"
+                        density="compact" />
+                    </v-col>
+                    <v-col cols="12" md="6">
+                      <v-checkbox v-model="diagData.burial_advice" :label="$t('infrastructure.burialAdvice')"
+                        density="compact" />
+                    </v-col>
+
+                  </template>
                   <v-col cols="12" class="text-left">
                     <v-textarea v-model="diagData.technical_proposal" clearable clear-icon="mdi-close-circle"
-                      :label="$t('diagnosis.technicalProposal')" :rules="[rules.textLength]" rows="2" counter="300"
+                      :label="$t('infrastructure.technicalProposal')" :rules="[rules.textLength]" rows="2" counter="300"
                       variant="solo" density="compact" />
                   </v-col>
                   <v-divider />
@@ -103,7 +117,7 @@ import type { NomenclatureItem } from '~/types/nomenclature';
 import type { NotificationInfo } from '~/types/notifications';
 import * as errorCodes from '~/static/errorConfig.json';
 import { getLocaleDateString } from '~/helpers/formHelpers';
-import {generateSnackbarMessage} from '~/helpers/messageHelpers';
+import { generateSnackbarMessage } from '~/helpers/messageHelpers';
 
 const { t } = useI18n()
 const router = useRouter()
@@ -222,6 +236,7 @@ const createDiagnosis = async () => {
   try {
     diagData.infrastructure = infrastructureId.value
     // diagData.date = cablesStore.getFormDate?.toISOString().substring(0, 10)
+    console.debug('diagData', diagData)
     diagData.media_id = await createMedias()
     const url = diagData.id ? `/api/v1/cables/diagnosis/${diagData.id}/` : '/api/v1/cables/diagnosis/'
     const method = diagData.id ? 'put' : 'post'

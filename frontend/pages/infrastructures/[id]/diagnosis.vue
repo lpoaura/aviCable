@@ -4,7 +4,7 @@
     <v-layout full-height>
       <v-app-bar density="compact" color="blue-grey-lighten-5">
         <v-app-bar-title>
-          Edition du diagnostic
+          Edition du diagnostic ({{infrastructureType}} #{{ infrastructureId }})
         </v-app-bar-title>
         <v-app-bar-nav-icon>
           <v-btn density="compact" icon="mdi-close" @click="router.push(`/infrastructures/${infrastructureId}`)" />

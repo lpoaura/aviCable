@@ -5,25 +5,37 @@
       diagnosis.created_by?.username || '?' }}</template>
     <v-card-text>
       <span class="font-weight-bold">Recommandations&nbsp;: </span><br>
-      <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation' : ''"
-        :color="diagnosis.isolation_advice ? 'warning' : ''" class="ma-2">
-        {{ diagnosis.isolation_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.isolate') }}
-      </v-chip>
-      <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation' : ''"
-        :color="diagnosis.dissuasion_advice ? 'warning' : ''" class="ma-2">
-        {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.makeDissuasive') }}
-      </v-chip>
-      <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation' : ''"
-        :color="diagnosis.attraction_advice ? 'warning' : ''" class="ma-2">
-        {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.makeAttractive') }}
-      </v-chip>
-      <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation' : ''"
-        :color="diagnosis.change_advice == true ? 'warning' : ''" class="ma-2">
-        {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.changeAdvice') }}
-      </v-chip>
+      <template v-if="isPoint">
+        <v-chip :prepend-icon="diagnosis.isolation_advice ? 'mdi-exclamation' : ''"
+          :color="diagnosis.isolation_advice ? 'warning' : ''" class="ma-2">
+          {{ diagnosis.isolation_advice ? '' : 'ne pas ' }}{{ $t('infrastructure.isolate') }}
+        </v-chip>
+        <v-chip :prepend-icon="diagnosis.dissuasion_advice ? 'mdi-exclamation' : ''"
+          :color="diagnosis.dissuasion_advice ? 'warning' : ''" class="ma-2">
+          {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('infrastructure.makeDissuasive') }}
+        </v-chip>
+        <v-chip :prepend-icon="diagnosis.attraction_advice ? 'mdi-exclamation' : ''"
+          :color="diagnosis.attraction_advice ? 'warning' : ''" class="ma-2">
+          {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('infrastructure.makeAttractive') }}
+        </v-chip>
+        <v-chip :prepend-icon="diagnosis.change_advice ? 'mdi-exclamation' : ''"
+          :color="diagnosis.change_advice == true ? 'warning' : ''" class="ma-2">
+          {{ diagnosis.change_advice ? '' : 'ne pas ' }}{{ $t('infrastructure.changeAdvice') }}
+        </v-chip>
+      </template>
+      <template v-if="isLine">
+        <v-chip :prepend-icon="diagnosis.visibility_advice ? 'mdi-exclamation' : ''"
+          :color="diagnosis.visibility_advice ? 'warning' : ''" class="ma-2">
+          {{ diagnosis.visibility_advice ? '' : 'ne pas ' }}{{ $t('infrastructure.makeVisible') }}
+        </v-chip>
+        <v-chip :prepend-icon="diagnosis.burial_advice ? 'mdi-exclamation' : ''"
+          :color="diagnosis.burial_advice == true ? 'warning' : ''" class="ma-2">
+          {{ diagnosis.burial_advice ? '' : 'ne pas ' }}{{ $t('infrastructure.toBury') }}
+        </v-chip>
+      </template>
       <template v-if="isPoint">
         <p>
-          <span class="font-weight-bold">{{ $t('support.support-type') }}&nbsp;:</span><br>
+          <span class="font-weight-bold">{{ $t('infrastructure.support-type') }}&nbsp;:</span><br>
           <v-chip v-if="diagnosis.arming.length > 0" v-for="pt in diagnosis.arming" :key="pt.id" color="info"
             class="ma-2">
             {{ pt.label }}
@@ -31,14 +43,14 @@
           <span v-else>&nbsp;- </span>
         </p>
         <p>
-          <span class="font-weight-bold">{{ $t('support.attractiveness') }}&nbsp;:</span>
+          <span class="font-weight-bold">{{ $t('infrastructure.attractiveness') }}&nbsp;:</span>
           <v-icon icon="mdi-circle"
             :color="diagnosis?.pole_attractivity ? riskColors[diagnosis?.pole_attractivity.code] : 'grey'"
             class="mx-2" />
           <span>{{ diagnosis?.pole_attractivity.label }}</span>
         </p>
         <p>
-          <span class="font-weight-bold">{{ $t('support.dangerousness') }}&nbsp;:</span>
+          <span class="font-weight-bold">{{ $t('infrastructure.dangerousness') }}&nbsp;:</span>
           <v-icon icon="mdi-circle" :color="riskColors[diagnosis.pole_dangerousness.code]" class="mx-2" /> <span>{{
             diagnosis.pole_dangerousness.label }}</span>
         </p>

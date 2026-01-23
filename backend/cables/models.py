@@ -155,6 +155,14 @@ class Diagnosis(Action):
         _("Change arming"),
         default=False,
     )
+    visibility_advice = models.BooleanField(
+        _("Make visible"),
+        default=False
+    )
+    burial_advice = models.BooleanField(
+        _("To bury"),
+        default=False
+    )
     technical_proposal = models.TextField(
         _("Technical proposal"), blank=True, null=True
     )

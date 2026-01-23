@@ -75,6 +75,8 @@ class DiagnosisSerializer(ModelSerializer):
             "dissuasion_advice",
             "attraction_advice",
             "change_advice",
+            "visibility_advice",
+            "burial_advice",
             "technical_proposal",
             "arming",
             "arming_id",

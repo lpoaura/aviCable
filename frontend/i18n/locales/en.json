@@ -39,7 +39,7 @@
     "too_big_file": "File size should less than",
     "not_img_file": "Selected file should be an image file"
   },
-  "support": {
+  "diagnosis": {
     "advice": "Advices",
     "toInsulate": "Isolate",
     "Discourage": "Make it disruptive",
