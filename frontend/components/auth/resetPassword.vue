@@ -9,14 +9,13 @@
         <v-text-field density="compact" placeholder="Email" prepend-inner-icon="mdi-account-outline" variant="outlined"
           v-model="reset.email" :rules="emailRules" @keyup.enter="userResetPassword" autofocus></v-text-field>
 
-
         <v-btn block class="mb-8" color="blue" size="large" variant="flat" :loading="loading" :disabled="!valid"
           @click="userResetPassword()">
-          {{ $t('login.sign-in') }}
+          {{ $t('auth.resetPassword') }}
         </v-btn>
-        <v-snackbar :timeout="2000" color="success" variant="outlined" v-model="successMessage">
 
-          message
+        <v-snackbar :timeout="2000" color="success" v-model="successMessage">
+          {{ $t('auth.resetPasswordRequestSent') }}
         </v-snackbar>
         <!-- <v-card-text class="text-center">
             <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" target="_blank">
@@ -47,7 +46,7 @@ const loading = ref(false)
 const reset = reactive({
   email: ''
 })
-const emailRules = reactive([v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || t('login.required_username_msg')])
+const emailRules = reactive([v => /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || t('auth.invalidEmail')])
 
 const error: Reactive<NotificationInfo> = reactive<NotificationInfo>(null)
 
@@ -57,9 +56,11 @@ const userResetPassword = async () => {
   try {
     // check theform is validated
     if (valid) {
-      successMessage.value = await useApi('/api/v1/auth/users/reset_password/', { method: 'post', body: reset })
-
-      // router.push('/')
+      await useApi('/api/v1/auth/users/reset_password/', { method: 'post', body: reset })
+      notificationStore.setInfo({
+        type: 'success',
+        msg: t('auth.resetPasswordRequestSent')
+      })
     }
   } catch (err) {
     console.error(err)

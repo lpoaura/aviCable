@@ -60,7 +60,10 @@
     "passwordMinLength": "12 caractères minimum",
     "passwordStrengthRequired": "Ajoutez des caractères spéciaux et des chiffres à votre mot de passe",
     "confirmPasswordNotMatch": "La confirmation de mot de passe ne correspond pas",
-    "checkEmail": "Vérification de votre email"
+    "checkEmail": "Vérification de votre email",
+    "invalidEmail": "Email invalide",
+    "resetPassword": "Renouveller mon mot de passe",
+    "resetPasswordRequestSent": "Votre demande de réinitialisation de mot de passe a été envoyée"
   },
   "nav": {
     "application": "Application",
