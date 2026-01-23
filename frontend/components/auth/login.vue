@@ -28,8 +28,8 @@
           <NuxtLink class="text-caption text-decoration-none text-blue" to="/account/signup">{{ $t('login.sign-up') }} ?
           </NuxtLink>
           <v-spacer />
-          <NuxtLink class="text-caption text-decoration-none text-blue" to="/account/reset">{{
-            $t('login.forgotten-password') }}?</NuxtLink>
+          <!-- <NuxtLink class="text-caption text-decoration-none text-blue" to="/account/reset">{{
+            $t('login.forgotten-password') }}?</NuxtLink> -->
         </div>
         <!-- <v-card-text class="text-center">
           <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" target="_blank">
