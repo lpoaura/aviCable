@@ -76,6 +76,7 @@ const router = useRouter()
 
 const deleteModal = ref(false)
 
+const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 const globalStore = useGlobalStore()
 
@@ -89,7 +90,7 @@ const lastDiag = computed(() => {
 })
 
 const deleteInfrastructure = async () => {
-  await useApi(`/api/v1/cables/${data.resourcetype.toLowerCase()}s/${data.properties.id}/`, { method: 'DELETE' })
+  await authStore.authedDelete(`/api/v1/cables/${data.resourcetype.toLowerCase()}s/${data.properties.id}/`)
   deleteModal.value = false
   refreshData.value = true
   notificationStore.setInfo({

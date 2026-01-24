@@ -45,9 +45,9 @@
 const { t } = useI18n()
 const router = useRouter()
 
-
+const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
-const auth = useAuth()
+
 const formValid = ref(false)
 const loading = ref(false)
 const login = reactive({
@@ -63,9 +63,8 @@ const visible = ref(false)
 const userLogin = async () => {
   try {
     if (formValid.value) {
-      await auth.loginWith('local', {
-        body: login
-      })
+      console.log('authStore', authStore)
+      await authStore.login(login)
       // nomenclaturesStore.loadNomenclatures()
       notificationStore.setInfo({
         type: 'success',

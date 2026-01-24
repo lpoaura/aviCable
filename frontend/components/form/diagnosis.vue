@@ -73,9 +73,9 @@
                     </v-col>
                   </template>
                   <template v-if="infrastructureType === 'line'">
-
+                    
                     <v-col cols="12" md="6">
-                      <v-checkbox v-model="diagData.visibility_advice" :label="$t('infrastructure.visibilityAdvice')"
+                      <v-checkbox v-model="diagData.visibility_advice" :label="$t('infrastructure.visibilityAdvice')+ (diagData.visibility_advice ? ' YES':' NO')"
                         density="compact" />
                     </v-col>
                     <v-col cols="12" md="6">
@@ -124,6 +124,7 @@ const router = useRouter()
 const route = useRoute()
 
 
+const authStore = useAuthStore()
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const notificationStore = useNotificationStore()
@@ -152,6 +153,8 @@ const diagData: DiagData = reactive({
   attraction_advice: false,
   dissuasion_advice: false,
   isolation_advice: false,
+  burial_advice: false,
+  visibility_advice: false,
   media_id: [] as number[],
 })
 
@@ -169,7 +172,7 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 
 const initData = async () => {
   if (diagnosisId.value && infrastructureType) {
-    const { data: diagnosis } = await useApi<Diagnosis>(`/api/v1/cables/diagnosis/${diagnosisId.value}/`, { method: 'get' })
+    const { data: diagnosis } = await authStore.authedGet<Diagnosis>(`/api/v1/cables/diagnosis/${diagnosisId.value}/`)
     if (diagnosis.value) {
       const date = new Date(diagnosis.value.date)
       cablesStore.setFormDate(date)
@@ -189,6 +192,8 @@ const initData = async () => {
         dissuasion_advice: diagnosis.value.dissuasion_advice,
         isolation_advice: diagnosis.value.isolation_advice,
         change_advice: diagnosis.value.change_advice,
+        burial_advice: diagnosis.value.burial_advice,
+        visibility_advice: diagnosis.value.visibility_advice,
         media_id: [],
       }
       if (infrastructureType.value === 'point') {
@@ -239,19 +244,19 @@ const createDiagnosis = async () => {
     console.debug('diagData', diagData)
     diagData.media_id = await createMedias()
     const url = diagData.id ? `/api/v1/cables/diagnosis/${diagData.id}/` : '/api/v1/cables/diagnosis/'
-    const method = diagData.id ? 'put' : 'post'
-    const { data: diagnosis, error } = await useApi(url, { method: method, body: diagData })
-    if (error.value) {
-      notificationStore.setInfo({
-        type: 'error',
-        msg: `${generateSnackbarMessage(error.value.data)}`
-      })
-    } else {
-      notificationStore.setInfo({
-        type: 'success',
-        msg: diagData.id ? 'Diagnostic mis à jour' : 'Diagnostic créé'
-      })
-    }
+    const diagnosis = diagData.id ? await authStore.authedPut(url, diagData) : authStore.authedPost(url, diagData)
+
+    // if (error) {
+    //   notificationStore.setInfo({
+    //     type: 'error',
+    //     msg: `${generateSnackbarMessage(error.value.data)}`
+    //   })
+    // } else {
+    //   notificationStore.setInfo({
+    //     type: 'success',
+    //     msg: diagData.id ? 'Diagnostic mis à jour' : 'Diagnostic créé'
+    //   })
+    // }
     console.debug('newDiagData', diagnosis)
     mediaStore.resetMedias()
     return diagnosis

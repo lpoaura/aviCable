@@ -2,6 +2,8 @@
 import { defineStore } from 'pinia'
 import type { CablesFeatureCollection, OperationFeatureCollection, Line, Point, CablesFeature, Equipment, NetworkFeatureCollection } from '~/types/cables'
 import type { FeatureCollection } from 'geojson'
+import { authStore } from '.'
+
 export const useCablesStore = defineStore('cables', {
   state: () => ({
     infstrData: {} as CablesFeatureCollection, // Infrastructure data
@@ -90,7 +92,7 @@ export const useCablesStore = defineStore('cables', {
       try {
         this.infstrDataLoadingStatus = true
         console.debug("getInfstrData signal", signal)
-        await useApi(
+        await authStore.authedGet(
           '/api/v1/cables/infrastructures', { signal, params }
         ).then(data => {
           this.infstrData = data.value
@@ -117,7 +119,7 @@ export const useCablesStore = defineStore('cables', {
       console.debug('getOpData', signal)
       try {
         console.debug("getOpData signal", signal)
-        await useApi(
+        await authStore.authedGet(
           '/api/v1/cables/operations/', { signal, params }
         ).then(data => {
           this.opData = data.value
@@ -142,10 +144,10 @@ export const useCablesStore = defineStore('cables', {
       try {
         console.debug("getAllInfrastructureData signal", signal)
         const [{ data: infstrData }, { data: opData }] = await Promise.all([
-          useApi(
+          authStore.authedGet(
             '/api/v1/cables/infrastructures', { signal, params }
           ),
-          useApi(
+          authStore.authedGet(
             '/api/v1/cables/operations/', { signal, params }
           ),
         ]);
@@ -164,7 +166,7 @@ export const useCablesStore = defineStore('cables', {
       }
     },
     async getEnedisInfrastructure(bbox) {
-      console.debug('bbox',bbox)
+      console.debug('bbox', bbox)
       const params = {
         bbox: bbox,
         //bbox: `${bbox[1]},${bbox[0]},${bbox[3]},${bbox[2]}`,
@@ -179,19 +181,19 @@ export const useCablesStore = defineStore('cables', {
       console.debug('query params', { signal, params })
       try {
         const [{ data: reseauBt }, { data: reseauHta }, { data: poteaux }] = await Promise.all([
-          useApi<NetworkFeatureCollection>(
+          useFetch<NetworkFeatureCollection>(
             'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-bt/lines', { signal, params }
           ),
-          // useApi<NetworkFeatureCollection>(
+          // useFetch<NetworkFeatureCollection>(
           //   'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-souterrain-bt/lines', { signal, params }
           // ),
-          useApi<NetworkFeatureCollection>(
+          useFetch<NetworkFeatureCollection>(
             'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-hta/lines', { signal, params }
           ),
-          // useApi<NetworkFeatureCollection>(
+          // useFetch<NetworkFeatureCollection>(
           //   'https://opendata.enedis.fr/data-fair/api/v1/datasets/reseau-souterrain-hta/lines', { signal, params }
           // ),
-          useApi<NetworkFeatureCollection>(
+          useFetch<NetworkFeatureCollection>(
             'https://opendata.enedis.fr/data-fair/api/v1/datasets/position-geographique-des-poteaux-hta-et-bt/lines', { signal, params }
           )
         ]);
@@ -261,10 +263,10 @@ export const useCablesStore = defineStore('cables', {
       console.debug('query params', { signal, params: paramsPylones })
       try {
         const [{ data: Lines }, { data: Pylones }] = await Promise.all([
-          useApi<FeatureCollection>(
+          useFetch<FeatureCollection>(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/lignes-aeriennes-rte-nv/exports/geojson', { signal, params: paramsLines }
           ),
-          useApi<FeatureCollection>(
+          useFetch<FeatureCollection>(
             'https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/pylones-rte/exports/geojson', { signal, params: paramsPylones }
           ),
         ]);
@@ -318,7 +320,7 @@ export const useCablesStore = defineStore('cables', {
         const equipment = { ...this.equipmentToDelete }
         console.debug('this.mediaToDelete test', (index !== null), this.equipmentToDelete, this.equipmentToDelete.id)
         // if (this.equipmentToDelete && this.equipmentToDelete.id) {
-        //   const { data: _resp } = await useApi<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
+        //   const { data: _resp } = await authStore.authedGet<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
         // }
         this.formEquipments.splice(index, 1)
         notificationStore.setInfo({

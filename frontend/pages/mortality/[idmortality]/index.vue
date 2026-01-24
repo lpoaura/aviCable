@@ -7,6 +7,7 @@
 
 <script setup>
 const route = useRoute()
+const authStore = useAuthStore()
 const coordinateStore = useCoordinatesStore()
 
 
@@ -16,7 +17,7 @@ const zoomTo = () => {
   coordinateStore.setZoom(14)
 }
 
-const { data: item } = await useApi(`/api/v1/mortality/${route.params.idmortality}`)
+const { data: item } = await authStore.authedGet(`/api/v1/mortality/${route.params.idmortality}`)
 
 
 onMounted(() => {zoomTo()})

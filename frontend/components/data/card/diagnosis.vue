@@ -121,19 +121,20 @@
 <script setup lang="ts">
 import type { CablesFeature, Diagnosis } from '~/types/cables';
 
+const mediaStore = useMediaStore()
+const globalStore = useGlobalStore()
+const authStore = useAuthStore()
 
 interface Props {
   infrastructure: CablesFeature,
   infrastructureType: string,
   diagnosis: Diagnosis,
 }
-const emit = defineEmits()
+
+const emit = defineEmits(['delete'])
 const { infrastructure, infrastructureType, diagnosis } = defineProps<Props>()
 const router = useRouter()
 const deletedDiagConfirm = ref(false)
-const mediaStore = useMediaStore()
-const globalStore = useGlobalStore()
-
 
 const { medias } = storeToRefs(mediaStore)
 const { refreshData } = storeToRefs(globalStore)
@@ -160,7 +161,7 @@ const updateDiag = () => {
 }
 
 const deleteDiag = async () => {
-  await useApi(`/api/v1/cables/diagnosis/${diagnosis.id}/`, { method: 'delete' })
+  await authStore.authedDelete(`/api/v1/cables/diagnosis/${diagnosis.id}/`)
   deletedDiagConfirm.value = false
   refreshData.value = true
   emit('delete')

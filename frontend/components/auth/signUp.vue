@@ -134,7 +134,7 @@ const pwdStrength = computed(() => {
 
 const signUp = async () => {
     console.debug('proceed signUp', formValue)
-    const { data, error } = await useApi('/api/v1/user/', { method: 'post', body: formValue })
+    const { data, error } = await useFetch('/api/v1/user/', { method: 'post', body: formValue })
     if (error.value) {
         console.error(error.value.data)
         console.debug(data.value)

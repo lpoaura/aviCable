@@ -5,7 +5,10 @@ export const useMapLayersStore = defineStore("mapLayers", {
   actions: {
     async getMapBaseLayers() {
       try {
-        const {data: baseLayers } = await useApi("/api/v1/map-layers/baselayers/");
+        const {data: baseLayers } = await authStore.authedGet("/api/v1/map-layers/baselayers/");
+        // console.log('baseLayers', baseLayers)
+        // const baseLayers = await authStore.authedGet("/api/v1/map-layers/baselayers/");
+        // console.log('baseLayers data', data)
         if (baseLayers && Array.isArray(baseLayers.value)) {
           this.baseLayers = baseLayers.value as BaseLayer[]; // Type assertion
         } else {

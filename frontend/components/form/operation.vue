@@ -49,6 +49,7 @@ const { t, locales } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
+const authStore = useAuthStore()
 const coordinatesStore = useCoordinatesStore()
 const cablesStore = useCablesStore()
 // const nomenclaturesStore = useNomenclaturesStore():
@@ -126,7 +127,7 @@ const initData = async () => {
     equipmentsReady.value = true
   }
   if (operationId.value) {
-    const { data: operation } = await useApi<OperationFeature>(`/api/v1/cables/operations/${operationId.value}/`, { method: 'get' })
+    const { data: operation } = await authStore.authedGet<OperationFeature>(`/api/v1/cables/operations/${operationId.value}/`)
     if (operation.value) {
       formDate.value = new Date(operation.value.properties.date)
       mediaStore.date = formDate.value
@@ -181,7 +182,7 @@ const createOperation = async () => {
     opData.resourcetype = `${infrastructure.value.resourcetype}Operation`
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const { data: operation, error } = await useApi('/api/v1/cables/operations/', { method: 'post', body: opData })
+    const { data: operation, error } = await authStore.authedPost('/api/v1/cables/operations/', opData)
     mediaStore.resetMedias()
     if (error.value) {
       notificationStore.setInfo({
@@ -217,7 +218,7 @@ const updateOperation = async () => {
     opData.date = formDate.value.toISOString().substring(0, 10)
     opData.media_id = await createMedias()
     opData.equipments = cablesStore.formEquipments
-    const { data, error } = await useApi(`/api/v1/cables/operations/${operationId.value}/`, { method: 'put', body: opData })
+    const { data, error } = await authStore.authedPut(`/api/v1/cables/operations/${operationId.value}/`, opData)
     mediaStore.resetMedias()
     if (error.value) {
       notificationStore.setInfo({

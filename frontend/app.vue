@@ -46,8 +46,6 @@
 import { onMounted } from 'vue'
 
 
-const auth = useAuth()
-
 const nomenclaturesStore = useNomenclaturesStore()
 const mapLayersStore = useMapLayersStore()
 const globalStore = useGlobalStore()

@@ -49,7 +49,7 @@ export const useMortalityStore = defineStore("mortality", {
       const { signal } = this.controller;
       console.debug("getMortalityData", this.controller, signal);
       try {
-        const { data: data } = await useApi<FeatureCollection>("/api/v1/mortality/", { signal, params });
+        const { data: data } = await authStore.authedGet<FeatureCollection>("/api/v1/mortality/", { signal, params });
         if (data.value) { this.mortalityData = data.value };
       } catch (error: any) {
         if (error instanceof Error && error.name === "AbortError") {

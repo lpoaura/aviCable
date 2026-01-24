@@ -87,7 +87,9 @@ const { itemId, item } = defineProps(['itemId', 'item'])
 
 const router = useRouter()
 
-const emit = defineEmits()
+
+
+const emit = defineEmits(['delete'])
 const deathCauseIcons = ref({
   COD_EL: 'mdi-lightning-bolt',
   COD_IM: 'mdi-star',
@@ -95,7 +97,10 @@ const deathCauseIcons = ref({
 })
 
 const deletedDiagConfirm = ref(false)
+
 const globalStore = useGlobalStore()
+const authStore = useAuthStore()
+
 // const { medias } = storeToRefs(mediaStore)
 const {refreshData } = storeToRefs(globalStore)
 const updateDiag = () => {
@@ -107,7 +112,7 @@ const updateDiag = () => {
 
 
 const deleteData = async () => {
-  await useApi(`/api/v1/mortality/${itemId}/`, { method: 'delete' })
+  await authStore.authedDelete(`/api/v1/mortality/${itemId}/`)
   deletedDiagConfirm.value = false
   refreshData.value = true
   router.push("/search")

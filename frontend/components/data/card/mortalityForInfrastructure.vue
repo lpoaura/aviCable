@@ -1,6 +1,6 @@
 <template>
-  <template  v-for="(mortality, index) in data" :key="index" @click="dataDetail(mortality)">
-    <v-card class="my-2" prepend-icon="mdi-coffin">
+  <template  v-for="(mortality, index) in data" :key="index" >
+    <v-card class="my-2" prepend-icon="mdi-coffin" @click="dataDetail(mortality)">
       <template #title><strong>{{ mortality.date }}</strong> - {{ $t('display.mortalityCases') }}</template>
       <template #subtitle>{{ $t("filledIn") }} {{ new Date(mortality.timestamp_create).toLocaleString() }} par {{
         mortality.created_by?.username || '?' }}</template>
@@ -61,11 +61,6 @@ const deathCauseIcons = ref({
   COD_IM: 'mdi-star',
   COD_UNKNOWN: 'mdi-help'
 })
-
-const deleteItem = async () => {
-  await useApi(`/api/v1/cables/mortality/${data.id}/`, { method: 'delete' })
-  emit('delete')
-}
 
 const dataDetail = (data) => {
   router.push(`mortality/${data.id}`)

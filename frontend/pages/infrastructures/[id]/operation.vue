@@ -24,11 +24,12 @@
 
 <script setup>
 useHead({
-  titleTemplate : (titleChunk) => {
+  titleTemplate: (titleChunk) => {
     return titleChunk ? `${titleChunk} - Operation edit on Infrastructure ${route.params.id}` : 'Operation edit';
   }
 })
 
+const authStore = useAuthStore()
 const cablesStore = useCablesStore()
 const coordinatesStore = useCoordinatesStore()
 
@@ -40,8 +41,8 @@ const route = useRoute()
 const router = useRouter()
 const infrastructureId = computed(() => route.params.id)
 
-onMounted(async ()=> {
-  const {data: infrastructure} = await useApi(`/api/v1/cables/infrastructures/${infrastructureId.value}/`)
+onMounted(async () => {
+  const { data: infrastructure } = await authStore.authedGet(`/api/v1/cables/infrastructures/${infrastructureId.value}/`)
   cablesStore.setFormInfrastructureId(infrastructureId.value)
   cablesStore.setFormInfrastructure(infrastructure.value)
   coordinatesStore.setSelectedFeature(infrastructure.value)

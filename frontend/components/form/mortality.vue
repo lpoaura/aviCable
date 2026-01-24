@@ -11,7 +11,7 @@
                     <strong>{{ $t('forms.general') }}</strong>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <form-date-input :rules="[rules.required]" label="Date de visite"/>
+                    <form-date-input :rules="[rules.required]" label="Date de visite" />
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-autocomplete v-model="mortalityData.species_id" v-model:search="speciesSearch"
@@ -83,6 +83,7 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
+const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
@@ -143,7 +144,7 @@ watch(newGeoJSONObject, (val) => {
   }
 })
 
-watch(()=> cablesStore.getFormDate,(newDate) => {
+watch(() => cablesStore.getFormDate, (newDate) => {
   mortalityData.date = getLocaleDateString(newDate)
 })
 
@@ -153,7 +154,7 @@ watch(speciesSearch, async (val) => {
 
 const speciesSelection = async (value: string) => {
   isLoading.value = true
-  const { data } = await useApi(`/api/v1/species/?search=${value}`)
+  const { data } = await authStore.authedGet(`/api/v1/species/?search=${value}`)
   specieSearchEntries.value = data.value
   isLoading.value = false
 }
@@ -166,8 +167,7 @@ const createData = async () => {
     mortalityData.date = cablesStore.getFormDate?.toISOString().substring(0, 10)
     mortalityData.media_id = await createMedias()
     const url = mortalityId.value ? `/api/v1/mortality/${mortalityId.value}/` : '/api/v1/mortality/'
-    const method = mortalityId.value ? 'put' : 'post'
-    const { data, error } = await useApi<MortalityFeature>(url, { method: method, body: mortalityData })
+    const { data, error } = mortalityId.value ? await authStore.authedPut<MortalityFeature>(url, mortalityData) : await authStore.authedPost(url, mortalityData)
     if (error.value) {
       notificationStore.setInfo({
         type: 'error',
@@ -204,13 +204,9 @@ const submit = async () => {
   }
 }
 
-const isObjectWithId = (value: number | Object): value is Object => {
-    return (value as Object).id !== undefined;
-}
-
 const initData = async () => {
   if (mortalityId.value) {
-    const { data } = await useApi<MortalityFeature>(`/api/v1/mortality/${mortalityId.value}/`, { method: 'get' })
+    const { data } = await authStore.authedGet<MortalityFeature>(`/api/v1/mortality/${mortalityId.value}/`)
     if (data.value) {
       const date = data.value.properties.date ? new Date(data.value.properties.date) : new Date()
       cablesStore.setFormDate(date)
@@ -220,8 +216,8 @@ const initData = async () => {
         id: data.value.id,
         date: data.value.properties.date,
         author: data.value.properties.author,
-        species_id: data.value.properties.species?.id , // null,
-        infrstr_id: data.value.properties.infrstr?.id ,
+        species_id: data.value.properties.species?.id, // null,
+        infrstr_id: data.value.properties.infrstr?.id,
         nb_death: data.value.properties.nb_death,
         death_cause_id: data.value.properties.death_cause.id,
         data_source: data.value.properties.data_source,

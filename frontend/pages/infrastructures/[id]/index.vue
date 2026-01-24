@@ -19,14 +19,16 @@ useHead({
 })
 
 const route = useRoute()
+
+const authStore = useAuthStore()
 const coordinateStore = useCoordinatesStore()
 
-const { data: infrastructure } = await useApi<CablesFeature>(`/api/v1/cables/infrastructures/${route.params.id}/`)
+const { data: infrastructure } = await authStore.authedGet<CablesFeature>(`/api/v1/cables/infrastructures/${route.params.id}/`)
 
 const { selectedFeature, center, zoom } = storeToRefs(coordinateStore)
 
 const updateData = async () => {
-  const { data: resp } = await useApi<CablesFeature>(`/api/v1/cables/infrastructures/${route.params.id}/`)
+  const { data: resp } = await authStore.authedGet<CablesFeature>(`/api/v1/cables/infrastructures/${route.params.id}/`)
   infrastructure.value = resp
   zoomTo()
   title.value = `aviCable - Infrastructure #${route.query.id}`
@@ -41,8 +43,7 @@ const zoomTo = () => {
   zoom.value = 14
 }
 
-watch(infrastructure.value, (_newVal, _oldVal) => {
-  console.debug('watch infrastructure')
+watch(infrastructure.value, () => {
   zoomTo()
 })
 

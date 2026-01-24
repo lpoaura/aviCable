@@ -4,10 +4,10 @@
     <v-toolbar-title><v-avatar  image="/img/icon.png" rounded="0"/>  {{ $t('app.appShortName') }}</v-toolbar-title>
     <v-spacer />
     <div v-if="!mobile">
-      {{ $auth.user?.username || 'Not connected' }}
+      {{ authStore.userInfo?.username || 'Not connected' }}
     </div>
-    <v-btn v-if="$auth.loggedIn" icon="mdi-logout" class="mr-2" @click="$auth.logout()" />
-    <v-btn v-if="!$auth.loggedIn" icon="mdi-login" class="mr-2" @click="router.push('/account/login')" />
+    <v-btn v-if="authStore.isAuthenticated" icon="mdi-logout" class="mr-2" @click="authStore.logout()" />
+    <v-btn v-else icon="mdi-login" class="mr-2" @click="router.push('/account/login')" />
   </v-app-bar>
 </template>
 
@@ -15,6 +15,7 @@
 import { useDisplay } from 'vuetify'
 const { mobile } = useDisplay()
 const router = useRouter()
+const authStore = useAuthStore()
 const globalStore = useGlobalStore()
 const { drawer } = storeToRefs(globalStore)
 </script>

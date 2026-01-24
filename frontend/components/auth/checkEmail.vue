@@ -8,11 +8,13 @@
 </template>
 
 <script lang="ts" setup>
+import type { NotificationInfo } from '~/types/notifications'
 
 const notificationStore = useNotificationStore()
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 const token = computed(() => route.query.token)
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -34,7 +36,7 @@ const checkStatus = ref(null)
 const checkResp = ref<NotificationInfo | null>(null)
 
 const checkEmail = async () => {
-    const { data, error } = await useApi<NotificationInfo>(`/api/v1/user/verify_email/${token.value}/`)
+    const { data, error } = await authStore.authedGet<NotificationInfo>(`/api/v1/user/verify_email/${token.value}/`)
     checkResp.value = data.value
     if (checkResp.value) {
         notificationStore.setInfo(checkResp.value)

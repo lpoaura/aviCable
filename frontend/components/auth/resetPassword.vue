@@ -38,14 +38,14 @@ const router = useRouter()
 
 
 const notificationStore = useNotificationStore()
-const auth = useAuth()
-const loginForm = ref(null)
 const successMessage = ref(null)
 const valid = ref(false)
 const loading = ref(false)
+
 const reset = reactive({
   email: ''
 })
+
 const emailRules = reactive([v => /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || t('auth.invalidEmail')])
 
 const error: Reactive<NotificationInfo> = reactive<NotificationInfo>(null)
@@ -56,7 +56,7 @@ const userResetPassword = async () => {
   try {
     // check theform is validated
     if (valid) {
-      await useApi('/api/v1/auth/users/reset_password/', { method: 'post', body: reset })
+      await useFetch('/api/v1/auth/users/reset_password/', { method: 'post', body: reset })
       notificationStore.setInfo({
         type: 'success',
         msg: t('auth.resetPasswordRequestSent')

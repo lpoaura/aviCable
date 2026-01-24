@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify'
 const { mobile } = useDisplay()
-const { data: partners } = await useApi('/api/v1/custom-content/partners/')
+const config = useRuntimeConfig()
+const { data: partners } = await useFetch(`${config.public.baseURL}/api/v1/custom-content/partners/`)
 </script>
 
-<style scoped></style>

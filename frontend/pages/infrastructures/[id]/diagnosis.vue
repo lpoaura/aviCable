@@ -20,6 +20,7 @@
 </template>
 
 <script setup>
+const authStore = useAuthStore()
 const cablesStore = useCablesStore()
 const coordinatesStore = useCoordinatesStore()
 
@@ -35,12 +36,14 @@ const infrastructureId = computed(() => route.params.id)
 const infrastructureType = ref(null)
 
 const getData = async () =>{
-  const {data: resInfrastructure} = await useApi(`/api/v1/cables/infrastructures/${route.params.id}`);
+  const {data: resInfrastructure} = await authStore.authedGet(`/api/v1/cables/infrastructures/${route.params.id}`);
   infrastructure.value = resInfrastructure;
   coordinatesStore.setSelectedFeature(infrastructure)
   if (route.query.id_diagnosis) {
    console.debug(`load Diag AdminPageComponentdata ${route.query.id_diagnosis}`)
-   await useApi(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
+   const {data} = await authStore.authedGet(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`)
+   //const {data} = await authStore.authedGet(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
+   diagnosis.value = data
    console.debug('DIAG VALUES', diagnosis.value)
   }
 }

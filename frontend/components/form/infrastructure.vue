@@ -32,8 +32,9 @@ import * as errorCodes from '~/static/errorConfig.json'
 import type { NotificationInfo } from '~/types/notifications'
 import type { CablesFeature } from '~/types/cables';
 
-const emit = defineEmits();
+const emit = defineEmits(['nextStep']);
 
+const authStore = useAuthStore()
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const cablesStore = useCablesStore()
@@ -112,8 +113,7 @@ const createNewInfrastructure = async () => {
     infrastructureData.geom = newGeoJSONObject.value?.geometry
     console.debug('infrastructureData.geom', infrastructureData.geom)
     const url = infrastructureId.value ? `/api/v1/cables/${infrastructureType.toLowerCase()}s/${infrastructureId.value}/` : `/api/v1/cables/${infrastructureType.toLowerCase()}s/`
-    const method = infrastructureId.value ? 'patch' : 'post'
-    const { data, error } = await useApi<CablesFeature>(url, { method, body: infrastructureData })
+    const { data, error } = infrastructureId.value ? await authStore.authedPatch<CablesFeature>(url, infrastructureData) : await authStore.authedPost(url, infrastructureData)
     cablesStore.setFormInfrastructureId(data.value?.properties?.id)
     if (error.value) {
       notificationStore.setInfo({

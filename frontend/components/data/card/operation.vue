@@ -62,7 +62,9 @@
 const { supportId, operation, infrastructureType } = defineProps(['operation', 'supportId','infrastructureType'])
 
 const router = useRouter()
-const emit = defineEmits()
+const emit = defineEmits(['delete'])
+
+const authStore = useAuthStore()
 
 const updateDiag = () => {
   router.push({
@@ -72,7 +74,7 @@ const updateDiag = () => {
 }
 
 const deleteOperation = async () => {
-  await useApi(`/api/v1/cables/operations/${operation.id}/`, { method: 'delete' })
+  await authStore.authedDelete(`/api/v1/cables/operations/${operation.id}/`)
   emit('delete')
 }
 </script>

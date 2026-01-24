@@ -20,7 +20,7 @@ import type { UserSimple } from '~/types/user'
 import type { NotificationInfo } from '~/types/notifications'
 
 const notificationStore = useNotificationStore()
-
+const authStore = useAuthStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -45,32 +45,9 @@ const icon = computed(() => {
 })
 
 const checkStatus = ref<string>()
-const checkResp = ref<NotificationInfo | null>(null)
-
-// const { data, error } = await useApi<UserSimple | NotificationInfo>(`/api/v1/user/activate/${token.value}/`)
-
-// watch(() => data, async (newVal) => {
-//     console.error('WATCH DATA', typeof newVal, newVal)
-//     if (newVal) {
-//         notificationStore.setInfo({
-//             type: newVal.type,
-//             msg: newVal.msg
-//         })
-//     }
-// })
-
-// watch(() => error, async (newVal) => {
-//     console.error('WATCH ERROR', typeof newVal, newVal)
-//     if (newVal) {
-//         notificationStore.setInfo({
-//             type: 'error',
-//             msg: `${newVal}`
-//         })
-//     }
-// })
 
 const getInfo = async () => {
-    const { data, error, status } = await useApi<UserSimple>(`/api/v1/user/activate/${token.value}/`)
+    const { data, error, status } = await authStore.authedGet<UserSimple>(`/api/v1/user/activate/${token.value}/`)
     console.debug(data.value)
     user.value = data.value
     console.debug(error.value)
@@ -94,7 +71,7 @@ const getInfo = async () => {
 
 const activateUser = async () => {
     console.debug('activate')
-    const { data, error } = await useApi<NotificationInfo>(`/api/v1/user/activate/${token.value}/`, { method: 'PATCH' })
+    const { data, error } = await authStore.authedPatch<NotificationInfo>(`/api/v1/user/activate/${token.value}/`)
     if (error.value) {
         notificationStore.setInfo({
             type: 'error',

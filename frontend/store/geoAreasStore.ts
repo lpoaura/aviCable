@@ -24,10 +24,10 @@ export const useGeoAreasStore = defineStore('geoAreas', {
       try {
         params['type__code'] = "ADMIN_COM"
         console.debug("getMunicipalities signal", signal)
-        await useApi<GeoAreaFeatureCollection>(
+        await authStore.authedGet<GeoAreaFeatureCollection>(
           '/api/v1/geoareas/', { signal, params }
         ).then(resp => {
-          console.debug('useApi municipalities datra', resp.data)
+          console.debug('municipalities data', resp.data)
           if (resp.data.value) {
             this.municipalities = resp.data.value
           }

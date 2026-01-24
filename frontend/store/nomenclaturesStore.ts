@@ -77,7 +77,7 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
       try {
         const params = { with_nomenclatures: true };
         try {
-          const { data: nomenclatureTypes } = await useApi("/api/v1/nomenclatures/types", { params });
+          const { data: nomenclatureTypes } = await authStore.authedGet("/api/v1/nomenclatures/types", { params });
           if (nomenclatureTypes && Array.isArray(nomenclatureTypes.value)) {
             this.nomenclatureTypes = nomenclatureTypes.value as NomenclatureType[]; // Type assertion
           } else {
