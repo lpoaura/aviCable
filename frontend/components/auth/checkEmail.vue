@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import type { NotificationInfo } from '~/types/notifications'
 
+const config = useRuntimeConfig()
 const notificationStore = useNotificationStore()
 
 const route = useRoute()
@@ -36,7 +37,7 @@ const checkResp = ref<NotificationInfo | null>(null)
 
 const checkEmail = async () => {
     try {
-        const data = await api.get<NotificationInfo>(`/api/v1/user/verify_email/${token.value}/`)
+        const data = await $fetch<NotificationInfo>(`${config.public.baseURL}/api/v1/user/verify_email/${token.value}/`)
         checkResp.value = data
         if (checkResp.value) {
         notificationStore.setInfo(checkResp.value)
