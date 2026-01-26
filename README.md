@@ -48,4 +48,4 @@ Les demandes d'extraction doivent être adressées à la branche `dev`.
 * [@lpofredc](https://github.com/lpofredc/)  ([LPO Auvergne-Rhône-Alpes](https://github.com/lpoaura/)), mainteneur du projet
 * Sylvain SAINNIER, développeur principal
 
-![Logo LPOAuRA](https://raw.githubusercontent.com/lpoaura/biodivsport-widget/master/images/LPO_AuRA_l250px.png){: style="display: block; margin: auto; height: 100px;"}
+[<img height="100" src="https://raw.githubusercontent.com/lpoaura/biodivsport-widget/master/images/LPO_AuRA_l250px.png" alt="Logo LPOAuRA"/>](https://auvergne-rhole-alpes.lpo.fr)
