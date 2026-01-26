@@ -41,10 +41,11 @@
   </v-sheet>
 </template>
 
-<script setup type="ts">
+<script setup lang="ts">
 const { t } = useI18n()
-const router = useRouter()
 
+const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 const mapLayersStore = useMapLayersStore()
@@ -62,6 +63,9 @@ const nameRules = reactive([v => !!v || t('login.required_username_msg')])
 const pwdRules = reactive([v => !!v || t('login.required_pwd_msg')])
 const visible = ref(false)
 
+const redirectTo = getSafeRedirect(route.query.redirect, '/search')
+
+router.push(redirectTo)
 
 const getBaseMapLayers = async () => {
   await mapLayersStore.getMapBaseLayers()
@@ -92,7 +96,7 @@ const userLogin = async () => {
         msg: `You successfully logged in`
       })
       await refreshInitialData()
-      router.push('/search')
+      router.push(redirectTo)
     }
   } catch (error) {
     if (error instanceof Error) {

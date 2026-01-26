@@ -30,7 +30,7 @@
       <v-spacer />
       <v-btn color="orange" prepend-icon="mdi-pencil-circle" @click="updateDiag()">
         Modifier</v-btn>
-      <v-dialog max-width="500">
+      <v-dialog v-model="deleteModalConfirm"  max-width="500" >
         <template #activator="{ props: activatorProps }">
           <v-btn v-bind="activatorProps" color="red" text="Supprimer" prepend-icon="mdi-delete-circle" />
         </template>
@@ -64,7 +64,11 @@ const { supportId, operation, infrastructureType } = defineProps(['operation', '
 const router = useRouter()
 const emit = defineEmits(['delete'])
 
-const authStore = useAuthStore()
+const globalStore =useGlobalStore()
+
+const {refreshData} = storeToRefs(globalStore)
+
+const deleteModalConfirm = ref(false)
 
 const updateDiag = () => {
   router.push({
@@ -75,6 +79,8 @@ const updateDiag = () => {
 
 const deleteOperation = async () => {
   await api.delete(`/api/v1/cables/operations/${operation.id}/`)
+  deleteModalConfirm.value = false
+  refreshData.value = true
   emit('delete')
 }
 </script>

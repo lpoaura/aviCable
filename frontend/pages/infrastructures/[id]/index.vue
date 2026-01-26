@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="view">
     <template #map><map-search :edit-mode="false" /></template>
-    <data-detail-infrastructure :data="infrastructure" @update="updateData()" />
+    <data-detail-infrastructure :data="infrastructure" @update="onUpdate()" />
   </NuxtLayout>
 </template>
 
@@ -28,24 +28,35 @@ const route = useRoute()
 
 const coordinateStore = useCoordinatesStore()
 
-const infrastructure = await api.get<CablesFeature>(`/api/v1/cables/infrastructures/${route.params.id}/`)
+
+const {
+  data: infrastructure,
+  refresh
+} = await useAsyncData(
+  `infrastructure-${route.params.id}`,
+  () => api.get<CablesFeature>(
+    `/api/v1/cables/infrastructures/${route.params.id}/`
+  )
+)
 
 const { selectedFeature, center, zoom } = storeToRefs(coordinateStore)
 
-const updateData = async () => {
-  const resp = await api.get<CablesFeature>(`/api/v1/cables/infrastructures/${route.params.id}/`)
-  infrastructure.value = resp
+const onUpdate = async () => {
+  console.log('get update')
+  await refresh()
   zoomTo()
 }
 
 const zoomTo = () => {
-  const infraCentroid = centroid(infrastructure)
+  console.log('infrastructure', infrastructure.value)
+  const infraCentroid = centroid(infrastructure.value)
+  console.log('infraCentroid', infraCentroid)
   center.value = infraCentroid?.geometry.coordinates.reverse()
   selectedFeature.value = infrastructure.value
   zoom.value = 14
 }
 
-watch(infrastructure.value, () => {
+watch(infrastructure, () => {
   zoomTo()
 })
 

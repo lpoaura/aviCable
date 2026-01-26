@@ -47,8 +47,8 @@ import { LMap, LTileLayer, LGeoJson, LControlLayers, LControl, LControlScale } f
 import buffer from '@turf/buffer'
 import type { BBox, Feature, FeatureCollection, GeometryObject } from "geojson"
 import type { StoreGeneric } from "pinia"
-import type { Layer, Map, LatLng, LatLngBounds, Polyline, Marker } from "leaflet";
-import { computed, ref, type Reactive, type Ref } from 'vue';
+import type { Layer, Map, LatLng, LatLngBounds } from "leaflet";
+import { computed, ref, type Ref } from 'vue';
 import type { MortalityFeature } from '~/types/mortality';
 import type { CablesFeature, NetworkFeatureCollection, NetworkFeature, NewLayerType } from '~/types/cables';
 // import 'leaflet.control.layers.tree';

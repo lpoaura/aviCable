@@ -48,11 +48,10 @@
         </template>
 
         <template #default="{ isActive }">
-          <v-card title="Suppression d'un diagnostic" color="red" prepend-icon="mdi-alert">
+          <v-card title="Suppression d'une infrastructure" color="red" prepend-icon="mdi-alert">
             <v-card-text>
               <div class="my-4">
-                Vous êtes sur le point de supprimer une infrastructure, en êtes vous bien certain&nbsp;? {{
-                  `/cables/${data.resourcetype.toLowerCase()}s/${data.properties.id}/` }}
+                Vous êtes sur le point de supprimer une infrastructure, en êtes vous bien certain&nbsp;?
               </div>
               <v-btn color="white" block text="Oui, Supprimer" prepend-icon="mdi-delete-circle"
                 @click="deleteInfrastructure()" />

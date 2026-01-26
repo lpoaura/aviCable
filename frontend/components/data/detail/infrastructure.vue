@@ -49,7 +49,6 @@
 
 <script setup lang="ts">
 import type { CablesFeature } from '~/types/cables';
-import Infrastructure from '../card/infrastructure.vue';
 
 interface Props {
   data: CablesFeature
