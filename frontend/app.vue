@@ -61,9 +61,9 @@ const getNomenclatures = async () => {
 }
 
 const refreshInitialData = async () => {
+  await getNomenclatures()
   if (isAuthenticated.value) {
     await getBaseMapLayers()
-    await getNomenclatures()
     globalStore.setUserAvatar()
     if (!userInfo.value) {
       await authStore.fetchUser()
