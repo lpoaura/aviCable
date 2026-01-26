@@ -76,8 +76,10 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
     async getNomenclatures() {
       try {
         const params = { with_nomenclatures: true };
+        const config = useRuntimeConfig()
         try {
-          const nomenclatureTypes = await api.get<NomenclatureType>("/api/v1/nomenclatures/types", { params });
+          const url = `${config.public.baseURL}/api/v1/nomenclatures/types`
+          const nomenclatureTypes = await $fetch<NomenclatureType[]>(url, { params })
           if (nomenclatureTypes && Array.isArray(nomenclatureTypes)) {
             this.nomenclatureTypes = nomenclatureTypes as NomenclatureType[]; // Type assertion
           } else {
