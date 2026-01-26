@@ -5,6 +5,7 @@
 import { defineStore } from "pinia";
 import type { LineString, Feature } from "geojson";
 import type { LatLng } from "leaflet";
+import type { CablesFeature } from "~/types/cables";
 
 interface NewPointCoord {
   lat: number | null;
@@ -23,7 +24,7 @@ export const useCoordinatesStore = defineStore("coordinates", {
     newGeoJSONObject: {} as Feature,
     bbox: null as string | null,
     mortalityGetInfrastructure: false,
-    mortalityInfrastructure: {} as Feature | null,
+    mortalityInfrastructure: {} as CablesFeature | null,
   }),
   getters: {
     /**

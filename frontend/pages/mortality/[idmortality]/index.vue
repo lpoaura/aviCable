@@ -5,19 +5,20 @@
   </NuxtLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { MortalityFeature } from '~/types/mortality'
+
 const route = useRoute()
-const authStore = useAuthStore()
 const coordinateStore = useCoordinatesStore()
 
 
 const zoomTo = () => {
   // const layer = geoJSON(info.value)
-  coordinateStore.setCenter([...item.value.geometry.coordinates].reverse())
+  coordinateStore.setCenter([...item.geometry.coordinates].reverse())
   coordinateStore.setZoom(14)
 }
 
-const { data: item } = await authStore.authedGet(`/api/v1/mortality/${route.params.idmortality}`)
+const item = await api.get<MortalityFeature>(`/api/v1/mortality/${route.params.idmortality}`)
 
 
 onMounted(() => {zoomTo()})

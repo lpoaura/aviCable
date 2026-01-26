@@ -14,7 +14,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-data-table v-model="selected" fixed-header :headers="headers" :search="search" :items="observationList"
+    <v-data-table-virtual v-model="selected" fixed-header :headers="headers" :search="search" :items="observationList"
       :loading="!mortalityStore.getMortalityFeatures" loading-text="Loading... Please wait" item-value="name"
       :items-per-page="-1" class="elevation-1 fill-height" height="200" density="compact" @click:row="handleRowClick">
       <template #item.id="{ value, _item }">
@@ -34,14 +34,11 @@
           {{ value }}
         </i>
       </template>
-    </v-data-table>
+    </v-data-table-virtual>
   </div>
 </template>
 
 <script setup lang="ts">
-
-import type { GeoJSON } from 'geojson'
-// import { FeatureCollection } from 'geojson'
 const router = useRouter()
 const search = ref('')
 const selected = ref([])

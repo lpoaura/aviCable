@@ -47,7 +47,11 @@ const router = useRouter()
 
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
+const mapLayersStore = useMapLayersStore()
+const nomenclaturesStore = useNomenclaturesStore()
+const globalStore = useGlobalStore()
 
+const {isAuthenticated} = storeToRefs(authStore)
 const formValid = ref(false)
 const loading = ref(false)
 const login = reactive({
@@ -58,6 +62,25 @@ const nameRules = reactive([v => !!v || t('login.required_username_msg')])
 const pwdRules = reactive([v => !!v || t('login.required_pwd_msg')])
 const visible = ref(false)
 
+
+const getBaseMapLayers = async () => {
+  await mapLayersStore.getMapBaseLayers()
+}
+
+const getNomenclatures = async () => {
+  await nomenclaturesStore.getNomenclatures()
+}
+
+const refreshInitialData = async () => {
+  if (isAuthenticated) {
+    console.log('isAuthenticated gettingData', authStore.authTokens)
+    await getBaseMapLayers()
+    await getNomenclatures()
+    globalStore.setUserAvatar()
+  }
+}
+
+
 // const nomenclaturesStore = useNomenclaturesStore()
 
 const userLogin = async () => {
@@ -65,20 +88,26 @@ const userLogin = async () => {
     if (formValid.value) {
       console.log('authStore', authStore)
       await authStore.login(login)
-      // nomenclaturesStore.loadNomenclatures()
+      // nomenclaturesStore.getNomenclatures()
       notificationStore.setInfo({
         type: 'success',
         msg: `You successfully logged in`
       })
+      await refreshInitialData()
+      console.log('Login router', router)
       router.push('/search')
     }
-  } catch (err) {
-    console.error('Login Error', err.data.data.detail)
-    const message = err.data?.data?.detail || err
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Login error', error.message)
+    }
+    const message = error.message || error
     notificationStore.setInfo({
       type: 'error',
       msg: message
     })
+
+    console.error(error)
   }
 }
 </script>

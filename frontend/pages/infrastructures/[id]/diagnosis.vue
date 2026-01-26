@@ -19,8 +19,7 @@
   </NuxtLayout>
 </template>
 
-<script setup>
-const authStore = useAuthStore()
+<script setup lang="ts">
 const cablesStore = useCablesStore()
 const coordinatesStore = useCoordinatesStore()
 
@@ -32,29 +31,31 @@ const route = useRoute()
 const router = useRouter()
 const diagnosis = ref(null)
 const infrastructure = ref(null)
+const {formInfrastructure, formInfrastructureId }= storeToRefs(cablesStore)
 const infrastructureId = computed(() => route.params.id)
 const infrastructureType = ref(null)
 
-const getData = async () =>{
-  const {data: resInfrastructure} = await authStore.authedGet(`/api/v1/cables/infrastructures/${route.params.id}`);
-  infrastructure.value = resInfrastructure;
-  coordinatesStore.setSelectedFeature(infrastructure)
+const init = async () =>{
+  console.log('diagnosis initial getData')
+  const data = await api.get<Infrastructure>(`/api/v1/cables/infrastructures/${route.params.id}`);
+  coordinatesStore.setSelectedFeature(data)
+  infrastructureType.value = data ? data.resourcetype : route.query.type;
+  formInfrastructure.value = data
+  formInfrastructureId.value = data?.properties.id;
   if (route.query.id_diagnosis) {
-   console.debug(`load Diag AdminPageComponentdata ${route.query.id_diagnosis}`)
-   const {data} = await authStore.authedGet(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`)
-   //const {data} = await authStore.authedGet(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
+   const data = await api.get<Diagnosis>(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`)
    diagnosis.value = data
-   console.debug('DIAG VALUES', diagnosis.value)
   }
 }
 
-watch(infrastructure, (newVal) => {
+watch(infrastructure.value, (newVal) => {
+  console.log('WATCH infrastructure.value')
   infrastructureType.value = newVal ? newVal.value.resourcetype : route.query.type;
-  cablesStore.setFormInfrastructureId(infrastructureId.value)
+  formInfrastructure.value = infrastructureId.value
 });
 
-onMounted(()=> {
-  getData()
+onMounted(async ()=> {
+  await init()
 })
 
 </script>

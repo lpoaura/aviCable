@@ -113,20 +113,9 @@ const createNewInfrastructure = async () => {
     infrastructureData.geom = newGeoJSONObject.value?.geometry
     console.debug('infrastructureData.geom', infrastructureData.geom)
     const url = infrastructureId.value ? `/api/v1/cables/${infrastructureType.toLowerCase()}s/${infrastructureId.value}/` : `/api/v1/cables/${infrastructureType.toLowerCase()}s/`
-    const { data, error } = infrastructureId.value ? await authStore.authedPatch<CablesFeature>(url, infrastructureData) : await authStore.authedPost(url, infrastructureData)
-    cablesStore.setFormInfrastructureId(data.value?.properties?.id)
-    if (error.value) {
-      notificationStore.setInfo({
-        type: 'error',
-        msg: error
-      })
-    } else {
-      notificationStore.setInfo({
-        type: 'success',
-        msg: 'Infrastructure créée'
-      })
-    }
-    return data?.value
+    const data = infrastructureId.value ? await api.patch<CablesFeature>(url, infrastructureData) : await api.post<CablesFeature>(url, infrastructureData)
+    cablesStore.setFormInfrastructureId(data?.properties?.id)
+    return data
   } catch (_err) {
     console.error(_err)
     const error: NotificationInfo = {

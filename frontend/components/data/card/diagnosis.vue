@@ -161,7 +161,7 @@ const updateDiag = () => {
 }
 
 const deleteDiag = async () => {
-  await authStore.authedDelete(`/api/v1/cables/diagnosis/${diagnosis.id}/`)
+  await api.delete(`/api/v1/cables/diagnosis/${diagnosis.id}/`)
   deletedDiagConfirm.value = false
   refreshData.value = true
   emit('delete')

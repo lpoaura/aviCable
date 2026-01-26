@@ -24,14 +24,10 @@ export const useGeoAreasStore = defineStore('geoAreas', {
       try {
         params['type__code'] = "ADMIN_COM"
         console.debug("getMunicipalities signal", signal)
-        await authStore.authedGet<GeoAreaFeatureCollection>(
+        const data = await api.get<GeoAreaFeatureCollection>(
           '/api/v1/geoareas/', { signal, params }
-        ).then(resp => {
-          console.debug('municipalities data', resp.data)
-          if (resp.data.value) {
-            this.municipalities = resp.data.value
-          }
-        })
+        )
+        this.municipalities = data
       } catch (error: unknown ) {
         if (error instanceof Error && error.name === "AbortError") {
           console.debug("Requête annulée");

@@ -45,24 +45,39 @@
 
 import { onMounted } from 'vue'
 
-
+const authStore = useAuthStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const mapLayersStore = useMapLayersStore()
 const globalStore = useGlobalStore()
-const { t } = useI18n()
 
-const loadBaseMapLayers = () => {
-  mapLayersStore.getMapBaseLayers()
+const { isAuthenticated, userInfo } = storeToRefs(authStore)
+
+const getBaseMapLayers = async () => {
+  await mapLayersStore.getMapBaseLayers()
 }
 
-const loadNomenclatures = () => {
-  nomenclaturesStore.loadNomenclatures()
+const getNomenclatures = async () => {
+  await nomenclaturesStore.getNomenclatures()
 }
+
+const refreshInitialData = async () => {
+  if (isAuthenticated.value) {
+    await getBaseMapLayers()
+    await getNomenclatures()
+    globalStore.setUserAvatar()
+    if (!userInfo.value) {
+      await authStore.fetchUser()
+    }
+  }
+}
+
+watch(() => isAuthenticated.value, () => {
+  console.log('authenticated watcher', isAuthenticated)
+  refreshInitialData()
+})
 
 onMounted(() => {
-  loadBaseMapLayers()
-  loadNomenclatures()
-  globalStore.setUserAvatar()
+  refreshInitialData()
 })
 
 </script>

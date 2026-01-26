@@ -8,7 +8,7 @@
               <v-container>
                 <v-row>
                   <v-col lg="6" md="12">
-                    <v-date-input v-model="formDate" :locale="currentLocale.iso" label="Date de visite" prepend-icon=""
+                    <v-date-input v-model="formDate" :locale="currentLocale?.code"  label="Date de visite" prepend-icon=""
                       prepend-inner-icon="mdi-calendar" variant="solo" density="compact" :rules="[rules.required]"
                       :max="new Date()" />
                   </v-col>
@@ -26,8 +26,8 @@
             </v-card>
           </v-container>
         </v-row>
-        <form-equipments></form-equipments>
-        <form-images :medias="opData.media"></form-images>
+        <form-equipments/>
+        <form-images :medias="opData.media"/>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -49,7 +49,6 @@ const { t, locales } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
-const authStore = useAuthStore()
 const coordinatesStore = useCoordinatesStore()
 const cablesStore = useCablesStore()
 // const nomenclaturesStore = useNomenclaturesStore():
@@ -103,10 +102,7 @@ const opData = reactive<OperationData>({
 
 
 const locale = useLocale()
-console.debug('locale', locale)
-console.debug('locales',locales)
-const currentLocale = computed(() => locales.value.find(item => item.language == locale.value))
-console.debug('currentLocale', currentLocale)
+const currentLocale = computed(() => locales.value.find(item => item.code == locale.value))
 
 watch(newGeoJSONObject, (value: Feature) => {
   if (value) {
@@ -125,31 +121,32 @@ const initData = async () => {
     // opData.resourcetype = infrastructure.value?.resourcetype?.toLowerCase() === 'point' ? 'PointOperation' : 'LineOperation'
     // console.debug('resourceType', infrastructure.value.resourcetype, opData.resourcetype)
     equipmentsReady.value = true
+
   }
   if (operationId.value) {
-    const { data: operation } = await authStore.authedGet<OperationFeature>(`/api/v1/cables/operations/${operationId.value}/`)
-    if (operation.value) {
-      formDate.value = new Date(operation.value.properties.date)
+    const operation = await api.get<OperationFeature>(`/api/v1/cables/operations/${operationId.value}/`)
+    if (operation) {
+      formDate.value = new Date(operation.properties.date)
       mediaStore.date = formDate.value
-      mediaStore.medias = operation.value.properties.media
+      mediaStore.medias = operation.properties.media
       const opdata = {
-        id: operation.value.properties.id,
-        remark: operation.value.properties.remark,
-        infrastructure: operation.value.properties.infrastructure,
-        neutralization_level: operation.value.properties.neutralization_level,
-        equipments: operation.value.properties.equipments.map(item => {
+        id: operation.properties.id,
+        remark: operation.properties.remark,
+        infrastructure: operation.properties.infrastructure,
+        neutralization_level: operation.properties.neutralization_level,
+        equipments: operation.properties.equipments.map(item => {
           item.type_id = item.type?.id
           // delete item['type']
           return item
         }),
-        // equipments: operation.value.properties.equipments,
-        media_id: operation.value.properties.media.map(item => item.id),
-        resourcetype: operation.value.resourcetype,
-        geom: operation.value.geometry,
+        // equipments: operation.properties.equipments,
+        media_id: operation.properties.media.map(item => item.id),
+        resourcetype: operation.resourcetype,
+        geom: operation.geometry,
       }
-      cablesStore.formEquipments = operation.value.properties.equipments
+      cablesStore.formEquipments = operation.properties.equipments
       Object.assign(opData, opdata)
-      selectedFeature.value = operation.value
+      selectedFeature.value = operation
       equipmentsReady.value = true
     }
   }
@@ -182,27 +179,21 @@ const createOperation = async () => {
     opData.resourcetype = `${infrastructure.value.resourcetype}Operation`
     // opData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    const { data: operation, error } = await authStore.authedPost('/api/v1/cables/operations/', opData)
+    const operation = await api.post('/api/v1/cables/operations/', opData)
     mediaStore.resetMedias()
-    if (error.value) {
-      notificationStore.setInfo({
-        type: 'error',
-        msg: error
-      })
-    } else {
-      notificationStore.setInfo({
-        type: 'success',
-        msg: 'Neutralisation créée'
-      })
-    }
+    cablesStore.resetFormEquipments()
+    notificationStore.setInfo({
+      type: 'success',
+      msg: 'Neutralisation créée'
+    })
     return operation
-  } catch (_err) {
-    console.error('error', _err)
-    const error: NotificationInfo = {
+  } catch (error) {
+    console.error(error)
+    const errorMsg = error instanceof Error ? error.message : `${error}`
+    notificationStore.setInfo({
       type: 'error',
-      msg: t(`error.${errorCodes.create_point.msg}`)
-    }
-    notificationStore.setInfo(error)
+      msg: errorMsg
+    })
   }
 }
 
@@ -218,22 +209,15 @@ const updateOperation = async () => {
     opData.date = formDate.value.toISOString().substring(0, 10)
     opData.media_id = await createMedias()
     opData.equipments = cablesStore.formEquipments
-    const { data, error } = await authStore.authedPut(`/api/v1/cables/operations/${operationId.value}/`, opData)
+    const data = await api.put<OperationFeature>(`/api/v1/cables/operations/${operationId.value}/`, opData)
     mediaStore.resetMedias()
-    if (error.value) {
-      notificationStore.setInfo({
-        type: 'error',
-        msg: error
-      })
-    } else {
-      notificationStore.setInfo({
-        type: 'success',
-        msg: 'Neutralisation mise à jour'
-      })
-    }
+    notificationStore.setInfo({
+      type: 'success',
+      msg: 'Neutralisation mise à jour'
+    })
+
     return data
   } catch (_err) {
-
     console.error('error', _err)
     const error: NotificationInfo = {
       type: 'error',

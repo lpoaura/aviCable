@@ -44,7 +44,7 @@ const getData = async () => {
   console.debug('getData route.params.id', infrastructureId.value);
   if (infrastructureId.value) {
     try {
-      const { data } = await authStore.authedGet(`/api/v1/cables/infrastructures/${infrastructureId.value}`);
+      const data = await api.get<Infrastructure>(`/api/v1/cables/infrastructures/${infrastructureId.value}`);
       infrastructure.value = data; // Assign the fetched data to the infrastructure ref
       coordinatesStore.setSelectedFeature(data); // Assuming data is the correct structure
     } catch (error) {

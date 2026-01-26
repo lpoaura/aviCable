@@ -74,7 +74,7 @@ const updateDiag = () => {
 }
 
 const deleteOperation = async () => {
-  await authStore.authedDelete(`/api/v1/cables/operations/${operation.id}/`)
+  await api.delete(`/api/v1/cables/operations/${operation.id}/`)
   emit('delete')
 }
 </script>

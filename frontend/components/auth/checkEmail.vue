@@ -14,7 +14,6 @@ const notificationStore = useNotificationStore()
 
 const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
 const token = computed(() => route.query.token)
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -32,21 +31,30 @@ const icon = computed(() => {
 
 })
 
-const checkStatus = ref(null)
+const checkStatus = ref<string | undefined | null>(null)
 const checkResp = ref<NotificationInfo | null>(null)
 
 const checkEmail = async () => {
-    const { data, error } = await authStore.authedGet<NotificationInfo>(`/api/v1/user/verify_email/${token.value}/`)
-    checkResp.value = data.value
-    if (checkResp.value) {
+    try {
+        const data = await api.get<NotificationInfo>(`/api/v1/user/verify_email/${token.value}/`)
+        checkResp.value = data
+        if (checkResp.value) {
         notificationStore.setInfo(checkResp.value)
         checkStatus.value = checkResp.value.type
     }
-    else {
-        notificationStore.setInfo({
-            type: 'error',
-            msg: error.value?.message
-        })
+    } catch (error) {
+        if (error && error instanceof Error) {
+            notificationStore.setInfo({
+                type: 'error',
+                msg: error.message
+            })
+        }
+        else {
+            notificationStore.setInfo({
+                type: 'error',
+                msg: `${error}`
+            })
+        }
     }
     await sleep(5000)
     router.push('/')

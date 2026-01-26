@@ -75,15 +75,13 @@
 import type { Geometry } from 'geojson'
 import { storeToRefs } from 'pinia'
 import { getLocaleDateString } from '~/helpers/formHelpers'
-import type { MortalityFeature, Mortality } from '~/types/mortality'
-import type { NotificationInfo } from '~/types/notifications'
+import type { MortalityFeature, Mortality, Species } from '~/types/mortality'
 
 // const { mortality } = defineProps(['mortality'])
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
-const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
@@ -91,11 +89,10 @@ const cablesStore = useCablesStore()
 // Species Autocomplete data
 
 
-const descriptionLimit = ref(60)
 const mediaStore = useMediaStore()
 const isLoading = ref(false)
 const speciesSearch = ref(null)
-const specieSearchEntries = ref([])
+const specieSearchEntries = ref<Species[]>([])
 
 
 const formValid = ref(true)
@@ -130,19 +127,19 @@ const rules = reactive({
 
 const { newGeoJSONObject, mortalityInfrastructure, mortalityGetInfrastructure, selectedFeature } = storeToRefs(coordinatesStore)
 
-watch(formDate.value, (newVal, _oldVal) => cable.date = newVal)
+watch(formDate.value, (newVal, _oldVal) => cablesStore.setFormDate(newVal))
 
 watch(mortalityInfrastructure, (val) => {
   if (val) {
-    mortalityData.infrstr_id = mortalityInfrastructure.value.properties.id
+    mortalityData.infrstr_id = mortalityInfrastructure.value?.properties?.id
   }
 })
 
-watch(newGeoJSONObject, (val) => {
-  if (val) {
-    mortalityData.geom = newGeoJSONObject.value.geometry
-  }
-})
+// watch(newGeoJSONObject, (val) => {
+//   if (val) {
+//     mortalityData.geom = newGeoJSONObject.value.geometry
+//   }
+// })
 
 watch(() => cablesStore.getFormDate, (newDate) => {
   mortalityData.date = getLocaleDateString(newDate)
@@ -154,8 +151,8 @@ watch(speciesSearch, async (val) => {
 
 const speciesSelection = async (value: string) => {
   isLoading.value = true
-  const { data } = await authStore.authedGet(`/api/v1/species/?search=${value}`)
-  specieSearchEntries.value = data.value
+  const data = await api.get<Species[]>(`/api/v1/species/?search=${value}`)
+  specieSearchEntries.value = data
   isLoading.value = false
 }
 
@@ -163,33 +160,33 @@ const speciesSelection = async (value: string) => {
 
 
 const createData = async () => {
+  mortalityData.date = cablesStore.getFormDate?.toISOString().substring(0, 10)
+  mortalityData.media_id = await createMedias()
+  mortalityData.geom = newGeoJSONObject.value.geometry
+  const url = mortalityId.value ? `/api/v1/mortality/${mortalityId.value}/` : '/api/v1/mortality/'
   try {
-    mortalityData.date = cablesStore.getFormDate?.toISOString().substring(0, 10)
-    mortalityData.media_id = await createMedias()
-    const url = mortalityId.value ? `/api/v1/mortality/${mortalityId.value}/` : '/api/v1/mortality/'
-    const { data, error } = mortalityId.value ? await authStore.authedPut<MortalityFeature>(url, mortalityData) : await authStore.authedPost(url, mortalityData)
-    if (error.value) {
+    const data = mortalityId.value ? await api.put<MortalityFeature>(url, mortalityData) : await api.post(url, mortalityData)
+    console.debug('newDiagData', data)
+    notificationStore.setInfo({
+      type: 'success',
+      msg: 'Donnée de mortalité créée'
+    })
+    mediaStore.resetMedias()
+    mortalityInfrastructure.value = null
+    return data
+  } catch (error) {
+    if (error instanceof Error) {
+      notificationStore.setInfo({
+        type: 'error',
+        msg: `${error.message}`
+      })
+    }
+    else {
       notificationStore.setInfo({
         type: 'error',
         msg: `${error}`
       })
-    } else {
-      notificationStore.setInfo({
-        type: 'success',
-        msg: 'Donnée de mortalité créée'
-      })
     }
-    console.debug('newDiagData', data)
-    mediaStore.resetMedias()
-    return data
-  } catch (err) {
-
-    console.error('error', err)
-    const error: NotificationInfo = {
-      type: 'error',
-      msg: `Echec à la création de la donnée de mortalité : ${err}}`
-    }
-    notificationStore.setInfo(error)
   }
 }
 
@@ -198,35 +195,35 @@ const createData = async () => {
 
 const submit = async () => {
   const data = await createData()
-  console.debug('submit', data, data?.value)
-  if (data?.value?.id) {
-    router.push(`/mortality/${data.value.id}`)
+  console.debug('submit', data)
+  if (data?.id) {
+    router.push(`/mortality/${data.id}`)
   }
 }
 
 const initData = async () => {
   if (mortalityId.value) {
-    const { data } = await authStore.authedGet<MortalityFeature>(`/api/v1/mortality/${mortalityId.value}/`)
-    if (data.value) {
-      const date = data.value.properties.date ? new Date(data.value.properties.date) : new Date()
+    const data = await api.get<MortalityFeature>(`/api/v1/mortality/${mortalityId.value}/`)
+    if (data) {
+      const date = data.properties.date ? new Date(data.properties.date) : new Date()
       cablesStore.setFormDate(date)
-      mediaStore.medias = data.value.properties.media
-      specieSearchEntries.value = [data.value.properties.species,]
+      mediaStore.medias = data.properties.media
+      specieSearchEntries.value = [data.properties.species,]
       const mortalitydata = {
-        id: data.value.id,
-        date: data.value.properties.date,
-        author: data.value.properties.author,
-        species_id: data.value.properties.species?.id, // null,
-        infrstr_id: data.value.properties.infrstr?.id,
-        nb_death: data.value.properties.nb_death,
-        death_cause_id: data.value.properties.death_cause.id,
-        data_source: data.value.properties.data_source,
-        data_source_url: data.value.properties.data_source_url,
-        comment: data.value.properties.comment,
-        geom: data.value.geometry,
+        id: data.id,
+        date: data.properties.date,
+        author: data.properties.author,
+        species_id: data.properties.species?.id, // null,
+        infrstr_id: data.properties.infrstr?.id,
+        nb_death: data.properties.nb_death,
+        death_cause_id: data.properties.death_cause.id,
+        data_source: data.properties.data_source,
+        data_source_url: data.properties.data_source_url,
+        comment: data.properties.comment,
+        geom: data.geometry,
       }
       Object.assign(mortalityData, mortalitydata)
-      selectedFeature.value = data.value
+      selectedFeature.value = data
     }
   }
   // const opData = null

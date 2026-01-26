@@ -1,0 +1,233 @@
+import { defineStore } from 'pinia'
+import { jwtDecode, type JwtPayload } from 'jwt-decode'
+import dayjs from 'dayjs'
+import type { UserSimple, SignUpFormData, Credentials, Tokens } from '~/types/user'
+import type { UseFetchOptions } from '#app'
+import { useRouter } from 'vue-router';
+
+type RequestData = Record<string, any> | FormData;
+
+
+export const useAuthStore = defineStore('auth', {
+    state: () => ({
+        user: null as string | null | JwtPayload,
+        isAuthenticated: false,
+        authTokens: null as Tokens | null,
+        userInfo: null as UserSimple | null
+    }),
+    actions: {
+        async register(formData: SignUpFormData) {
+            const config = useRuntimeConfig()
+
+            try {
+                const response = await fetch(`${config.public.baseURL}/api/v1/user/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                })
+                const data = await response.json()
+
+                if (response.status !== 201) {
+                    // Handle validation errors specifically
+                    if (typeof data === 'object' && data !== null) {
+                        const errors = Object.values(data)
+                        if (errors.length > 0 && errors[0].length > 0) {
+                            // Extract the first error message from the first property with an error
+                            throw new Error(errors[0][0])
+                        }
+                    }
+
+                    // Fallback error message if the structure wasn't as expected
+                    throw new Error('Registration failed due to an unexpected error.')
+                }
+
+                return data // On success, return the response data
+            } catch (error) {
+                return {
+                    error: error.message || 'An error occurred during registration.',
+                }
+            }
+        },
+        async login(credentials: Credentials): Promise<void> {
+            const config = useRuntimeConfig()
+            try {
+                //const config = useRuntimeConfig()
+                const response = await $fetch<Promise<Tokens>>(`${config.public.baseURL}/api/v1/auth/jwt/create/`, {
+                    method: 'POST',
+                    body: JSON.stringify(credentials),
+                })
+
+                const authTokens = response
+                const user = jwtDecode(authTokens.access)
+
+                this.user = user as JwtPayload
+                this.isAuthenticated = true
+                this.authTokens = authTokens
+
+                localStorage.setItem('authTokens', JSON.stringify(authTokens))
+                console.log('get UserInfo')
+                await this.fetchUser()
+            } catch (error) {
+                console.error('Login error:', error)
+                throw error
+            }
+        },
+        checkAuth() {
+            const authTokens = localStorage.getItem('authTokens')
+            this.authTokens = authTokens ? JSON.parse(authTokens) : null
+            if (this.authTokens) {
+                this.isAuthenticated = true
+                this.user = jwtDecode(this.authTokens.access)
+                const userInfo = localStorage.getItem('userInfo')
+                this.userInfo = userInfo ? JSON.parse(userInfo) : null
+            }
+        },
+        async fetchUser(): Promise<UserSimple | null> {
+            console.log('fetchingUser')
+            try {
+                const { data } = await this.authedGet('/api/v1/auth/users/me/');
+                this.userInfo = data as UserSimple;
+
+                localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
+                return this.userInfo;
+            } catch (error) {
+                console.error('Fetch user error:', error);
+                throw error;
+            }
+        },
+        async authedRequest<T>(
+            url: string,
+            originalConfig: UseFetchOptions<any, any> = {}
+        ): Promise<T> {
+            console.log('<authedRequest> init')
+            const controller = new AbortController()
+            const { signal } = controller
+            console.log('<authedRequest> controller', controller)
+            
+            const config = { ...originalConfig, signal }
+            const router = useRouter()
+            const envConfig = useRuntimeConfig()
+            console.log('<authedRequest> envConfig', envConfig)
+
+            const accessToken = await this.retrieveValidToken();
+            console.log('<authedRequest> check has accessToken', accessToken)
+            if (!accessToken) {
+                console.log('<authedRequest> No accessToken, go to login')
+                router.push('/account/login');
+                return Promise.reject('No auth token found') as any; // Adjust as needed
+            }
+
+            console.log('<authedRequest> set headers', accessToken)
+            config.headers = {
+                ...config.headers,
+                Authorization: `JWT ${accessToken}`,
+            }
+            console.log('<authedRequest> try request', config)
+            try {
+                return await useFetch(`${envConfig.public.baseURL}/${url}`, config) as T
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (error.name === 'AbortError') {
+                        console.log('<authedRequest> Fetch aborted:', error.message)
+                    } else {
+                        console.error('<authedRequest> Failed to make authenticated request:', error)
+                    }
+                }
+                console.error('<authedRequest> Error', error)
+                return Promise.reject(error) as any
+            }
+        },
+        abortRequest(controller: AbortController) {
+            controller.abort(); // Abort the request
+        },
+
+        async makeRequest(method: M, url: string, data: RequestData = {}, config = {} as UseFetchOptions<unknown, unknown>): Promise<T> {
+            const requestConfig = { ...config, method };
+
+            if (data) {
+                requestConfig.body = data;
+            }
+
+            return await this.authedRequest<T>(url, requestConfig)
+        },
+        async authedPost(url: string, data: RequestData = {}, config = {}) {
+            return await this.makeRequest('POST', url, data, config)
+        },
+        async authedPut(url: string, data: RequestData = {}, config = {}) {
+            return await this.makeRequest('PUT', url, data, config)
+        },
+        async authedPatch(url: string, data: RequestData = {}, config = {}) {
+            return await this.makeRequest('PATCH', url, data, config)
+        },
+        async authedGet(url: string, config = {}) {
+            return await this.makeRequest('GET', url, undefined, config)
+        },
+        async authedDelete(url: string, config = {}) {
+            return await this.makeRequest('DELETE', url, undefined, config)
+        },
+        async retrieveValidToken() {
+            const authTokens = localStorage.getItem('authTokens');
+            this.authTokens = authTokens ? JSON.parse(authTokens) : null;
+            if (!this.authTokens) {
+                return null
+            }
+
+            const user = jwtDecode(this.authTokens.access)
+            // Set isExpired to true if token expires in less than a minute from now
+            if (user.exp) {
+                const isExpired = dayjs.unix(user.exp).diff(dayjs(), 'minute') < 1
+                if (isExpired) {
+                    try {
+                        const newTokens = await this.refreshToken()
+                        if (newTokens) {
+                            localStorage.setItem('authTokens', JSON.stringify(newTokens))
+                            this.authTokens = newTokens
+                            this.user = jwtDecode(newTokens.access)
+                            this.fetchUser()
+                            return newTokens.access
+                        }
+                    } catch (err) {
+                        console.error('Error refreshing token', err)
+                        return null
+                    }
+                }
+            }
+
+            return this.authTokens.access
+        },
+        async refreshToken(): Promise<Tokens | null> {
+            const rToken = this.authTokens?.refresh
+            if (!rToken) {
+                console.error('No refresh token available')
+                return null
+            }
+
+            try {
+                const envConfig = useRuntimeConfig()
+                const { data } = await useFetch<Tokens>(
+                    `${envConfig.public.baseURL}/api/v1/auth/jwt/refresh`,
+                    {
+                        method: 'POST',
+                        body: JSON.stringify({ refresh: rToken }),
+                    },
+                )
+                return data.value
+            } catch (error) {
+                console.error('Failed to refresh token:', error)
+                this.logout()
+                return null
+            }
+        },
+        logout() {
+            this.user = null
+            this.authTokens = null
+            this.isAuthenticated = false
+            this.userInfo = null
+
+            localStorage.removeItem('authTokens')
+            localStorage.removeItem('userInfo')
+        },
+    },
+})

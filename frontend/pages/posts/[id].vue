@@ -27,7 +27,7 @@ definePageMeta({
 
 const authStore = useAuthStore()
 
-const { data: post } = await authStore.authedGet(`/api/v1/custom-content/news/${route.params.id}`)
+const post = await api.get(`/api/v1/custom-content/news/${route.params.id}`)
 </script>
 
 <style scoped>

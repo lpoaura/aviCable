@@ -112,7 +112,7 @@ const updateDiag = () => {
 
 
 const deleteData = async () => {
-  await authStore.authedDelete(`/api/v1/mortality/${itemId}/`)
+  await api.delete(`/api/v1/mortality/${itemId}/`)
   deletedDiagConfirm.value = false
   refreshData.value = true
   router.push("/search")

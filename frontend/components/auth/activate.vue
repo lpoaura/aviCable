@@ -20,7 +20,6 @@ import type { UserSimple } from '~/types/user'
 import type { NotificationInfo } from '~/types/notifications'
 
 const notificationStore = useNotificationStore()
-const authStore = useAuthStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -47,41 +46,44 @@ const icon = computed(() => {
 const checkStatus = ref<string>()
 
 const getInfo = async () => {
-    const { data, error, status } = await authStore.authedGet<UserSimple>(`/api/v1/user/activate/${token.value}/`)
-    console.debug(data.value)
-    user.value = data.value
-    console.debug(error.value)
-    console.debug('status', status.value)
-    if (error.value) {
-        console.debug('response', error.value.response)
-        if (error.value.response?.status === 401) {
+    try {
+        const data = await api.get<UserSimple>(`/api/v1/user/activate/${token.value}/`)
+        user.value = data
+    } catch (error) {
+        if (error && error instanceof Error) {
             notificationStore.setInfo({
                 type: 'error',
-                msg: `You must be logged in to activate an account`
+                msg: error.message
             })
         }
         else {
             notificationStore.setInfo({
                 type: 'error',
-                msg: `An error occured: ${error.value}`
+                msg: `${error}`
             })
         }
     }
 }
 
 const activateUser = async () => {
-    console.debug('activate')
-    const { data, error } = await authStore.authedPatch<NotificationInfo>(`/api/v1/user/activate/${token.value}/`)
-    if (error.value) {
-        notificationStore.setInfo({
-            type: 'error',
-            msg: `Can't get data for user : ${error.value}`
-        })
+    try {
+        const data = await api.patch<NotificationInfo>(`/api/v1/user/activate/${token.value}/`)
+        notificationStore.setInfo(data)
+        checkStatus.value = data.type
+    } catch (error) {
+        if (error && error instanceof Error) {
+            notificationStore.setInfo({
+                type: 'error',
+                msg: error.message
+            })
+        }
+        else {
+            notificationStore.setInfo({
+                type: 'error',
+                msg: `${error}`
+            })
+        }
         checkStatus.value = 'error'
-    }
-    if (data.value) {
-        notificationStore.setInfo(data.value)
-        checkStatus.value = data.value.type
     }
     await sleep(2000)
     router.push("/")

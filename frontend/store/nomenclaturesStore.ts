@@ -73,15 +73,15 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
     }
   },
   actions: {
-    async loadNomenclatures() {
+    async getNomenclatures() {
       try {
         const params = { with_nomenclatures: true };
         try {
-          const { data: nomenclatureTypes } = await authStore.authedGet("/api/v1/nomenclatures/types", { params });
-          if (nomenclatureTypes && Array.isArray(nomenclatureTypes.value)) {
-            this.nomenclatureTypes = nomenclatureTypes.value as NomenclatureType[]; // Type assertion
+          const nomenclatureTypes = await api.get<NomenclatureType>("/api/v1/nomenclatures/types", { params });
+          if (nomenclatureTypes && Array.isArray(nomenclatureTypes)) {
+            this.nomenclatureTypes = nomenclatureTypes as NomenclatureType[]; // Type assertion
           } else {
-            console.error("Unexpected data format:", nomenclatureTypes, Array.isArray(nomenclatureTypes.value));
+            console.error("Unexpected data format:", nomenclatureTypes, Array.isArray(nomenclatureTypes));
           }
         } catch (error) {
           console.error(error);

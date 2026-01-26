@@ -1,217 +1,200 @@
 import { defineStore } from 'pinia'
-import { jwtDecode, type JwtPayload } from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import dayjs from 'dayjs'
-import type { UserSimple, SignUpFormData, Credentials, Tokens } from '~/types/user'
-import type { UseFetchOptions } from '#app'
-import { useRouter } from 'vue-router';
+import type { UserSimple, Credentials } from '~/types/user'
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-type RequestData = Record<string, any> | FormData;
+interface AuthTokens {
+    access: string
+    refresh: string
+}
 
+interface JwtPayload {
+    user_id: number
+    exp: number
+    email?: string
+}
+
+interface AuthedFetchOptions extends RequestInit {
+    _retry?: boolean
+}
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        user: null as string | null | JwtPayload,
+        authTokens: null as AuthTokens | null,
+        user: null as JwtPayload | null,
+        userInfo: null as UserSimple | null,
         isAuthenticated: false,
-        authTokens: null as Tokens | null,
-        userInfo: null as UserSimple | null
     }),
+
+    getters: {
+        accessToken: (state) => state.authTokens?.access ?? null,
+    },
+
     actions: {
-        async register(formData: SignUpFormData) {
+        /* ----------------------------------------------------
+         * Init / Hydration
+         * -------------------------------------------------- */
+        init() {
+            if (process.server) return
+
+            const stored = localStorage.getItem('authTokens')
+            if (!stored) return
+
+            this.authTokens = JSON.parse(stored)
+            this.user = jwtDecode(this.authTokens.access)
+            this.isAuthenticated = true
+
+            this.fetchUserInfo().catch(() => {
+                // Si erreur, ignore (ou logout selon besoin)
+            })
+        },
+
+        /* ----------------------------------------------------
+         * Auth
+         * -------------------------------------------------- */
+        async login(credentials: Credentials) {
+            const config = useRuntimeConfig()
+
+            const tokens = await $fetch<AuthTokens>(
+                `${config.public.baseURL}/api/v1/auth/jwt/create/`,
+                {
+                    method: 'POST',
+                    body: { ...credentials },
+                }
+            )
+
+            this.setTokens(tokens)
+
+            await this.fetchUserInfo()
+        },
+
+        logout() {
+            this.authTokens = null
+            this.user = null
+            this.isAuthenticated = false
+            this.userInfo = null
+
+            if (process.client) {
+                localStorage.removeItem('authTokens')
+            }
+
+            navigateTo('/account/login')
+        },
+
+        /* ----------------------------------------------------
+         * Token handling
+         * -------------------------------------------------- */
+        setTokens(tokens: AuthTokens) {
+            this.authTokens = tokens
+            this.user = jwtDecode(tokens.access)
+            this.isAuthenticated = true
+
+            if (process.client) {
+                localStorage.setItem('authTokens', JSON.stringify(tokens))
+            }
+        },
+        async fetchUserInfo() {
+            try {
+                this.userInfo = await this.authedFetch<UserSimple>(
+                    '/api/v1/auth/users/me/'
+                )
+            } catch (err) {
+                console.error('Impossible de récupérer les infos utilisateur', err)
+                this.userInfo = null
+            }
+        },
+        async refreshToken(): Promise<string | null> {
+            if (!this.authTokens?.refresh) return null
+
             const config = useRuntimeConfig()
 
             try {
-                const response = await fetch(`${config.public.baseURL}/api/v1/user/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                })
-                const data = await response.json()
-
-                if (response.status !== 201) {
-                    // Handle validation errors specifically
-                    if (typeof data === 'object' && data !== null) {
-                        const errors = Object.values(data)
-                        if (errors.length > 0 && errors[0].length > 0) {
-                            // Extract the first error message from the first property with an error
-                            throw new Error(errors[0][0])
-                        }
-                    }
-
-                    // Fallback error message if the structure wasn't as expected
-                    throw new Error('Registration failed due to an unexpected error.')
-                }
-
-                return data // On success, return the response data
-            } catch (error) {
-                return {
-                    error: error.message || 'An error occurred during registration.',
-                }
-            }
-        },
-        async login(credentials: Credentials): Promise<void> {
-            console.log('login')
-            const config = useRuntimeConfig()
-            console.log('config.public', config.public)
-            try {
-                //const config = useRuntimeConfig()
-                const response = await $fetch<Promise<Tokens>>(`${config.public.baseURL}/api/v1/auth/jwt/create/`, {
-                    method: 'POST',
-                    body: JSON.stringify(credentials),
-                })
-
-                const authTokens = response
-                const user = jwtDecode(authTokens.access)
-
-                this.user = user as JwtPayload
-                this.isAuthenticated = true
-                this.authTokens = authTokens
-
-                localStorage.setItem('authTokens', JSON.stringify(authTokens))
-
-                await this.fetchUser()
-            } catch (error) {
-                console.error('Login error:', error)
-                throw error
-            }
-        },
-        checkAuth() {
-            this.authTokens = JSON.parse(localStorage.getItem('authTokens'))
-            if (this.authTokens) {
-                this.isAuthenticated = true
-                this.user = jwtDecode(this.authTokens.access)
-                // if (!this.userInfo) {
-                //     this.userInfo = JSON.parse(localStorage.getItem('userInfo', JSON.stringify(userInfo)))
-                // }
-            }
-        },
-        async fetchUser(): Promise<UserSimple | null> {
-            try {
-                const { data } = await this.authedGet('/api/v1/auth/users/me/');
-                this.userInfo = data  as UserSimple;
-
-                localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
-                return this.userInfo;
-            } catch (error) {
-                console.error('Fetch user error:', error);
-                throw error;
-            }
-        },
-         async authedRequest<T>(
-            url: string,
-            originalConfig: UseFetchOptions<any, any> = {}
-        ): Promise<T> {
-            const config = { ...originalConfig };
-            const router = useRouter();
-            const envConfig = useRuntimeConfig();
-
-            const accessToken = await this.retrieveValidToken();
-            if (!accessToken) {
-                router.push('/account/login');
-                return Promise.reject('No auth token found') as any; // Adjust as needed
-            }
-
-            config.headers = {
-                ...config.headers,
-                Authorization: `JWT ${accessToken}`,
-            };
-
-            try {
-                return await useFetch(`${envConfig.public.baseURL}/${url}`, config) as T;
-            } catch (error) {
-                console.error('Failed to make authenticated request:', error);
-                return Promise.reject(error) as any; // Adjust as needed
-            }
-        },
-        async makeRequest(method: M, url: string, data: RequestData = {}, config = {} as UseFetchOptions<unknown, unknown>): Promise<T> {
-            const requestConfig = { ...config, method };
-            
-            if (data) {
-                requestConfig.body = data;
-            }
-            
-            return await this.authedRequest<T>(url, requestConfig);
-
-            config.method = method
-            if (data && Object.keys(data).length > 0) {
-                config.data = data
-            }
-            return await this.authedRequest(url, config)
-        },
-        async authedPost(url: string, data: RequestData = {}, config = {}) {
-            return this.makeRequest('POST', url, data, config)
-        },
-        async authedPut(url: string, data: RequestData = {}, config = {}) {
-            return this.makeRequest('PUT', url, data, config)
-        },
-        async authedPatch(url:string, data: RequestData = {}, config = {}) {
-            return this.makeRequest('PATCH', url, data, config)
-        },
-        async authedGet(url:string, config = {}) {
-            return this.makeRequest('GET', url, null, config)
-        },
-        async authedDelete(url, config = {}) {
-            return this.makeRequest('DELETE', url, null, config)
-        },
-        async retrieveValidToken() {
-            this.authTokens = JSON.parse(localStorage.getItem('authTokens'))
-            if (!this.authTokens) {
-                return null
-            }
-
-            const user = jwtDecode(this.authTokens.access)
-            // Set isExpired to true if token expires in less than a minute from now
-            const isExpired = dayjs.unix(user.exp).diff(dayjs(), 'minute') < 1
-
-            if (isExpired) {
-                try {
-                    const newTokens = await this.refreshToken()
-                    if (newTokens) {
-                        localStorage.setItem('authTokens', JSON.stringify(newTokens))
-                        this.authTokens = newTokens
-                        this.user = jwtDecode(newTokens.access)
-
-                        return newTokens.access
-                    }
-                } catch (err) {
-                    console.error('Error refreshing token', err)
-                    return null
-                }
-            }
-
-            return this.authTokens.access
-        },
-        async refreshToken() {
-            const rToken = this.authTokens?.refresh
-            if (!rToken) {
-                console.error('No refresh token available')
-                return null
-            }
-
-            try {
-                const envConfig = useRuntimeConfig()
-                const { data, error } = await useFetch(
-                    `${envConfig.public.baseURL}/api/v1/auth/jwt/refresh`,
+                const data = await $fetch<{ access: string }>(
+                    `${config.public.baseURL}/api/v1/auth/jwt/refresh/`,
                     {
                         method: 'POST',
-                        body: JSON.stringify({ refresh: rToken }),
-                    },
+                        body: { refresh: this.authTokens.refresh },
+                    }
                 )
-                console.error('<refreshToken> error ', error)
-                return data
-            } catch (error) {
-                console.error('Failed to refresh token:', error)
+
+                this.setTokens({
+                    access: data.access,
+                    refresh: this.authTokens.refresh,
+                })
+
+                return data.access
+            } catch {
                 this.logout()
                 return null
             }
         },
-        logout() {
-            this.user = null
-            this.isAuthenticated = false
-            this.userInfo = null
-            localStorage.removeItem('authTokens')
+
+        async getValidAccessToken(): Promise<string | null> {
+            if (!this.authTokens) return null
+
+            const payload = jwtDecode<JwtPayload>(this.authTokens.access)
+            const isExpired = dayjs.unix(payload.exp).diff(dayjs(), 'second') < 30
+
+            if (!isExpired) return this.authTokens.access
+
+            return await this.refreshToken()
         },
+
+        /* ----------------------------------------------------
+         * Authenticated requests (à utiliser partout)
+         * -------------------------------------------------- */
+        async authedFetch<T>(
+            url: string,
+            options: AuthedFetchOptions = {}
+        ): Promise<T> {
+            const config = useRuntimeConfig()
+            const token = await this.getValidAccessToken()
+
+            if (!token) {
+                this.logout()
+                throw new Error('Not authenticated')
+            }
+
+            try {
+                return await $fetch<T>(`${config.public.baseURL}${url}`, {
+                    ...options,
+                    headers: {
+                        ...(options.headers || {}),
+                        Authorization: `JWT ${token}`,
+                    },
+                })
+            } catch (error: any) {
+                const status = error?.response?.status
+
+                /**
+                 * 🔁 CAS RETRY
+                 * - 401
+                 * - pas déjà retentée
+                 */
+                if (status === 401 && !options._retry) {
+                    const newToken = await this.refreshToken()
+
+                    if (!newToken) {
+                        this.logout()
+                        throw error
+                    }
+
+                    // 🔁 rejoue la requête UNE fois
+                    return this.authedFetch<T>(url, {
+                        ...options,
+                        _retry: true,
+                        headers: {
+                            ...(options.headers || {}),
+                            Authorization: `JWT ${newToken}`,
+                        },
+                    })
+                }
+
+                // ❌ autres erreurs → bubble up
+                throw error
+            }
+        }
+
+
     },
 })

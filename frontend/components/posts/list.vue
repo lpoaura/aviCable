@@ -26,9 +26,7 @@
 <script setup lang="ts">
 const router = useRouter()
 
-const authStore = useAuthStore()
-
-const { data: posts } = await authStore.authedGet('/api/v1/custom-content/news/')
+const posts = await api.get<Posts>('/api/v1/custom-content/news/')
 </script>
 
 

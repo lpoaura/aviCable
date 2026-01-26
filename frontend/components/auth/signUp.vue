@@ -89,6 +89,7 @@ const confirmPasswordRules = reactive([
 
 const visible = ref(false)
 
+const authStore = useAuthStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const notificationStore = useNotificationStore()
 
@@ -134,7 +135,8 @@ const pwdStrength = computed(() => {
 
 const signUp = async () => {
     console.debug('proceed signUp', formValue)
-    const { data, error } = await useFetch('/api/v1/user/', { method: 'post', body: formValue })
+    const config = useRuntimeConfig()
+    const { data, error } = await useFetch(`${config.public.baseURL}/api/v1/user/`, { method: 'post', body: formValue })
     if (error.value) {
         console.error(error.value.data)
         console.debug(data.value)

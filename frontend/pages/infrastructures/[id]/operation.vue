@@ -29,7 +29,7 @@ useHead({
   }
 })
 
-const authStore = useAuthStore()
+
 const cablesStore = useCablesStore()
 const coordinatesStore = useCoordinatesStore()
 
@@ -42,10 +42,10 @@ const router = useRouter()
 const infrastructureId = computed(() => route.params.id)
 
 onMounted(async () => {
-  const { data: infrastructure } = await authStore.authedGet(`/api/v1/cables/infrastructures/${infrastructureId.value}/`)
+  const infrastructure = await api.get(`/api/v1/cables/infrastructures/${infrastructureId.value}/`)
   cablesStore.setFormInfrastructureId(infrastructureId.value)
-  cablesStore.setFormInfrastructure(infrastructure.value)
-  coordinatesStore.setSelectedFeature(infrastructure.value)
+  cablesStore.setFormInfrastructure(infrastructure)
+  coordinatesStore.setSelectedFeature(infrastructure)
 })
 
 </script>

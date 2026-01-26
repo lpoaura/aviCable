@@ -1,8 +1,7 @@
 // Nuxt Store module: cablesStore for Cables module
 import { defineStore } from 'pinia'
-import type { CablesFeatureCollection, OperationFeatureCollection, Line, Point, CablesFeature, Equipment, NetworkFeatureCollection } from '~/types/cables'
+import type { CablesFeatureCollection, OperationFeatureCollection, Line, Point, CablesFeature, Equipment, NetworkFeatureCollection, Infrastructure } from '~/types/cables'
 import type { FeatureCollection } from 'geojson'
-import { authStore } from '.'
 
 export const useCablesStore = defineStore('cables', {
   state: () => ({
@@ -14,8 +13,7 @@ export const useCablesStore = defineStore('cables', {
     pointOpData: [] as Line[],
     lineOpData: [] as Point[],
     formDate: new Date() as Date,
-    formSupportId: null,
-    formInfrastructureId: null,
+    formInfrastructureId: null as number | null,
     formInfrastructure: {} as CablesFeature,
     controller: null as AbortController | null,
     enedisInfrastructure: {} as NetworkFeatureCollection,
@@ -92,17 +90,16 @@ export const useCablesStore = defineStore('cables', {
       try {
         this.infstrDataLoadingStatus = true
         console.debug("getInfstrData signal", signal)
-        await authStore.authedGet(
-          '/api/v1/cables/infrastructures', { signal, params }
-        ).then(data => {
-          this.infstrData = data.value
-          this.infstrDataLoadingStatus = false
-        })
-      } catch (err) {
-        if (err.name === 'AbortError') {
+        const data = await api.get<CablesFeatureCollection>(
+          '/api/v1/cables/infrastructures/', { signal, params }
+        )
+        this.infstrData = data
+        this.infstrDataLoadingStatus = false
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
           console.debug('getInfstrData Requête annulée');
         } else {
-          console.error(err)
+          console.error(error)
         }
       } finally {
         // Reset loading status and controller
@@ -116,19 +113,16 @@ export const useCablesStore = defineStore('cables', {
         this.controller = new AbortController();
       }
       const { signal } = this.controller;
-      console.debug('getOpData', signal)
       try {
-        console.debug("getOpData signal", signal)
-        await authStore.authedGet(
+        const data = await api.get<OperationFeatureCollection>(
           '/api/v1/cables/operations/', { signal, params }
-        ).then(data => {
-          this.opData = data.value
-        })
-      } catch (err) {
-        if (err.name === 'AbortError') {
+        )
+        this.opData = data
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
           console.debug('getOpData Requête annulée');
         } else {
-          console.error(err)
+          console.error(error)
         }
       } finally {
         // Reset loading status and controller
@@ -142,30 +136,29 @@ export const useCablesStore = defineStore('cables', {
       }
       const { signal } = this.controller;
       try {
-        console.debug("getAllInfrastructureData signal", signal)
-        const [{ data: infstrData }, { data: opData }] = await Promise.all([
-          authStore.authedGet(
+        const [infstrData, opData] = await Promise.all([
+          api.get<CablesFeatureCollection>(
             '/api/v1/cables/infrastructures', { signal, params }
           ),
-          authStore.authedGet(
+          api.get<OperationFeatureCollection>(
             '/api/v1/cables/operations/', { signal, params }
           ),
         ]);
-        this.opData = opData.value
-        this.infstrData = infstrData.value
+        this.opData = opData
+        this.infstrData = infstrData
         this.infstrDataLoadingStatus = false
-      } catch (err) {
-        if (err.name === 'AbortError') {
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
           console.debug('getAllInfrastructureData Requête annulée');
         } else {
-          console.error(err)
+          console.error(error)
         }
       } finally {
         // Reset loading status and controller
         this.controller = null; // Reset the controller after the request
       }
     },
-    async getEnedisInfrastructure(bbox) {
+    async getEnedisInfrastructure(bbox: string) {
       console.debug('bbox', bbox)
       const params = {
         bbox: bbox,
@@ -233,18 +226,18 @@ export const useCablesStore = defineStore('cables', {
             features: [...reseauBt.value.features, ...reseauHta.value.features, ...poteaux.value.features,]
           }
         }
-      } catch (err) {
-        if (err.name === 'AbortError') {
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
           console.debug('getEnedisInfrastruc        ture Requête annulée');
         } else {
-          console.error(err)
+          console.error(error)
         }
       } finally {
         // Reset loading status and controller
         this.controller = null; // Reset the controller after the request
       }
     },
-    async getRteInfrastructure(bbox) {
+    async getRteInfrastructure(bbox: string) {
       const paramsLines = {
         where: `in_bbox(geo_shape,${bbox})`,
         limit: "10000",
@@ -259,8 +252,6 @@ export const useCablesStore = defineStore('cables', {
         this.controller = new AbortController();
       }
       const { signal } = this.controller;
-      console.debug('getRteInfrastructure signal', signal)
-      console.debug('query params', { signal, params: paramsPylones })
       try {
         const [{ data: Lines }, { data: Pylones }] = await Promise.all([
           useFetch<FeatureCollection>(
@@ -277,11 +268,11 @@ export const useCablesStore = defineStore('cables', {
           }
         }
 
-      } catch (err) {
-        if (err.name === 'AbortError') {
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
           console.debug('getRteInfrastructure Requête annulée');
         } else {
-          console.error(err)
+          console.error(error)
         }
       } finally {
         // Reset loading status and controller
@@ -295,10 +286,10 @@ export const useCablesStore = defineStore('cables', {
       this.controller = null;
       console.debug('cancelRequest abort request - 3', this.controller)
     },
-    setFormInfrastructureId(id) {
+    setFormInfrastructureId(id: number) {
       this.formInfrastructureId = id
     },
-    setFormInfrastructure(infrastructure) {
+    setFormInfrastructure(infrastructure: CablesFeature) {
       this.formInfrastructure = infrastructure
     },
     addSelectedToEquipments() {
@@ -310,17 +301,31 @@ export const useCablesStore = defineStore('cables', {
       }
       this.selectedEquipment = {} as Equipment
     },
+    // addSelectedToEquipments() {
+    //   if (this.selectedEquipment?.id) {
+    //     const index = this.formEquipments.findIndex(item => item.id === this.selectedEquipment.id);
+    //     if (index !== -1) {
+    //       this.formEquipments[index] = this.selectedEquipment;
+    //     }
+    //   } else if (this.selectedEquipment) {
+    //     this.formEquipments.push(this.selectedEquipment);
+    //   }
+
+    //   this.selectedEquipment = {} as Equipment;
+    // },
+    resetFormEquipments() {
+      this.formEquipments = [] as Equipment[]
+    },
     // setEquipments(data: Equipment[]) {
     //   this.formEquipments = data
     // }
     async deleteEquipment(index: number) {
-      console.debug('<deleteEquipment>', index, this.formEquipments, this.formEquipments[index])
       try {
         this.equipmentToDelete = this.formEquipments[index]
         const equipment = { ...this.equipmentToDelete }
         console.debug('this.mediaToDelete test', (index !== null), this.equipmentToDelete, this.equipmentToDelete.id)
         // if (this.equipmentToDelete && this.equipmentToDelete.id) {
-        //   const { data: _resp } = await authStore.authedGet<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
+        //   const { data: _resp } = await api.get<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
         // }
         this.formEquipments.splice(index, 1)
         notificationStore.setInfo({

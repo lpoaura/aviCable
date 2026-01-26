@@ -88,7 +88,7 @@ export const useMediaStore = defineStore("media", {
         const file = { ...this.mediaToDelete }
         console.debug('this.mediaToDelete test', (index !== null), this.mediaToDelete, this.mediaToDelete.id)
         if (this.mediaToDelete && this.mediaToDelete.id) {
-          const { data: _resp } = await authStore.authedGet<Media>(`/api/v1/media/${this.mediaToDelete.id}`, { method: 'DELETE' });
+          await api.delete<Media>(`/api/v1/media/${this.mediaToDelete.id}`);
         }
         this.medias.splice(index, 1)
         notificationStore.setInfo({

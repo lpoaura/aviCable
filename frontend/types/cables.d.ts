@@ -169,6 +169,7 @@ export type Infrastructure = {
 
 export interface CablesFeature extends Feature {
   properties?: {
+    id? : number;
     resourcetype?: string; // Optional key for resource type
     [key: string]: any; // Allow other properties
   };

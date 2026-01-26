@@ -90,7 +90,7 @@ const lastDiag = computed(() => {
 })
 
 const deleteInfrastructure = async () => {
-  await authStore.authedDelete(`/api/v1/cables/${data.resourcetype.toLowerCase()}s/${data.properties.id}/`)
+  await api.delete(`/api/v1/cables/${data.resourcetype.toLowerCase()}s/${data.properties.id}/`)
   deleteModal.value = false
   refreshData.value = true
   notificationStore.setInfo({

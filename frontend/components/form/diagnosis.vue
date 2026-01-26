@@ -4,8 +4,7 @@
       <v-card-text>
         <v-row>
           <v-container>
-            <v-card title="Infos" prepend-icon="mdi-information-outline"> 
-              {{ infrastructureId }}
+            <v-card title="Infos" prepend-icon="mdi-information-outline">
               <v-container>
                 <v-row>
                   <v-col cols="12">
@@ -20,13 +19,13 @@
                   <template v-if="infrastructureType === 'point'">
                     <v-col cols="12" md="6">
                       <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label"
-                        item-value="id" :rules="[rules.required]" :label="$t('infrastructure.attractiveness')" variant="solo"
-                        density="compact" />
+                        item-value="id" :rules="[rules.required]" :label="$t('infrastructure.attractiveness')"
+                        variant="solo" density="compact" />
                     </v-col>
                     <v-col cols="12" md="6">
                       <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
-                        item-value="id" :rules="[rules.required]" :label="$t('infrastructure.dangerousness')" variant="solo"
-                        density="compact" />
+                        item-value="id" :rules="[rules.required]" :label="$t('infrastructure.dangerousness')"
+                        variant="solo" density="compact" />
                     </v-col>
                   </template>
                   <template v-if="infrastructureType === 'line'">
@@ -73,9 +72,10 @@
                     </v-col>
                   </template>
                   <template v-if="infrastructureType === 'line'">
-                    
+
                     <v-col cols="12" md="6">
-                      <v-checkbox v-model="diagData.visibility_advice" :label="$t('infrastructure.visibilityAdvice')+ (diagData.visibility_advice ? ' YES':' NO')"
+                      <v-checkbox v-model="diagData.visibility_advice"
+                        :label="$t('infrastructure.visibilityAdvice')"
                         density="compact" />
                     </v-col>
                     <v-col cols="12" md="6">
@@ -123,8 +123,6 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
-
-const authStore = useAuthStore()
 const cablesStore = useCablesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 const notificationStore = useNotificationStore()
@@ -172,38 +170,41 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 
 const initData = async () => {
   if (diagnosisId.value && infrastructureType) {
-    const { data: diagnosis } = await authStore.authedGet<Diagnosis>(`/api/v1/cables/diagnosis/${diagnosisId.value}/`)
-    if (diagnosis.value) {
-      const date = new Date(diagnosis.value.date)
-      cablesStore.setFormDate(date)
-      console.debug(date)
+    const diagnosis = await api.get<Diagnosis>(`/api/v1/cables/diagnosis/${diagnosisId.value}/`)
+    if (diagnosis) {
+      const date = diagnosis.date ? new Date(diagnosis.date) : null
+      if (date) {
+        cablesStore.setFormDate(date)
+        console.debug(date)
+      }
       // mediaStore.date = formDate.value
-      mediaStore.medias = diagnosis.value.media
+      mediaStore.medias = diagnosis.media
       const diagdata: DiagData = {
-        id: diagnosis.value.id,
+        id: diagnosis.id,
         date: getLocaleDateString(cablesStore.getFormDate),
-        remark: diagnosis.value.remark,
-        technical_proposal: diagnosis.value.technical_proposal,
-        infrastructure: diagnosis.value.infrastructure,
-        arming_id: diagnosis.value.arming?.map((item: NomenclatureItem) => item.id),
-        neutralized: diagnosis.value.neutralized,
-        condition_id: diagnosis.value.condition?.id,
-        attraction_advice: diagnosis.value.attraction_advice,
-        dissuasion_advice: diagnosis.value.dissuasion_advice,
-        isolation_advice: diagnosis.value.isolation_advice,
-        change_advice: diagnosis.value.change_advice,
-        burial_advice: diagnosis.value.burial_advice,
-        visibility_advice: diagnosis.value.visibility_advice,
+        remark: diagnosis.remark,
+        technical_proposal: diagnosis.technical_proposal,
+        infrastructure: diagnosis.infrastructure,
+        arming_id: diagnosis.arming?.map((item: NomenclatureItem) => item.id),
+        neutralized: diagnosis.neutralized,
+        condition_id: diagnosis.condition?.id,
+
+        visibility_advice: diagnosis.visibility_advice,
         media_id: [],
       }
       if (infrastructureType.value === 'point') {
-        diagdata.pole_attractivity_id = diagnosis.value.pole_attractivity?.id
-        diagdata.pole_dangerousness_id = diagnosis.value.pole_dangerousness?.id
+        diagdata.attraction_advice = diagnosis.attraction_advice
+        diagdata.dissuasion_advice = diagnosis.dissuasion_advice
+        diagdata.isolation_advice = diagnosis.isolation_advice
+        diagdata.pole_attractivity_id = diagnosis.pole_attractivity?.id
+        diagdata.pole_dangerousness_id = diagnosis.pole_dangerousness?.id
       }
       if (infrastructureType.value === "line") {
-        diagdata.sgmt_moving_risk_id = diagnosis.value.sgmt_moving_risk?.id
-        diagdata.sgmt_topo_integr_risk_id = diagnosis.value.sgmt_topo_integr_risk?.id
-        diagdata.sgmt_landscape_integr_risk_id = diagnosis.value.sgmt_landscape_integr_risk?.id
+        diagdata.change_advice = diagnosis.change_advice
+        diagdata.burial_advice= diagnosis.burial_advice
+        diagdata.sgmt_moving_risk_id = diagnosis.sgmt_moving_risk?.id
+        diagdata.sgmt_topo_integr_risk_id = diagnosis.sgmt_topo_integr_risk?.id
+        diagdata.sgmt_landscape_integr_risk_id = diagnosis.sgmt_landscape_integr_risk?.id
       }
       Object.assign(diagData, diagdata)
       diagnosisReady.value = true
@@ -240,24 +241,10 @@ const createDiagnosis = async () => {
   // const mediaIdList = await createNewMedia()
   try {
     diagData.infrastructure = infrastructureId.value
-    // diagData.date = cablesStore.getFormDate?.toISOString().substring(0, 10)
     console.debug('diagData', diagData)
     diagData.media_id = await createMedias()
     const url = diagData.id ? `/api/v1/cables/diagnosis/${diagData.id}/` : '/api/v1/cables/diagnosis/'
-    const diagnosis = diagData.id ? await authStore.authedPut(url, diagData) : authStore.authedPost(url, diagData)
-
-    // if (error) {
-    //   notificationStore.setInfo({
-    //     type: 'error',
-    //     msg: `${generateSnackbarMessage(error.value.data)}`
-    //   })
-    // } else {
-    //   notificationStore.setInfo({
-    //     type: 'success',
-    //     msg: diagData.id ? 'Diagnostic mis à jour' : 'Diagnostic créé'
-    //   })
-    // }
-    console.debug('newDiagData', diagnosis)
+    const diagnosis = diagData.id ? await api.put(url, diagData) : api.post(url, diagData)
     mediaStore.resetMedias()
     return diagnosis
   } catch (err) {
