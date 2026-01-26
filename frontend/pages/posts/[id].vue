@@ -22,10 +22,9 @@
 <script setup>
 const route = useRoute()
 definePageMeta({
-  auth: true,
-});
+  middleware: 'auth',
+})
 
-const authStore = useAuthStore()
 
 const post = await api.get(`/api/v1/custom-content/news/${route.params.id}`)
 </script>

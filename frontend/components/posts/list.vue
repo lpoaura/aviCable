@@ -24,9 +24,18 @@
 </template>
 
 <script setup lang="ts">
-const router = useRouter()
+import type { Posts } from '~/types/posts';
 
-const posts = await api.get<Posts>('/api/v1/custom-content/news/')
+
+
+const router = useRouter()
+const authStore = useAuthStore()
+const config = useRuntimeConfig()
+
+const { data: posts } = await useAsyncData<Posts>(() => {
+    return authStore.isAuthenticated ? api.get('/api/v1/custom-content/news/') : $fetch(`${config.public.baseURL}/api/v1/custom-content/news/`);
+  })
+console.log(posts)
 </script>
 
 

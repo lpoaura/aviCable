@@ -117,7 +117,6 @@ import type { NomenclatureItem } from '~/types/nomenclature';
 import type { NotificationInfo } from '~/types/notifications';
 import * as errorCodes from '~/static/errorConfig.json';
 import { getLocaleDateString } from '~/helpers/formHelpers';
-import { generateSnackbarMessage } from '~/helpers/messageHelpers';
 
 const { t } = useI18n()
 const router = useRouter()

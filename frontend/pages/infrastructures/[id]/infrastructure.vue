@@ -29,10 +29,10 @@
 
 <script setup>
 definePageMeta({
-  auth: true,
-});
+  middleware: 'auth',
+})
 
-const authStore = useAuthStore()
+
 const coordinatesStore = useCoordinatesStore()
 const route = useRoute()
 

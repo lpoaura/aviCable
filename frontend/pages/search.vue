@@ -18,20 +18,9 @@ useHead({
 })
 
 definePageMeta({
-  auth: true
+  middleware: 'auth',
 })
+
 
 const {mobile} = useDisplay()
-
-const coordinatesStore = useCoordinatesStore()
-const cableStore = useCablesStore()
-const mortalityStore = useMortalityStore()
-
-
-
-
-onMounted (() => {
-  console.debug(`the component is now mounted. mobile`, mobile)
-})
-
 </script>

@@ -23,6 +23,12 @@
 
 
 <script setup>
+
+definePageMeta({
+  middleware: 'auth',
+})
+
+
 useHead({
   titleTemplate: (titleChunk) => {
     return titleChunk ? `${titleChunk} - Operation edit on Infrastructure ${route.params.id}` : 'Operation edit';
@@ -32,10 +38,6 @@ useHead({
 
 const cablesStore = useCablesStore()
 const coordinatesStore = useCoordinatesStore()
-
-definePageMeta({
-  auth: true,
-});
 
 const route = useRoute()
 const router = useRouter()

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row align="center" id="partners" dense class="justify-center">
+    <v-row id="partners" align="center" dense class="justify-center">
       <v-col v-for="i in partners" :key="i.id" loading sm="4" md="3" lg="2" class="pa-3">
         <v-tooltip bottom>
           <template v-slot:activator="{ props }">
@@ -17,9 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from 'vuetify'
-const { mobile } = useDisplay()
 const config = useRuntimeConfig()
+
 const { data: partners } = await useFetch(`${config.public.baseURL}/api/v1/custom-content/partners/`)
 </script>
 

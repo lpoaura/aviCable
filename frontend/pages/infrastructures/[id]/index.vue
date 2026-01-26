@@ -11,6 +11,10 @@ import { storeToRefs } from 'pinia';
 
 import type { CablesFeature } from '~/types/cables'
 
+definePageMeta({
+  middleware: 'auth',
+})
+
 
 useHead({
   titleTemplate: (titleChunk) => {

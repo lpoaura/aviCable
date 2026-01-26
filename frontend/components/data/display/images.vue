@@ -70,4 +70,8 @@ const showModal = (item: MediaData) => {
   modalItem.value = item
 }
 
+onUnmounted(() => {
+  mediaStore.purgeSelectedMedia()
+})
+
 </script>

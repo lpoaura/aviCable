@@ -29,9 +29,8 @@ useHead({
 })
 
 definePageMeta({
-  auth: true,
-});
-
+  middleware: 'auth',
+})
 const router = useRouter()
 
 const back = () => {

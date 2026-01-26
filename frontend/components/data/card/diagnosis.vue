@@ -123,7 +123,6 @@ import type { CablesFeature, Diagnosis } from '~/types/cables';
 
 const mediaStore = useMediaStore()
 const globalStore = useGlobalStore()
-const authStore = useAuthStore()
 
 interface Props {
   infrastructure: CablesFeature,
@@ -145,10 +144,6 @@ const riskColors = reactive({
   RISK_H: 'red lighten-1 white--text'
 })
 
-// const stateColors = reactive({
-//   GOOD: 'light-green',
-//   POOR: 'yellow',
-// })
 
 const isPoint = computed(() => infrastructureType === 'Point')
 const isLine = computed(() => infrastructureType === 'Line')
@@ -168,8 +163,11 @@ const deleteDiag = async () => {
 }
 
 onMounted(() => {
-  console.debug('diagnosis', diagnosis)
   medias.value = diagnosis.media
+})
+
+onUnmounted(() => {
+  mediaStore.resetMedias()
 })
 
 </script>

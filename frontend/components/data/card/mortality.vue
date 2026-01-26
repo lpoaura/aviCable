@@ -99,7 +99,6 @@ const deathCauseIcons = ref({
 const deletedDiagConfirm = ref(false)
 
 const globalStore = useGlobalStore()
-const authStore = useAuthStore()
 
 // const { medias } = storeToRefs(mediaStore)
 const {refreshData } = storeToRefs(globalStore)

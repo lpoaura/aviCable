@@ -20,12 +20,14 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'auth',
+})
+
+
 const cablesStore = useCablesStore()
 const coordinatesStore = useCoordinatesStore()
 
-definePageMeta({
-  auth: true,
-});
 
 const route = useRoute()
 const router = useRouter()

@@ -239,4 +239,8 @@ onMounted(() => {
   initData()
 })
 
+onUnmounted(() => {
+  mediaStore.resetMedias()
+})
+
 </script>

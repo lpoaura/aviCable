@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify'
 
-definePageMeta({ middleware: 'auth' })
+definePageMeta({
+  middleware: 'auth',
+})
 
 const authStore = useAuthStore()
 const user = computed(() => authStore.userInfo)

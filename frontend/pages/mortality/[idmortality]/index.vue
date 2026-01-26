@@ -8,6 +8,10 @@
 <script setup lang="ts">
 import type { MortalityFeature } from '~/types/mortality'
 
+definePageMeta({
+  middleware: 'auth',
+})
+
 const route = useRoute()
 const coordinateStore = useCoordinatesStore()
 

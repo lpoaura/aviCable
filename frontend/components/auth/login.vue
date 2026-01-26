@@ -73,7 +73,6 @@ const getNomenclatures = async () => {
 
 const refreshInitialData = async () => {
   if (isAuthenticated) {
-    console.log('isAuthenticated gettingData', authStore.authTokens)
     await getBaseMapLayers()
     await getNomenclatures()
     globalStore.setUserAvatar()
@@ -88,13 +87,11 @@ const userLogin = async () => {
     if (formValid.value) {
       console.log('authStore', authStore)
       await authStore.login(login)
-      // nomenclaturesStore.getNomenclatures()
       notificationStore.setInfo({
         type: 'success',
         msg: `You successfully logged in`
       })
       await refreshInitialData()
-      console.log('Login router', router)
       router.push('/search')
     }
   } catch (error) {
@@ -106,7 +103,6 @@ const userLogin = async () => {
       type: 'error',
       msg: message
     })
-
     console.error(error)
   }
 }
