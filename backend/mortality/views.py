@@ -3,6 +3,7 @@ from rest_framework.permissions import (  # DjangoModelPermissions,
     IsAuthenticated,
 )
 from rest_framework_gis.filters import InBBOXFilter
+from rest_framework.permissions import DjangoModelPermissions
 
 from .models import Mortality
 from .serializers import MortalitySerializer, MortalityWithAreasSerializer
@@ -16,9 +17,7 @@ class MortalityViewSet(viewsets.ModelViewSet):
         InBBOXFilter,
     ]
     bbox_filter_field = "geom"
-    permission_classes = [
-        IsAuthenticated,
-    ]
+    permission_classes = [DjangoModelPermissions]
     queryset = (
         Mortality.objects.all()
         .select_related("species")

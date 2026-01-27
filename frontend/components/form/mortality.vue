@@ -14,16 +14,22 @@
                     <form-date-input :rules="[rules.required]" label="Date de visite" />
                   </v-col>
                   <v-col cols="12" md="6">
+                    <v-text-field ref="author" v-model="mortalityData.author" :label="$t('mortality.observer')"
+                      type="string" :placeholder="$t('mortality.observer')" hide-spin-buttons :rules="[rules.required]"
+                      required variant="solo" density="compact" />
+                  </v-col>
+                  <v-col cols="12">
                     <v-autocomplete v-model="mortalityData.species_id" v-model:search="speciesSearch"
                       :loading="isLoading" :items="specieSearchEntries" item-title="vernacular_name" item-value="id"
                       label="Espèce" clearable auto-select-first :rules="[rules.required]" required variant="solo"
                       density="compact" hide-no-data hide-details :placeholder="$t('Start typing to Search')" />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field ref="author" v-model="mortalityData.author" :label="$t('mortality.observer')"
-                      type="string" :placeholder="$t('mortality.observer')" hide-spin-buttons :rules="[rules.required]"
-                      required variant="solo" density="compact" />
+                    <v-text-field ref="nb_death" type="number" min="0" max="100" v-model="mortalityData.nb_death"
+                      :label="$t('mortality.count')" :placeholder="$t('mortality.count')" hide-spin-buttons
+                      :rules="[rules.required]" required variant="solo" density="compact" />
                   </v-col>
+
                   <v-col cols="12" md="6">
                     <v-select v-model="mortalityData.death_cause_id" :items="nomenclaturesStore.deathCauseItems"
                       item-title="label" item-value="id" :rules="[rules.required]" required
