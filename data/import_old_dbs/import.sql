@@ -555,7 +555,7 @@ insert
 	author,
 	geom,
 	date,
-	nb_death,
+	count,
 	created_by_id,
 	data_source_id,
 	death_cause_id,

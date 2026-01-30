@@ -52,7 +52,7 @@ class Mortality(BaseModel):
         verbose_name=_("Associated Administrative and Natural Areas"),
         help_text=_("Associated Administrative and Natural Areas"),
     )
-    nb_death = models.IntegerField(_("Number found dead"), default=1)
+    count = models.IntegerField(_("Number found dead"), null=True, blank=True)
     death_cause = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,

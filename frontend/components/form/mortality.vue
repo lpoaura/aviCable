@@ -25,9 +25,9 @@
                       density="compact" hide-no-data hide-details :placeholder="$t('Start typing to Search')" />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field ref="nb_death" type="number" min="0" max="100" v-model="mortalityData.nb_death"
-                      :label="$t('mortality.count')" :placeholder="$t('mortality.count')" hide-spin-buttons
-                      :rules="[rules.required]" required variant="solo" density="compact" />
+                    <v-text-field v-model="mortalityData.count" type="number" :label="$t('mortality.count')"
+                      :placeholder="$t('mortality.count')" variant="solo" density="compact" min="0" max="100" />
+
                   </v-col>
 
                   <v-col cols="12" md="6">
@@ -57,6 +57,7 @@
                     <v-textarea v-model="mortalityData.comment" clearable clear-icon="mdi-close-circle"
                       :label="$t('remark')" :rules="[rules.textLength]" rows="2" counter="300" variant="solo"
                       density="compact" />
+                    <!-- <v-input hidden v-model="mortalityData.geom" :rules="[rules.required]" /> -->
                   </v-col>
                 </v-row>
               </v-container>
@@ -67,7 +68,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="green" :disabled="!(formValid && !!mortalityData.geom)" variant="flat"
+        <v-btn :disabled="!(formValid && !!newGeoJSONObject)" variant="flat" color="green"
           prepend-icon="mdi-content-save-all" @click="submit">{{
             $t('app.valid')
           }}</v-btn>
@@ -113,12 +114,12 @@ const mortalityData = reactive<Mortality>({
   author: null,
   species_id: null, // null,
   infrstr_id: null,
-  nb_death: 1,
+  count: null,
   death_cause_id: null,
   data_source: null,
   data_source_url: null,
   comment: null,
-  geom: {} as Geometry,
+  geom: null as Geometry | null,
 })
 
 // rules for form validation
@@ -168,7 +169,8 @@ const speciesSelection = async (value: string) => {
 const createData = async () => {
   mortalityData.date = cablesStore.getFormDate?.toISOString().substring(0, 10)
   mortalityData.media_id = await createMedias()
-  mortalityData.geom = newGeoJSONObject.value.geometry
+  mortalityData.geom = newGeoJSONObject.value.geometry || mortalityData.geom
+  mortalityData.count = mortalityData.count == "" ? mortalityData.count : null
   const url = mortalityId.value ? `/api/v1/mortality/${mortalityId.value}/` : '/api/v1/mortality/'
   try {
     const data = mortalityId.value ? await api.put<MortalityFeature>(url, mortalityData) : await api.post(url, mortalityData)
@@ -221,7 +223,7 @@ const initData = async () => {
         author: data.properties.author,
         species_id: data.properties.species?.id, // null,
         infrstr_id: data.properties.infrstr?.id,
-        nb_death: data.properties.nb_death,
+        count: data.properties.count,
         death_cause_id: data.properties.death_cause.id,
         data_source: data.properties.data_source,
         data_source_url: data.properties.data_source_url,

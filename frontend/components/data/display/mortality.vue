@@ -29,10 +29,11 @@
           </v-icon> {{ value }}
         </v-chip>
       </template>
-      <template #item.properties.species.scientific_name="{ value, _item }">
-        <i>
-          {{ value }}
-        </i>
+      <template #item.properties.species.vernacular_name="{ value, item }">
+        <span :class="item.properties.count > 0 ? 'text-red-lighten-1 font-weight-bold' : 'text-grey-lighten-1'">{{
+          item.properties.count ||
+          'x'}}</span> <strong>{{ value }}</strong><br>
+        <i>{{ item.properties.species.scientific_name }} </i>
       </template>
     </v-data-table-virtual>
   </div>
@@ -50,8 +51,8 @@ const deathCauseIcons = ref({
 })
 const headers = reactive([
   { title: 'ID', align: 'start', sortable: true, key: 'id' },
-  { title: 'Nom vernaculaire', align: 'start', sortable: true, key: 'properties.species.vernacular_name' },
-  { title: 'Nom scientifique', align: 'start', sortable: true, key: 'properties.species.scientific_name' },
+  { title: 'Espèce', align: 'start', sortable: true, key: 'properties.species.vernacular_name' },
+  // { title: 'Nom scientifique', align: 'start', sortable: true, key: 'properties.species.scientific_name' },
   { title: 'Date', align: 'center', sortable: true, key: 'properties.date' },
   { title: 'Cause', align: 'center', sortable: true, key: 'properties.death_cause.label' },
 ])

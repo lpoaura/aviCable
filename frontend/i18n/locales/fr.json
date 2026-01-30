@@ -106,7 +106,7 @@
     "advice": "Recommandations",
     "toInsulate": "A isoler",
     "discourage": "Dissuader",
-    "providingIncentives": "Rendre incitatif",
+    "providingIncentives": "Favoriser l'installation (perchoir/nichoir)",
     "attractiveness": "Attractivité",
     "changeArming": "Changer l'armement",
     "nest_platform": "Installer plateforme nid",
@@ -131,7 +131,7 @@
     "equipment": "Structure équipée",
     "makeDissuasive": "rendre dissuasif",
     "isolate": "isoler",
-    "makeAttractive": "rendre attractif",
+    "makeAttractive": "Favoriser l'installation (perchoir/nichoir)",
     "changeAdvice": "changer l'armement",
     "buildingIntegration": "Intégration bâti",
     "makeVisible": "rendre visible",
@@ -192,6 +192,7 @@
     "new_mortality": "Nouveau cas de mortalité",
     "observer": "Observateur",
     "specie": "Espèce",
-    "dataSourceUrl": "URL de la donnée originale"
+    "dataSourceUrl": "URL de la donnée originale",
+    "count": "Dénombrement"
   }
 }

@@ -23,13 +23,16 @@ class MortalityViewSet(viewsets.ModelViewSet):
         .select_related("species")
         .select_related("infrstr")
         .select_related("infrstr__network_type")
+        .prefetch_related("infrstr__network_type__parents")
         .select_related("death_cause__type")
+        .prefetch_related("death_cause__parents")
         .select_related("data_source")
+        .select_related("created_by")
+        .select_related("updated_by")
         .prefetch_related("media")
     )
 
     def get_queryset(self):
-        print(f"ACTION {self.action}")
         qs = super().get_queryset()
         if self.action == "retrieve":
             return qs.prefetch_related("areas").prefetch_related("areas__type")

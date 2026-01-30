@@ -27,7 +27,7 @@
           <p><span class="font-weight-bold">Espèce&nbsp;:</span> {{ item.properties.species.vernacular_name }}
             (<i>{{ item.properties.species.scientific_name }} </i>)</p>
           <p>
-            <span class="font-weight-bold">Nombre&nbsp;:</span> {{ item.properties.nb_death ? item.properties.nb_death :
+            <span class="font-weight-bold">Nombre&nbsp;:</span> {{ item.properties.count ? item.properties.count :
               'x'
             }}
           </p>
