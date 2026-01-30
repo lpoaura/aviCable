@@ -21,14 +21,18 @@
             </v-chip>
           </v-chip-group>
         </v-col>
-        <v-col v-if="lastDiag?.arming.length" cols="12">
-          <p>Type de support</p>
+        <v-col v-if="lastDiag?.arming.length" cols="6">
+          <strong>Type de support</strong>
           <!-- <pre>{{ lastDiag }}</pre> -->
           <v-chip-group>
             <v-chip v-for="pt in lastDiag?.arming" :key="pt.id">
               <pre>{{ pt.label }}</pre>
             </v-chip>
           </v-chip-group>
+        </v-col>
+        <v-col v-if="data.properties?.length" cols="6">
+          <strong>Longueur de ligne</strong>
+          <p class="py-3">{{ data.properties.length }} m</p>
         </v-col>
       </v-row>
     </v-card-text>

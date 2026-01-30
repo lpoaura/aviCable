@@ -32,6 +32,9 @@ Dans un modal
             {{ value }}
           </v-chip>
         </template>
+        <template #item.properties.network_type.code="{value, item}">
+          {{value}}<br><small class="text-grey" v-if="item.properties.length">({{ item.properties.length }}&nbsp;m)</small>
+        </template>
         <template #item.properties.diagnosis.0="{ _, item }">
           <widgets-risk-level-status :display-mortality="true" :data="item" :detail="false" />
         </template>

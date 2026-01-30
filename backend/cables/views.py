@@ -4,6 +4,7 @@ from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework_gis.filters import InBBoxFilter
+from django.contrib.gis.db.models.functions import Length
 
 from geo_area.models import GeoArea
 
@@ -25,13 +26,12 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
 
     serializer_class = InfrastructurePolymorphicSerializer
     permission_classes = [DjangoModelPermissions]
-    # Define queryset by optimizing DB requests
     filter_backends = (InfrstrInBboxFilter,)
-    # bbox_filter_field = 'point__geom'
     bbox_filter_fields = ["point__geom", "line__geom"]
     bbox_filter_include_overlapping = True
     queryset = (
         Infrastructure.objects.all()
+        .annotate(length=Length("line__geom"))
         .select_related("network_type")
         .prefetch_related("network_type__parents")
         .prefetch_related(

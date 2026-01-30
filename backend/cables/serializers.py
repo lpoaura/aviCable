@@ -1,5 +1,6 @@
 import logging
 
+from rest_framework.serializers import SerializerMethodField
 from rest_framework.exceptions import APIException
 from rest_framework_gis.serializers import (
     GeoFeatureModelSerializer,
@@ -179,9 +180,7 @@ class EquipmentSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(EquipmentSerializer, self).__init__(*args, **kwargs)
         if self.instance:
-            self.fields[
-                "id"
-            ].required = (
+            self.fields["id"].required = (
                 False  # Make id field not required for existing instances
             )
 
@@ -428,7 +427,6 @@ class InfrastructureSerializer(ModelSerializer):
     # Allow to display nested data
     network_type = NomenclatureSerializer()
     areas = GeoAreaSerializer(many=True)
-    sensitive_area = SensitiveAreaSerializer(many=True)
     diagnosis = DiagnosisSerializer(many=True)
     operations = OperationSerializer(many=True)
     mortality = MortalitySimpleSerializer(many=True)
@@ -440,11 +438,11 @@ class InfrastructureSerializer(ModelSerializer):
             "network_type",
             "geom",
             "areas",
-            "sensitive_area",
             "diagnosis",
             "operations",
             "mortality",
         ]
+    
 
 
 class ActionPolymorphicSerializer(PolymorphicSerializer):
@@ -561,12 +559,16 @@ class LineSerializer(InstrastructureAbstractSerializer):
     inherit from GeoAreaSerializer as contains geo data.
     """
 
+
+    length = SerializerMethodField(read_only=True)
+
     class Meta:
         model = Line
         geo_field = "geom"
         fields = [
             "id",
             "geom",
+            "length",
             "network_type",
             "network_type_id",
             "areas",
@@ -588,20 +590,11 @@ class LineSerializer(InstrastructureAbstractSerializer):
             # "sensitive_area_id": {"source": "sensitive_area", "write_only": True},
         }
 
-        """ Overidden method to create Line
+    def get_length(self, obj):
+        """Get line length in meter"""
+        return round(obj.length.m,2)
 
-        At Line creation, method search all GeoArea and all SensitiveArea that intersects with new Line coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Line field sensitive_area (Infrastructure.sensitive_area).
-        If issue occures for attachment with sensitive/geo areas, the Line is deleted (if it was created) and an APIException is raised.
 
-        Arguments:
-            validated_data {dict} -- contains data for new Line creation
-
-        Raises:
-            APIException -- In case of issue with create process. If process fails, any new object created will be deleted before raising new APIException
-
-        Returns:
-            {Line} -- returns new Line object
-        """
 
 
 class InfrastructurePolymorphicSerializer(
@@ -624,3 +617,4 @@ class InfrastructurePolymorphicSerializer(
         model = Infrastructure
         geo_field = "geom"
         fields = "__all__"
+
