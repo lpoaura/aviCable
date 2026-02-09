@@ -85,6 +85,14 @@ class Line(Infrastructure):
 
     def __str__(self):
         return f"Line {self.pk}"
+    
+    @property
+    def length(self):
+        if not self.geom:
+            return None
+
+        geom = self.geom.transform(3857, clone=True)
+        return round(geom.length, 2)
 
 
 class Action(BaseModel):

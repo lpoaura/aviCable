@@ -31,7 +31,6 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     bbox_filter_include_overlapping = True
     queryset = (
         Infrastructure.objects.all()
-        .annotate(length=Length("line__geom"))
         .select_related("network_type")
         .prefetch_related("network_type__parents")
         .prefetch_related(

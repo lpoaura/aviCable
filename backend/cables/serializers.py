@@ -1,6 +1,5 @@
 import logging
 
-from rest_framework.serializers import SerializerMethodField
 from rest_framework.exceptions import APIException
 from rest_framework_gis.serializers import (
     GeoFeatureModelSerializer,
@@ -560,7 +559,7 @@ class LineSerializer(InstrastructureAbstractSerializer):
     """
 
 
-    length = SerializerMethodField(read_only=True)
+    # length = ReadOnlyField()
 
     class Meta:
         model = Line
@@ -572,9 +571,7 @@ class LineSerializer(InstrastructureAbstractSerializer):
             "network_type",
             "network_type_id",
             "areas",
-            # "geo_area_id",
             "sensitive_area",
-            # "sensitive_area_id",
             "diagnosis",
             "operations",
             "mortality",
@@ -583,6 +580,8 @@ class LineSerializer(InstrastructureAbstractSerializer):
             "timestamp_create",
             "timestamp_update",
         ]
+        # read_only_fields=["length",]
+
         # Allow to handle create/update/partial_updcreateate with nested data
         extra_kwargs = {
             "network_type_id": {"source": "network_type", "write_only": True},
@@ -590,9 +589,6 @@ class LineSerializer(InstrastructureAbstractSerializer):
             # "sensitive_area_id": {"source": "sensitive_area", "write_only": True},
         }
 
-    def get_length(self, obj):
-        """Get line length in meter"""
-        return round(obj.length.m,2)
 
 
 
